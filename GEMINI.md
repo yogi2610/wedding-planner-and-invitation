@@ -88,6 +88,7 @@ Data detail acara pernikahan & website undangan:
 - `resepsi_time` (text / time)
 - `resepsi_venue` (text)
 - `resepsi_address` (text)
+- `wa_message_template` (text) - Template format pesan undangan WhatsApp
 - `audio_url` (text)
 - `is_published` (boolean)
 - `created_at` (timestamp)
@@ -135,12 +136,19 @@ Daftar barang seserahan, seragam bridesmaid, panitia PIC, dan rundown acara:
 
 ### 8. `guests`
 Buku tamu, RSVP, dan kuota undangan:
-- `id` (uuid / primary key)
-- `user_id` (uuid)
-- `wedding_id` (uuid)
+- `id` (uuid / bigint primary key)
+- `user_id` (uuid / bigint)
+- `wedding_id` (uuid / bigint)
 - `name` (text) - Nama tamu undangan
+- `group_category` (text) - Kategori tamu (`'Keluarga Pria'`, `'Keluarga Wanita'`, `'Teman Pria'`, `'Teman Wanita'`, `'VIP'`)
+- `phone_wa` (text) - Nomor WhatsApp tamu
+- `invitation_type` (text) - Jenis undangan (`'digital'`, `'cetak'`, `'keduanya'`)
 - `estimated_pax` (integer) - Estimasi jumlah porsi/tamu yang dibawa
-- `rsvp_status` (text) - `'hadir'`, `'tidak_hadir'`, `'ragu'`
+- `is_link_sent` (boolean) - Status tautan undangan telah dikirim
+- `rsvp_status` (text) - `'hadir'`, `'tidak_hadir'`, `'ragu'` (pending)
+- `confirmed_pax` (integer) - Jumlah tamu terkonfirmasi hadir
+- `wish_message` (text) - Ucapan & doa restu dari tamu
+- `rsvp_submitted_at` (timestamp) - Waktu konfirmasi RSVP dikirim
 - `created_at` (timestamp)
 
 ---

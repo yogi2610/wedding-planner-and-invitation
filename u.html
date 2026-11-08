@@ -178,14 +178,37 @@
           <label class="block text-xs font-semibold text-slate-700 mb-1">Konfirmasi Kehadiran *</label>
           <div class="grid grid-cols-2 gap-3">
             <label class="flex items-center gap-2 p-3 rounded-xl border border-stone-200 cursor-pointer hover:bg-emerald-50 hover:border-emerald-300 transition-colors">
-              <input type="radio" name="rsvp_status" value="hadir" checked class="text-emerald-600 accent-emerald-600">
+              <input type="radio" name="rsvp_status" value="hadir" checked onchange="togglePaxField(true)" class="text-emerald-600 accent-emerald-600">
               <span class="text-xs font-medium text-slate-800">Insya Allah Hadir</span>
             </label>
             <label class="flex items-center gap-2 p-3 rounded-xl border border-stone-200 cursor-pointer hover:bg-rose-50 hover:border-rose-300 transition-colors">
-              <input type="radio" name="rsvp_status" value="tidak_hadir" class="text-rose-600 accent-rose-600">
+              <input type="radio" name="rsvp_status" value="tidak_hadir" onchange="togglePaxField(false)" class="text-rose-600 accent-rose-600">
               <span class="text-xs font-medium text-slate-800">Berhalangan Hadir</span>
             </label>
           </div>
+        </div>
+
+        <!-- Jumlah Pax yang Hadir -->
+        <div id="confirmed_pax_wrapper">
+          <label for="confirmed_pax_input" class="block text-xs font-semibold text-slate-700 mb-1">Jumlah Orang yang Hadir</label>
+          <select id="confirmed_pax_input" class="w-full px-4 py-2.5 rounded-xl border border-stone-300 text-xs focus:ring-2 focus:ring-amber-500/40 focus:outline-none bg-white">
+            <option value="1">1 Orang</option>
+            <option value="2" selected>2 Orang (Bersama Pasangan / Partner)</option>
+            <option value="3">3 Orang</option>
+            <option value="4">4 Orang (Keluarga)</option>
+            <option value="5">5 Orang</option>
+          </select>
+        </div>
+
+        <!-- Ucapan & Doa Restu -->
+        <div>
+          <label for="wish_message_input" class="block text-xs font-semibold text-slate-700 mb-1">Ucapan & Doa Restu</label>
+          <textarea 
+            id="wish_message_input" 
+            rows="3" 
+            placeholder="Tuliskan ucapan selamat dan doa restu untuk kedua mempelai..."
+            class="w-full px-4 py-2.5 rounded-xl border border-stone-300 text-xs focus:ring-2 focus:ring-amber-500/40 focus:outline-none resize-none leading-relaxed"
+          ></textarea>
         </div>
 
         <button 
@@ -194,9 +217,24 @@
           class="w-full py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer"
         >
           <i data-lucide="check" class="w-4 h-4 text-amber-400"></i>
-          <span>Kirim Konfirmasi</span>
+          <span>Kirim Konfirmasi & Doa</span>
         </button>
       </form>
+    </section>
+
+    <!-- Dinding Ucapan & Doa Restu Tamu -->
+    <section class="max-w-lg mx-auto text-left space-y-4">
+      <div class="text-center">
+        <h3 class="font-serif text-2xl font-bold text-slate-900 flex items-center justify-center gap-2">
+          <i data-lucide="heart" class="w-5 h-5 text-rose-500 fill-rose-500"></i>
+          <span>Doa Restu & Ucapan</span>
+        </h3>
+        <p class="text-xs text-slate-500 mt-1" id="wishes-count-label">Memuat ucapan selamat...</p>
+      </div>
+
+      <div id="wishes-list" class="space-y-3 max-h-96 overflow-y-auto pr-1">
+        <!-- Injected via JavaScript -->
+      </div>
     </section>
 
     <!-- Footer -->
@@ -300,6 +338,9 @@
         }
 
         renderWeddingDetails(loadedWedding);
+        if (loadedWedding?.id) {
+          loadWishes(loadedWedding.id);
+        }
 
       } catch (err) {
         console.error('Error loading wedding:', err);
@@ -332,12 +373,22 @@
       document.getElementById('resepsi-address').textContent = w.resepsi_address || 'Alamat lokasi resepsi';
     }
 
+    function togglePaxField(show) {
+      const el = document.getElementById('confirmed_pax_wrapper');
+      if (el) {
+        if (show) el.classList.remove('hidden');
+        else el.classList.add('hidden');
+      }
+    }
+
     // 4. Submit RSVP Form
     document.getElementById('rsvp-form').addEventListener('submit', async (e) => {
       e.preventDefault();
 
       const guestName = document.getElementById('guest_name_input').value.trim();
       const status = document.querySelector('input[name="rsvp_status"]:checked')?.value || 'hadir';
+      const pax = status === 'hadir' ? (parseInt(document.getElementById('confirmed_pax_input')?.value, 10) || 2) : 0;
+      const wish = document.getElementById('wish_message_input')?.value.trim() || null;
       const submitBtn = document.getElementById('btn-rsvp-submit');
 
       if (!guestName) {
@@ -346,32 +397,138 @@
       }
 
       submitBtn.disabled = true;
+      submitBtn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i><span>Mengirim...</span>`;
+      lucide.createIcons();
 
       try {
         const client = window.supabaseClient;
         if (client && loadedWedding?.user_id) {
-          const { error } = await client
+          // Cek apakah tamu sudah ada di database untuk wedding ini
+          const { data: existingGuest } = await client
             .from('guests')
-            .insert([{
-              user_id: loadedWedding.user_id,
-              wedding_id: loadedWedding.id,
-              name: guestName,
-              rsvp_status: status
-            }]);
+            .select('id')
+            .eq('wedding_id', loadedWedding.id)
+            .ilike('name', guestName)
+            .maybeSingle();
 
-          if (error) {
-            checkRlsError(error);
+          const now = new Date().toISOString();
+
+          if (existingGuest?.id) {
+            // Update baris tamu yang sudah ada
+            const { error: updateError } = await client
+              .from('guests')
+              .update({
+                rsvp_status: status,
+                confirmed_pax: pax,
+                wish_message: wish,
+                rsvp_submitted_at: now
+              })
+              .eq('id', existingGuest.id);
+
+            if (updateError) checkRlsError(updateError);
+          } else {
+            // Insert tamu baru
+            const { error: insertError } = await client
+              .from('guests')
+              .insert([{
+                user_id: loadedWedding.user_id,
+                wedding_id: loadedWedding.id,
+                name: guestName,
+                group_category: 'Tamu Undangan',
+                invitation_type: 'digital',
+                estimated_pax: pax || 2,
+                confirmed_pax: pax,
+                rsvp_status: status,
+                wish_message: wish,
+                rsvp_submitted_at: now
+              }]);
+
+            if (insertError) checkRlsError(insertError);
           }
         }
 
-        showToast(`Terima kasih ${guestName}, konfirmasi (${status === 'hadir' ? 'Hadir' : 'Berhalangan'}) berhasil dikirim!`, 'success', 4000);
+        showToast(`Terima kasih ${guestName}, konfirmasi (${status === 'hadir' ? 'Hadir' : 'Berhalangan'}) dan doa restu berhasil dikirim!`, 'success', 4000);
         submitBtn.innerHTML = `<i data-lucide="check-check" class="w-4 h-4 text-emerald-400"></i><span>Terkirim</span>`;
         lucide.createIcons();
+
+        // Refresh wishes list
+        if (loadedWedding?.id) {
+          loadWishes(loadedWedding.id);
+        }
       } catch (err) {
         console.error('RSVP err:', err);
         showToast('Terima kasih, konfirmasi Anda telah tercatat!', 'info');
       }
     });
+
+    // 5. Load & Render Wishes
+    async function loadWishes(weddingId) {
+      const container = document.getElementById('wishes-list');
+      const countLabel = document.getElementById('wishes-count-label');
+      if (!container) return;
+
+      try {
+        const client = window.supabaseClient;
+        if (!client || !weddingId) return;
+
+        const { data: wishes, error } = await client
+          .from('guests')
+          .select('id, name, wish_message, rsvp_status, confirmed_pax, rsvp_submitted_at, created_at')
+          .eq('wedding_id', weddingId)
+          .not('wish_message', 'is', null)
+          .order('created_at', { ascending: false })
+          .limit(20);
+
+        if (error || !wishes || !wishes.length) {
+          countLabel.textContent = 'Jadilah yang pertama memberikan ucapan doa!';
+          container.innerHTML = `
+            <div class="p-6 bg-white rounded-2xl border border-stone-200 text-center text-xs text-stone-400">
+              Belum ada ucapan doa. Tuliskan ucapan dan doa restu terbaik Anda di form atas.
+            </div>
+          `;
+          return;
+        }
+
+        countLabel.textContent = `${wishes.length} doa restu dari para tamu`;
+
+        container.innerHTML = wishes.map(w => {
+          const initials = w.name.split(' ').map(n => n[0]).slice(0, 2).join('').toUpperCase() || '✨';
+          const hadirBadge = w.rsvp_status === 'hadir'
+            ? `<span class="text-[9px] px-2 py-0.5 rounded-full font-bold bg-emerald-100 text-emerald-800">Hadir</span>`
+            : `<span class="text-[9px] px-2 py-0.5 rounded-full font-bold bg-stone-100 text-stone-600">Berhalangan</span>`;
+          
+          return `
+            <div class="bg-white p-4 rounded-2xl border border-stone-200/90 shadow-2xs space-y-2">
+              <div class="flex items-center justify-between gap-2">
+                <div class="flex items-center gap-2">
+                  <div class="w-7 h-7 rounded-full bg-amber-100 text-amber-900 font-bold text-[10px] flex items-center justify-center font-serif">
+                    ${initials}
+                  </div>
+                  <span class="font-bold text-xs text-slate-800">${escapeHtml(w.name)}</span>
+                </div>
+                ${hadirBadge}
+              </div>
+              <p class="text-xs text-slate-600 italic leading-relaxed pl-1">
+                "${escapeHtml(w.wish_message)}"
+              </p>
+            </div>
+          `;
+        }).join('');
+
+      } catch (err) {
+        console.warn('Load wishes err:', err);
+      }
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
 
     loadWeddingData();
   </script>
