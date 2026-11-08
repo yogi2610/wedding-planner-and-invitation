@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Masuk Akun | Platform Nikah</title>
+  <meta name="description" content="Masuk ke dashboard pernikahanmu atau portal admin Platform Nikah.">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#fffbf5',
+              100: '#f7eee1',
+              500: '#b48342',
+              600: '#996515',
+              gold: '#d4af37'
+            }
+          },
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+            serif: ['"Cormorant Garamond"', 'Georgia', 'serif']
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Supabase JS SDK v2 CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body class="bg-[#FCFBF9] text-slate-800 antialiased min-h-screen flex flex-col justify-between">
+
+  <!-- Header -->
+  <header class="py-6 px-4 sm:px-8 border-b border-stone-200/60 bg-white/70 backdrop-blur-sm">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+      <a href="/" class="flex items-center space-x-3 group">
+        <div class="w-9 h-9 rounded-full gold-gradient-bg flex items-center justify-center text-white shadow-sm">
+          <i data-lucide="gem" class="w-4 h-4"></i>
+        </div>
+        <span class="font-serif text-2xl font-bold tracking-tight text-slate-900">PlatformNikah</span>
+      </a>
+
+      <div class="text-sm">
+        <span class="text-slate-500">Punya token baru?</span>
+        <a href="/register.html" class="font-semibold text-amber-700 hover:text-amber-800 ml-1">Aktivasi di sini</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Login Box -->
+  <main class="flex-1 flex items-center justify-center px-4 py-12">
+    <div class="w-full max-w-md bg-white rounded-3xl p-6 sm:p-10 border border-stone-200 shadow-xl shadow-stone-900/5 relative overflow-hidden">
+      
+      <!-- Top Ribbon -->
+      <div class="absolute top-0 left-0 right-0 h-1.5 gold-gradient-bg"></div>
+
+      <div class="text-center mb-8">
+        <div class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-700 border border-amber-200 flex items-center justify-center mx-auto mb-4">
+          <i data-lucide="lock" class="w-6 h-6"></i>
+        </div>
+        <h1 class="font-serif text-3xl font-bold text-slate-900">Selamat Datang</h1>
+        <p class="text-slate-500 text-sm mt-1.5">
+          Masuk untuk mengelola wedding planner atau portal token admin.
+        </p>
+      </div>
+
+      <!-- Form Login -->
+      <form id="login-form" class="space-y-4">
+        
+        <div>
+          <label for="email" class="block text-xs font-semibold text-slate-700 mb-1">Alamat Email</label>
+          <div class="relative">
+            <input 
+              type="email" 
+              id="email" 
+              name="email" 
+              required
+              placeholder="nama@email.com"
+              class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500 transition-all"
+            >
+            <div class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">
+              <i data-lucide="mail" class="w-4 h-4"></i>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <label for="password" class="block text-xs font-semibold text-slate-700 mb-1 flex items-center justify-between">
+            <span>Kata Sandi (Password)</span>
+          </label>
+          <div class="relative">
+            <input 
+              type="password" 
+              id="password" 
+              name="password" 
+              required
+              placeholder="••••••••"
+              class="w-full pl-10 pr-10 py-2.5 rounded-xl border border-stone-300 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500 transition-all"
+            >
+            <div class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">
+              <i data-lucide="key-round" class="w-4 h-4"></i>
+            </div>
+            <button 
+              type="button" 
+              id="toggle-password" 
+              class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 focus:outline-none"
+            >
+              <i data-lucide="eye" class="w-4 h-4" id="eye-icon"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Tombol Submit -->
+        <button 
+          type="submit" 
+          id="btn-login"
+          class="w-full mt-4 py-3 px-6 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-semibold text-sm shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer"
+        >
+          <i data-lucide="log-in" class="w-4 h-4 text-amber-400"></i>
+          <span id="btn-text">Masuk ke Akun</span>
+        </button>
+
+      </form>
+
+      <!-- Quick Demo Login Admin Button -->
+      <div class="mt-6 pt-5 border-t border-stone-100">
+        <span class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block text-center mb-2">Akses Cepat Pengujian</span>
+        <button 
+          type="button"
+          id="btn-quick-admin"
+          class="w-full py-2.5 px-4 rounded-xl bg-amber-50 hover:bg-amber-100 border border-amber-200 text-amber-900 text-xs font-semibold flex items-center justify-center gap-2 transition-colors cursor-pointer"
+        >
+          <i data-lucide="shield-check" class="w-4 h-4 text-amber-600"></i>
+          <span>1-Klik Masuk Portal Admin (admin@platformnikah.id)</span>
+        </button>
+      </div>
+
+      <!-- Link Registrasi -->
+      <div class="mt-4 text-center">
+        <p class="text-xs text-slate-500">
+          Belum punya akun pengantin? 
+          <a href="/register.html" class="text-amber-700 font-semibold hover:underline">Aktivasi Token Lisensi</a>
+        </p>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="py-6 text-center text-xs text-slate-400 border-t border-stone-200/60 bg-white/50">
+    PlatformNikah © 2026. All-in-One Wedding Ecosystem.
+  </footer>
+
+  <!-- Scripts -->
+  <script src="/assets/js/config.js"></script>
+  <script>
+    lucide.createIcons();
+
+    // Toggle Password Visibility
+    const togglePasswordBtn = document.getElementById('toggle-password');
+    const passwordInput = document.getElementById('password');
+    togglePasswordBtn.addEventListener('click', () => {
+      const isPassword = passwordInput.type === 'password';
+      passwordInput.type = isPassword ? 'text' : 'password';
+      togglePasswordBtn.innerHTML = isPassword 
+        ? `<i data-lucide="eye-off" class="w-4 h-4"></i>` 
+        : `<i data-lucide="eye" class="w-4 h-4"></i>`;
+      lucide.createIcons();
+    });
+
+    // Quick Admin Fill Button
+    document.getElementById('btn-quick-admin').addEventListener('click', () => {
+      document.getElementById('email').value = 'admin@platformnikah.id';
+      document.getElementById('password').value = 'admin123';
+      showToast('Kredensial Admin terisi. Klik "Masuk ke Akun"!', 'info');
+    });
+
+    // Form Login Submit
+    const loginForm = document.getElementById('login-form');
+    const loginBtn = document.getElementById('btn-login');
+    const btnText = document.getElementById('btn-text');
+
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const email = document.getElementById('email').value.trim().toLowerCase();
+      const password = document.getElementById('password').value;
+
+      if (!email || !password) {
+        showToast('Mohon masukkan email dan password', 'warning');
+        return;
+      }
+
+      loginBtn.disabled = true;
+      btnText.textContent = 'Memverifikasi Akun...';
+
+      try {
+        const client = window.supabaseClient;
+        if (!client) throw new Error('Supabase Client tidak siap');
+
+        // Kasus Khusus: Login Admin
+        if (email === 'admin@platformnikah.id' && password === 'admin123') {
+          // Cek apakah admin sudah ada di tabel users, jika belum insert row admin
+          const { data: existingAdmin, error: adminQueryErr } = await client
+            .from('users')
+            .select('*')
+            .eq('email', email)
+            .maybeSingle();
+
+          let adminUser = existingAdmin;
+          if (!adminUser) {
+            const { data: createdAdmin, error: createAdminErr } = await client
+              .from('users')
+              .insert([{
+                name: 'Super Admin',
+                email: 'admin@platformnikah.id',
+                password_hash: 'admin123',
+                role: 'admin'
+              }])
+              .select()
+              .single();
+
+            if (!createAdminErr && createdAdmin) {
+              adminUser = createdAdmin;
+            } else {
+              // Jika RLS memblokir insert admin, buat session admin lokal untuk testing
+              adminUser = {
+                id: 'admin-platform-nikah-id',
+                name: 'Super Admin',
+                email: 'admin@platformnikah.id',
+                role: 'admin'
+              };
+            }
+          }
+
+          setCurrentUser(adminUser);
+          showToast('Login berhasil sebagai Admin!', 'success');
+          setTimeout(() => {
+            window.location.href = '/admin/tokens.html';
+          }, 800);
+          return;
+        }
+
+        // Login Pengantin / User Biasa
+        const { data: user, error: userError } = await client
+          .from('users')
+          .select('*')
+          .eq('email', email)
+          .maybeSingle();
+
+        if (userError) {
+          checkRlsError(userError);
+          throw new Error('Gagal memeriksa data pengguna: ' + userError.message);
+        }
+
+        if (!user) {
+          throw new Error('Akun dengan email ini belum terdaftar. Silakan aktivasi token terlebih dahulu.');
+        }
+
+        if (user.password_hash !== password) {
+          throw new Error('Kata sandi yang Anda masukkan salah.');
+        }
+
+        // Ambil data pernikahan yang terkait jika ada
+        const { data: wedding } = await client
+          .from('weddings')
+          .select('*')
+          .eq('user_id', user.id)
+          .maybeSingle();
+
+        if (wedding) {
+          localStorage.setItem(STORAGE_KEYS.WEDDING, JSON.stringify(wedding));
+        }
+
+        // Set session
+        setCurrentUser({
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          role: user.role || 'user',
+          wedding_date: user.wedding_date,
+          slug: wedding?.slug || '',
+          groom_name: wedding?.groom_nickname || '',
+          bride_name: wedding?.bride_nickname || ''
+        });
+
+        showToast(`Selamat datang kembali, ${user.name}!`, 'success');
+
+        setTimeout(() => {
+          if (user.role === 'admin') {
+            window.location.href = '/admin/tokens.html';
+          } else {
+            window.location.href = '/dashboard/index.html';
+          }
+        }, 800);
+
+      } catch (err) {
+        console.error('Login error:', err);
+        showToast(err.message, 'error', 4500);
+        loginBtn.disabled = false;
+        btnText.textContent = 'Masuk ke Akun';
+      }
+    });
+  </script>
+</body>
+</html>
