@@ -190,11 +190,33 @@
             </p>
           </div>
 
-          <!-- Countdown Big Box -->
-          <div class="bg-white/10 backdrop-blur-md border border-white/15 rounded-2xl p-4 sm:p-5 text-center min-w-[200px] flex-shrink-0">
-            <span class="text-[11px] uppercase tracking-widest text-amber-300 font-semibold block mb-1">Hitung Mundur</span>
-            <div class="text-3xl sm:text-4xl font-black text-white font-mono tracking-tight" id="countdown-days-val">0</div>
-            <span class="text-xs text-stone-300 font-medium mt-1 block" id="countdown-subtext">Hari Lagi Menuju Akad</span>
+          <!-- Countdown Live Box Real-Time -->
+          <div class="bg-white/10 backdrop-blur-md border border-white/15 rounded-2xl p-4 sm:p-5 text-center flex-shrink-0 min-w-[280px]">
+            <span class="text-[11px] uppercase tracking-widest text-amber-300 font-bold block mb-2 flex items-center justify-center gap-1.5">
+              <i data-lucide="clock" class="w-3.5 h-3.5 text-amber-400"></i>
+              <span>Hitung Mundur Real-Time</span>
+            </span>
+            <div class="grid grid-cols-4 gap-2 text-center" id="countdown-grid">
+              <div class="bg-black/40 rounded-xl px-2 py-2 border border-white/10">
+                <span class="text-xl sm:text-2xl font-black text-white font-mono block leading-none" id="cd-days">0</span>
+                <span class="text-[9px] uppercase tracking-wider text-amber-200 font-semibold mt-1 block">Hari</span>
+              </div>
+              <div class="bg-black/40 rounded-xl px-2 py-2 border border-white/10">
+                <span class="text-xl sm:text-2xl font-black text-white font-mono block leading-none" id="cd-hours">0</span>
+                <span class="text-[9px] uppercase tracking-wider text-amber-200 font-semibold mt-1 block">Jam</span>
+              </div>
+              <div class="bg-black/40 rounded-xl px-2 py-2 border border-white/10">
+                <span class="text-xl sm:text-2xl font-black text-white font-mono block leading-none" id="cd-minutes">0</span>
+                <span class="text-[9px] uppercase tracking-wider text-amber-200 font-semibold mt-1 block">Menit</span>
+              </div>
+              <div class="bg-black/40 rounded-xl px-2 py-2 border border-white/10">
+                <span class="text-xl sm:text-2xl font-black text-amber-400 font-mono block leading-none" id="cd-seconds">0</span>
+                <span class="text-[9px] uppercase tracking-wider text-amber-200 font-semibold mt-1 block">Detik</span>
+              </div>
+            </div>
+            <span class="text-xs text-amber-100 font-medium mt-2.5 block tracking-wide" id="cd-full-string">
+              Menghitung waktu...
+            </span>
           </div>
         </div>
       </div>
@@ -467,12 +489,19 @@
         document.getElementById('topbar-greeting').textContent = `Halo, ${groom} & ${bride} ✨`;
         document.getElementById('couple-initials').textContent = `${groom.charAt(0)}&${bride.charAt(0)}`;
 
-        // Countdown Hari H
+        // Countdown Hari H Real-Time Detik demi Detik
         const weddingDateStr = currentWedding?.akad_date || currentUser.wedding_date;
-        const countdown = getDaysUntil(weddingDateStr);
-        document.getElementById('countdown-days-val').textContent = countdown.days;
-        document.getElementById('countdown-subtext').textContent = countdown.isPast ? 'Hari yang lalu (Telah Berlalu)' : 'Hari Lagi Menuju Akad Nikah';
-        document.getElementById('sidebar-countdown-pill').textContent = countdown.text;
+        const akadTimeStr = currentWedding?.akad_time || '08:00:00';
+        
+        startLiveCountdown(weddingDateStr, (cd) => {
+          document.getElementById('cd-days').textContent = cd.days;
+          document.getElementById('cd-hours').textContent = String(cd.hours).padStart(2, '0');
+          document.getElementById('cd-minutes').textContent = String(cd.minutes).padStart(2, '0');
+          document.getElementById('cd-seconds').textContent = String(cd.seconds).padStart(2, '0');
+          document.getElementById('cd-full-string').textContent = cd.fullText;
+          document.getElementById('sidebar-countdown-pill').textContent = `${cd.days}h ${cd.hours}j ${cd.minutes}m ${cd.seconds}d`;
+        }, akadTimeStr);
+
         document.getElementById('topbar-wedding-date').textContent = formatDateIndo(weddingDateStr);
         document.getElementById('banner-date-badge').textContent = `Akad: ${formatDateIndo(weddingDateStr)}`;
 

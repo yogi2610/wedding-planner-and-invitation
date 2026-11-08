@@ -41,6 +41,8 @@ Tabel pengguna (Admin & Pengantin):
 - `role` (text) - `'admin'` atau `'user'`
 - `wedding_date` (date / timestamp) - Tanggal rencana pernikahan
 - `catering_ratio_buffet` (integer / numeric) - Rasio porsi prasmanan (default: 70)
+- `total_budget` (numeric / bigint) - Total dana/uang pernikahan yang dimiliki pengantin
+- `manual_estimated_cost` (numeric / bigint) - Perkiraan total biaya pernikahan yang diinput pengantin
 - `created_at` (timestamp)
 - `expires_at` (timestamp)
 

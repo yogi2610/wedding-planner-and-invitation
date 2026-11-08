@@ -178,6 +178,71 @@ function getDaysUntil(targetDateStr) {
   }
 }
 
+/**
+ * Hitung Mundur Real-Time Detik demi Detik (Target Pukul 08:00:00 waktu setempat)
+ */
+function parseTargetDateTime(targetDateStr, timeStr = '08:00:00') {
+  if (!targetDateStr) return null;
+  let datePart = targetDateStr;
+  if (targetDateStr.includes('T')) {
+    datePart = targetDateStr.split('T')[0];
+  }
+  const cleanTime = (timeStr || '08:00:00').length === 5 ? `${timeStr}:00` : (timeStr || '08:00:00');
+  const [hours, minutes, seconds] = cleanTime.split(':').map(Number);
+  const [year, month, day] = datePart.split('-').map(Number);
+  return new Date(year, month - 1, day, hours || 8, minutes || 0, seconds || 0);
+}
+
+function getCountdownDetailed(targetDateStr, timeStr = '08:00:00') {
+  const target = parseTargetDateTime(targetDateStr, timeStr);
+  if (!target || isNaN(target.getTime())) {
+    return { days: 0, hours: 0, minutes: 0, seconds: 0, isPast: false, text: '-', fullText: '-' };
+  }
+  const now = new Date();
+  const diff = target.getTime() - now.getTime();
+
+  if (diff <= 0) {
+    const absDiff = Math.abs(diff);
+    const days = Math.floor(absDiff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((absDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((absDiff % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((absDiff % (1000 * 60)) / 1000);
+    return {
+      days,
+      hours,
+      minutes,
+      seconds,
+      isPast: true,
+      text: `${days} Hari Lalu`,
+      fullText: `${days} Hari ${hours} Jam ${minutes} Menit ${seconds} Detik Lalu`
+    };
+  }
+
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+  const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+  return {
+    days,
+    hours,
+    minutes,
+    seconds,
+    isPast: false,
+    text: `${days} Hari Lagi`,
+    fullText: `${days} Hari ${hours} Jam ${minutes} Menit ${seconds} Detik`
+  };
+}
+
+function startLiveCountdown(targetDateStr, callback, timeStr = '08:00:00') {
+  const tick = () => {
+    const data = getCountdownDetailed(targetDateStr, timeStr);
+    if (typeof callback === 'function') callback(data);
+  };
+  tick();
+  return setInterval(tick, 1000);
+}
+
 // 6. Helper Handle RLS Error
 function checkRlsError(error) {
   if (error && (error.code === '42501' || (error.message && error.message.includes('row-level security')))) {
@@ -204,5 +269,7 @@ window.showToast = showToast;
 window.formatRupiah = formatRupiah;
 window.formatDateIndo = formatDateIndo;
 window.getDaysUntil = getDaysUntil;
+window.getCountdownDetailed = getCountdownDetailed;
+window.startLiveCountdown = startLiveCountdown;
 window.checkRlsError = checkRlsError;
 

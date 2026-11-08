@@ -448,8 +448,9 @@
       document.getElementById('sidebar-couple-name').textContent = `${groom} & ${bride}`;
       document.getElementById('couple-initials').textContent = `${groom.charAt(0)}&${bride.charAt(0)}`;
 
-      const countdown = getDaysUntil(currentUser.wedding_date);
-      document.getElementById('sidebar-countdown-pill').textContent = countdown.text;
+      startLiveCountdown(currentUser.wedding_date, (cd) => {
+        document.getElementById('sidebar-countdown-pill').textContent = `${cd.days}h ${cd.hours}j ${cd.minutes}m ${cd.seconds}d`;
+      }, '08:00:00');
 
       // Print headers
       document.getElementById('print-wedding-title').textContent = `RUNDOWN ACARA & STRUKTUR PANITIA: ${groom.toUpperCase()} & ${bride.toUpperCase()}`;
@@ -1053,3 +1054,4 @@
   </script>
 </body>
 </html>
+
