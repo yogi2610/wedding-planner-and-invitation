@@ -1,0 +1,1055 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Modul Pelengkap 4-in-1 | Platform Nikah</title>
+  <meta name="description" content="Tracker seserahan, daftar seragam keluarga/bridesmaid, susunan panitia PIC, dan rundown acara hari-H siap cetak.">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#fffbf5',
+              100: '#f7eee1',
+              500: '#b48342',
+              600: '#996515',
+              gold: '#d4af37'
+            }
+          },
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+            serif: ['"Cormorant Garamond"', 'Georgia', 'serif']
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Supabase JS SDK v2 CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="/assets/css/style.css">
+
+  <!-- Print Specific CSS -->
+  <style>
+    @media print {
+      body {
+        background-color: #ffffff !important;
+        color: #000000 !important;
+      }
+      aside, header, #tab-nav-bar, #btn-add-item, .no-print, #sidebar-backdrop, footer {
+        display: none !important;
+      }
+      .lg\:pl-64 {
+        padding-left: 0 !important;
+      }
+      main {
+        max-width: 100% !important;
+        padding: 0 !important;
+        margin: 0 !important;
+      }
+      .print-only {
+        display: block !important;
+      }
+      .page-break {
+        page-break-before: always;
+      }
+      .card-print {
+        border: 1px solid #ddd !important;
+        box-shadow: none !important;
+        border-radius: 8px !important;
+      }
+    }
+    .print-only {
+      display: none;
+    }
+  </style>
+</head>
+<body class="bg-[#F8F7F4] text-slate-800 antialiased min-h-screen flex">
+
+  <!-- Mobile Sidebar Overlay Backdrop -->
+  <div id="sidebar-backdrop" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-40 hidden lg:hidden"></div>
+
+  <!-- Sidebar Navigasi Responsif -->
+  <aside id="sidebar" class="fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-stone-200/80 flex flex-col justify-between transform -translate-x-full lg:translate-x-0 transition-transform duration-200 ease-in-out">
+    
+    <div>
+      <!-- Brand Header -->
+      <div class="h-20 flex items-center justify-between px-6 border-b border-stone-200/60">
+        <a href="/" class="flex items-center space-x-2.5">
+          <div class="w-9 h-9 rounded-full gold-gradient-bg flex items-center justify-center text-white shadow-sm">
+            <i data-lucide="gem" class="w-4 h-4"></i>
+          </div>
+          <div>
+            <span class="font-serif text-xl font-bold tracking-tight text-slate-900 block leading-none">PlatformNikah</span>
+            <span class="text-[9px] uppercase tracking-widest text-amber-700 font-semibold">Wedding Planner</span>
+          </div>
+        </a>
+
+        <!-- Close button mobile -->
+        <button id="btn-close-sidebar" class="lg:hidden text-slate-400 hover:text-slate-600">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <!-- Pasangan Info Card Ringkas -->
+      <div class="p-4 mx-4 mt-4 rounded-2xl bg-amber-50/60 border border-amber-200/60">
+        <div class="flex items-center space-x-3">
+          <div class="w-10 h-10 rounded-full bg-amber-500/20 text-amber-900 font-serif font-bold text-base flex items-center justify-center" id="couple-initials">
+            💍
+          </div>
+          <div class="overflow-hidden">
+            <span class="text-xs font-bold text-slate-900 block truncate" id="sidebar-couple-name">Mempelai Pengantin</span>
+            <span class="text-[11px] text-amber-800 block truncate" id="sidebar-countdown-pill">Menghitung hari...</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Menu List -->
+      <nav class="px-4 py-4 space-y-1 text-xs font-semibold">
+        <!-- 1. Ringkasan -->
+        <a href="/dashboard/index.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 hover:bg-stone-100 hover:text-slate-900 transition-all group">
+          <i data-lucide="layout-dashboard" class="w-4 h-4 text-slate-400 group-hover:text-amber-600"></i>
+          <span>Ringkasan Dashboard</span>
+        </a>
+
+        <!-- 2. Smart Budget & Katering -->
+        <a href="/dashboard/budget.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 hover:bg-stone-100 hover:text-slate-900 transition-all group">
+          <i data-lucide="pie-chart" class="w-4 h-4 text-slate-400 group-hover:text-amber-600"></i>
+          <span>Smart Budget & Katering</span>
+        </a>
+
+        <!-- 3. Checklist Timeline -->
+        <a href="/dashboard/checklist.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 hover:bg-stone-100 hover:text-slate-900 transition-all group">
+          <i data-lucide="check-square" class="w-4 h-4 text-slate-400 group-hover:text-amber-600"></i>
+          <span>Checklist Timeline (16)</span>
+        </a>
+
+        <!-- 4. Seserahan & Rundown (Active) -->
+        <a href="/dashboard/extras.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl bg-slate-900 text-white shadow-sm transition-all">
+          <i data-lucide="gift" class="w-4 h-4 text-amber-400"></i>
+          <span>Seserahan & Rundown</span>
+        </a>
+
+        <!-- 5. Master Tamu & WA -->
+        <a href="#tamu" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 hover:bg-stone-100 hover:text-slate-900 transition-all group">
+          <i data-lucide="users" class="w-4 h-4 text-slate-400 group-hover:text-amber-600"></i>
+          <span>Master Tamu & WA RSVP</span>
+        </a>
+
+        <!-- 6. Undangan Digital -->
+        <a href="#undangan" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 hover:bg-stone-100 hover:text-slate-900 transition-all group">
+          <i data-lucide="mail-heart" class="w-4 h-4 text-slate-400 group-hover:text-amber-600"></i>
+          <span>Edit Undangan Digital</span>
+        </a>
+      </nav>
+    </div>
+
+    <!-- Bottom Action & Logout -->
+    <div class="p-4 border-t border-stone-200/60">
+      <button 
+        onclick="logout()" 
+        class="w-full flex items-center justify-center gap-2 py-2 px-3 rounded-xl border border-rose-200 bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-semibold transition-colors cursor-pointer"
+      >
+        <i data-lucide="log-out" class="w-4 h-4"></i>
+        <span>Keluar dari Akun</span>
+      </button>
+    </div>
+
+  </aside>
+
+  <!-- Main Content Wrapper -->
+  <div class="flex-1 lg:pl-64 flex flex-col min-h-screen">
+    
+    <!-- Topbar Header -->
+    <header class="h-20 bg-white/80 backdrop-blur-md border-b border-stone-200/70 sticky top-0 z-30 px-4 sm:px-8 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <button id="btn-open-sidebar" class="lg:hidden p-2 rounded-xl text-slate-600 hover:bg-stone-100">
+          <i data-lucide="menu" class="w-5 h-5"></i>
+        </button>
+        <div>
+          <h2 class="font-serif text-xl sm:text-2xl font-bold text-slate-900">
+            Modul Pelengkap 4-in-1
+          </h2>
+          <span class="text-xs text-slate-500 hidden sm:inline">Seserahan, Seragam Keluarga, Panitia PIC, dan Rundown Hari-H</span>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2.5">
+        <!-- Tombol Cetak PDF Rundown -->
+        <button 
+          onclick="printRundown()"
+          class="px-3.5 py-2 rounded-xl border border-stone-300 bg-white hover:bg-stone-50 text-slate-700 text-xs font-semibold flex items-center gap-1.5 shadow-xs transition-all cursor-pointer"
+          title="Cetak format kertas A4"
+        >
+          <i data-lucide="printer" class="w-4 h-4 text-amber-600"></i>
+          <span class="hidden sm:inline">Cetak / Simpan PDF</span>
+          <span class="sm:hidden">Cetak</span>
+        </button>
+
+        <!-- Tombol Tambah Item -->
+        <button 
+          id="btn-add-item"
+          class="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold flex items-center gap-1.5 shadow-sm transition-all cursor-pointer"
+        >
+          <i data-lucide="plus-circle" class="w-4 h-4 text-amber-400"></i>
+          <span id="btn-add-item-label">Tambah Item</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 p-4 sm:p-8 space-y-6 max-w-7xl mx-auto w-full">
+
+      <!-- Print Cover Header (Hanya muncul saat cetak PDF) -->
+      <div class="print-only mb-6 pb-4 border-b-2 border-slate-900 text-center">
+        <h1 class="font-serif text-2xl font-bold uppercase tracking-wider" id="print-wedding-title">
+          RUNDOWN ACARA & STRUKTUR PANITIA PERNIKAHAN
+        </h1>
+        <p class="text-xs text-slate-600 mt-1" id="print-wedding-subtitle">
+          Dokumen Panduan Hari-H Mempelai
+        </p>
+      </div>
+
+      <!-- Navigation 4 Tabs -->
+      <div id="tab-nav-bar" class="flex flex-wrap items-center gap-2 p-1.5 rounded-2xl bg-stone-100 border border-stone-200/80">
+        
+        <!-- Tab 1: Seserahan -->
+        <button class="module-tab flex-1 sm:flex-none px-4 py-2.5 rounded-xl text-xs font-bold transition-all bg-white text-slate-900 shadow-sm flex items-center justify-center gap-2" data-module="seserahan">
+          <i data-lucide="gift" class="w-4 h-4 text-amber-600"></i>
+          <span>Seserahan & Mahar (<span id="count-seserahan">0</span>)</span>
+        </button>
+
+        <!-- Tab 2: Seragam & Bridesmaid -->
+        <button class="module-tab flex-1 sm:flex-none px-4 py-2.5 rounded-xl text-xs font-semibold text-slate-600 hover:text-slate-900 transition-all flex items-center justify-center gap-2" data-module="seragam">
+          <i data-lucide="shirt" class="w-4 h-4 text-purple-600"></i>
+          <span>Seragam & Bridesmaid (<span id="count-seragam">0</span>)</span>
+        </button>
+
+        <!-- Tab 3: Panitia Keluarga -->
+        <button class="module-tab flex-1 sm:flex-none px-4 py-2.5 rounded-xl text-xs font-semibold text-slate-600 hover:text-slate-900 transition-all flex items-center justify-center gap-2" data-module="panitia">
+          <i data-lucide="user-check" class="w-4 h-4 text-sky-600"></i>
+          <span>Panitia & PIC (<span id="count-panitia">0</span>)</span>
+        </button>
+
+        <!-- Tab 4: Generator Rundown -->
+        <button class="module-tab flex-1 sm:flex-none px-4 py-2.5 rounded-xl text-xs font-semibold text-slate-600 hover:text-slate-900 transition-all flex items-center justify-center gap-2" data-module="rundown">
+          <i data-lucide="clock" class="w-4 h-4 text-emerald-600"></i>
+          <span>Rundown Hari-H (<span id="count-rundown">0</span>)</span>
+        </button>
+
+      </div>
+
+      <!-- Metric Highlight Card Sesuai Tab Aktif -->
+      <div id="module-highlight-banner" class="p-5 rounded-3xl bg-white border border-stone-200/80 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div>
+          <h3 class="font-serif text-lg font-bold text-slate-900" id="banner-title">
+            Tracker Seserahan & Mahar
+          </h3>
+          <p class="text-xs text-slate-500 mt-0.5" id="banner-desc">
+            Daftar kotak hantaran seserahan mempelai, estimasi biaya, dan status vendor hias.
+          </p>
+        </div>
+        <div class="px-4 py-2 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900 text-xs font-bold" id="banner-stat-badge">
+          Total Biaya: Rp 0
+        </div>
+      </div>
+
+      <!-- Data Items Container -->
+      <div id="items-content-container" class="space-y-3">
+        <div class="py-16 text-center text-slate-400 text-xs">
+          <i data-lucide="loader-2" class="w-8 h-8 animate-spin mx-auto mb-2 text-amber-600"></i>
+          <span>Memuat data modul pelengkap...</span>
+        </div>
+      </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="py-6 px-8 border-t border-stone-200/70 text-center text-xs text-slate-400 bg-white/40">
+      PlatformNikah © 2026. All-in-One Wedding Ecosystem.
+    </footer>
+
+  </div>
+
+  <!-- Dynamic Modal for Items (Seserahan, Seragam, Panitia, Rundown) -->
+  <div id="item-modal" class="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 border border-stone-200 shadow-2xl relative animate-in fade-in zoom-in-95 duration-200">
+      
+      <button id="btn-close-modal" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+
+      <div class="flex items-center gap-3 mb-5">
+        <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center" id="modal-icon-container">
+          <i data-lucide="plus" class="w-5 h-5"></i>
+        </div>
+        <div>
+          <h3 class="font-serif text-xl font-bold text-slate-900" id="modal-heading">Tambah Item</h3>
+          <p class="text-xs text-slate-500" id="modal-subheading">Masukkan data detail</p>
+        </div>
+      </div>
+
+      <form id="item-form" class="space-y-4">
+        <input type="hidden" id="form-item-id">
+        <input type="hidden" id="form-module-type" value="seserahan">
+
+        <!-- Title Input (Label berubah dinamis) -->
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1" id="label-title">Nama Barang / Judul *</label>
+          <input 
+            type="text" 
+            id="form-title" 
+            required 
+            placeholder="..."
+            class="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:ring-2 focus:ring-amber-500/40"
+          >
+        </div>
+
+        <!-- Subtitle Input (Label berubah dinamis) -->
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1" id="label-subtitle">Kategori / Keterangan</label>
+          <input 
+            type="text" 
+            id="form-subtitle" 
+            placeholder="..."
+            class="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:ring-2 focus:ring-amber-500/40"
+          >
+        </div>
+
+        <!-- Biaya & Status Container (Seserahan & Seragam) -->
+        <div id="cost-status-container" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1" id="label-cost">Harga / Biaya (Rp)</label>
+            <input 
+              type="number" 
+              id="form-cost" 
+              min="0"
+              placeholder="0"
+              class="w-full px-3 py-2 rounded-xl border border-stone-200 font-mono text-xs focus:ring-2 focus:ring-amber-500/40"
+            >
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1" id="label-status">Status Item</label>
+            <select id="form-status" class="w-full px-3 py-2 rounded-xl border border-stone-200 text-xs focus:ring-2 focus:ring-amber-500/40">
+              <!-- Options populated dynamically -->
+            </select>
+          </div>
+        </div>
+
+        <!-- Meta Input: Shop URL (Seserahan) -->
+        <div id="field-shop-url">
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Link Toko Online / Bukti Pembelian</label>
+          <input 
+            type="url" 
+            id="form-shop-url" 
+            placeholder="https://shopee.co.id/..."
+            class="w-full px-3.5 py-2 rounded-xl border border-stone-200 text-xs focus:ring-2 focus:ring-amber-500/40"
+          >
+        </div>
+
+        <!-- Meta Input: Phone & Notes (Panitia & Rundown) -->
+        <div id="field-meta-contacts" class="grid grid-cols-1 sm:grid-cols-2 gap-4 hidden">
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1" id="label-meta-phone">Nomor WhatsApp PIC</label>
+            <input 
+              type="text" 
+              id="form-meta-phone" 
+              placeholder="08123456789"
+              class="w-full px-3 py-2 rounded-xl border border-stone-200 text-xs focus:ring-2 focus:ring-amber-500/40"
+            >
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1" id="label-meta-location">Lokasi / Area</label>
+            <input 
+              type="text" 
+              id="form-meta-location" 
+              placeholder="Misal: Meja Penerima Tamu / Ballroom"
+              class="w-full px-3 py-2 rounded-xl border border-stone-200 text-xs focus:ring-2 focus:ring-amber-500/40"
+            >
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Catatan Tambahan</label>
+          <textarea 
+            id="form-meta-notes" 
+            rows="2" 
+            placeholder="Keterangan warna, instruksi khusus, atau catatan penting..."
+            class="w-full px-3 py-2 rounded-xl border border-stone-200 text-xs focus:ring-2 focus:ring-amber-500/40"
+          ></textarea>
+        </div>
+
+        <div class="pt-4 border-t border-stone-100 flex items-center justify-end gap-2">
+          <button 
+            type="button" 
+            id="btn-cancel-modal"
+            class="px-4 py-2 rounded-xl border border-stone-200 text-xs font-semibold text-slate-600 hover:bg-stone-50"
+          >
+            Batal
+          </button>
+          <button 
+            type="submit" 
+            id="btn-save-item"
+            class="px-5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold flex items-center gap-1.5"
+          >
+            <i data-lucide="check" class="w-4 h-4 text-amber-400"></i>
+            <span id="btn-save-text">Simpan</span>
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="/assets/js/config.js"></script>
+  <script>
+    lucide.createIcons();
+
+    // 1. Auth Guard
+    const currentUser = requireAuth();
+    if (!currentUser) { /* Redirect di-handle oleh requireAuth */ }
+
+    // Sidebar drawer mobile
+    const sidebar = document.getElementById('sidebar');
+    const backdrop = document.getElementById('sidebar-backdrop');
+    document.getElementById('btn-open-sidebar')?.addEventListener('click', () => {
+      sidebar.classList.remove('-translate-x-full');
+      backdrop.classList.remove('hidden');
+    });
+    document.getElementById('btn-close-sidebar')?.addEventListener('click', () => {
+      sidebar.classList.add('-translate-x-full');
+      backdrop.classList.add('hidden');
+    });
+    backdrop?.addEventListener('click', () => {
+      sidebar.classList.add('-translate-x-full');
+      backdrop.classList.add('hidden');
+    });
+
+    // 2. State
+    let currentModule = 'seserahan';
+    let allItems = [];
+
+    async function initPage() {
+      // Couple info on sidebar
+      const groom = currentUser.groom_name || 'Pria';
+      const bride = currentUser.bride_name || 'Wanita';
+      document.getElementById('sidebar-couple-name').textContent = `${groom} & ${bride}`;
+      document.getElementById('couple-initials').textContent = `${groom.charAt(0)}&${bride.charAt(0)}`;
+
+      const countdown = getDaysUntil(currentUser.wedding_date);
+      document.getElementById('sidebar-countdown-pill').textContent = countdown.text;
+
+      // Print headers
+      document.getElementById('print-wedding-title').textContent = `RUNDOWN ACARA & STRUKTUR PANITIA: ${groom.toUpperCase()} & ${bride.toUpperCase()}`;
+      document.getElementById('print-wedding-subtitle').textContent = `Akad & Resepsi Pernikahan: ${formatDateIndo(currentUser.wedding_date)}`;
+
+      await loadItems();
+    }
+
+    // 3. Load Items dari Supabase
+    async function loadItems() {
+      const container = document.getElementById('items-content-container');
+      try {
+        const client = window.supabaseClient;
+        const { data, error } = await client
+          .from('planner_items')
+          .select('*')
+          .eq('user_id', currentUser.id)
+          .order('sort_order', { ascending: true });
+
+        if (error) {
+          checkRlsError(error);
+          throw error;
+        }
+
+        allItems = data || [];
+        updateTabCounts();
+        renderCurrentModuleView();
+
+      } catch (err) {
+        console.error('Error load planner_items:', err);
+        container.innerHTML = `
+          <div class="p-8 text-center text-rose-500 text-xs">
+            <i data-lucide="alert-circle" class="w-8 h-8 mx-auto mb-2"></i>
+            <span>Error: ${err.message}</span>
+          </div>
+        `;
+        lucide.createIcons();
+      }
+    }
+
+    // 4. Update Badge Counts
+    function updateTabCounts() {
+      const seserahan = allItems.filter(i => i.module_type === 'seserahan').length;
+      const seragam = allItems.filter(i => i.module_type === 'seragam').length;
+      const panitia = allItems.filter(i => i.module_type === 'panitia').length;
+      const rundown = allItems.filter(i => i.module_type === 'rundown').length;
+
+      document.getElementById('count-seserahan').textContent = seserahan;
+      document.getElementById('count-seragam').textContent = seragam;
+      document.getElementById('count-panitia').textContent = panitia;
+      document.getElementById('count-rundown').textContent = rundown;
+    }
+
+    // 5. Render Current Module View
+    function renderCurrentModuleView() {
+      const container = document.getElementById('items-content-container');
+      const filtered = allItems.filter(i => (i.module_type || 'seserahan') === currentModule);
+
+      // Update banner text
+      const bannerConfigs = {
+        seserahan: {
+          title: 'Tracker Seserahan & Mahar',
+          desc: 'Daftar kotak hantaran seserahan mempelai, mahar pernikahan, dan status vendor hias.',
+          addBtn: 'Tambah Seserahan / Mahar',
+          stat: () => {
+            const sum = filtered.reduce((acc, cur) => acc + (Number(cur.amount_or_cost) || 0), 0);
+            return `Total Biaya: ${formatRupiah(sum)}`;
+          }
+        },
+        seragam: {
+          title: 'Daftar Seragam Keluarga & Bridesmaid',
+          desc: 'Pembagian jatah bahan kain / baju seragam untuk keluarga inti, besan, dan bridesmaid.',
+          addBtn: 'Tambah Penerima Seragam',
+          stat: () => {
+            const given = filtered.filter(i => i.status_label === 'Sudah Diberikan').length;
+            return `${given} dari ${filtered.length} Seragam Telah Diberikan`;
+          }
+        },
+        panitia: {
+          title: 'Panitia Keluarga & Koordinator PIC Hari-H',
+          desc: 'Penanggung jawab pos penting: buku tamu, konsumsi, angpao, sound system, & penghulu.',
+          addBtn: 'Tambah Panitia PIC',
+          stat: () => `${filtered.length} Anggota Panitia Siap Siaga`
+        },
+        rundown: {
+          title: 'Generator Rundown Acara Hari-H',
+          desc: 'Jadwal susunan acara menit demi menit lengkap dengan penanggung jawab dan lokasi.',
+          addBtn: 'Tambah Sesi Rundown',
+          stat: () => `${filtered.length} Sesi Acara Tersusun`
+        }
+      };
+
+      const config = bannerConfigs[currentModule];
+      document.getElementById('banner-title').textContent = config.title;
+      document.getElementById('banner-desc').textContent = config.desc;
+      document.getElementById('btn-add-item-label').textContent = config.addBtn;
+      document.getElementById('banner-stat-badge').textContent = config.stat();
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="p-12 text-center text-slate-400 bg-white rounded-3xl border border-stone-200">
+            <i data-lucide="package-open" class="w-8 h-8 mx-auto mb-2 opacity-40"></i>
+            <span class="text-xs">Belum ada item untuk modul ini. Klik "${config.addBtn}" untuk mulai menambahkan!</span>
+          </div>
+        `;
+        lucide.createIcons();
+        return;
+      }
+
+      // Render sesuai jenis modul
+      if (currentModule === 'seserahan') {
+        renderSeserahanList(filtered, container);
+      } else if (currentModule === 'seragam') {
+        renderSeragamList(filtered, container);
+      } else if (currentModule === 'panitia') {
+        renderPanitiaList(filtered, container);
+      } else if (currentModule === 'rundown') {
+        renderRundownList(filtered, container);
+      }
+
+      lucide.createIcons();
+    }
+
+    // Render Tab 1: Seserahan
+    function renderSeserahanList(items, container) {
+      container.innerHTML = `
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          ${items.map(item => {
+            const cost = Number(item.amount_or_cost) || 0;
+            const meta = item.meta_json || {};
+            const status = item.status_label || 'Belum Beli';
+            
+            const statusClasses = {
+              'Belum Beli': 'bg-rose-50 text-rose-800 border-rose-200',
+              'Sudah Beli': 'bg-amber-50 text-amber-800 border-amber-200',
+              'Sudah di Vendor Hias': 'bg-emerald-50 text-emerald-800 border-emerald-200'
+            };
+
+            return `
+              <div class="bg-white p-5 rounded-3xl border border-stone-200/90 shadow-xs flex flex-col justify-between hover:shadow-md transition-shadow">
+                <div>
+                  <div class="flex items-start justify-between gap-2">
+                    <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold border ${statusClasses[status] || 'bg-stone-100 text-slate-700'}">
+                      ${status}
+                    </span>
+                    <span class="text-[11px] font-bold text-amber-700">${item.subtitle || 'Seserahan'}</span>
+                  </div>
+                  <h4 class="font-serif text-lg font-bold text-slate-900 mt-2">${item.title}</h4>
+                  <div class="text-base font-black text-slate-900 font-mono mt-1">${formatRupiah(cost)}</div>
+                  ${meta.notes ? `<p class="text-xs text-slate-500 mt-2 italic">${meta.notes}</p>` : ''}
+                </div>
+
+                <div class="mt-4 pt-3 border-t border-stone-100 flex items-center justify-between">
+                  ${meta.shop_url ? `
+                    <a href="${meta.shop_url}" target="_blank" class="text-[11px] font-bold text-amber-700 hover:underline flex items-center gap-1">
+                      <i data-lucide="shopping-bag" class="w-3.5 h-3.5"></i> Lihat Toko
+                    </a>
+                  ` : '<span class="text-[11px] text-slate-300">-</span>'}
+
+                  <div class="flex items-center gap-1">
+                    <button onclick="editItem('${item.id}')" class="p-1 rounded text-slate-400 hover:text-amber-700">
+                      <i data-lucide="edit-3" class="w-4 h-4"></i>
+                    </button>
+                    <button onclick="deleteItem('${item.id}', '${item.title}')" class="p-1 rounded text-slate-400 hover:text-rose-600">
+                      <i data-lucide="trash-2" class="w-4 h-4"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      `;
+    }
+
+    // Render Tab 2: Seragam
+    function renderSeragamList(items, container) {
+      container.innerHTML = `
+        <div class="bg-white rounded-3xl border border-stone-200 overflow-hidden shadow-xs">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+              <thead class="bg-stone-50 text-slate-500 font-semibold border-b border-stone-200 uppercase tracking-wider">
+                <tr>
+                  <th class="py-3.5 px-4">Nama Penerima</th>
+                  <th class="py-3.5 px-4">Kelompok & Ukuran Baju</th>
+                  <th class="py-3.5 px-4 text-right">Biaya / Harga</th>
+                  <th class="py-3.5 px-4">Status Penyerahan</th>
+                  <th class="py-3.5 px-4">Catatan</th>
+                  <th class="py-3.5 px-4 text-right">Aksi</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-stone-100 font-medium">
+                ${items.map(item => {
+                  const isGiven = item.status_label === 'Sudah Diberikan';
+                  const meta = item.meta_json || {};
+                  return `
+                    <tr class="hover:bg-stone-50/70 transition-colors">
+                      <td class="py-3.5 px-4 font-bold text-slate-900">${item.title}</td>
+                      <td class="py-3.5 px-4">
+                        <span class="px-2.5 py-1 rounded-lg bg-purple-50 text-purple-900 text-[11px] font-semibold border border-purple-200">
+                          ${item.subtitle || 'Keluarga'}
+                        </span>
+                      </td>
+                      <td class="py-3.5 px-4 text-right font-mono font-bold text-slate-800">
+                        ${formatRupiah(item.amount_or_cost || 0)}
+                      </td>
+                      <td class="py-3.5 px-4">
+                        <button 
+                          onclick="toggleSeragamStatus('${item.id}', '${item.status_label}')"
+                          class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold border transition-colors cursor-pointer ${isGiven ? 'bg-emerald-100 text-emerald-800 border-emerald-200' : 'bg-rose-100 text-rose-800 border-rose-200'}"
+                          title="Klik untuk ubah status"
+                        >
+                          <i data-lucide="${isGiven ? 'check-circle' : 'circle'}" class="w-3.5 h-3.5"></i>
+                          <span>${item.status_label || 'Belum Diberikan'}</span>
+                        </button>
+                      </td>
+                      <td class="py-3.5 px-4 text-slate-500">${meta.notes || '-'}</td>
+                      <td class="py-3.5 px-4 text-right">
+                        <div class="inline-flex items-center gap-1">
+                          <button onclick="editItem('${item.id}')" class="p-1 text-slate-400 hover:text-amber-700">
+                            <i data-lucide="edit-3" class="w-4 h-4"></i>
+                          </button>
+                          <button onclick="deleteItem('${item.id}', '${item.title}')" class="p-1 text-slate-400 hover:text-rose-600">
+                            <i data-lucide="trash-2" class="w-4 h-4"></i>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  `;
+                }).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `;
+    }
+
+    // Render Tab 3: Panitia
+    function renderPanitiaList(items, container) {
+      container.innerHTML = `
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          ${items.map(item => {
+            const meta = item.meta_json || {};
+            const cleanPhone = meta.phone ? meta.phone.replace(/[^0-9]/g, '') : '';
+            return `
+              <div class="bg-white p-5 rounded-3xl border border-stone-200/90 shadow-xs flex flex-col justify-between hover:shadow-md transition-shadow card-print">
+                <div>
+                  <div class="flex items-center justify-between">
+                    <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-sky-50 text-sky-800 border border-sky-200">
+                      PIC Panitia
+                    </span>
+                    ${meta.location ? `<span class="text-[11px] text-slate-400 font-semibold">${meta.location}</span>` : ''}
+                  </div>
+                  <h4 class="font-serif text-xl font-bold text-slate-900 mt-2">${item.title}</h4>
+                  <div class="text-xs font-bold text-amber-800 mt-0.5">${item.subtitle || 'Koordinator'}</div>
+                  ${meta.notes ? `<p class="text-xs text-slate-600 mt-2 leading-relaxed bg-stone-50 p-2.5 rounded-xl border border-stone-100">${meta.notes}</p>` : ''}
+                </div>
+
+                <div class="mt-4 pt-3 border-t border-stone-100 flex items-center justify-between">
+                  ${cleanPhone ? `
+                    <a href="https://api.whatsapp.com/send?phone=${cleanPhone}&text=Halo%20${encodeURIComponent(item.title)},%20terima%20kasih%20telah%20menjadi%20panitia%20pernikahan%20kami." target="_blank" class="px-3 py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-800 text-[11px] font-bold flex items-center gap-1.5 transition-colors no-print">
+                      <i data-lucide="message-circle" class="w-3.5 h-3.5 text-emerald-600"></i>
+                      <span>WA: ${meta.phone}</span>
+                    </a>
+                    <span class="print-only text-xs font-mono">WA: ${meta.phone}</span>
+                  ` : '<span class="text-[11px] text-slate-300">-</span>'}
+
+                  <div class="flex items-center gap-1 no-print">
+                    <button onclick="editItem('${item.id}')" class="p-1 rounded text-slate-400 hover:text-amber-700">
+                      <i data-lucide="edit-3" class="w-4 h-4"></i>
+                    </button>
+                    <button onclick="deleteItem('${item.id}', '${item.title}')" class="p-1 rounded text-slate-400 hover:text-rose-600">
+                      <i data-lucide="trash-2" class="w-4 h-4"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      `;
+    }
+
+    // Render Tab 4: Rundown
+    function renderRundownList(items, container) {
+      container.innerHTML = `
+        <div class="bg-white rounded-3xl border border-stone-200 overflow-hidden shadow-xs card-print">
+          <div class="p-4 bg-amber-500/10 border-b border-amber-200 flex items-center justify-between">
+            <span class="font-bold text-xs uppercase tracking-wider text-amber-900">Susunan Jadwal Acara Hari-H (Menit demi Menit)</span>
+            <span class="text-xs text-amber-800 font-semibold no-print">Siap dicetak tombol "Cetak PDF"</span>
+          </div>
+
+          <div class="divide-y divide-stone-100">
+            ${items.map((item, idx) => {
+              const meta = item.meta_json || {};
+              return `
+                <div class="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-stone-50/60 transition-colors">
+                  <div class="flex items-start gap-4">
+                    <div class="px-3 py-1.5 rounded-xl bg-slate-900 text-white font-mono text-xs font-bold whitespace-nowrap shadow-xs">
+                      ${item.subtitle || 'Waktu Sesi'}
+                    </div>
+                    <div>
+                      <h4 class="text-sm font-bold text-slate-900">${item.title}</h4>
+                      <div class="flex flex-wrap items-center gap-3 text-xs text-slate-500 mt-1">
+                        ${meta.location ? `<span class="flex items-center gap-1"><i data-lucide="map-pin" class="w-3.5 h-3.5 text-amber-600"></i> ${meta.location}</span>` : ''}
+                        ${meta.pic ? `<span class="flex items-center gap-1"><i data-lucide="user" class="w-3.5 h-3.5 text-sky-600"></i> PIC: <b>${meta.pic}</b></span>` : ''}
+                      </div>
+                      ${meta.notes ? `<p class="text-xs text-slate-400 mt-1.5 italic">${meta.notes}</p>` : ''}
+                    </div>
+                  </div>
+
+                  <div class="flex items-center gap-1 self-end sm:self-center no-print">
+                    <button onclick="editItem('${item.id}')" class="p-1.5 text-slate-400 hover:text-amber-700">
+                      <i data-lucide="edit-3" class="w-4 h-4"></i>
+                    </button>
+                    <button onclick="deleteItem('${item.id}', '${item.title}')" class="p-1.5 text-slate-400 hover:text-rose-600">
+                      <i data-lucide="trash-2" class="w-4 h-4"></i>
+                    </button>
+                  </div>
+                </div>
+              `;
+            }).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    // 6. Switch Tabs
+    document.querySelectorAll('.module-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.module-tab').forEach(t => {
+          t.className = 'module-tab flex-1 sm:flex-none px-4 py-2.5 rounded-xl text-xs font-semibold text-slate-600 hover:text-slate-900 transition-all flex items-center justify-center gap-2';
+        });
+        tab.className = 'module-tab flex-1 sm:flex-none px-4 py-2.5 rounded-xl text-xs font-bold transition-all bg-white text-slate-900 shadow-sm flex items-center justify-center gap-2';
+        currentModule = tab.getAttribute('data-module');
+        renderCurrentModuleView();
+      });
+    });
+
+    // 7. Toggle Seragam Status
+    window.toggleSeragamStatus = async function(id, currentStatus) {
+      const newStatus = currentStatus === 'Sudah Diberikan' ? 'Belum Diberikan' : 'Sudah Diberikan';
+      try {
+        const client = window.supabaseClient;
+        const { error } = await client
+          .from('planner_items')
+          .update({ status_label: newStatus })
+          .eq('id', id);
+
+        if (error) {
+          checkRlsError(error);
+          throw error;
+        }
+
+        const item = allItems.find(i => i.id === id);
+        if (item) item.status_label = newStatus;
+
+        renderCurrentModuleView();
+        updateTabCounts();
+        showToast(`Status seragam diubah: "${newStatus}"`, 'info', 1800);
+
+      } catch (err) {
+        console.error('Error update status seragam:', err);
+        showToast('Gagal mengubah status: ' + err.message, 'error');
+      }
+    };
+
+    // 8. Cetak / Simpan PDF Rundown
+    window.printRundown = function() {
+      // Pastikan tab rundown aktif atau jika di tab lain beri konfirmasi
+      if (currentModule !== 'rundown' && currentModule !== 'panitia') {
+        if (confirm('Buka tab Rundown Hari-H untuk dicetak?')) {
+          const tabRundown = document.querySelector('[data-module="rundown"]');
+          tabRundown.click();
+        }
+      }
+      setTimeout(() => {
+        window.print();
+      }, 300);
+    };
+
+    // 9. Modal Management
+    const modal = document.getElementById('item-modal');
+    const form = document.getElementById('item-form');
+    const addBtn = document.getElementById('btn-add-item');
+    const closeModalBtn = document.getElementById('btn-close-modal');
+    const cancelModalBtn = document.getElementById('btn-cancel-modal');
+
+    function openModalForCurrentModule(itemToEdit = null) {
+      form.reset();
+      document.getElementById('form-item-id').value = itemToEdit ? itemToEdit.id : '';
+      document.getElementById('form-module-type').value = currentModule;
+
+      const titleInput = document.getElementById('form-title');
+      const subtitleInput = document.getElementById('form-subtitle');
+      const labelTitle = document.getElementById('label-title');
+      const labelSubtitle = document.getElementById('label-subtitle');
+      const costStatusCont = document.getElementById('cost-status-container');
+      const shopField = document.getElementById('field-shop-url');
+      const metaContacts = document.getElementById('field-meta-contacts');
+      const statusSelect = document.getElementById('form-status');
+
+      // Setup dynamic form fields according to module
+      if (currentModule === 'seserahan') {
+        document.getElementById('modal-heading').textContent = itemToEdit ? 'Edit Seserahan / Mahar' : 'Tambah Seserahan / Mahar';
+        labelTitle.textContent = 'Nama Barang / Hantaran *';
+        titleInput.placeholder = 'Misal: Set Perhiasan Emas / Perlengkapan Sholat';
+        labelSubtitle.textContent = 'Kategori Kotak Hantaran';
+        subtitleInput.placeholder = 'Kotak 1 / Mahar Utama / Skincare';
+        
+        costStatusCont.classList.remove('hidden');
+        shopField.classList.remove('hidden');
+        metaContacts.classList.add('hidden');
+
+        statusSelect.innerHTML = `
+          <option value="Belum Beli">Belum Beli</option>
+          <option value="Sudah Beli">Sudah Beli</option>
+          <option value="Sudah di Vendor Hias">Sudah di Vendor Hias</option>
+        `;
+
+      } else if (currentModule === 'seragam') {
+        document.getElementById('modal-heading').textContent = itemToEdit ? 'Edit Seragam Penerima' : 'Tambah Seragam Penerima';
+        labelTitle.textContent = 'Nama Penerima Seragam *';
+        titleInput.placeholder = 'Misal: Tante Dewi / Bridesmaid Amanda';
+        labelSubtitle.textContent = 'Kelompok & Ukuran Baju';
+        subtitleInput.placeholder = 'Keluarga Inti - Size M / Bridesmaid Kain';
+        
+        costStatusCont.classList.remove('hidden');
+        shopField.classList.add('hidden');
+        metaContacts.classList.add('hidden');
+
+        statusSelect.innerHTML = `
+          <option value="Belum Diberikan">Belum Diberikan</option>
+          <option value="Sudah Diberikan">Sudah Diberikan</option>
+        `;
+
+      } else if (currentModule === 'panitia') {
+        document.getElementById('modal-heading').textContent = itemToEdit ? 'Edit Panitia PIC' : 'Tambah Panitia PIC';
+        labelTitle.textContent = 'Nama Lengkap PIC *';
+        titleInput.placeholder = 'Misal: Om Hendra / Sahabat Dimas';
+        labelSubtitle.textContent = 'Tugas / Jabatan PIC';
+        subtitleInput.placeholder = 'Koordinator Katering / Saksi Nikah / Angpao';
+
+        costStatusCont.classList.add('hidden');
+        shopField.classList.add('hidden');
+        metaContacts.classList.remove('hidden');
+        document.getElementById('label-meta-phone').textContent = 'Nomor WhatsApp PIC';
+        document.getElementById('label-meta-location').textContent = 'Pos / Area Tugas';
+
+      } else if (currentModule === 'rundown') {
+        document.getElementById('modal-heading').textContent = itemToEdit ? 'Edit Sesi Rundown' : 'Tambah Sesi Rundown Hari-H';
+        labelTitle.textContent = 'Nama Sesi Acara *';
+        titleInput.placeholder = 'Misal: Akad Nikah & Ijab Qabul';
+        labelSubtitle.textContent = 'Rentang Waktu (Jam)';
+        subtitleInput.placeholder = '08.00 - 09.30 WIB';
+
+        costStatusCont.classList.add('hidden');
+        shopField.classList.add('hidden');
+        metaContacts.classList.remove('hidden');
+        document.getElementById('label-meta-phone').textContent = 'Nama Koordinator PIC';
+        document.getElementById('label-meta-location').textContent = 'Lokasi Sesi Acara';
+      }
+
+      // Populate if edit
+      if (itemToEdit) {
+        titleInput.value = itemToEdit.title || '';
+        subtitleInput.value = itemToEdit.subtitle || '';
+        document.getElementById('form-cost').value = itemToEdit.amount_or_cost || '';
+        if (itemToEdit.status_label) statusSelect.value = itemToEdit.status_label;
+
+        const meta = itemToEdit.meta_json || {};
+        document.getElementById('form-shop-url').value = meta.shop_url || '';
+        document.getElementById('form-meta-phone').value = meta.phone || meta.pic || '';
+        document.getElementById('form-meta-location').value = meta.location || '';
+        document.getElementById('form-meta-notes').value = meta.notes || '';
+      }
+
+      modal.classList.remove('hidden');
+    }
+
+    addBtn.addEventListener('click', () => openModalForCurrentModule());
+    closeModalBtn.addEventListener('click', () => modal.classList.add('hidden'));
+    cancelModalBtn.addEventListener('click', () => modal.classList.add('hidden'));
+
+    // Edit Item Handler
+    window.editItem = function(id) {
+      const item = allItems.find(i => i.id === id);
+      if (item) {
+        currentModule = item.module_type || 'seserahan';
+        openModalForCurrentModule(item);
+      }
+    };
+
+    // Delete Item Handler
+    window.deleteItem = async function(id, title) {
+      if (!confirm(`Hapus "${title}"?`)) return;
+      try {
+        const client = window.supabaseClient;
+        const { error } = await client
+          .from('planner_items')
+          .delete()
+          .eq('id', id);
+
+        if (error) {
+          checkRlsError(error);
+          throw error;
+        }
+
+        showToast(`"${title}" berhasil dihapus`, 'info');
+        await loadItems();
+
+      } catch (err) {
+        console.error('Error delete item:', err);
+        showToast('Gagal menghapus: ' + err.message, 'error');
+      }
+    };
+
+    // Form Submit (Insert / Update)
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const itemId = document.getElementById('form-item-id').value;
+      const modType = document.getElementById('form-module-type').value;
+      const title = document.getElementById('form-title').value.trim();
+      const subtitle = document.getElementById('form-subtitle').value.trim();
+      const cost = parseInt(document.getElementById('form-cost').value) || 0;
+      const status = document.getElementById('form-status').value;
+      
+      const shopUrl = document.getElementById('form-shop-url').value.trim();
+      const phoneOrPic = document.getElementById('form-meta-phone').value.trim();
+      const location = document.getElementById('form-meta-location').value.trim();
+      const notes = document.getElementById('form-meta-notes').value.trim();
+
+      const meta = {
+        notes: notes
+      };
+
+      if (modType === 'seserahan') {
+        meta.shop_url = shopUrl;
+      } else if (modType === 'panitia') {
+        meta.phone = phoneOrPic;
+        meta.location = location;
+      } else if (modType === 'rundown') {
+        meta.pic = phoneOrPic;
+        meta.location = location;
+      }
+
+      const saveBtn = document.getElementById('btn-save-item');
+      saveBtn.disabled = true;
+
+      try {
+        const client = window.supabaseClient;
+        const payload = {
+          user_id: currentUser.id,
+          module_type: modType,
+          title: title,
+          subtitle: subtitle,
+          amount_or_cost: cost,
+          status_label: status,
+          meta_json: meta
+        };
+
+        if (itemId) {
+          // Update
+          const { error } = await client
+            .from('planner_items')
+            .update(payload)
+            .eq('id', itemId);
+
+          if (error) {
+            checkRlsError(error);
+            throw error;
+          }
+          showToast('Item berhasil diperbarui! ✨', 'success');
+        } else {
+          // Insert
+          payload.sort_order = allItems.length + 1;
+          const { error } = await client
+            .from('planner_items')
+            .insert([payload]);
+
+          if (error) {
+            checkRlsError(error);
+            throw error;
+          }
+          showToast('Item baru berhasil ditambahkan! 🎉', 'success');
+        }
+
+        modal.classList.add('hidden');
+        await loadItems();
+
+      } catch (err) {
+        console.error('Error save item:', err);
+        showToast('Gagal menyimpan: ' + err.message, 'error');
+      } finally {
+        saveBtn.disabled = false;
+      }
+    });
+
+    initPage();
+  </script>
+</body>
+</html>

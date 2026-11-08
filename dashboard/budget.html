@@ -1,0 +1,1167 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Budget & Kalkulator Katering | Platform Nikah</title>
+  <meta name="description" content="Manajemen anggaran pernikahan, vendor tracker, dan kalkulator porsi katering otomatis.">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#fffbf5',
+              100: '#f7eee1',
+              500: '#b48342',
+              600: '#996515',
+              gold: '#d4af37'
+            }
+          },
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+            serif: ['"Cormorant Garamond"', 'Georgia', 'serif']
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Supabase JS SDK v2 CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body class="bg-[#F8F7F4] text-slate-800 antialiased min-h-screen flex">
+
+  <!-- Mobile Sidebar Overlay Backdrop -->
+  <div id="sidebar-backdrop" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-40 hidden lg:hidden"></div>
+
+  <!-- Sidebar Navigasi Responsif -->
+  <aside id="sidebar" class="fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-stone-200/80 flex flex-col justify-between transform -translate-x-full lg:translate-x-0 transition-transform duration-200 ease-in-out">
+    
+    <div>
+      <!-- Brand Header -->
+      <div class="h-20 flex items-center justify-between px-6 border-b border-stone-200/60">
+        <a href="/" class="flex items-center space-x-2.5">
+          <div class="w-9 h-9 rounded-full gold-gradient-bg flex items-center justify-center text-white shadow-sm">
+            <i data-lucide="gem" class="w-4 h-4"></i>
+          </div>
+          <div>
+            <span class="font-serif text-xl font-bold tracking-tight text-slate-900 block leading-none">PlatformNikah</span>
+            <span class="text-[9px] uppercase tracking-widest text-amber-700 font-semibold">Wedding Planner</span>
+          </div>
+        </a>
+
+        <!-- Close button mobile -->
+        <button id="btn-close-sidebar" class="lg:hidden text-slate-400 hover:text-slate-600">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <!-- Pasangan Info Card Ringkas -->
+      <div class="p-4 mx-4 mt-4 rounded-2xl bg-amber-50/60 border border-amber-200/60">
+        <div class="flex items-center space-x-3">
+          <div class="w-10 h-10 rounded-full bg-amber-500/20 text-amber-900 font-serif font-bold text-base flex items-center justify-center" id="couple-initials">
+            💍
+          </div>
+          <div class="overflow-hidden">
+            <span class="text-xs font-bold text-slate-900 block truncate" id="sidebar-couple-name">Mempelai Pengantin</span>
+            <span class="text-[11px] text-amber-800 block truncate" id="sidebar-countdown-pill">Menghitung hari...</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Menu List -->
+      <nav class="px-4 py-4 space-y-1 text-xs font-semibold">
+        <!-- 1. Ringkasan -->
+        <a href="/dashboard/index.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 hover:bg-stone-100 hover:text-slate-900 transition-all group">
+          <i data-lucide="layout-dashboard" class="w-4 h-4 text-slate-400 group-hover:text-amber-600"></i>
+          <span>Ringkasan Dashboard</span>
+        </a>
+
+        <!-- 2. Smart Budget & Katering (Active) -->
+        <a href="/dashboard/budget.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl bg-slate-900 text-white shadow-sm transition-all">
+          <i data-lucide="pie-chart" class="w-4 h-4 text-amber-400"></i>
+          <span>Smart Budget & Katering</span>
+        </a>
+
+        <!-- 3. Checklist Timeline -->
+        <a href="/dashboard/checklist.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 hover:bg-stone-100 hover:text-slate-900 transition-all group">
+          <i data-lucide="check-square" class="w-4 h-4 text-slate-400 group-hover:text-amber-600"></i>
+          <span>Checklist Timeline (16)</span>
+        </a>
+
+        <!-- 4. Seserahan & Rundown -->
+        <a href="/dashboard/extras.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 hover:bg-stone-100 hover:text-slate-900 transition-all group">
+          <i data-lucide="gift" class="w-4 h-4 text-slate-400 group-hover:text-amber-600"></i>
+          <span>Seserahan & Rundown</span>
+        </a>
+
+        <!-- 5. Master Tamu & WA -->
+        <a href="#tamu" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 hover:bg-stone-100 hover:text-slate-900 transition-all group">
+          <i data-lucide="users" class="w-4 h-4 text-slate-400 group-hover:text-amber-600"></i>
+          <span>Master Tamu & WA RSVP</span>
+        </a>
+
+        <!-- 6. Undangan Digital -->
+        <a href="#undangan" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 hover:bg-stone-100 hover:text-slate-900 transition-all group">
+          <i data-lucide="mail-heart" class="w-4 h-4 text-slate-400 group-hover:text-amber-600"></i>
+          <span>Edit Undangan Digital</span>
+        </a>
+      </nav>
+    </div>
+
+    <!-- Bottom Action & Logout -->
+    <div class="p-4 border-t border-stone-200/60">
+      <button 
+        onclick="logout()" 
+        class="w-full flex items-center justify-center gap-2 py-2 px-3 rounded-xl border border-rose-200 bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-semibold transition-colors cursor-pointer"
+      >
+        <i data-lucide="log-out" class="w-4 h-4"></i>
+        <span>Keluar dari Akun</span>
+      </button>
+    </div>
+
+  </aside>
+
+  <!-- Main Content Wrapper -->
+  <div class="flex-1 lg:pl-64 flex flex-col min-h-screen">
+    
+    <!-- Topbar Header -->
+    <header class="h-20 bg-white/80 backdrop-blur-md border-b border-stone-200/70 sticky top-0 z-30 px-4 sm:px-8 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <button id="btn-open-sidebar" class="lg:hidden p-2 rounded-xl text-slate-600 hover:bg-stone-100">
+          <i data-lucide="menu" class="w-5 h-5"></i>
+        </button>
+        <div>
+          <h2 class="font-serif text-xl sm:text-2xl font-bold text-slate-900">
+            Smart Budget & Vendor Tracker
+          </h2>
+          <span class="text-xs text-slate-500 hidden sm:inline">Kelola pengeluaran vendor dan simulasi porsi katering prasmanan</span>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <button 
+          id="btn-open-add-modal"
+          class="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold flex items-center gap-2 shadow-sm transition-all cursor-pointer"
+        >
+          <i data-lucide="plus-circle" class="w-4 h-4 text-amber-400"></i>
+          <span>Tambah Pos Anggaran</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 p-4 sm:p-8 space-y-8 max-w-7xl mx-auto w-full">
+
+      <!-- Alert Jatuh Tempo Vendor (14 Hari Mendatang) -->
+      <div id="due-alert-container" class="hidden">
+        <!-- Rendered by JS -->
+      </div>
+
+      <!-- Top Metrics: 4 Kartu Ringkasan Anggaran -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        
+        <!-- Metric 1: Total Anggaran Awal -->
+        <div class="bg-white p-5 rounded-3xl border border-stone-200/80 shadow-sm flex flex-col justify-between">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Total Anggaran Awal</span>
+            <div class="w-9 h-9 rounded-xl bg-slate-100 text-slate-600 flex items-center justify-center">
+              <i data-lucide="target" class="w-4 h-4"></i>
+            </div>
+          </div>
+          <div class="mt-4">
+            <span class="text-2xl font-black text-slate-900 block font-mono" id="metric-estimated-total">Rp 0</span>
+            <span class="text-[11px] text-slate-400 mt-1 block">Rencana alokasi dana awal</span>
+          </div>
+        </div>
+
+        <!-- Metric 2: Total Kontrak Realisasi -->
+        <div class="bg-white p-5 rounded-3xl border border-stone-200/80 shadow-sm flex flex-col justify-between">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Total Kontrak Riil</span>
+            <div class="w-9 h-9 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center">
+              <i data-lucide="file-signature" class="w-4 h-4"></i>
+            </div>
+          </div>
+          <div class="mt-4">
+            <span class="text-2xl font-black text-slate-900 block font-mono" id="metric-actual-total">Rp 0</span>
+            <div class="mt-1 flex items-center gap-1.5" id="budget-status-badge">
+              <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800">
+                Sesuai Budget
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Metric 3: Total Sudah Dibayar -->
+        <div class="bg-white p-5 rounded-3xl border border-stone-200/80 shadow-sm flex flex-col justify-between">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Total Telah Dibayar</span>
+            <div class="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center">
+              <i data-lucide="check-circle" class="w-4 h-4"></i>
+            </div>
+          </div>
+          <div class="mt-4">
+            <span class="text-2xl font-black text-emerald-600 block font-mono" id="metric-paid-total">Rp 0</span>
+            <span class="text-[11px] text-slate-400 mt-1 block" id="metric-paid-pct">0% dari total kontrak</span>
+          </div>
+        </div>
+
+        <!-- Metric 4: Sisa Tagihan Belum Dibayar -->
+        <div class="bg-white p-5 rounded-3xl border border-stone-200/80 shadow-sm flex flex-col justify-between">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Sisa Tagihan Vendor</span>
+            <div class="w-9 h-9 rounded-xl bg-rose-50 text-rose-700 flex items-center justify-center">
+              <i data-lucide="alert-triangle" class="w-4 h-4"></i>
+            </div>
+          </div>
+          <div class="mt-4">
+            <span class="text-2xl font-black text-rose-600 block font-mono" id="metric-remaining-total">Rp 0</span>
+            <span class="text-[11px] text-slate-400 mt-1 block">Pelunasan sebelum hari H</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Panel Interaktif Kalkulator Porsi Katering (Buffet vs Gubukan) -->
+      <div class="bg-white rounded-3xl border border-amber-200/80 p-6 sm:p-8 shadow-sm relative overflow-hidden">
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6 pb-6 border-b border-stone-100">
+          <div class="flex items-start gap-4">
+            <div class="w-12 h-12 rounded-2xl gold-gradient-bg flex items-center justify-center text-white flex-shrink-0 shadow-md">
+              <i data-lucide="utensils" class="w-6 h-6"></i>
+            </div>
+            <div>
+              <div class="flex items-center gap-2">
+                <h3 class="font-serif text-2xl font-bold text-slate-900">Kalkulator Porsi Katering Cerdas</h3>
+                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-900 border border-amber-200">
+                  Formula Indonesia
+                </span>
+              </div>
+              <p class="text-xs text-slate-500 mt-1">
+                Kalkulasi otomatis rasio Buffet (Prasmanan Utama) vs Gubukan (Food Stall) dengan toleransi cadangan tamu 10%.
+              </p>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-3 bg-stone-50 p-3 rounded-2xl border border-stone-200/80">
+            <div>
+              <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Estimasi Tamu Dasar</span>
+              <div class="flex items-center gap-2 mt-0.5">
+                <input 
+                  type="number" 
+                  id="calc-input-pax" 
+                  value="300" 
+                  min="1" 
+                  class="w-24 px-2.5 py-1 text-sm font-bold font-mono text-slate-900 bg-white border border-stone-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500"
+                >
+                <span class="text-xs font-semibold text-slate-600">Pax</span>
+              </div>
+            </div>
+            <span class="text-xs text-slate-400 italic" id="calc-pax-source">(Manual Simulasi)</span>
+          </div>
+        </div>
+
+        <!-- Slider & Formula Output Cards -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 mt-6">
+          
+          <!-- Left: Slider Rasio Buffet -->
+          <div class="lg:col-span-5 space-y-4">
+            <div class="flex items-center justify-between">
+              <label for="catering-ratio-slider" class="text-xs font-bold text-slate-700 uppercase tracking-wider">
+                Rasio Prasmanan (Buffet)
+              </label>
+              <span class="text-base font-extrabold text-amber-800 font-mono" id="label-ratio-buffet">70%</span>
+            </div>
+
+            <input 
+              type="range" 
+              id="catering-ratio-slider" 
+              min="50" 
+              max="90" 
+              value="70" 
+              step="5"
+              class="w-full accent-amber-600 cursor-pointer h-2 bg-stone-200 rounded-lg"
+            >
+
+            <div class="flex items-center justify-between text-[11px] text-slate-400 font-medium">
+              <span>50% (Banyak Gubukan)</span>
+              <span>70% (Standar Ideal)</span>
+              <span>90% (Fokus Buffet)</span>
+            </div>
+
+            <!-- Catatan Rekomendasi Harga / Pax -->
+            <div class="p-4 rounded-2xl bg-amber-50/70 border border-amber-200/60 text-xs text-amber-900 space-y-1">
+              <span class="font-bold flex items-center gap-1">
+                <i data-lucide="badge-dollar-sign" class="w-4 h-4 text-amber-700"></i>
+                <span>Batas Rekomendasi Budget Katering:</span>
+              </span>
+              <p class="text-[11px] text-amber-800 leading-relaxed" id="catering-budget-recommendation">
+                Berdasarkan alokasi katering Anda, batas ideal belanja adalah <b>Rp 106.000 / porsi</b>.
+              </p>
+            </div>
+          </div>
+
+          <!-- Right: 3 Kotak Hasil Kalkulasi Porsi -->
+          <div class="lg:col-span-7 grid grid-cols-1 sm:grid-cols-3 gap-4">
+            
+            <!-- Box 1: Total Pax + 10% Cadangan -->
+            <div class="p-4 rounded-2xl bg-stone-50 border border-stone-200/80 flex flex-col justify-between">
+              <div>
+                <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Total Pax + Cadangan 10%</span>
+                <span class="text-3xl font-black text-slate-900 font-mono mt-2 block" id="calc-grand-total">330</span>
+                <span class="text-[11px] text-slate-500 mt-1 block">Tamu x 1.1 safety margin</span>
+              </div>
+              <span class="text-[10px] text-emerald-600 font-semibold mt-3 flex items-center gap-1">
+                <i data-lucide="shield-check" class="w-3.5 h-3.5"></i> Mencegah kekurangan makanan
+              </span>
+            </div>
+
+            <!-- Box 2: Porsi Buffet Utama -->
+            <div class="p-4 rounded-2xl bg-amber-50/70 border border-amber-200 flex flex-col justify-between">
+              <div>
+                <span class="text-[10px] font-bold uppercase tracking-wider text-amber-800 block" id="card-buffet-header">Porsi Buffet (70%)</span>
+                <span class="text-3xl font-black text-amber-900 font-mono mt-2 block" id="calc-buffet-portions">231</span>
+                <span class="text-[11px] text-amber-800/80 mt-1 block">Piring makanan utama nasi & lauk</span>
+              </div>
+              <span class="text-[10px] text-amber-800 font-semibold mt-3 flex items-center gap-1">
+                <i data-lucide="utensils" class="w-3.5 h-3.5"></i> Porsi Prasmanan
+              </span>
+            </div>
+
+            <!-- Box 3: Total Porsi Gubukan (Stall) -->
+            <div class="p-4 rounded-2xl bg-stone-900 text-white flex flex-col justify-between shadow-sm">
+              <div>
+                <span class="text-[10px] font-bold uppercase tracking-wider text-amber-400 block" id="card-stall-header">Porsi Gubukan / Stall (30%)</span>
+                <span class="text-3xl font-black text-white font-mono mt-2 block" id="calc-stall-portions">347</span>
+                <span class="text-[11px] text-stone-300 mt-1 block">Porsi gubukan (faktor x 3.5)</span>
+              </div>
+              <span class="text-[10px] text-amber-400 font-semibold mt-3 flex items-center gap-1">
+                <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Misal: 4-5 macam pondokan
+              </span>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Tabel & Filter Manajemen Budget & Vendor -->
+      <div class="bg-white rounded-3xl border border-stone-200/80 shadow-sm overflow-hidden">
+        
+        <!-- Filter Header Bar -->
+        <div class="p-5 border-b border-stone-200/80 flex flex-col lg:flex-row items-center justify-between gap-4">
+          
+          <div class="flex flex-wrap items-center gap-2.5 w-full lg:w-auto">
+            <!-- Filter Kategori -->
+            <select id="filter-category" class="px-3 py-2 rounded-xl border border-stone-200 text-xs font-semibold text-slate-700 bg-stone-50 focus:outline-none focus:ring-2 focus:ring-amber-500/40">
+              <option value="all">Semua Kategori (7 Pos)</option>
+              <option value="Katering">Katering</option>
+              <option value="Venue">Venue</option>
+              <option value="Dekorasi">Dekorasi</option>
+              <option value="MUA & Busana">MUA & Busana</option>
+              <option value="Dokumentasi">Dokumentasi</option>
+              <option value="Seserahan & KUA">Seserahan & KUA</option>
+              <option value="Dana Darurat">Dana Darurat</option>
+            </select>
+
+            <!-- Filter Status Pembayaran -->
+            <select id="filter-payment" class="px-3 py-2 rounded-xl border border-stone-200 text-xs font-semibold text-slate-700 bg-stone-50 focus:outline-none focus:ring-2 focus:ring-amber-500/40">
+              <option value="all">Semua Status Bayar</option>
+              <option value="unpaid">Belum Bayar (Unpaid)</option>
+              <option value="dp_1">DP 1</option>
+              <option value="termin">Termin / Cicilan</option>
+              <option value="paid">Lunas (Paid)</option>
+            </select>
+
+            <!-- Filter Sumber Dana -->
+            <select id="filter-funding" class="px-3 py-2 rounded-xl border border-stone-200 text-xs font-semibold text-slate-700 bg-stone-50 focus:outline-none focus:ring-2 focus:ring-amber-500/40">
+              <option value="all">Semua Sumber Dana</option>
+              <option value="Bersama">Dana Bersama</option>
+              <option value="Keluarga Pria">Keluarga Pria</option>
+              <option value="Keluarga Wanita">Keluarga Wanita</option>
+            </select>
+          </div>
+
+          <!-- Search Bar -->
+          <div class="relative w-full lg:w-72">
+            <input 
+              type="text" 
+              id="search-budget" 
+              placeholder="Cari item pengeluaran / vendor..." 
+              class="w-full pl-9 pr-4 py-2 rounded-xl border border-stone-200 text-xs focus:outline-none focus:ring-2 focus:ring-amber-500/40"
+            >
+            <div class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
+              <i data-lucide="search" class="w-4 h-4"></i>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Table List -->
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs">
+            <thead class="bg-stone-50/80 text-slate-500 font-semibold border-b border-stone-200 uppercase tracking-wider">
+              <tr>
+                <th class="py-3.5 px-4">Pos / Item</th>
+                <th class="py-3.5 px-4">Vendor & Kontak</th>
+                <th class="py-3.5 px-4">Sumber Dana</th>
+                <th class="py-3.5 px-4 text-right">Estimasi Awal</th>
+                <th class="py-3.5 px-4 text-right">Kontrak Riil</th>
+                <th class="py-3.5 px-4 text-right">Sudah Bayar</th>
+                <th class="py-3.5 px-4">Status & Jatuh Tempo</th>
+                <th class="py-3.5 px-4 text-right">Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="budget-table-body" class="divide-y divide-stone-100 text-slate-700 font-medium">
+              <tr>
+                <td colspan="8" class="py-12 text-center text-slate-400">
+                  <i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto mb-2 text-amber-600"></i>
+                  <span>Memuat data anggaran dari Supabase...</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="py-6 px-8 border-t border-stone-200/70 text-center text-xs text-slate-400 bg-white/40">
+      PlatformNikah © 2026. All-in-One Wedding Ecosystem.
+    </footer>
+
+  </div>
+
+  <!-- Modal CRUD Pos Anggaran / Vendor -->
+  <div id="budget-modal" class="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-3xl max-w-xl w-full p-6 sm:p-8 border border-stone-200 shadow-2xl relative animate-in fade-in zoom-in-95 duration-200 max-h-[90vh] overflow-y-auto">
+      
+      <button id="btn-close-modal" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+
+      <div class="flex items-center gap-3 mb-5">
+        <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center">
+          <i data-lucide="wallet" class="w-5 h-5"></i>
+        </div>
+        <div>
+          <h3 class="font-serif text-xl font-bold text-slate-900" id="modal-title">Tambah Pos Anggaran</h3>
+          <p class="text-xs text-slate-500">Catat estimasi, nilai kontrak vendor, dan termin pembayaran</p>
+        </div>
+      </div>
+
+      <form id="budget-form" class="space-y-4">
+        <input type="hidden" id="form-item-id">
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Kategori Pos *</label>
+            <select id="form-category" required class="w-full px-3 py-2.5 rounded-xl border border-stone-200 text-xs focus:ring-2 focus:ring-amber-500/40">
+              <option value="Katering">Katering</option>
+              <option value="Venue">Venue</option>
+              <option value="Dekorasi">Dekorasi</option>
+              <option value="MUA & Busana">MUA & Busana</option>
+              <option value="Dokumentasi">Dokumentasi</option>
+              <option value="Seserahan & KUA">Seserahan & KUA</option>
+              <option value="Dana Darurat">Dana Darurat</option>
+              <option value="Lainnya">Lainnya / Ekstra</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Nama Item / Pengeluaran *</label>
+            <input 
+              type="text" 
+              id="form-item-name" 
+              required 
+              placeholder="Misal: Paket Prasmanan 500 Pax"
+              class="w-full px-3 py-2.5 rounded-xl border border-stone-200 text-xs focus:ring-2 focus:ring-amber-500/40"
+            >
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Nama Vendor</label>
+            <input 
+              type="text" 
+              id="form-vendor-name" 
+              placeholder="Misal: Dwi Tunggal Citra Catering"
+              class="w-full px-3 py-2.5 rounded-xl border border-stone-200 text-xs focus:ring-2 focus:ring-amber-500/40"
+            >
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Kontak Vendor (No WA/Telp)</label>
+            <input 
+              type="text" 
+              id="form-vendor-contact" 
+              placeholder="08123456789"
+              class="w-full px-3 py-2.5 rounded-xl border border-stone-200 text-xs focus:ring-2 focus:ring-amber-500/40"
+            >
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Estimasi Anggaran (Rp)</label>
+            <input 
+              type="number" 
+              id="form-estimated" 
+              min="0" 
+              placeholder="0"
+              class="w-full px-3 py-2 rounded-xl border border-stone-200 font-mono text-xs focus:ring-2 focus:ring-amber-500/40"
+            >
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Kontrak Riil / Tagihan (Rp)</label>
+            <input 
+              type="number" 
+              id="form-actual" 
+              min="0" 
+              placeholder="0"
+              class="w-full px-3 py-2 rounded-xl border border-stone-200 font-mono text-xs focus:ring-2 focus:ring-amber-500/40"
+            >
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Telah Dibayar (Rp)</label>
+            <input 
+              type="number" 
+              id="form-paid" 
+              min="0" 
+              placeholder="0"
+              class="w-full px-3 py-2 rounded-xl border border-stone-200 font-mono text-xs focus:ring-2 focus:ring-amber-500/40"
+            >
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Status Pembayaran</label>
+            <select id="form-payment-status" class="w-full px-3 py-2 rounded-xl border border-stone-200 text-xs focus:ring-2 focus:ring-amber-500/40">
+              <option value="unpaid">Belum Bayar</option>
+              <option value="dp_1">DP 1</option>
+              <option value="termin">Termin</option>
+              <option value="paid">Lunas (Paid)</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Sumber Dana</label>
+            <select id="form-funding-source" class="w-full px-3 py-2 rounded-xl border border-stone-200 text-xs focus:ring-2 focus:ring-amber-500/40">
+              <option value="Bersama">Bersama</option>
+              <option value="Keluarga Pria">Keluarga Pria</option>
+              <option value="Keluarga Wanita">Keluarga Wanita</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Jatuh Tempo Pembayaran</label>
+            <input 
+              type="date" 
+              id="form-due-date" 
+              class="w-full px-3 py-2 rounded-xl border border-stone-200 text-xs focus:ring-2 focus:ring-amber-500/40"
+            >
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Catatan / Detail Item</label>
+          <textarea 
+            id="form-notes" 
+            rows="2" 
+            placeholder="Keterangan menu prasmanan, bonus stall, syarat pelunasan..."
+            class="w-full px-3 py-2 rounded-xl border border-stone-200 text-xs focus:ring-2 focus:ring-amber-500/40"
+          ></textarea>
+        </div>
+
+        <div class="pt-4 border-t border-stone-100 flex items-center justify-end gap-2">
+          <button 
+            type="button" 
+            id="btn-cancel-modal" 
+            class="px-4 py-2 rounded-xl border border-stone-200 text-xs font-semibold text-slate-600 hover:bg-stone-50"
+          >
+            Batal
+          </button>
+          <button 
+            type="submit" 
+            id="btn-save-budget" 
+            class="px-5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold flex items-center gap-1.5 shadow-sm"
+          >
+            <i data-lucide="check" class="w-4 h-4 text-amber-400"></i>
+            <span id="btn-save-text">Simpan Anggaran</span>
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="/assets/js/config.js"></script>
+  <script>
+    lucide.createIcons();
+
+    // 1. Auth Guard
+    const currentUser = requireAuth();
+    if (!currentUser) { /* Redirect di-handle oleh requireAuth */ }
+
+    // Sidebar drawer mobile
+    const sidebar = document.getElementById('sidebar');
+    const backdrop = document.getElementById('sidebar-backdrop');
+    document.getElementById('btn-open-sidebar')?.addEventListener('click', () => {
+      sidebar.classList.remove('-translate-x-full');
+      backdrop.classList.remove('hidden');
+    });
+    document.getElementById('btn-close-sidebar')?.addEventListener('click', () => {
+      sidebar.classList.add('-translate-x-full');
+      backdrop.classList.add('hidden');
+    });
+    backdrop?.addEventListener('click', () => {
+      sidebar.classList.add('-translate-x-full');
+      backdrop.classList.add('hidden');
+    });
+
+    // 2. State
+    let budgetsList = [];
+    let guestCount = 0;
+    let cateringRatio = 70;
+    let weddingData = null;
+
+    async function initPage() {
+      // Couple info on sidebar
+      const groom = currentUser.groom_name || 'Pria';
+      const bride = currentUser.bride_name || 'Wanita';
+      document.getElementById('sidebar-couple-name').textContent = `${groom} & ${bride}`;
+      document.getElementById('couple-initials').textContent = `${groom.charAt(0)}&${bride.charAt(0)}`;
+
+      const countdown = getDaysUntil(currentUser.wedding_date);
+      document.getElementById('sidebar-countdown-pill').textContent = countdown.text;
+
+      // Ambil rasio katering dari tabel users jika ada
+      try {
+        const client = window.supabaseClient;
+        const { data: userRow } = await client
+          .from('users')
+          .select('catering_ratio_buffet, wedding_date')
+          .eq('id', currentUser.id)
+          .maybeSingle();
+
+        if (userRow?.catering_ratio_buffet) {
+          cateringRatio = Number(userRow.catering_ratio_buffet);
+        }
+      } catch (e) {
+        console.warn('Error reading catering ratio:', e);
+      }
+
+      // Ambil total pax tamu dari tabel guests
+      try {
+        const client = window.supabaseClient;
+        const { data: guestsData } = await client
+          .from('guests')
+          .select('estimated_pax')
+          .eq('user_id', currentUser.id);
+
+        if (guestsData && guestsData.length > 0) {
+          let sum = 0;
+          guestsData.forEach(g => {
+            sum += (Number(g.estimated_pax) || 1);
+          });
+          if (sum > 0) {
+            guestCount = sum;
+            document.getElementById('calc-input-pax').value = guestCount;
+            document.getElementById('calc-pax-source').textContent = `(Tercatat dari ${guestsData.length} Undangan)`;
+          }
+        }
+      } catch (e) {
+        console.warn('Error fetching guests pax:', e);
+      }
+
+      // Set slider
+      const slider = document.getElementById('catering-ratio-slider');
+      slider.value = cateringRatio;
+      document.getElementById('label-ratio-buffet').textContent = `${cateringRatio}%`;
+
+      // Load budgets
+      await loadBudgets();
+
+      // Recalculate catering
+      recalcCatering();
+    }
+
+    // 3. Load Budgets dari Supabase
+    async function loadBudgets() {
+      const tbody = document.getElementById('budget-table-body');
+      try {
+        const client = window.supabaseClient;
+        const { data, error } = await client
+          .from('planner_budgets')
+          .select('*')
+          .eq('user_id', currentUser.id)
+          .order('id', { ascending: true });
+
+        if (error) {
+          checkRlsError(error);
+          throw error;
+        }
+
+        budgetsList = data || [];
+        updateMetrics();
+        checkDueAlerts();
+        renderBudgetsTable();
+        recalcCatering();
+
+      } catch (err) {
+        console.error('Gagal memuat budget:', err);
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="8" class="py-10 text-center text-rose-500">
+              <i data-lucide="alert-circle" class="w-6 h-6 mx-auto mb-2"></i>
+              <span>Error memuat data: ${err.message}</span>
+            </td>
+          </tr>
+        `;
+        lucide.createIcons();
+      }
+    }
+
+    // 4. Update Top Metrics
+    function updateMetrics() {
+      let estTotal = 0;
+      let actTotal = 0;
+      let paidTotal = 0;
+
+      budgetsList.forEach(b => {
+        estTotal += Number(b.estimated_amount || 0);
+        actTotal += Number(b.actual_amount || 0);
+        paidTotal += Number(b.paid_amount || 0);
+      });
+
+      const remaining = Math.max(0, actTotal - paidTotal);
+      const paidPct = actTotal > 0 ? Math.round((paidTotal / actTotal) * 100) : 0;
+
+      document.getElementById('metric-estimated-total').textContent = formatRupiah(estTotal);
+      document.getElementById('metric-actual-total').textContent = formatRupiah(actTotal);
+      document.getElementById('metric-paid-total').textContent = formatRupiah(paidTotal);
+      document.getElementById('metric-paid-pct').textContent = `${paidPct}% dari total kontrak riil`;
+      document.getElementById('metric-remaining-total').textContent = formatRupiah(remaining);
+
+      // Status Badge: Hemat / Sesuai Budget vs Overbudget
+      const badgeContainer = document.getElementById('budget-status-badge');
+      if (actTotal > estTotal && estTotal > 0) {
+        const diff = actTotal - estTotal;
+        badgeContainer.innerHTML = `
+          <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold bg-rose-100 text-rose-800">
+            <i data-lucide="trending-up" class="w-3 h-3"></i> Overbudget (+${formatRupiah(diff)})
+          </span>
+        `;
+      } else {
+        const savings = estTotal - actTotal;
+        badgeContainer.innerHTML = `
+          <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800">
+            <i data-lucide="check" class="w-3 h-3"></i> Hemat / Sesuai Target (${formatRupiah(savings)} cadangan)
+          </span>
+        `;
+      }
+      lucide.createIcons();
+    }
+
+    // 5. Alert Jatuh Tempo Vendor (<= 14 Hari)
+    function checkDueAlerts() {
+      const alertContainer = document.getElementById('due-alert-container');
+      const now = new Date();
+      now.setHours(0, 0, 0, 0);
+
+      const urgentVendors = budgetsList.filter(item => {
+        if (!item.due_date || item.payment_status === 'paid') return false;
+        const due = new Date(item.due_date);
+        due.setHours(0, 0, 0, 0);
+        const diffDays = Math.ceil((due - now) / (1000 * 60 * 60 * 24));
+        return diffDays >= 0 && diffDays <= 14;
+      });
+
+      if (urgentVendors.length === 0) {
+        alertContainer.classList.add('hidden');
+        alertContainer.innerHTML = '';
+        return;
+      }
+
+      alertContainer.classList.remove('hidden');
+      alertContainer.innerHTML = `
+        <div class="p-4 sm:p-5 rounded-3xl bg-amber-500/10 border border-amber-300 text-amber-950 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div class="flex items-start gap-3">
+            <div class="w-9 h-9 rounded-xl bg-amber-500 text-slate-950 flex items-center justify-center flex-shrink-0 mt-0.5">
+              <i data-lucide="bell-ring" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <h4 class="font-bold text-xs uppercase tracking-wider text-amber-900">Perhatian: ${urgentVendors.length} Tagihan Vendor Mendekati Jatuh Tempo (H-14)!</h4>
+              <p class="text-xs text-amber-800 mt-0.5">
+                ${urgentVendors.map(v => `<b>${v.item_name}</b> (${v.vendor_name || 'Vendor'}) jatuh tempo ${formatDateIndo(v.due_date)} - Sisa: ${formatRupiah((v.actual_amount || 0) - (v.paid_amount || 0))}`).join(' • ')}
+              </p>
+            </div>
+          </div>
+          <a href="#budget-table-body" class="px-4 py-2 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold transition-all whitespace-nowrap">
+            Cek Tagihan
+          </a>
+        </div>
+      `;
+      lucide.createIcons();
+    }
+
+    // 6. Kalkulator Porsi Katering Real-Time
+    function recalcCatering() {
+      const paxInput = parseInt(document.getElementById('calc-input-pax').value) || 0;
+      const sliderVal = parseInt(document.getElementById('catering-ratio-slider').value) || 70;
+
+      // Rumus:
+      // Grand Total Pax = Math.round(totalPax * 1.1)
+      const grandTotalPax = Math.round(paxInput * 1.1);
+
+      // Porsi Buffet = Math.round(grandTotalPax * (rasio / 100))
+      const buffetPortions = Math.round(grandTotalPax * (sliderVal / 100));
+
+      // Porsi Gubukan = Math.round(grandTotalPax * ((100 - sliderVal) / 100) * 3.5)
+      const stallPortions = Math.round(grandTotalPax * ((100 - sliderVal) / 100) * 3.5);
+
+      document.getElementById('label-ratio-buffet').textContent = `${sliderVal}%`;
+      document.getElementById('card-buffet-header').textContent = `Porsi Buffet (${sliderVal}%)`;
+      document.getElementById('card-stall-header').textContent = `Porsi Gubukan (${100 - sliderVal}%)`;
+
+      document.getElementById('calc-grand-total').textContent = grandTotalPax;
+      document.getElementById('calc-buffet-portions').textContent = buffetPortions;
+      document.getElementById('calc-stall-portions').textContent = stallPortions;
+
+      // Batas Rekomendasi Budget Katering
+      const cateringItem = budgetsList.find(b => b.category === 'Katering');
+      const cateringBudget = Number(cateringItem?.actual_amount || cateringItem?.estimated_amount || 0);
+
+      const maxPerPax = grandTotalPax > 0 && cateringBudget > 0 
+        ? Math.round(cateringBudget / grandTotalPax) 
+        : 0;
+
+      const recText = document.getElementById('catering-budget-recommendation');
+      if (maxPerPax > 0) {
+        recText.innerHTML = `Berdasarkan alokasi Katering (<b>${formatRupiah(cateringBudget)}</b>) untuk ${grandTotalPax} pax (termasuk cadangan 10%), batas ideal kontrak adalah <b>${formatRupiah(maxPerPax)} / pax</b>.`;
+      } else {
+        recText.textContent = 'Masukkan nilai anggaran pada kategori "Katering" untuk melihat rekomendasi batas harga per porsi.';
+      }
+    }
+
+    // Event listener slider & pax input
+    const slider = document.getElementById('catering-ratio-slider');
+    slider.addEventListener('input', () => {
+      recalcCatering();
+    });
+
+    // Simpan rasio ke tabel users saat slider dilepas
+    slider.addEventListener('change', async () => {
+      const val = parseInt(slider.value);
+      try {
+        const client = window.supabaseClient;
+        await client
+          .from('users')
+          .update({ catering_ratio_buffet: val })
+          .eq('id', currentUser.id);
+        showToast(`Rasio Buffet disimpan: ${val}%`, 'info', 1800);
+      } catch (e) {
+        console.warn('Gagal simpan rasio buffet:', e);
+      }
+    });
+
+    document.getElementById('calc-input-pax').addEventListener('input', () => {
+      recalcCatering();
+    });
+
+    // 7. Render Tabel Budgets
+    function renderBudgetsTable() {
+      const tbody = document.getElementById('budget-table-body');
+      const catFilter = document.getElementById('filter-category').value;
+      const payFilter = document.getElementById('filter-payment').value;
+      const fundFilter = document.getElementById('filter-funding').value;
+      const searchKey = document.getElementById('search-budget').value.trim().toLowerCase();
+
+      let filtered = budgetsList;
+
+      if (catFilter !== 'all') {
+        filtered = filtered.filter(b => b.category === catFilter);
+      }
+
+      if (payFilter !== 'all') {
+        filtered = filtered.filter(b => (b.payment_status || 'unpaid') === payFilter);
+      }
+
+      if (fundFilter !== 'all') {
+        filtered = filtered.filter(b => (b.funding_source || 'Bersama') === fundFilter);
+      }
+
+      if (searchKey) {
+        filtered = filtered.filter(b => 
+          (b.item_name && b.item_name.toLowerCase().includes(searchKey)) ||
+          (b.vendor_name && b.vendor_name.toLowerCase().includes(searchKey)) ||
+          (b.category && b.category.toLowerCase().includes(searchKey))
+        );
+      }
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="8" class="py-12 text-center text-slate-400">
+              <i data-lucide="wallet" class="w-8 h-8 mx-auto mb-2 opacity-50"></i>
+              <span>Tidak ada pos pengeluaran yang cocok dengan filter.</span>
+            </td>
+          </tr>
+        `;
+        lucide.createIcons();
+        return;
+      }
+
+      tbody.innerHTML = filtered.map(item => {
+        const est = Number(item.estimated_amount || 0);
+        const act = Number(item.actual_amount || 0);
+        const paid = Number(item.paid_amount || 0);
+        const status = item.payment_status || 'unpaid';
+
+        const statusBadges = {
+          unpaid: `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-100 text-rose-800 border border-rose-200">Belum Bayar</span>`,
+          dp_1: `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-sky-100 text-sky-800 border border-sky-200">DP 1</span>`,
+          termin: `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-200">Termin</span>`,
+          paid: `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">Lunas</span>`
+        };
+
+        const dueFormatted = item.due_date ? formatDateIndo(item.due_date) : '-';
+
+        return `
+          <tr class="hover:bg-stone-50/70 transition-colors">
+            <td class="py-3 px-4">
+              <span class="font-bold text-slate-900 block">${item.item_name}</span>
+              <span class="text-[11px] text-amber-800 font-semibold block">${item.category}</span>
+            </td>
+            <td class="py-3 px-4">
+              <span class="font-semibold text-slate-800 block">${item.vendor_name || '<span class="text-slate-300 italic">Belum ada vendor</span>'}</span>
+              <span class="text-[11px] text-slate-400 font-mono block">${item.vendor_contact || '-'}</span>
+            </td>
+            <td class="py-3 px-4">
+              <span class="px-2 py-0.5 rounded-lg bg-stone-100 text-slate-700 text-[10px] font-semibold border border-stone-200">
+                ${item.funding_source || 'Bersama'}
+              </span>
+            </td>
+            <td class="py-3 px-4 text-right font-mono text-slate-600 font-semibold">
+              ${formatRupiah(est)}
+            </td>
+            <td class="py-3 px-4 text-right font-mono text-slate-900 font-bold">
+              ${formatRupiah(act)}
+            </td>
+            <td class="py-3 px-4 text-right font-mono text-emerald-700 font-bold">
+              ${formatRupiah(paid)}
+            </td>
+            <td class="py-3 px-4">
+              <div class="space-y-1">
+                ${statusBadges[status] || statusBadges.unpaid}
+                <span class="text-[10px] text-slate-400 block">Jatuh Tempo: ${dueFormatted}</span>
+              </div>
+            </td>
+            <td class="py-3 px-4 text-right">
+              <div class="inline-flex items-center gap-1">
+                <button 
+                  onclick="editBudgetItem('${item.id}')"
+                  class="p-1.5 rounded-lg text-slate-500 hover:text-amber-700 hover:bg-amber-50 transition-colors"
+                  title="Edit Pos Anggaran"
+                >
+                  <i data-lucide="edit-3" class="w-4 h-4"></i>
+                </button>
+                <button 
+                  onclick="deleteBudgetItem('${item.id}', '${item.item_name}')"
+                  class="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors"
+                  title="Hapus"
+                >
+                  <i data-lucide="trash-2" class="w-4 h-4"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+
+      lucide.createIcons();
+    }
+
+    // Filter event listeners
+    document.getElementById('filter-category').addEventListener('change', renderBudgetsTable);
+    document.getElementById('filter-payment').addEventListener('change', renderBudgetsTable);
+    document.getElementById('filter-funding').addEventListener('change', renderBudgetsTable);
+    document.getElementById('search-budget').addEventListener('input', renderBudgetsTable);
+
+    // 8. Modal CRUD Handler
+    const modal = document.getElementById('budget-modal');
+    const form = document.getElementById('budget-form');
+    const openAddBtn = document.getElementById('btn-open-add-modal');
+    const closeModalBtn = document.getElementById('btn-close-modal');
+    const cancelModalBtn = document.getElementById('btn-cancel-modal');
+
+    function openModal() {
+      modal.classList.remove('hidden');
+    }
+
+    function closeModal() {
+      modal.classList.add('hidden');
+      form.reset();
+      document.getElementById('form-item-id').value = '';
+      document.getElementById('modal-title').textContent = 'Tambah Pos Anggaran';
+      document.getElementById('btn-save-text').textContent = 'Simpan Anggaran';
+    }
+
+    openAddBtn.addEventListener('click', () => {
+      form.reset();
+      document.getElementById('form-item-id').value = '';
+      document.getElementById('modal-title').textContent = 'Tambah Pos Anggaran Baru';
+      document.getElementById('btn-save-text').textContent = 'Simpan Anggaran';
+      openModal();
+    });
+
+    closeModalBtn.addEventListener('click', closeModal);
+    cancelModalBtn.addEventListener('click', closeModal);
+
+    // Edit Item
+    window.editBudgetItem = function(id) {
+      const item = budgetsList.find(b => b.id === id);
+      if (!item) return;
+
+      document.getElementById('form-item-id').value = item.id;
+      document.getElementById('modal-title').textContent = 'Edit Pos Anggaran';
+      document.getElementById('btn-save-text').textContent = 'Simpan Perubahan';
+
+      document.getElementById('form-category').value = item.category || 'Katering';
+      document.getElementById('form-item-name').value = item.item_name || '';
+      document.getElementById('form-vendor-name').value = item.vendor_name || '';
+      document.getElementById('form-vendor-contact').value = item.vendor_contact || '';
+      document.getElementById('form-estimated').value = item.estimated_amount || '';
+      document.getElementById('form-actual').value = item.actual_amount || '';
+      document.getElementById('form-paid').value = item.paid_amount || '';
+      document.getElementById('form-payment-status').value = item.payment_status || 'unpaid';
+      document.getElementById('form-funding-source').value = item.funding_source || 'Bersama';
+      document.getElementById('form-due-date').value = item.due_date ? item.due_date.split('T')[0] : '';
+      document.getElementById('form-notes').value = item.notes || '';
+
+      openModal();
+    };
+
+    // Delete Item
+    window.deleteBudgetItem = async function(id, name) {
+      if (!confirm(`Hapus pos anggaran "${name}"?`)) return;
+
+      try {
+        const client = window.supabaseClient;
+        const { error } = await client
+          .from('planner_budgets')
+          .delete()
+          .eq('id', id);
+
+        if (error) {
+          checkRlsError(error);
+          throw error;
+        }
+
+        showToast(`Pos "${name}" berhasil dihapus`, 'info');
+        await loadBudgets();
+
+      } catch (err) {
+        console.error('Gagal hapus budget:', err);
+        showToast('Gagal menghapus: ' + err.message, 'error');
+      }
+    };
+
+    // Save / Update Submit
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const itemId = document.getElementById('form-item-id').value;
+      const category = document.getElementById('form-category').value;
+      const itemName = document.getElementById('form-item-name').value.trim();
+      const vendorName = document.getElementById('form-vendor-name').value.trim();
+      const vendorContact = document.getElementById('form-vendor-contact').value.trim();
+      const est = parseInt(document.getElementById('form-estimated').value) || 0;
+      const act = parseInt(document.getElementById('form-actual').value) || 0;
+      const paid = parseInt(document.getElementById('form-paid').value) || 0;
+      const payStatus = document.getElementById('form-payment-status').value;
+      const funding = document.getElementById('form-funding-source').value;
+      const dueDate = document.getElementById('form-due-date').value || null;
+      const notes = document.getElementById('form-notes').value.trim();
+
+      const saveBtn = document.getElementById('btn-save-budget');
+      const saveText = document.getElementById('btn-save-text');
+
+      saveBtn.disabled = true;
+      saveText.textContent = 'Menyimpan...';
+
+      try {
+        const client = window.supabaseClient;
+        const payload = {
+          user_id: currentUser.id,
+          category: category,
+          item_name: itemName,
+          vendor_name: vendorName,
+          vendor_contact: vendorContact,
+          estimated_amount: est,
+          actual_amount: act,
+          paid_amount: paid,
+          payment_status: payStatus,
+          funding_source: funding,
+          due_date: dueDate,
+          notes: notes
+        };
+
+        if (itemId) {
+          // Update
+          const { error } = await client
+            .from('planner_budgets')
+            .update(payload)
+            .eq('id', itemId);
+
+          if (error) {
+            checkRlsError(error);
+            throw error;
+          }
+          showToast('Pos anggaran berhasil diperbarui! ✨', 'success');
+        } else {
+          // Insert
+          const { error } = await client
+            .from('planner_budgets')
+            .insert([payload]);
+
+          if (error) {
+            checkRlsError(error);
+            throw error;
+          }
+          showToast('Pos anggaran baru berhasil ditambahkan! 🎉', 'success');
+        }
+
+        closeModal();
+        await loadBudgets();
+
+      } catch (err) {
+        console.error('Error simpan budget:', err);
+        showToast('Gagal menyimpan: ' + err.message, 'error');
+      } finally {
+        saveBtn.disabled = false;
+        saveText.textContent = itemId ? 'Simpan Perubahan' : 'Simpan Anggaran';
+      }
+    });
+
+    initPage();
+  </script>
+</body>
+</html>

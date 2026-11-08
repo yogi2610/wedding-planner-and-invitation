@@ -205,3 +205,4 @@ window.formatRupiah = formatRupiah;
 window.formatDateIndo = formatDateIndo;
 window.getDaysUntil = getDaysUntil;
 window.checkRlsError = checkRlsError;
+

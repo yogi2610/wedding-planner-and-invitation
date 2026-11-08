@@ -40,6 +40,7 @@ Tabel pengguna (Admin & Pengantin):
 - `password_hash` (text / varchar)
 - `role` (text) - `'admin'` atau `'user'`
 - `wedding_date` (date / timestamp) - Tanggal rencana pernikahan
+- `catering_ratio_buffet` (integer / numeric) - Rasio porsi prasmanan (default: 70)
 - `created_at` (timestamp)
 - `expires_at` (timestamp)
 
@@ -95,11 +96,14 @@ Pos anggaran dan pengeluaran smart wedding planner:
 - `user_id` (uuid)
 - `category` (text) - Contoh: Katering, Venue, Dekorasi, MUA & Busana, Dokumentasi, Seserahan & KUA, Dana Darurat
 - `item_name` (text)
-- `estimated_amount` (numeric / bigint) - Estimasi alokasi dana
-- `paid_amount` (numeric / bigint) - Jumlah dana yang telah dibayar (DP / Lunas)
-- `actual_amount` (numeric / bigint) - Biaya final riil
-- `due_date` (date) - Tenggat waktu pembayaran vendor
 - `vendor_name` (text)
+- `vendor_contact` (text / varchar) - Nomor telepon / WhatsApp vendor
+- `estimated_amount` (numeric / bigint) - Estimasi alokasi dana
+- `actual_amount` (numeric / bigint) - Biaya final riil / kontrak vendor
+- `paid_amount` (numeric / bigint) - Jumlah dana yang telah dibayar (DP / Lunas)
+- `payment_status` (text) - `'unpaid'`, `'dp_1'`, `'termin'`, `'paid'`
+- `funding_source` (text) - `'Bersama'`, `'Keluarga Pria'`, `'Keluarga Wanita'`
+- `due_date` (date) - Tenggat waktu pembayaran vendor
 - `notes` (text)
 - `created_at` (timestamp)
 
@@ -111,15 +115,20 @@ Daftar checklist timeline persiapan pernikahan (16 tahapan):
 - `notes` (text) - Menyimpan kode fase waktu (`H-12_H-6`, `H-6_H-3`, `H-3_H-1`, `H-30_D-Day`) dan catatan berkas
 - `is_completed` (boolean) - Status selesai / belum
 - `sort_order` (integer) - Urutan tampil (1 - 16)
+- `months_before` (integer / numeric) - Berapa bulan sebelum hari H target selesai
 - `created_at` (timestamp)
 
 ### 7. `planner_items`
-Daftar barang seserahan, rundown acara, dan hantaran:
+Daftar barang seserahan, seragam bridesmaid, panitia PIC, dan rundown acara:
 - `id` (uuid / primary key)
 - `user_id` (uuid)
-- `title` (text)
-- `subtitle` (text)
+- `title` (text) - Nama barang / penerima / nama PIC / nama sesi acara
+- `subtitle` (text) - Kategori / ukuran baju / jabatan PIC / rentang jam acara
 - `sort_order` (integer)
+- `module_type` (text) - `'seserahan'`, `'seragam'`, `'panitia'`, `'rundown'`
+- `amount_or_cost` (numeric / bigint) - Estimasi biaya / harga barang
+- `status_label` (text) - Status item (contoh: `'Belum Beli'`, `'Sudah Beli'`, `'Belum Diberikan'`, dll)
+- `meta_json` (json / jsonb) - Data pendukung (misal: `shop_url`, `phone`, `notes`, `location`, `pic`)
 - `created_at` (timestamp)
 
 ### 8. `guests`
@@ -128,6 +137,7 @@ Buku tamu, RSVP, dan kuota undangan:
 - `user_id` (uuid)
 - `wedding_id` (uuid)
 - `name` (text) - Nama tamu undangan
+- `estimated_pax` (integer) - Estimasi jumlah porsi/tamu yang dibawa
 - `rsvp_status` (text) - `'hadir'`, `'tidak_hadir'`, `'ragu'`
 - `created_at` (timestamp)
 
@@ -163,3 +173,4 @@ git commit -m "<Pesan commit deskriptif yang jelas>"
 git push origin main
 ```
 Tujuannya agar deploy otomatis di Vercel langsung sinkron dan website live selalu ter-update secara instan.
+
