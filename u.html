@@ -92,30 +92,52 @@
       <h1 class="font-serif text-5xl sm:text-7xl font-bold text-slate-900 tracking-tight" id="main-couple-name">
         Yogi & Rina
       </h1>
-      <p class="text-sm sm:text-base text-slate-600 max-w-md mx-auto italic font-serif">
-        "Dan di antara tanda-tanda kekuasaan-Nya ialah Dia menciptakan untukmu pasangan hidup dari jenismu sendiri, supaya kamu merasa tenteram di sampingnya."
-        <span class="block text-xs font-sans not-italic text-amber-800 font-bold mt-1">(QS. Ar-Rum: 21)</span>
-      </p>
+      <div class="max-w-md mx-auto">
+        <p class="text-sm sm:text-base text-slate-600 italic font-serif leading-relaxed" id="quote-text">
+          "Dan di antara tanda-tanda kekuasaan-Nya ialah Dia menciptakan untukmu pasangan hidup dari jenismu sendiri, supaya kamu merasa tenteram di sampingnya."
+        </p>
+        <span class="block text-xs font-sans not-italic text-amber-800 font-bold mt-1" id="quote-source">
+          (QS. Ar-Rum: 21)
+        </span>
+      </div>
     </section>
 
     <!-- Detail Mempelai Pria & Wanita -->
     <section class="grid grid-cols-1 sm:grid-cols-2 gap-8 items-center">
       <!-- Mempelai Pria -->
-      <div class="p-6 rounded-3xl bg-white border border-stone-200/80 shadow-sm text-center">
-        <div class="w-24 h-24 rounded-full gold-gradient-bg text-white font-serif text-3xl font-bold flex items-center justify-center mx-auto mb-4 shadow-md" id="groom-avatar">
-          P
+      <div class="p-6 rounded-3xl bg-white border border-stone-200/80 shadow-sm text-center space-y-3">
+        <div class="w-28 h-28 rounded-full overflow-hidden mx-auto shadow-md border-2 border-amber-200 flex items-center justify-center bg-stone-100 relative">
+          <img id="groom-photo-img" src="" alt="Foto Pria" class="w-full h-full object-cover hidden">
+          <div class="w-full h-full gold-gradient-bg text-white font-serif text-3xl font-bold flex items-center justify-center" id="groom-avatar">
+            P
+          </div>
         </div>
-        <h3 class="font-serif text-2xl font-bold text-slate-900" id="groom-name">Mempelai Pria</h3>
-        <p class="text-xs text-slate-500 mt-1" id="groom-parents">Putra tercinta dari Keluarga</p>
+        <div>
+          <h3 class="font-serif text-2xl font-bold text-slate-900" id="groom-name">Mempelai Pria</h3>
+          <p class="text-xs text-slate-500 mt-1" id="groom-parents">Putra tercinta dari Keluarga</p>
+          <a id="groom-ig-link" href="#" target="_blank" class="inline-flex items-center gap-1 text-[11px] font-mono text-amber-800 hover:underline mt-2 hidden">
+            <i data-lucide="instagram" class="w-3.5 h-3.5"></i>
+            <span id="groom-ig-text">@yogi</span>
+          </a>
+        </div>
       </div>
 
       <!-- Mempelai Wanita -->
-      <div class="p-6 rounded-3xl bg-white border border-stone-200/80 shadow-sm text-center">
-        <div class="w-24 h-24 rounded-full bg-gradient-to-tr from-rose-400 to-amber-300 text-slate-950 font-serif text-3xl font-bold flex items-center justify-center mx-auto mb-4 shadow-md" id="bride-avatar">
-          W
+      <div class="p-6 rounded-3xl bg-white border border-stone-200/80 shadow-sm text-center space-y-3">
+        <div class="w-28 h-28 rounded-full overflow-hidden mx-auto shadow-md border-2 border-amber-200 flex items-center justify-center bg-stone-100 relative">
+          <img id="bride-photo-img" src="" alt="Foto Wanita" class="w-full h-full object-cover hidden">
+          <div class="w-full h-full bg-gradient-to-tr from-rose-400 to-amber-300 text-slate-950 font-serif text-3xl font-bold flex items-center justify-center" id="bride-avatar">
+            W
+          </div>
         </div>
-        <h3 class="font-serif text-2xl font-bold text-slate-900" id="bride-name">Mempelai Wanita</h3>
-        <p class="text-xs text-slate-500 mt-1" id="bride-parents">Putri tercinta dari Keluarga</p>
+        <div>
+          <h3 class="font-serif text-2xl font-bold text-slate-900" id="bride-name">Mempelai Wanita</h3>
+          <p class="text-xs text-slate-500 mt-1" id="bride-parents">Putri tercinta dari Keluarga</p>
+          <a id="bride-ig-link" href="#" target="_blank" class="inline-flex items-center gap-1 text-[11px] font-mono text-rose-800 hover:underline mt-2 hidden">
+            <i data-lucide="instagram" class="w-3.5 h-3.5"></i>
+            <span id="bride-ig-text">@rina</span>
+          </a>
+        </div>
       </div>
     </section>
 
@@ -126,32 +148,81 @@
 
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 text-left">
         <!-- Akad Nikah -->
-        <div class="p-6 rounded-3xl bg-amber-50/50 border border-amber-200/80 shadow-sm">
-          <div class="flex items-center gap-2 text-amber-800 font-bold text-xs uppercase tracking-wider mb-2">
-            <i data-lucide="calendar" class="w-4 h-4"></i>
-            <span>Akad Nikah</span>
+        <div class="p-6 rounded-3xl bg-amber-50/50 border border-amber-200/80 shadow-sm flex flex-col justify-between">
+          <div>
+            <div class="flex items-center gap-2 text-amber-800 font-bold text-xs uppercase tracking-wider mb-2">
+              <i data-lucide="calendar" class="w-4 h-4"></i>
+              <span>Akad Nikah</span>
+            </div>
+            <div class="text-base font-bold text-slate-900" id="akad-date">-</div>
+            <div class="text-xs text-amber-700 font-semibold mt-0.5" id="akad-time">Pukul 08.00 WIB - Selesai</div>
+            <div class="mt-4 pt-3 border-t border-amber-200/60 text-xs text-slate-600">
+              <span class="font-bold text-slate-800 block" id="akad-venue">Lokasi Akad</span>
+              <span id="akad-address" class="text-slate-500 leading-relaxed block mt-0.5">Alamat lengkap lokasi</span>
+            </div>
           </div>
-          <div class="text-base font-bold text-slate-900" id="akad-date">-</div>
-          <div class="text-xs text-amber-700 font-semibold mt-0.5" id="akad-time">Pukul 08.00 WIB - Selesai</div>
-          <div class="mt-4 pt-3 border-t border-amber-200/60 text-xs text-slate-600">
-            <span class="font-bold text-slate-800 block" id="akad-venue">Lokasi Akad</span>
-            <span id="akad-address" class="text-slate-500 leading-relaxed block mt-0.5">Alamat lengkap lokasi</span>
-          </div>
+          <a id="akad-maps-btn" href="#" target="_blank" class="mt-4 inline-flex items-center justify-center gap-1.5 py-2 px-4 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold transition-colors hidden">
+            <i data-lucide="map-pin" class="w-3.5 h-3.5"></i>
+            <span>Buka Google Maps</span>
+          </a>
         </div>
 
         <!-- Resepsi Nikah -->
-        <div class="p-6 rounded-3xl bg-white border border-stone-200/80 shadow-sm">
-          <div class="flex items-center gap-2 text-slate-700 font-bold text-xs uppercase tracking-wider mb-2">
-            <i data-lucide="party-popper" class="w-4 h-4 text-amber-600"></i>
-            <span>Resepsi Pernikahan</span>
+        <div class="p-6 rounded-3xl bg-white border border-stone-200/80 shadow-sm flex flex-col justify-between">
+          <div>
+            <div class="flex items-center gap-2 text-slate-700 font-bold text-xs uppercase tracking-wider mb-2">
+              <i data-lucide="party-popper" class="w-4 h-4 text-amber-600"></i>
+              <span>Resepsi Pernikahan</span>
+            </div>
+            <div class="text-base font-bold text-slate-900" id="resepsi-date">-</div>
+            <div class="text-xs text-amber-700 font-semibold mt-0.5" id="resepsi-time">Pukul 11.00 - 15.00 WIB</div>
+            <div class="mt-4 pt-3 border-t border-stone-100 text-xs text-slate-600">
+              <span class="font-bold text-slate-800 block" id="resepsi-venue">Gedung / Tempat Resepsi</span>
+              <span id="resepsi-address" class="text-slate-500 leading-relaxed block mt-0.5">Alamat lengkap resepsi</span>
+            </div>
           </div>
-          <div class="text-base font-bold text-slate-900" id="resepsi-date">-</div>
-          <div class="text-xs text-amber-700 font-semibold mt-0.5" id="resepsi-time">Pukul 11.00 - 15.00 WIB</div>
-          <div class="mt-4 pt-3 border-t border-stone-100 text-xs text-slate-600">
-            <span class="font-bold text-slate-800 block" id="resepsi-venue">Gedung / Tempat Resepsi</span>
-            <span id="resepsi-address" class="text-slate-500 leading-relaxed block mt-0.5">Alamat lengkap resepsi</span>
-          </div>
+          <a id="resepsi-maps-btn" href="#" target="_blank" class="mt-4 inline-flex items-center justify-center gap-1.5 py-2 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition-colors hidden">
+            <i data-lucide="map-pin" class="w-3.5 h-3.5 text-amber-400"></i>
+            <span>Buka Google Maps</span>
+          </a>
         </div>
+      </div>
+    </section>
+
+    <!-- Galeri Foto Prewedding -->
+    <section id="section-gallery" class="space-y-6 hidden">
+      <span class="text-xs uppercase tracking-widest text-amber-700 font-semibold block">Momen Bahagia</span>
+      <h2 class="font-serif text-3xl sm:text-4xl font-bold text-slate-900">Galeri Foto</h2>
+      <div id="gallery-container" class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <!-- Rendered dynamically -->
+      </div>
+    </section>
+
+    <!-- Perjalanan Kisah Cinta (Love Story) -->
+    <section id="section-love-story" class="space-y-6 hidden">
+      <span class="text-xs uppercase tracking-widest text-amber-700 font-semibold block">Kisah Kami</span>
+      <h2 class="font-serif text-3xl sm:text-4xl font-bold text-slate-900">Cerita Cinta</h2>
+      <div id="love-story-container" class="max-w-xl mx-auto space-y-4 text-left">
+        <!-- Rendered dynamically -->
+      </div>
+    </section>
+
+    <!-- Amplop Digital & Tanda Kasih -->
+    <section id="section-envelopes" class="space-y-6 max-w-lg mx-auto hidden">
+      <span class="text-xs uppercase tracking-widest text-amber-700 font-semibold block">Tanda Kasih</span>
+      <h2 class="font-serif text-3xl sm:text-4xl font-bold text-slate-900">Amplop Digital</h2>
+      <p class="text-xs text-slate-500 max-w-md mx-auto">
+        Doa restu Anda merupakan karunia terindah bagi kami. Bagi keluarga dan sahabat yang ingin memberikan tanda kasih secara cashless, dapat mengirimkan melalui rekening berikut:
+      </p>
+      <div id="envelopes-cards-container" class="space-y-3 text-left">
+        <!-- Injected dynamically -->
+      </div>
+      <div id="physical-gift-container" class="hidden p-5 rounded-2xl bg-stone-50 border border-stone-200 text-left text-xs space-y-2">
+        <span class="font-bold text-slate-800 flex items-center gap-1.5">
+          <i data-lucide="package" class="w-4 h-4 text-amber-600"></i>
+          <span>Alamat Kirim Kado Fisik:</span>
+        </span>
+        <p id="physical-gift-text" class="text-slate-600 leading-relaxed whitespace-pre-line"></p>
       </div>
     </section>
 
@@ -356,21 +427,160 @@
       document.getElementById('cover-couple-name').textContent = couple;
       document.getElementById('main-couple-name').textContent = couple;
 
+      // Quotes
+      if (w.quote_text) {
+        document.getElementById('quote-text').textContent = `"${w.quote_text}"`;
+        document.getElementById('quote-source').textContent = w.quote_source || '';
+      }
+
+      // Audio URL
+      if (w.audio_url) {
+        const audioEl = document.getElementById('bg-audio');
+        if (audioEl) {
+          audioEl.src = w.audio_url;
+        }
+      }
+
+      // CPP
       document.getElementById('groom-name').textContent = w.groom_fullname || groom;
-      document.getElementById('bride-name').textContent = w.bride_fullname || bride;
       document.getElementById('groom-parents').textContent = w.groom_parents || 'Putra dari Keluarga Besar';
+      if (w.groom_photo) {
+        const groomImg = document.getElementById('groom-photo-img');
+        const groomAvatar = document.getElementById('groom-avatar');
+        groomImg.src = w.groom_photo;
+        groomImg.classList.remove('hidden');
+        groomAvatar.classList.add('hidden');
+      } else {
+        document.getElementById('groom-avatar').textContent = groom.charAt(0);
+      }
+      if (w.groom_ig) {
+        const ig = w.groom_ig.replace(/^@/, '');
+        const igLink = document.getElementById('groom-ig-link');
+        igLink.href = `https://instagram.com/${ig}`;
+        document.getElementById('groom-ig-text').textContent = `@${ig}`;
+        igLink.classList.remove('hidden');
+      }
+
+      // CPW
+      document.getElementById('bride-name').textContent = w.bride_fullname || bride;
       document.getElementById('bride-parents').textContent = w.bride_parents || 'Putri dari Keluarga Besar';
+      if (w.bride_photo) {
+        const brideImg = document.getElementById('bride-photo-img');
+        const brideAvatar = document.getElementById('bride-avatar');
+        brideImg.src = w.bride_photo;
+        brideImg.classList.remove('hidden');
+        brideAvatar.classList.add('hidden');
+      } else {
+        document.getElementById('bride-avatar').textContent = bride.charAt(0);
+      }
+      if (w.bride_ig) {
+        const ig = w.bride_ig.replace(/^@/, '');
+        const igLink = document.getElementById('bride-ig-link');
+        igLink.href = `https://instagram.com/${ig}`;
+        document.getElementById('bride-ig-text').textContent = `@${ig}`;
+        igLink.classList.remove('hidden');
+      }
 
-      document.getElementById('groom-avatar').textContent = groom.charAt(0);
-      document.getElementById('bride-avatar').textContent = bride.charAt(0);
-
+      // Agenda Akad
       document.getElementById('akad-date').textContent = formatDateIndo(w.akad_date);
+      if (w.akad_time) document.getElementById('akad-time').textContent = w.akad_time;
       document.getElementById('akad-venue').textContent = w.akad_venue || 'Masjid / Gedung Akad';
       document.getElementById('akad-address').textContent = w.akad_address || 'Alamat lokasi akad nikah';
+      if (w.akad_maps_url) {
+        const btn = document.getElementById('akad-maps-btn');
+        btn.href = w.akad_maps_url;
+        btn.classList.remove('hidden');
+      }
 
+      // Agenda Resepsi
       document.getElementById('resepsi-date').textContent = formatDateIndo(w.resepsi_date || w.akad_date);
+      if (w.resepsi_time) document.getElementById('resepsi-time').textContent = w.resepsi_time;
       document.getElementById('resepsi-venue').textContent = w.resepsi_venue || 'Ballroom / Gedung Resepsi';
       document.getElementById('resepsi-address').textContent = w.resepsi_address || 'Alamat lokasi resepsi';
+      if (w.resepsi_maps_url) {
+        const btn = document.getElementById('resepsi-maps-btn');
+        btn.href = w.resepsi_maps_url;
+        btn.classList.remove('hidden');
+      }
+
+      // Galeri Prewedding
+      if (Array.isArray(w.gallery_json) && w.gallery_json.length > 0) {
+        const sec = document.getElementById('section-gallery');
+        const container = document.getElementById('gallery-container');
+        sec.classList.remove('hidden');
+        container.innerHTML = w.gallery_json.map((url, idx) => `
+          <div class="rounded-2xl overflow-hidden aspect-square border border-stone-200/80 shadow-2xs group relative bg-stone-100">
+            <img src="${url}" alt="Foto Galeri ${idx + 1}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+          </div>
+        `).join('');
+      }
+
+      // Love Story
+      if (Array.isArray(w.love_story_json) && w.love_story_json.length > 0) {
+        const sec = document.getElementById('section-love-story');
+        const container = document.getElementById('love-story-container');
+        sec.classList.remove('hidden');
+        container.innerHTML = w.love_story_json.map(item => `
+          <div class="p-5 rounded-2xl bg-white border border-stone-200/90 shadow-2xs space-y-1 relative pl-6 border-l-4 border-l-amber-500">
+            <span class="text-[11px] font-bold font-mono text-amber-800 uppercase tracking-wider">${escapeHtml(item.year || '')}</span>
+            <h4 class="font-serif text-base font-bold text-slate-900">${escapeHtml(item.title || '')}</h4>
+            <p class="text-xs text-slate-600 leading-relaxed">${escapeHtml(item.story || '')}</p>
+          </div>
+        `).join('');
+      }
+
+      // Amplop Digital
+      if (Array.isArray(w.envelopes_json) && w.envelopes_json.length > 0) {
+        const sec = document.getElementById('section-envelopes');
+        const container = document.getElementById('envelopes-cards-container');
+        sec.classList.remove('hidden');
+        container.innerHTML = w.envelopes_json.map(env => `
+          <div class="p-5 rounded-2xl bg-white border border-stone-200 shadow-2xs flex items-center justify-between gap-4">
+            <div>
+              <span class="text-xs font-extrabold uppercase tracking-wider px-2 py-0.5 rounded bg-amber-50 text-amber-900 border border-amber-200/70">${escapeHtml(env.bank || 'Bank')}</span>
+              <div class="font-mono font-bold text-sm text-slate-900 mt-1.5">${escapeHtml(env.number || '')}</div>
+              <div class="text-[11px] text-slate-500">a.n ${escapeHtml(env.holder || '')}</div>
+            </div>
+            <button 
+              type="button" 
+              onclick="copyAccountNumber('${escapeHtml(env.number)}', this)" 
+              class="px-3 py-1.5 rounded-xl border border-stone-200 bg-stone-50 hover:bg-stone-100 text-slate-700 text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer"
+            >
+              <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+              <span>Salin</span>
+            </button>
+          </div>
+        `).join('');
+      }
+
+      // Kado Fisik
+      if (w.custom_theme_json?.gift_address) {
+        const container = document.getElementById('physical-gift-container');
+        const text = document.getElementById('physical-gift-text');
+        text.textContent = w.custom_theme_json.gift_address;
+        container.classList.remove('hidden');
+      }
+
+      // Custom Theme Colors
+      if (w.custom_theme_json && typeof w.custom_theme_json === 'object') {
+        const ct = w.custom_theme_json;
+        if (ct.bg) document.body.style.backgroundColor = ct.bg;
+      }
+
+      lucide.createIcons();
+    }
+
+    function copyAccountNumber(num, btn) {
+      navigator.clipboard.writeText(num).then(() => {
+        showToast('Nomor rekening disalin!', 'success');
+        const oldHtml = btn.innerHTML;
+        btn.innerHTML = `<i data-lucide="check" class="w-3.5 h-3.5 text-emerald-600"></i><span>Tersalin</span>`;
+        lucide.createIcons();
+        setTimeout(() => {
+          btn.innerHTML = oldHtml;
+          lucide.createIcons();
+        }, 2000);
+      });
     }
 
     function togglePaxField(show) {

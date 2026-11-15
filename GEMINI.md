@@ -78,18 +78,28 @@ Data detail acara pernikahan & website undangan:
 - `bride_nickname` (text)
 - `groom_parents` (text)
 - `bride_parents` (text)
+- `groom_ig` (text) - Akun Instagram pria
+- `bride_ig` (text) - Akun Instagram wanita
 - `groom_photo` (text / url)
 - `bride_photo` (text / url)
 - `akad_date` (date)
 - `akad_time` (text / time)
 - `akad_venue` (text)
 - `akad_address` (text)
+- `akad_maps_url` (text) - Tautan Google Maps lokasi akad
 - `resepsi_date` (date)
 - `resepsi_time` (text / time)
 - `resepsi_venue` (text)
 - `resepsi_address` (text)
+- `resepsi_maps_url` (text) - Tautan Google Maps lokasi resepsi
+- `quote_text` (text) - Teks kutipan/ayat pernikahan
+- `quote_source` (text) - Sumber kutipan (misal QS. Ar-Rum: 21)
 - `wa_message_template` (text) - Template format pesan undangan WhatsApp
-- `audio_url` (text)
+- `audio_url` (text) - URL file musik latar MP3
+- `gallery_json` (json / array) - Daftar URL foto prewedding WebP (maks. 8)
+- `love_story_json` (json / array) - Rangkaian kisah cinta ({ year, title, story })
+- `envelopes_json` (json / array) - Daftar rekening/e-wallet tanda kasih ({ bank, number, holder })
+- `custom_theme_json` (json / object) - Palet warna kustom ({ bg, card, text, accent, gift_address })
 - `is_published` (boolean)
 - `created_at` (timestamp)
 
