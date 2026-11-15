@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Portal - Manajemen Template Undangan | Platform Nikah</title>
+  <meta name="description" content="Portal Admin untuk mengelola katalog tema desain undangan digital, palet warna bawaan, dan status aktif template.">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#fffbf5',
+              100: '#f7eee1',
+              500: '#b48342',
+              600: '#996515',
+              gold: '#d4af37'
+            }
+          },
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+            serif: ['"Cormorant Garamond"', 'Georgia', 'serif']
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Supabase JS SDK v2 CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col">
+
+  <!-- Top Navigation Bar Admin -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        
+        <!-- Left Brand & Navigation Tabs -->
+        <div class="flex items-center space-x-6">
+          <a href="/" class="flex items-center space-x-2">
+            <div class="w-8 h-8 rounded-lg gold-gradient-bg flex items-center justify-center text-white shadow-sm">
+              <i data-lucide="shield" class="w-4 h-4"></i>
+            </div>
+            <span class="font-serif text-xl font-bold tracking-tight text-slate-900">PlatformNikah</span>
+          </a>
+
+          <!-- Admin Nav Menu -->
+          <nav class="hidden md:flex items-center space-x-1.5">
+            <a href="/admin/tokens.html" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors">
+              <i data-lucide="key" class="w-3.5 h-3.5 inline mr-1 text-slate-400"></i>
+              <span>Kelola Token Lynk.id</span>
+            </a>
+            <a href="/admin/templates.html" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-900 text-white shadow-xs">
+              <i data-lucide="palette" class="w-3.5 h-3.5 inline mr-1 text-amber-400"></i>
+              <span>Kelola Template</span>
+            </a>
+            <a href="/dashboard/index.html" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors">
+              <i data-lucide="layout-dashboard" class="w-3.5 h-3.5 inline mr-1 text-slate-400"></i>
+              <span>Dashboard Pengantin</span>
+            </a>
+          </nav>
+        </div>
+
+        <!-- Right Profile & Logout -->
+        <div class="flex items-center space-x-4">
+          <div class="hidden sm:flex flex-col text-right">
+            <span class="text-xs font-bold text-slate-800" id="admin-name">Super Admin</span>
+            <span class="text-[11px] text-slate-400" id="admin-email">admin@platformnikah.id</span>
+          </div>
+          <button 
+            onclick="logout()" 
+            class="px-3 py-1.5 rounded-xl border border-rose-200 bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer"
+          >
+            <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
+            <span>Keluar</span>
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+    
+    <!-- Title & Action Button -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div>
+        <h1 class="font-serif text-3xl font-bold text-slate-900">Manajemen Template Desain</h1>
+        <p class="text-sm text-slate-500 mt-1">
+          Katalog tema undangan digital, konfigurasi warna default, dan status ketersediaan tema bagi pengantin.
+        </p>
+      </div>
+
+      <button 
+        onclick="openAddTemplateModal()" 
+        class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold shadow-sm transition-colors cursor-pointer self-start sm:self-auto"
+      >
+        <i data-lucide="plus-circle" class="w-4 h-4 text-amber-400"></i>
+        <span>Tambah Template Baru</span>
+      </button>
+    </div>
+
+    <!-- Top Metrics -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs">
+        <span class="text-xs font-bold uppercase tracking-wider text-slate-500 block">Total Template</span>
+        <span class="text-3xl font-extrabold text-slate-900 mt-1 block" id="metric-total-templates">0</span>
+        <span class="text-[11px] text-slate-400 mt-1 block">Tema dalam sistem</span>
+      </div>
+
+      <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs">
+        <span class="text-xs font-bold uppercase tracking-wider text-slate-500 block">Template Aktif</span>
+        <span class="text-3xl font-extrabold text-emerald-700 mt-1 block" id="metric-active-templates">0</span>
+        <span class="text-[11px] text-emerald-600 mt-1 block">Bisa dipilih oleh pengantin</span>
+      </div>
+
+      <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs">
+        <span class="text-xs font-bold uppercase tracking-wider text-slate-500 block">Template Premium</span>
+        <span class="text-3xl font-extrabold text-amber-700 mt-1 block" id="metric-premium-templates">0</span>
+        <span class="text-[11px] text-amber-600 mt-1 block">Edisi eksklusif</span>
+      </div>
+    </div>
+
+    <!-- Templates Table -->
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
+      
+      <div class="p-4 border-b border-slate-100 flex flex-wrap items-center justify-between gap-3">
+        <h3 class="font-serif text-lg font-bold text-slate-900">Katalog Tema Undangan</h3>
+        
+        <div class="flex items-center gap-2">
+          <select id="filter-status" onchange="renderTemplatesTable()" class="px-3 py-1.5 rounded-xl border border-slate-200 text-xs bg-white">
+            <option value="all">Semua Status</option>
+            <option value="active">Hanya Aktif</option>
+            <option value="inactive">Nonaktif</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-xs text-slate-600">
+          <thead class="bg-slate-50 border-b border-slate-200/80 text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+            <tr>
+              <th class="py-3 px-4 w-12 text-center">ID</th>
+              <th class="py-3 px-4">Nama Template & Slug</th>
+              <th class="py-3 px-4">Kategori</th>
+              <th class="py-3 px-4">Palet Warna Default</th>
+              <th class="py-3 px-4 text-center">Tipe</th>
+              <th class="py-3 px-4 text-center">Status Aktif</th>
+              <th class="py-3 px-4 text-center w-28">Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="templates-tbody" class="divide-y divide-slate-100">
+            <!-- Injected via JavaScript -->
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- MODAL TAMBAH / EDIT TEMPLATE -->
+  <div id="modal-template" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs hidden items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 space-y-4 animate-in fade-in duration-150">
+      
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+        <h3 class="font-serif text-lg font-bold text-slate-900" id="modal-template-title">Tambah Template Baru</h3>
+        <button onclick="closeTemplateModal()" class="text-slate-400 hover:text-slate-600 p-1 cursor-pointer">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form id="form-template" onsubmit="handleTemplateSubmit(event)" class="space-y-3.5">
+        <input type="hidden" id="tpl-id">
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Nama Template *</label>
+            <input 
+              type="text" 
+              id="tpl-name" 
+              required 
+              placeholder="Contoh: Minimalist Sage Botanical" 
+              class="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-xs focus:ring-2 focus:ring-amber-500/40 focus:outline-none"
+            >
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Slug Unik *</label>
+            <input 
+              type="text" 
+              id="tpl-slug" 
+              required 
+              placeholder="contoh: minimalist-sage" 
+              class="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-xs font-mono focus:ring-2 focus:ring-amber-500/40 focus:outline-none"
+            >
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Kategori *</label>
+            <select id="tpl-category" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs bg-white">
+              <option value="Minimalist">Minimalist</option>
+              <option value="Illustrated">Illustrated</option>
+              <option value="Luxury">Luxury</option>
+              <option value="Rustic">Rustic</option>
+              <option value="Islamic">Islamic</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Opsi Lisensi</label>
+            <div class="flex items-center gap-4 pt-2">
+              <label class="flex items-center gap-1.5 cursor-pointer text-xs font-semibold text-slate-700">
+                <input type="checkbox" id="tpl-is-premium" class="rounded text-amber-600">
+                <span>Premium</span>
+              </label>
+              <label class="flex items-center gap-1.5 cursor-pointer text-xs font-semibold text-slate-700">
+                <input type="checkbox" id="tpl-is-active" checked class="rounded text-emerald-600">
+                <span>Aktif</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Palet Warna Default -->
+        <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-2.5">
+          <span class="text-xs font-bold text-slate-800 block">Palet Warna Default Tema:</span>
+          
+          <div class="grid grid-cols-4 gap-2">
+            <div>
+              <label class="block text-[10px] text-slate-500 mb-0.5">Background</label>
+              <input type="color" id="tpl-color-bg" value="#F4F6F3" class="w-full h-8 rounded border-0 cursor-pointer">
+            </div>
+            <div>
+              <label class="block text-[10px] text-slate-500 mb-0.5">Kartu</label>
+              <input type="color" id="tpl-color-card" value="#FFFFFF" class="w-full h-8 rounded border-0 cursor-pointer">
+            </div>
+            <div>
+              <label class="block text-[10px] text-slate-500 mb-0.5">Teks</label>
+              <input type="color" id="tpl-color-text" value="#2C352E" class="w-full h-8 rounded border-0 cursor-pointer">
+            </div>
+            <div>
+              <label class="block text-[10px] text-slate-500 mb-0.5">Aksen</label>
+              <input type="color" id="tpl-color-accent" value="#6B8E78" class="w-full h-8 rounded border-0 cursor-pointer">
+            </div>
+          </div>
+        </div>
+
+        <!-- Submit Buttons -->
+        <div class="flex items-center justify-end gap-2 pt-3 border-t border-slate-100">
+          <button 
+            type="button" 
+            onclick="closeTemplateModal()" 
+            class="px-4 py-2 rounded-xl border border-slate-300 text-xs font-semibold text-slate-600 hover:bg-slate-50 cursor-pointer"
+          >
+            Batal
+          </button>
+          <button 
+            type="submit" 
+            id="btn-submit-tpl"
+            class="px-5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold shadow-xs transition-colors cursor-pointer"
+          >
+            Simpan Template
+          </button>
+        </div>
+
+      </form>
+
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="/assets/js/config.js"></script>
+  <script>
+    let templates = [];
+    let currentAdmin = null;
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      // 1. Auth check: Superadmin only
+      currentAdmin = getCurrentUser();
+      if (!currentAdmin || currentAdmin.role !== 'admin') {
+        alert('Akses ditolak: Halaman ini hanya untuk Superadmin.');
+        window.location.href = '/login.html';
+        return;
+      }
+
+      document.getElementById('admin-name').textContent = currentAdmin.name || 'Super Admin';
+      document.getElementById('admin-email').textContent = currentAdmin.email || 'admin@platformnikah.id';
+
+      await loadTemplates();
+      lucide.createIcons();
+    });
+
+    async function loadTemplates() {
+      try {
+        const client = window.supabaseClient;
+        if (!client) throw new Error('Supabase client tidak siap');
+
+        const { data, error } = await client
+          .from('templates')
+          .select('*')
+          .order('id', { ascending: true });
+
+        if (error) throw error;
+        templates = data || [];
+
+        renderMetrics();
+        renderTemplatesTable();
+
+      } catch (err) {
+        console.error('Error load templates:', err);
+        showToast('Gagal memuat template: ' + err.message, 'error');
+      }
+    }
+
+    function renderMetrics() {
+      document.getElementById('metric-total-templates').textContent = templates.length;
+      document.getElementById('metric-active-templates').textContent = templates.filter(t => t.is_active).length;
+      document.getElementById('metric-premium-templates').textContent = templates.filter(t => t.is_premium).length;
+    }
+
+    function renderTemplatesTable() {
+      const tbody = document.getElementById('templates-tbody');
+      const filter = document.getElementById('filter-status').value;
+
+      const filtered = templates.filter(t => {
+        if (filter === 'active') return t.is_active;
+        if (filter === 'inactive') return !t.is_active;
+        return true;
+      });
+
+      if (!filtered.length) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="7" class="py-8 text-center text-xs text-slate-400">
+              Tidak ada template yang sesuai filter.
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = filtered.map(t => {
+        const colors = t.default_colors_json || { bg: '#fff', card: '#fff', text: '#333', accent: '#d4af37' };
+        
+        return `
+          <tr class="hover:bg-slate-50/80 transition-colors">
+            <td class="py-3 px-4 text-center font-mono font-bold text-slate-400">
+              #${t.id}
+            </td>
+            <td class="py-3 px-4">
+              <div class="font-bold text-slate-900">${escapeHtml(t.name)}</div>
+              <div class="font-mono text-[11px] text-slate-400 mt-0.5">/templates/${escapeHtml(t.slug)}</div>
+            </td>
+            <td class="py-3 px-4">
+              <span class="px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-slate-100 text-slate-700">
+                ${escapeHtml(t.category || 'Umum')}
+              </span>
+            </td>
+            <td class="py-3 px-4">
+              <div class="flex items-center gap-1">
+                <div class="w-4 h-4 rounded-full border border-slate-300 shadow-2xs" style="background-color: ${colors.bg}" title="BG: ${colors.bg}"></div>
+                <div class="w-4 h-4 rounded-full border border-slate-300 shadow-2xs" style="background-color: ${colors.card}" title="Card: ${colors.card}"></div>
+                <div class="w-4 h-4 rounded-full border border-slate-300 shadow-2xs" style="background-color: ${colors.text}" title="Text: ${colors.text}"></div>
+                <div class="w-4 h-4 rounded-full border border-slate-300 shadow-2xs" style="background-color: ${colors.accent}" title="Accent: ${colors.accent}"></div>
+              </div>
+            </td>
+            <td class="py-3 px-4 text-center">
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${t.is_premium ? 'bg-amber-100 text-amber-900 border border-amber-300' : 'bg-emerald-50 text-emerald-700 border border-emerald-200'}">
+                ${t.is_premium ? '👑 Premium' : 'Free'}
+              </span>
+            </td>
+            <td class="py-3 px-4 text-center">
+              <label class="relative inline-flex items-center cursor-pointer">
+                <input type="checkbox" ${t.is_active ? 'checked' : ''} onchange="toggleTemplateActive(${t.id}, this.checked)" class="sr-only peer">
+                <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-emerald-600"></div>
+              </label>
+            </td>
+            <td class="py-3 px-4 text-center">
+              <div class="flex items-center justify-center gap-1.5">
+                <button 
+                  onclick="openEditTemplateModal(${t.id})" 
+                  class="p-1.5 rounded-lg border border-slate-200 hover:bg-slate-100 text-slate-600 hover:text-slate-900 transition-colors cursor-pointer"
+                  title="Edit Template"
+                >
+                  <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+
+      lucide.createIcons();
+    }
+
+    async function toggleTemplateActive(id, isActive) {
+      const t = templates.find(x => x.id === id);
+      if (t) t.is_active = isActive;
+      renderMetrics();
+
+      try {
+        const client = window.supabaseClient;
+        if (client) {
+          const { error } = await client
+            .from('templates')
+            .update({ is_active: isActive })
+            .eq('id', id);
+
+          if (error) throw error;
+        }
+        showToast(`Template #${id} diubah jadi ${isActive ? 'Aktif' : 'Nonaktif'}!`, 'success');
+      } catch (err) {
+        console.error('Toggle error:', err);
+        showToast('Gagal mengubah status template', 'error');
+      }
+    }
+
+    function openAddTemplateModal() {
+      document.getElementById('modal-template-title').textContent = 'Tambah Template Baru';
+      document.getElementById('tpl-id').value = '';
+      document.getElementById('tpl-name').value = '';
+      document.getElementById('tpl-slug').value = '';
+      document.getElementById('tpl-category').value = 'Minimalist';
+      document.getElementById('tpl-is-premium').checked = false;
+      document.getElementById('tpl-is-active').checked = true;
+
+      document.getElementById('tpl-color-bg').value = '#F4F6F3';
+      document.getElementById('tpl-color-card').value = '#FFFFFF';
+      document.getElementById('tpl-color-text').value = '#2C352E';
+      document.getElementById('tpl-color-accent').value = '#6B8E78';
+
+      const modal = document.getElementById('modal-template');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      lucide.createIcons();
+    }
+
+    function openEditTemplateModal(id) {
+      const t = templates.find(x => x.id === id);
+      if (!t) return;
+
+      document.getElementById('modal-template-title').textContent = 'Edit Template';
+      document.getElementById('tpl-id').value = t.id;
+      document.getElementById('tpl-name').value = t.name || '';
+      document.getElementById('tpl-slug').value = t.slug || '';
+      document.getElementById('tpl-category').value = t.category || 'Minimalist';
+      document.getElementById('tpl-is-premium').checked = Boolean(t.is_premium);
+      document.getElementById('tpl-is-active').checked = Boolean(t.is_active);
+
+      const colors = t.default_colors_json || {};
+      document.getElementById('tpl-color-bg').value = colors.bg || '#F4F6F3';
+      document.getElementById('tpl-color-card').value = colors.card || '#FFFFFF';
+      document.getElementById('tpl-color-text').value = colors.text || '#2C352E';
+      document.getElementById('tpl-color-accent').value = colors.accent || '#6B8E78';
+
+      const modal = document.getElementById('modal-template');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      lucide.createIcons();
+    }
+
+    function closeTemplateModal() {
+      const modal = document.getElementById('modal-template');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    async function handleTemplateSubmit(e) {
+      e.preventDefault();
+
+      const id = document.getElementById('tpl-id').value;
+      const name = document.getElementById('tpl-name').value.trim();
+      const slug = document.getElementById('tpl-slug').value.trim();
+      const category = document.getElementById('tpl-category').value;
+      const isPremium = document.getElementById('tpl-is-premium').checked;
+      const isActive = document.getElementById('tpl-is-active').checked;
+
+      const colors = {
+        bg: document.getElementById('tpl-color-bg').value,
+        card: document.getElementById('tpl-color-card').value,
+        text: document.getElementById('tpl-color-text').value,
+        accent: document.getElementById('tpl-color-accent').value
+      };
+
+      const payload = {
+        name,
+        slug,
+        category,
+        is_premium: isPremium,
+        is_active: isActive,
+        default_colors_json: colors
+      };
+
+      const btn = document.getElementById('btn-submit-tpl');
+      btn.disabled = true;
+      btn.textContent = 'Menyimpan...';
+
+      try {
+        const client = window.supabaseClient;
+        if (!client) throw new Error('Supabase client belum siap');
+
+        if (id) {
+          // UPDATE
+          const { data, error } = await client
+            .from('templates')
+            .update(payload)
+            .eq('id', id)
+            .select()
+            .single();
+
+          if (error) throw error;
+          const idx = templates.findIndex(x => x.id == id);
+          if (idx !== -1) templates[idx] = data;
+          showToast('Template berhasil diperbarui!', 'success');
+        } else {
+          // INSERT
+          const { data, error } = await client
+            .from('templates')
+            .insert([payload])
+            .select()
+            .single();
+
+          if (error) throw error;
+          templates.push(data);
+          showToast('Template baru berhasil ditambahkan!', 'success');
+        }
+
+        renderMetrics();
+        renderTemplatesTable();
+        closeTemplateModal();
+
+      } catch (err) {
+        console.error('Save template error:', err);
+        showToast('Gagal menyimpan template: ' + err.message, 'error');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Simpan Template';
+      }
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+  </script>
+</body>
+</html>

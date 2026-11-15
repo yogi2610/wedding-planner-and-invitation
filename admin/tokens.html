@@ -46,17 +46,30 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex items-center justify-between h-16">
         
-        <!-- Left Brand & Badge -->
-        <div class="flex items-center space-x-3">
+        <!-- Left Brand & Navigation Tabs -->
+        <div class="flex items-center space-x-6">
           <a href="/" class="flex items-center space-x-2">
             <div class="w-8 h-8 rounded-lg gold-gradient-bg flex items-center justify-center text-white shadow-sm">
               <i data-lucide="shield" class="w-4 h-4"></i>
             </div>
             <span class="font-serif text-xl font-bold tracking-tight text-slate-900">PlatformNikah</span>
           </a>
-          <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-100 text-amber-800 border border-amber-200">
-            Admin Portal
-          </span>
+
+          <!-- Admin Nav Menu -->
+          <nav class="hidden md:flex items-center space-x-1.5">
+            <a href="/admin/tokens.html" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-900 text-white shadow-xs">
+              <i data-lucide="key" class="w-3.5 h-3.5 inline mr-1 text-amber-400"></i>
+              <span>Kelola Token Lynk.id</span>
+            </a>
+            <a href="/admin/templates.html" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors">
+              <i data-lucide="palette" class="w-3.5 h-3.5 inline mr-1 text-slate-400"></i>
+              <span>Kelola Template</span>
+            </a>
+            <a href="/dashboard/index.html" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors">
+              <i data-lucide="layout-dashboard" class="w-3.5 h-3.5 inline mr-1 text-slate-400"></i>
+              <span>Dashboard Pengantin</span>
+            </a>
+          </nav>
         </div>
 
         <!-- Right Profile & Logout -->
