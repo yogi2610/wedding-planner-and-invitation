@@ -116,8 +116,14 @@
 
         <!-- 6. Undangan Digital -->
         <a href="/dashboard/invitation.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 hover:bg-stone-100 hover:text-slate-900 transition-all group">
-          <i data-lucide="mail-heart" class="w-4 h-4 text-slate-400 group-hover:text-amber-600"></i>
+          <i data-lucide="sparkles" class="w-4 h-4 text-slate-400 group-hover:text-amber-600"></i>
           <span>Edit Undangan Digital</span>
+        </a>
+
+        <!-- 7. Pengaturan Akun -->
+        <a href="/dashboard/settings.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 hover:bg-stone-100 hover:text-slate-900 transition-all group">
+          <i data-lucide="settings" class="w-4 h-4 text-slate-400 group-hover:text-amber-600"></i>
+          <span>Pengaturan Akun</span>
         </a>
       </nav>
     </div>
@@ -871,7 +877,7 @@
 
       // Real-time Countdown di Sidebar
       startLiveCountdown(currentUser.wedding_date, (cd) => {
-        document.getElementById('sidebar-countdown-pill').textContent = `${cd.days}h ${cd.hours}j ${cd.minutes}m ${cd.seconds}d`;
+        document.getElementById('sidebar-countdown-pill').textContent = cd.isPast ? 'Acara Selesai' : `${cd.days}h ${cd.hours}j ${cd.minutes}m ${cd.seconds}d`;
       }, '08:00:00');
 
       // Ambil data users: total_budget, manual_estimated_cost, catering_ratio_buffet
@@ -1483,9 +1489,12 @@
     cancelModalBtn.addEventListener('click', closeModal);
 
     // Edit Item
-    window.editBudgetItem = function(id) {
-      const item = budgetsList.find(b => b.id === id);
-      if (!item) return;
+    window.openEditBudgetModal = window.editBudgetItem = function(id) {
+      const item = budgetsList.find(b => b.id == id || String(b.id) === String(id));
+      if (!item) {
+        console.warn('Pos anggaran tidak ditemukan untuk id:', id);
+        return;
+      }
 
       document.getElementById('form-item-id').value = item.id;
       document.getElementById('modal-title').textContent = 'Edit Pos Anggaran';

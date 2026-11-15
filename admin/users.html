@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manajemen Akun Pengguna - Super Admin PlatformNikah</title>
+
+  <!-- Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>👑</text></svg>">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            serif: ['"Cormorant Garamond"', 'serif'],
+          },
+          colors: {
+            champagne: {
+              50: '#FAF8F5',
+              100: '#F5F0EA',
+              200: '#EADECF',
+              500: '#C5A880',
+              600: '#B08E60',
+              700: '#8E6F45',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Supabase JS Client v2 -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <!-- Global Config & Helpers -->
+  <script src="/assets/js/config.js"></script>
+  <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body class="bg-stone-50 text-slate-800 font-sans min-h-screen flex flex-col antialiased">
+
+  <!-- Top Admin Navbar -->
+  <header class="bg-white border-b border-stone-200/80 sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        
+        <!-- Left Brand & Nav -->
+        <div class="flex items-center space-x-6">
+          <a href="/" class="flex items-center space-x-2">
+            <div class="w-8 h-8 rounded-lg gold-gradient-bg flex items-center justify-center text-white shadow-sm">
+              <i data-lucide="shield" class="w-4 h-4"></i>
+            </div>
+            <span class="font-serif text-xl font-bold tracking-tight text-slate-900">PlatformNikah</span>
+          </a>
+
+          <!-- Admin Nav Menu -->
+          <nav class="hidden md:flex items-center space-x-1.5">
+            <a href="/admin/tokens.html" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors">
+              <i data-lucide="key" class="w-3.5 h-3.5 inline mr-1 text-slate-400"></i>
+              <span>Kelola Token Lynk.id</span>
+            </a>
+            <a href="/admin/templates.html" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors">
+              <i data-lucide="palette" class="w-3.5 h-3.5 inline mr-1 text-slate-400"></i>
+              <span>Kelola Template</span>
+            </a>
+            <a href="/admin/users.html" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-900 text-white shadow-xs">
+              <i data-lucide="users" class="w-3.5 h-3.5 inline mr-1 text-amber-400"></i>
+              <span>Manajemen Akun</span>
+            </a>
+            <a href="/dashboard/index.html" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors">
+              <i data-lucide="layout-dashboard" class="w-3.5 h-3.5 inline mr-1 text-slate-400"></i>
+              <span>Dashboard Pengantin</span>
+            </a>
+          </nav>
+        </div>
+
+        <!-- Right Profile & Logout -->
+        <div class="flex items-center space-x-4">
+          <div class="hidden sm:flex flex-col text-right">
+            <span class="text-xs font-bold text-slate-800" id="admin-name">Super Admin</span>
+            <span class="text-[11px] text-slate-400" id="admin-email">admin@platformnikah.id</span>
+          </div>
+          <button 
+            onclick="logout()" 
+            class="px-3 py-1.5 rounded-xl border border-rose-200 bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer"
+          >
+            <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
+            <span>Keluar</span>
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+    
+    <!-- Title & Action Buttons -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div>
+        <h1 class="font-serif text-3xl font-bold text-slate-900">Manajemen Akun Pengguna</h1>
+        <p class="text-xs sm:text-sm text-slate-500 mt-1">
+          Pantau seluruh akun pengantin dan administrator yang terdaftar di database Supabase
+        </p>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <button 
+          onclick="openCreateUserModal()" 
+          class="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold flex items-center gap-2 shadow-sm transition-colors cursor-pointer"
+        >
+          <i data-lucide="user-plus" class="w-4 h-4 text-amber-400"></i>
+          <span>Tambah Akun Baru</span>
+        </button>
+        <button 
+          onclick="loadUsers()" 
+          id="btn-refresh"
+          class="p-2.5 rounded-xl border border-stone-200 bg-white hover:bg-stone-50 text-slate-600 text-xs font-semibold flex items-center transition-colors cursor-pointer"
+          title="Segarkan Data"
+        >
+          <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- 3 Metrics Card -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
+      <!-- Total Akun -->
+      <div class="bg-white p-5 rounded-2xl border border-stone-200/80 shadow-xs flex items-center justify-between">
+        <div>
+          <span class="text-xs font-semibold text-slate-500">Total Akun Terdaftar</span>
+          <h3 class="font-serif text-3xl font-bold text-slate-900 mt-1" id="metric-total-users">0</h3>
+          <span class="text-[11px] text-slate-400">Pengantin & Admin</span>
+        </div>
+        <div class="w-12 h-12 rounded-xl bg-stone-100 text-slate-700 flex items-center justify-center">
+          <i data-lucide="users" class="w-6 h-6"></i>
+        </div>
+      </div>
+
+      <!-- Akun Pengantin -->
+      <div class="bg-white p-5 rounded-2xl border border-stone-200/80 shadow-xs flex items-center justify-between">
+        <div>
+          <span class="text-xs font-semibold text-emerald-700">Akun Pengantin (User)</span>
+          <h3 class="font-serif text-3xl font-bold text-emerald-900 mt-1" id="metric-client-users">0</h3>
+          <span class="text-[11px] text-emerald-600">Pemilik Website Undangan</span>
+        </div>
+        <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
+          <i data-lucide="heart" class="w-6 h-6"></i>
+        </div>
+      </div>
+
+      <!-- Administrator -->
+      <div class="bg-white p-5 rounded-2xl border border-stone-200/80 shadow-xs flex items-center justify-between">
+        <div>
+          <span class="text-xs font-semibold text-amber-700">Akun Administrator</span>
+          <h3 class="font-serif text-3xl font-bold text-amber-900 mt-1" id="metric-admin-users">0</h3>
+          <span class="text-[11px] text-amber-600">Akses Penuh Portal Super Admin</span>
+        </div>
+        <div class="w-12 h-12 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center">
+          <i data-lucide="shield-check" class="w-6 h-6"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- Search & Filter Bar -->
+    <div class="bg-white p-4 rounded-2xl border border-stone-200/80 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-3">
+      <div class="relative w-full sm:w-80">
+        <input 
+          type="text" 
+          id="search-input" 
+          placeholder="Cari nama, email, atau ID..." 
+          class="w-full pl-9 pr-4 py-2 rounded-xl border border-stone-200 text-xs focus:outline-none focus:ring-2 focus:ring-amber-500/40"
+        >
+        <div class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
+          <i data-lucide="search" class="w-4 h-4"></i>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2 w-full sm:w-auto">
+        <span class="text-xs text-slate-500">Filter Peran:</span>
+        <select id="filter-role" class="px-3 py-2 rounded-xl border border-stone-200 text-xs focus:outline-none focus:ring-2 focus:ring-amber-500/40">
+          <option value="all">Semua Peran</option>
+          <option value="user">Pengantin (User)</option>
+          <option value="admin">Administrator (Admin)</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Users Table Container -->
+    <div class="bg-white rounded-3xl border border-stone-200/80 shadow-xs overflow-hidden">
+      <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse">
+          <thead>
+            <tr class="bg-stone-50 border-b border-stone-200 text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+              <th class="py-3.5 px-4 w-12 text-center">No</th>
+              <th class="py-3.5 px-4">Nama Lengkap</th>
+              <th class="py-3.5 px-4">Email Akun</th>
+              <th class="py-3.5 px-4 text-center">Peran</th>
+              <th class="py-3.5 px-4">Kata Sandi (Hash/Plain)</th>
+              <th class="py-3.5 px-4 text-center">Tanggal Nikah</th>
+              <th class="py-3.5 px-4 text-center">Terdaftar</th>
+              <th class="py-3.5 px-4 text-right">Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="users-table-body" class="divide-y divide-stone-100 text-xs text-slate-700">
+            <tr>
+              <td colspan="8" class="py-12 text-center text-slate-400">
+                <i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto mb-2 text-amber-600"></i>
+                <span>Memuat data pengguna...</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Modal Edit / Tambah Akun -->
+  <div id="user-modal" class="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 border border-stone-200 shadow-2xl relative animate-in fade-in zoom-in-95 duration-200">
+      
+      <button onclick="closeUserModal()" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+
+      <div class="flex items-center gap-3 mb-5">
+        <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center" id="modal-icon-container">
+          <i data-lucide="user-cog" class="w-5 h-5"></i>
+        </div>
+        <div>
+          <h3 class="font-serif text-xl font-bold text-slate-900" id="user-modal-title">Edit Akun Pengguna</h3>
+          <p class="text-xs text-slate-500" id="user-modal-subtitle">Perbarui profil pengguna atau ubah kata sandi akses</p>
+        </div>
+      </div>
+
+      <form id="user-form" class="space-y-4">
+        <input type="hidden" id="form-user-id">
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Nama Lengkap Pengguna *</label>
+          <input 
+            type="text" 
+            id="form-user-name" 
+            required 
+            placeholder="Misal: Budi Santoso"
+            class="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:ring-2 focus:ring-amber-500/40 focus:outline-none"
+          >
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Email Akun *</label>
+            <input 
+              type="email" 
+              id="form-user-email" 
+              required 
+              placeholder="user@example.com"
+              class="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:ring-2 focus:ring-amber-500/40 focus:outline-none font-mono"
+            >
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Peran (Role) *</label>
+            <select id="form-user-role" required class="w-full px-3 py-2.5 rounded-xl border border-stone-200 text-xs focus:ring-2 focus:ring-amber-500/40 focus:outline-none font-semibold">
+              <option value="user">user (Pengantin)</option>
+              <option value="admin">admin (Super Admin)</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Tanggal Rencana Pernikahan (Opsional)</label>
+          <input 
+            type="date" 
+            id="form-user-wedding-date" 
+            class="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:ring-2 focus:ring-amber-500/40 focus:outline-none"
+          >
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">
+            Kata Sandi / Password Hash *
+            <span class="text-[10px] text-slate-400 font-normal ml-1" id="label-pass-hint">(Bisa diketik kata sandi baru untuk mengganti)</span>
+          </label>
+          <div class="relative">
+            <input 
+              type="text" 
+              id="form-user-password" 
+              required 
+              placeholder="Masukkan kata sandi akun"
+              class="w-full px-3.5 py-2.5 pr-10 rounded-xl border border-stone-200 text-xs font-mono focus:ring-2 focus:ring-amber-500/40 focus:outline-none"
+            >
+            <button 
+              type="button" 
+              onclick="generateRandomPassword()" 
+              class="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-amber-700 text-xs px-1.5 py-0.5 rounded bg-stone-100"
+              title="Generate Password Acak"
+            >
+              Acak
+            </button>
+          </div>
+        </div>
+
+        <div class="pt-4 border-t border-stone-100 flex items-center justify-end gap-2">
+          <button 
+            type="button" 
+            onclick="closeUserModal()" 
+            class="px-4 py-2 rounded-xl border border-stone-200 text-xs font-semibold text-slate-600 hover:bg-stone-50 transition-colors"
+          >
+            Batal
+          </button>
+          <button 
+            type="submit" 
+            id="btn-save-user"
+            class="px-5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer"
+          >
+            <i data-lucide="check" class="w-4 h-4 text-amber-400"></i>
+            <span id="btn-save-user-text">Simpan Perubahan</span>
+          </button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="py-6 border-t border-stone-200 bg-white text-center text-xs text-slate-400 mt-auto">
+    PlatformNikah Admin Panel © 2026. Secured with Supabase PostgreSQL.
+  </footer>
+
+  <script>
+    // 1. Auth Guard Super Admin
+    const currentUser = getCurrentUser();
+    if (!currentUser || currentUser.role !== 'admin') {
+      showToast('Akses ditolak! Halaman ini hanya untuk Administrator.', 'error');
+      setTimeout(() => {
+        window.location.href = '/login.html';
+      }, 1000);
+    }
+
+    if (currentUser) {
+      document.getElementById('admin-name').textContent = currentUser.name || 'Super Admin';
+      document.getElementById('admin-email').textContent = currentUser.email || 'admin@platformnikah.id';
+    }
+
+    // State
+    let allUsers = [];
+    let visibleUsers = [];
+    const passwordVisibilityMap = {};
+
+    // 2. Load Users from Supabase
+    async function loadUsers() {
+      const tbody = document.getElementById('users-table-body');
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="8" class="py-12 text-center text-slate-400">
+            <i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto mb-2 text-amber-600"></i>
+            <span>Memuat data pengguna...</span>
+          </td>
+        </tr>
+      `;
+      lucide.createIcons();
+
+      try {
+        const client = window.supabaseClient;
+        if (!client) throw new Error('Supabase client tidak siap');
+
+        const { data, error } = await client
+          .from('users')
+          .select('*')
+          .order('created_at', { ascending: false });
+
+        if (error) {
+          checkRlsError(error);
+          throw error;
+        }
+
+        allUsers = data || [];
+        updateMetrics();
+        filterAndRenderUsers();
+
+      } catch (err) {
+        console.error('Error load users:', err);
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="8" class="py-8 text-center text-rose-600 font-semibold text-xs">
+              Gagal memuat data pengguna: ${escapeHtml(err.message)}
+            </td>
+          </tr>
+        `;
+        showToast('Gagal memuat data pengguna: ' + err.message, 'error');
+      }
+    }
+
+    // Update Top Metrics
+    function updateMetrics() {
+      const total = allUsers.length;
+      const clients = allUsers.filter(u => u.role === 'user').length;
+      const admins = allUsers.filter(u => u.role === 'admin').length;
+
+      document.getElementById('metric-total-users').textContent = total;
+      document.getElementById('metric-client-users').textContent = clients;
+      document.getElementById('metric-admin-users').textContent = admins;
+    }
+
+    // Filter & Render
+    function filterAndRenderUsers() {
+      const search = (document.getElementById('search-input').value || '').toLowerCase().trim();
+      const roleFilter = document.getElementById('filter-role').value;
+
+      visibleUsers = allUsers.filter(u => {
+        const matchRole = roleFilter === 'all' || u.role === roleFilter;
+        const matchSearch = !search || 
+          (u.name && u.name.toLowerCase().includes(search)) ||
+          (u.email && u.email.toLowerCase().includes(search)) ||
+          (u.id && String(u.id).toLowerCase().includes(search));
+
+        return matchRole && matchSearch;
+      });
+
+      renderTable();
+    }
+
+    // Render Table Rows
+    function renderTable() {
+      const tbody = document.getElementById('users-table-body');
+      if (visibleUsers.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="8" class="py-12 text-center text-slate-400 text-xs">
+              Tidak ada data akun yang cocok dengan filter atau pencarian.
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = visibleUsers.map((u, idx) => {
+        const isClient = u.role === 'user';
+        const roleBadge = isClient
+          ? `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">Pengantin</span>`
+          : `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 text-amber-800 border border-amber-200">Admin</span>`;
+
+        const isPassVisible = !!passwordVisibilityMap[u.id];
+        const rawPass = u.password_hash || '-';
+        const passDisplay = isPassVisible 
+          ? escapeHtml(rawPass) 
+          : '&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;';
+
+        const weddingDateDisplay = u.wedding_date 
+          ? formatDateIndo(u.wedding_date) 
+          : '<span class="text-slate-400">-</span>';
+
+        const createdAtDisplay = u.created_at 
+          ? formatDateIndo(u.created_at) 
+          : '<span class="text-slate-400">-</span>';
+
+        return `
+          <tr class="hover:bg-stone-50/70 transition-colors">
+            <td class="py-3 px-4 text-center font-mono text-slate-400 text-[11px]">${idx + 1}</td>
+            <td class="py-3 px-4">
+              <span class="font-bold text-slate-900 block">${escapeHtml(u.name || '-')}</span>
+              <span class="text-[10px] text-slate-400 font-mono block">ID: ${String(u.id).substring(0, 8)}...</span>
+            </td>
+            <td class="py-3 px-4 font-mono text-xs text-slate-600">${escapeHtml(u.email || '-')}</td>
+            <td class="py-3 px-4 text-center">${roleBadge}</td>
+            <td class="py-3 px-4">
+              <div class="flex items-center gap-1.5 font-mono text-xs">
+                <span class="max-w-[140px] truncate text-slate-700">${passDisplay}</span>
+                <button 
+                  onclick="togglePassRow('${u.id}')" 
+                  class="p-1 rounded text-slate-400 hover:text-slate-700 hover:bg-stone-100" 
+                  title="${isPassVisible ? 'Sembunyikan' : 'Tampilkan sandi'}"
+                >
+                  <i data-lucide="${isPassVisible ? 'eye-off' : 'eye'}" class="w-3.5 h-3.5"></i>
+                </button>
+              </div>
+            </td>
+            <td class="py-3 px-4 text-center text-[11px] text-slate-600">${weddingDateDisplay}</td>
+            <td class="py-3 px-4 text-center text-[11px] text-slate-500">${createdAtDisplay}</td>
+            <td class="py-3 px-4 text-right">
+              <div class="flex items-center justify-end gap-1">
+                <button 
+                  onclick="openEditUserModal('${u.id}')" 
+                  class="p-1.5 rounded-lg text-slate-400 hover:text-amber-700 hover:bg-amber-50 transition-colors"
+                  title="Edit Akun & Password"
+                >
+                  <i data-lucide="pencil" class="w-4 h-4"></i>
+                </button>
+                <button 
+                  onclick="deleteUserAccount('${u.id}', '${escapeHtml(u.name || u.email)}')" 
+                  class="p-1.5 rounded-lg text-slate-400 hover:text-rose-700 hover:bg-rose-50 transition-colors"
+                  title="Hapus Akun"
+                >
+                  <i data-lucide="trash-2" class="w-4 h-4"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+
+      lucide.createIcons();
+    }
+
+    // Toggle Password in Table Row
+    window.togglePassRow = function(id) {
+      passwordVisibilityMap[id] = !passwordVisibilityMap[id];
+      renderTable();
+    };
+
+    // Modal Handlers
+    const userModal = document.getElementById('user-modal');
+    const userForm = document.getElementById('user-form');
+
+    window.openCreateUserModal = function() {
+      userForm.reset();
+      document.getElementById('form-user-id').value = '';
+      document.getElementById('user-modal-title').textContent = 'Tambah Akun Pengguna Baru';
+      document.getElementById('user-modal-subtitle').textContent = 'Buat akun pengantin atau administrator baru di database';
+      document.getElementById('btn-save-user-text').textContent = 'Buat Akun';
+      document.getElementById('label-pass-hint').textContent = '(Kata sandi untuk login akun baru)';
+      userModal.classList.remove('hidden');
+    };
+
+    window.openEditUserModal = function(id) {
+      const user = allUsers.find(u => u.id == id || String(u.id) === String(id));
+      if (!user) {
+        showToast('Akun tidak ditemukan', 'error');
+        return;
+      }
+
+      document.getElementById('form-user-id').value = user.id;
+      document.getElementById('form-user-name').value = user.name || '';
+      document.getElementById('form-user-email').value = user.email || '';
+      document.getElementById('form-user-role').value = user.role || 'user';
+      document.getElementById('form-user-wedding-date').value = user.wedding_date ? user.wedding_date.split('T')[0] : '';
+      document.getElementById('form-user-password').value = user.password_hash || '';
+
+      document.getElementById('user-modal-title').textContent = 'Edit Akun Pengguna';
+      document.getElementById('user-modal-subtitle').textContent = 'Perbarui data pengguna atau ubah kata sandi';
+      document.getElementById('btn-save-user-text').textContent = 'Simpan Perubahan';
+      document.getElementById('label-pass-hint').textContent = '(Ubah kata sandi akun jika diperlukan)';
+      userModal.classList.remove('hidden');
+    };
+
+    window.closeUserModal = function() {
+      userModal.classList.add('hidden');
+      userForm.reset();
+    };
+
+    window.generateRandomPassword = function() {
+      const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789!@#$';
+      let pass = '';
+      for (let i = 0; i < 10; i++) {
+        pass += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
+      document.getElementById('form-user-password').value = pass;
+    };
+
+    // Submit User Form (Insert or Update)
+    userForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const userId = document.getElementById('form-user-id').value;
+      const name = document.getElementById('form-user-name').value.trim();
+      const email = document.getElementById('form-user-email').value.trim();
+      const role = document.getElementById('form-user-role').value;
+      const weddingDate = document.getElementById('form-user-wedding-date').value || null;
+      const pass = document.getElementById('form-user-password').value.trim();
+
+      const saveBtn = document.getElementById('btn-save-user');
+      const saveText = document.getElementById('btn-save-user-text');
+      saveBtn.disabled = true;
+      saveText.textContent = 'Menyimpan...';
+
+      try {
+        const client = window.supabaseClient;
+        if (!client) throw new Error('Supabase client tidak siap');
+
+        const payload = {
+          name: name,
+          email: email,
+          role: role,
+          wedding_date: weddingDate,
+          password_hash: pass
+        };
+
+        if (userId) {
+          // Update
+          const { error } = await client
+            .from('users')
+            .update(payload)
+            .eq('id', userId);
+
+          if (error) {
+            checkRlsError(error);
+            throw error;
+          }
+
+          showToast(`Akun "${name}" berhasil diperbarui! ✨`, 'success');
+        } else {
+          // Insert
+          const { error } = await client
+            .from('users')
+            .insert([payload]);
+
+          if (error) {
+            checkRlsError(error);
+            throw error;
+          }
+
+          showToast(`Akun baru "${name}" berhasil dibuat! 🎉`, 'success');
+        }
+
+        closeUserModal();
+        await loadUsers();
+
+      } catch (err) {
+        console.error('Error simpan user:', err);
+        showToast('Gagal menyimpan akun: ' + err.message, 'error');
+      } finally {
+        saveBtn.disabled = false;
+        saveText.textContent = userId ? 'Simpan Perubahan' : 'Buat Akun';
+      }
+    });
+
+    // Delete User Account
+    window.deleteUserAccount = async function(id, name) {
+      if (String(id) === String(currentUser.id)) {
+        showToast('Anda tidak dapat menghapus akun Anda sendiri saat sedang login!', 'warning');
+        return;
+      }
+
+      if (!confirm(`Hapus akun "${name}" secara permanen? Seluruh data pernikahan terkait pengguna ini akan terhapus.`)) {
+        return;
+      }
+
+      try {
+        const client = window.supabaseClient;
+        if (!client) throw new Error('Supabase client tidak siap');
+
+        const { error } = await client
+          .from('users')
+          .delete()
+          .eq('id', id);
+
+        if (error) {
+          checkRlsError(error);
+          throw error;
+        }
+
+        showToast(`Akun "${name}" berhasil dihapus`, 'info');
+        await loadUsers();
+
+      } catch (err) {
+        console.error('Error delete user:', err);
+        showToast('Gagal menghapus akun: ' + err.message, 'error');
+      }
+    };
+
+    // Event Listeners for search & filter
+    document.getElementById('search-input').addEventListener('input', filterAndRenderUsers);
+    document.getElementById('filter-role').addEventListener('change', filterAndRenderUsers);
+
+    // Helpers
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    // Init
+    window.addEventListener('DOMContentLoaded', () => {
+      loadUsers();
+      lucide.createIcons();
+    });
+  </script>
+</body>
+</html>

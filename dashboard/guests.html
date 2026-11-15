@@ -40,27 +40,6 @@
   <link rel="stylesheet" href="/assets/css/style.css">
 
   <style>
-    @media print {
-      body * {
-        visibility: hidden;
-      }
-      #printable-guestbook, #printable-guestbook * {
-        visibility: visible;
-      }
-      #printable-guestbook {
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 100%;
-        margin: 0;
-        padding: 20px;
-        background: white !important;
-        color: black !important;
-      }
-      .no-print {
-        display: none !important;
-      }
-    }
     .custom-scrollbar::-webkit-scrollbar {
       width: 6px;
       height: 6px;
@@ -152,8 +131,14 @@
 
         <!-- 6. Undangan Digital -->
         <a href="/dashboard/invitation.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 hover:bg-stone-100 hover:text-slate-900 transition-all group">
-          <i data-lucide="mail-heart" class="w-4 h-4 text-slate-400 group-hover:text-amber-600"></i>
+          <i data-lucide="sparkles" class="w-4 h-4 text-slate-400 group-hover:text-amber-600"></i>
           <span>Edit Undangan Digital</span>
+        </a>
+
+        <!-- 7. Pengaturan Akun -->
+        <a href="/dashboard/settings.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 hover:bg-stone-100 hover:text-slate-900 transition-all group">
+          <i data-lucide="settings" class="w-4 h-4 text-slate-400 group-hover:text-amber-600"></i>
+          <span>Pengaturan Akun</span>
         </a>
       </nav>
     </div>
@@ -447,8 +432,8 @@
               ></textarea>
 
               <div class="flex items-center justify-between pt-1">
-                <span class="text-[11px] text-slate-400">
-                  Tersimpan di database pernikahan Anda di tabel <code class="bg-stone-100 px-1 py-0.5 rounded text-stone-600">weddings.wa_message_template</code>
+                <span class="text-[11px] text-slate-500">
+                  Format pesan tersimpan otomatis untuk undangan WhatsApp Anda.
                 </span>
                 <button 
                   onclick="saveWaTemplate()" 
@@ -1067,9 +1052,11 @@ Wassalamu'alaikum Warahmatullahi Wabarakatuh.`
 
       // Start live countdown detik demi detik
       if (currentUser.wedding_date) {
-        startLiveCountdown(currentUser.wedding_date, (str) => {
+        startLiveCountdown(currentUser.wedding_date, (cd) => {
           const pill = document.getElementById('sidebar-countdown-pill');
-          if (pill) pill.textContent = str;
+          if (pill) {
+            pill.textContent = cd.isPast ? 'Acara Selesai' : `${cd.days}h ${cd.hours}j ${cd.minutes}m ${cd.seconds}d`;
+          }
         });
       }
     }
@@ -2309,32 +2296,92 @@ Wassalamu'alaikum Warahmatullahi Wabarakatuh.`
     function printGuestbook() {
       const couple = currentWedding 
         ? `${currentWedding.groom_nickname || 'Pria'} & ${currentWedding.bride_nickname || 'Wanita'}` 
-        : 'Pengantin';
+        : (currentUser.name || 'Pengantin');
       const meta = currentWedding
-        ? `Tanggal: ${currentWedding.resepsi_date ? formatDateIndo(currentWedding.resepsi_date) : '-'} | Lokasi: ${currentWedding.resepsi_venue || 'Gedung Resepsi'}`
-        : 'Tanggal: - | Lokasi: -';
+        ? `Tanggal: ${currentWedding.resepsi_date ? formatDateIndo(currentWedding.resepsi_date) : (currentUser.wedding_date ? formatDateIndo(currentUser.wedding_date) : '-')} | Lokasi: ${currentWedding.resepsi_venue || 'Gedung Resepsi'}`
+        : `Tanggal: ${currentUser.wedding_date ? formatDateIndo(currentUser.wedding_date) : '-'}`;
 
-      document.getElementById('print-couple-name').textContent = `Pernikahan ${couple}`;
-      document.getElementById('print-wedding-meta').textContent = meta;
-      document.getElementById('print-timestamp').textContent = `Waktu cetak: ${new Date().toLocaleString('id-ID')}`;
+      const listToPrint = guestList && guestList.length > 0 ? guestList : [];
+      if (listToPrint.length === 0) {
+        showToast('Daftar tamu masih kosong untuk dicetak.', 'warning');
+        return;
+      }
 
-      // Populate printable table with current filtered or full list
-      const tbody = document.getElementById('printable-guestbook-tbody');
-      const listToPrint = guestList;
+      const printWindow = window.open('', '_blank');
+      if (!printWindow) {
+        showToast('Pop-up jendela cetak diblokir oleh browser. Harap izinkan pop-up di browser Anda.', 'error');
+        return;
+      }
 
-      tbody.innerHTML = listToPrint.map((g, idx) => `
+      const rowsHtml = listToPrint.map((g, idx) => `
         <tr>
-          <td style="border: 1px solid #000; padding: 6px; text-align: center;">${idx + 1}</td>
-          <td style="border: 1px solid #000; padding: 6px; font-weight: bold;">${escapeHtml(g.name)}</td>
-          <td style="border: 1px solid #000; padding: 6px; text-align: center;">${escapeHtml(g.group_category || '-')}</td>
-          <td style="border: 1px solid #000; padding: 6px; text-align: center;">${g.estimated_pax || 2}</td>
-          <td style="border: 1px solid #000; padding: 6px; text-align: center; font-family: monospace;">${escapeHtml(g.phone_wa || '-')}</td>
-          <td style="border: 1px solid #000; padding: 6px; text-align: center;">${g.rsvp_status === 'hadir' ? 'Hadir' : (g.rsvp_status === 'tidak_hadir' ? 'Absen' : '-')}</td>
-          <td style="border: 1px solid #000; padding: 6px; height: 32px;"></td>
+          <td style="border: 1px solid #333; padding: 7px 6px; text-align: center; font-size: 11px;">${idx + 1}</td>
+          <td style="border: 1px solid #333; padding: 7px 8px; font-weight: 600; font-size: 12px; color: #111;">${escapeHtml(g.name)}</td>
+          <td style="border: 1px solid #333; padding: 7px 6px; text-align: center; font-size: 11px;">${escapeHtml(g.group_category || '-')}</td>
+          <td style="border: 1px solid #333; padding: 7px 6px; text-align: center; font-size: 11px;">${g.estimated_pax || 2} Pax</td>
+          <td style="border: 1px solid #333; padding: 7px 6px; text-align: center; font-size: 11px; font-family: monospace;">${escapeHtml(g.phone_wa || '-')}</td>
+          <td style="border: 1px solid #333; padding: 7px 6px; text-align: center; font-size: 11px;">
+            ${g.rsvp_status === 'hadir' ? '<strong style="color: #047857;">Hadir</strong>' : (g.rsvp_status === 'tidak_hadir' ? '<span style="color: #b91c1c;">Absen</span>' : '<span style="color: #d97706;">Pending</span>')}
+          </td>
+          <td style="border: 1px solid #333; padding: 7px 6px; width: 140px; height: 32px;"></td>
         </tr>
       `).join('');
 
-      window.print();
+      const docHtml = `<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Buku Tamu Resepsi - ${escapeHtml(couple)}</title>
+  <style>
+    @page { size: A4 landscape; margin: 12mm; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; color: #111; margin: 0; padding: 10px; }
+    .header { text-align: center; margin-bottom: 16px; border-bottom: 2px solid #333; padding-bottom: 10px; }
+    .title { font-size: 18px; font-weight: bold; margin: 0 0 4px 0; text-transform: uppercase; letter-spacing: 0.5px; }
+    .couple { font-size: 15px; font-weight: bold; color: #b45309; margin: 0 0 4px 0; }
+    .meta { font-size: 11px; color: #555; }
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    th { background: #f3f4f6; border: 1px solid #333; padding: 8px 6px; font-size: 11px; font-weight: bold; text-transform: uppercase; color: #1f2937; }
+    @media print {
+      body { padding: 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="title">Buku Tamu Meja Resepsi</div>
+    <div class="couple">${escapeHtml(couple)}</div>
+    <div class="meta">${escapeHtml(meta)} &bull; Total Undangan: ${listToPrint.length} Tamu</div>
+    <div class="meta" style="font-size: 10px; color: #888; margin-top: 3px;">Waktu Cetak: ${new Date().toLocaleString('id-ID')}</div>
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th style="width: 35px;">No</th>
+        <th>Nama Tamu Undangan</th>
+        <th style="width: 120px;">Kategori</th>
+        <th style="width: 65px;">Pax</th>
+        <th style="width: 120px;">No. WhatsApp</th>
+        <th style="width: 85px;">Status RSVP</th>
+        <th style="width: 140px;">Paraf / Tanda Tangan</th>
+      </tr>
+    </thead>
+    <tbody>
+      ${rowsHtml}
+    </tbody>
+  </table>
+  <script>
+    window.onload = function() {
+      setTimeout(function() {
+        window.print();
+      }, 250);
+    };
+  <\/script>
+</body>
+</html>`;
+
+      printWindow.document.open();
+      printWindow.document.write(docHtml);
+      printWindow.document.close();
     }
 
     // Simple HTML escape

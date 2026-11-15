@@ -223,7 +223,7 @@ function getCountdownDetailed(targetDateStr, timeStr = '08:00:00') {
   const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
   const seconds = Math.floor((diff % (1000 * 60)) / 1000);
 
-  return {
+  const res = {
     days,
     hours,
     minutes,
@@ -232,6 +232,11 @@ function getCountdownDetailed(targetDateStr, timeStr = '08:00:00') {
     text: `${days} Hari Lagi`,
     fullText: `${days} Hari ${hours} Jam ${minutes} Menit ${seconds} Detik`
   };
+  // Custom toString to prevent [object Object] if directly coerced or rendered as text
+  res.toString = function() {
+    return this.isPast ? 'Acara Selesai' : `${this.days}h ${this.hours}j ${this.minutes}m ${this.seconds}d`;
+  };
+  return res;
 }
 
 function startLiveCountdown(targetDateStr, callback, timeStr = '08:00:00') {

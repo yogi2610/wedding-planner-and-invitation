@@ -113,8 +113,14 @@
 
         <!-- 6. Undangan Digital -->
         <a href="/dashboard/invitation.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 hover:bg-stone-100 hover:text-slate-900 transition-all group">
-          <i data-lucide="mail-heart" class="w-4 h-4 text-slate-400 group-hover:text-amber-600"></i>
+          <i data-lucide="sparkles" class="w-4 h-4 text-slate-400 group-hover:text-amber-600"></i>
           <span>Edit Undangan Digital</span>
+        </a>
+
+        <!-- 7. Pengaturan Akun -->
+        <a href="/dashboard/settings.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 hover:bg-stone-100 hover:text-slate-900 transition-all group">
+          <i data-lucide="settings" class="w-4 h-4 text-slate-400 group-hover:text-amber-600"></i>
+          <span>Pengaturan Akun</span>
         </a>
       </nav>
     </div>
@@ -483,7 +489,7 @@
         document.getElementById('cd-minutes').textContent = String(cd.minutes).padStart(2, '0');
         document.getElementById('cd-seconds').textContent = String(cd.seconds).padStart(2, '0');
         document.getElementById('cd-full-string').textContent = cd.fullText;
-        document.getElementById('sidebar-countdown-pill').textContent = `${cd.days}h ${cd.hours}j ${cd.minutes}m ${cd.seconds}d`;
+        document.getElementById('sidebar-countdown-pill').textContent = cd.isPast ? 'Acara Selesai' : `${cd.days}h ${cd.hours}j ${cd.minutes}m ${cd.seconds}d`;
       }, '08:00:00');
 
       document.getElementById('banner-wedding-date-text').textContent = `Tanggal Pernikahan: ${formatDateIndo(userWeddingDate)}`;
@@ -827,9 +833,12 @@
     cancelTaskModalBtn.addEventListener('click', closeTaskModal);
 
     // Edit Task
-    window.editTaskItem = function(id) {
-      const item = checklists.find(c => c.id === id);
-      if (!item) return;
+    window.openEditTaskModal = window.editTaskItem = function(id) {
+      const item = checklists.find(c => c.id == id || String(c.id) === String(id));
+      if (!item) {
+        console.warn('Checklist item tidak ditemukan untuk id:', id);
+        return;
+      }
 
       document.getElementById('form-task-id').value = item.id;
       document.getElementById('task-modal-title').textContent = 'Edit Tugas Checklist';

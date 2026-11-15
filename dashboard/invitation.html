@@ -131,8 +131,14 @@
 
         <!-- 6. Edit Undangan Digital (ACTIVE) -->
         <a href="/dashboard/invitation.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl bg-slate-900 text-white shadow-sm transition-all">
-          <i data-lucide="mail-heart" class="w-4 h-4 text-amber-400"></i>
+          <i data-lucide="sparkles" class="w-4 h-4 text-amber-400"></i>
           <span>Edit Undangan Digital</span>
+        </a>
+
+        <!-- 7. Pengaturan Akun -->
+        <a href="/dashboard/settings.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 hover:bg-stone-100 hover:text-slate-900 transition-all group">
+          <i data-lucide="settings" class="w-4 h-4 text-slate-400 group-hover:text-amber-600"></i>
+          <span>Pengaturan Akun</span>
         </a>
       </nav>
     </div>
@@ -1121,9 +1127,11 @@
       if (nameEl) nameEl.textContent = coupleName;
 
       if (currentUser.wedding_date) {
-        startLiveCountdown(currentUser.wedding_date, (str) => {
+        startLiveCountdown(currentUser.wedding_date, (cd) => {
           const pill = document.getElementById('sidebar-countdown-pill');
-          if (pill) pill.textContent = str;
+          if (pill) {
+            pill.textContent = cd.isPast ? 'Acara Selesai' : `${cd.days}h ${cd.hours}j ${cd.minutes}m ${cd.seconds}d`;
+          }
         });
       }
     }

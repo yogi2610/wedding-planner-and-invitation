@@ -148,8 +148,14 @@
 
         <!-- 6. Undangan Digital -->
         <a href="/dashboard/invitation.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 hover:bg-stone-100 hover:text-slate-900 transition-all group">
-          <i data-lucide="mail-heart" class="w-4 h-4 text-slate-400 group-hover:text-amber-600"></i>
+          <i data-lucide="sparkles" class="w-4 h-4 text-slate-400 group-hover:text-amber-600"></i>
           <span>Edit Undangan Digital</span>
+        </a>
+
+        <!-- 7. Pengaturan Akun -->
+        <a href="/dashboard/settings.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 hover:bg-stone-100 hover:text-slate-900 transition-all group">
+          <i data-lucide="settings" class="w-4 h-4 text-slate-400 group-hover:text-amber-600"></i>
+          <span>Pengaturan Akun</span>
         </a>
       </nav>
     </div>
@@ -315,8 +321,8 @@
           >
         </div>
 
-        <!-- Subtitle Input (Label berubah dinamis) -->
-        <div>
+        <!-- Subtitle Input (Label berubah dinamis untuk Seserahan, Seragam, Panitia) -->
+        <div id="field-subtitle-text">
           <label class="block text-xs font-semibold text-slate-700 mb-1" id="label-subtitle">Kategori / Keterangan</label>
           <input 
             type="text" 
@@ -324,6 +330,37 @@
             placeholder="..."
             class="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 text-xs focus:ring-2 focus:ring-amber-500/40"
           >
+        </div>
+
+        <!-- Rentang Jam Khusus Rundown Acara -->
+        <div id="field-subtitle-time" class="hidden">
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Rentang Waktu Pelaksanaan *</label>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+            <div>
+              <span class="text-[10px] text-slate-500 block mb-0.5 font-medium">Jam Mulai</span>
+              <input 
+                type="time" 
+                id="form-time-start" 
+                class="w-full px-3 py-2 rounded-xl border border-stone-200 font-mono text-xs focus:ring-2 focus:ring-amber-500/40"
+              >
+            </div>
+            <div>
+              <span class="text-[10px] text-slate-500 block mb-0.5 font-medium">Jam Selesai</span>
+              <input 
+                type="time" 
+                id="form-time-end" 
+                class="w-full px-3 py-2 rounded-xl border border-stone-200 font-mono text-xs focus:ring-2 focus:ring-amber-500/40"
+              >
+            </div>
+            <div>
+              <span class="text-[10px] text-slate-500 block mb-0.5 font-medium">Zona Waktu</span>
+              <select id="form-time-zone" class="w-full px-3 py-2 rounded-xl border border-stone-200 text-xs focus:ring-2 focus:ring-amber-500/40 font-semibold text-slate-700">
+                <option value="WIB" selected>WIB</option>
+                <option value="WITA">WITA</option>
+                <option value="WIT">WIT</option>
+              </select>
+            </div>
+          </div>
         </div>
 
         <!-- Biaya & Status Container (Seserahan & Seragam) -->
@@ -449,7 +486,7 @@
       document.getElementById('couple-initials').textContent = `${groom.charAt(0)}&${bride.charAt(0)}`;
 
       startLiveCountdown(currentUser.wedding_date, (cd) => {
-        document.getElementById('sidebar-countdown-pill').textContent = `${cd.days}h ${cd.hours}j ${cd.minutes}m ${cd.seconds}d`;
+        document.getElementById('sidebar-countdown-pill').textContent = cd.isPast ? 'Acara Selesai' : `${cd.days}h ${cd.hours}j ${cd.minutes}m ${cd.seconds}d`;
       }, '08:00:00');
 
       // Print headers
@@ -853,6 +890,9 @@
       const metaContacts = document.getElementById('field-meta-contacts');
       const statusSelect = document.getElementById('form-status');
 
+      const subtitleTextContainer = document.getElementById('field-subtitle-text');
+      const subtitleTimeContainer = document.getElementById('field-subtitle-time');
+
       // Setup dynamic form fields according to module
       if (currentModule === 'seserahan') {
         document.getElementById('modal-heading').textContent = itemToEdit ? 'Edit Seserahan / Mahar' : 'Tambah Seserahan / Mahar';
@@ -861,6 +901,8 @@
         labelSubtitle.textContent = 'Kategori Kotak Hantaran';
         subtitleInput.placeholder = 'Kotak 1 / Mahar Utama / Skincare';
         
+        subtitleTextContainer.classList.remove('hidden');
+        subtitleTimeContainer.classList.add('hidden');
         costStatusCont.classList.remove('hidden');
         shopField.classList.remove('hidden');
         metaContacts.classList.add('hidden');
@@ -878,6 +920,8 @@
         labelSubtitle.textContent = 'Kelompok & Ukuran Baju';
         subtitleInput.placeholder = 'Keluarga Inti - Size M / Bridesmaid Kain';
         
+        subtitleTextContainer.classList.remove('hidden');
+        subtitleTimeContainer.classList.add('hidden');
         costStatusCont.classList.remove('hidden');
         shopField.classList.add('hidden');
         metaContacts.classList.add('hidden');
@@ -894,6 +938,8 @@
         labelSubtitle.textContent = 'Tugas / Jabatan PIC';
         subtitleInput.placeholder = 'Koordinator Katering / Saksi Nikah / Angpao';
 
+        subtitleTextContainer.classList.remove('hidden');
+        subtitleTimeContainer.classList.add('hidden');
         costStatusCont.classList.add('hidden');
         shopField.classList.add('hidden');
         metaContacts.classList.remove('hidden');
@@ -904,9 +950,9 @@
         document.getElementById('modal-heading').textContent = itemToEdit ? 'Edit Sesi Rundown' : 'Tambah Sesi Rundown Hari-H';
         labelTitle.textContent = 'Nama Sesi Acara *';
         titleInput.placeholder = 'Misal: Akad Nikah & Ijab Qabul';
-        labelSubtitle.textContent = 'Rentang Waktu (Jam)';
-        subtitleInput.placeholder = '08.00 - 09.30 WIB';
 
+        subtitleTextContainer.classList.add('hidden');
+        subtitleTimeContainer.classList.remove('hidden');
         costStatusCont.classList.add('hidden');
         shopField.classList.add('hidden');
         metaContacts.classList.remove('hidden');
@@ -918,8 +964,42 @@
       if (itemToEdit) {
         titleInput.value = itemToEdit.title || '';
         subtitleInput.value = itemToEdit.subtitle || '';
+
+        if (currentModule === 'rundown') {
+          let sub = itemToEdit.subtitle || '';
+          sub = sub.replace(/\./g, ':');
+          const match = sub.match(/(\d{1,2}:\d{2})\s*[-–—]\s*(\d{1,2}:\d{2})(?:\s*(WIB|WITA|WIT))?/i);
+          if (match) {
+            const padTime = t => t.length === 4 ? '0' + t : t;
+            document.getElementById('form-time-start').value = padTime(match[1]);
+            document.getElementById('form-time-end').value = padTime(match[2]);
+            if (match[3]) {
+              document.getElementById('form-time-zone').value = match[3].toUpperCase();
+            } else {
+              document.getElementById('form-time-zone').value = 'WIB';
+            }
+          } else {
+            document.getElementById('form-time-start').value = '08:00';
+            document.getElementById('form-time-end').value = '09:00';
+            document.getElementById('form-time-zone').value = 'WIB';
+          }
+        }
+
         document.getElementById('form-cost').value = itemToEdit.amount_or_cost || '';
         if (itemToEdit.status_label) statusSelect.value = itemToEdit.status_label;
+
+        const meta = itemToEdit.meta_json || {};
+        document.getElementById('form-shop-url').value = meta.shop_url || '';
+        document.getElementById('form-meta-phone').value = meta.phone || meta.pic || '';
+        document.getElementById('form-meta-location').value = meta.location || '';
+        document.getElementById('form-meta-notes').value = meta.notes || '';
+      } else {
+        if (currentModule === 'rundown') {
+          document.getElementById('form-time-start').value = '08:00';
+          document.getElementById('form-time-end').value = '09:00';
+          document.getElementById('form-time-zone').value = 'WIB';
+        }
+      }
 
         const meta = itemToEdit.meta_json || {};
         document.getElementById('form-shop-url').value = meta.shop_url || '';
@@ -936,11 +1016,13 @@
     cancelModalBtn.addEventListener('click', () => modal.classList.add('hidden'));
 
     // Edit Item Handler
-    window.editItem = function(id) {
-      const item = allItems.find(i => i.id === id);
+    window.openEditItemModal = window.editItem = function(id) {
+      const item = allItems.find(i => i.id == id || String(i.id) === String(id));
       if (item) {
         currentModule = item.module_type || 'seserahan';
         openModalForCurrentModule(item);
+      } else {
+        console.warn('Item tidak ditemukan untuk id:', id);
       }
     };
 
@@ -975,7 +1057,13 @@
       const itemId = document.getElementById('form-item-id').value;
       const modType = document.getElementById('form-module-type').value;
       const title = document.getElementById('form-title').value.trim();
-      const subtitle = document.getElementById('form-subtitle').value.trim();
+      let subtitle = document.getElementById('form-subtitle').value.trim();
+      if (modType === 'rundown') {
+        const tStart = document.getElementById('form-time-start').value || '08:00';
+        const tEnd = document.getElementById('form-time-end').value || '09:00';
+        const tZone = document.getElementById('form-time-zone').value || 'WIB';
+        subtitle = `${tStart} - ${tEnd} ${tZone}`;
+      }
       const cost = parseInt(document.getElementById('form-cost').value) || 0;
       const status = document.getElementById('form-status').value;
       

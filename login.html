@@ -133,19 +133,6 @@
 
       </form>
 
-      <!-- Quick Demo Login Admin Button -->
-      <div class="mt-6 pt-5 border-t border-stone-100">
-        <span class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block text-center mb-2">Akses Cepat Pengujian</span>
-        <button 
-          type="button"
-          id="btn-quick-admin"
-          class="w-full py-2.5 px-4 rounded-xl bg-amber-50 hover:bg-amber-100 border border-amber-200 text-amber-900 text-xs font-semibold flex items-center justify-center gap-2 transition-colors cursor-pointer"
-        >
-          <i data-lucide="shield-check" class="w-4 h-4 text-amber-600"></i>
-          <span>1-Klik Masuk Portal Admin (admin@platformnikah.id)</span>
-        </button>
-      </div>
-
       <!-- Link Registrasi -->
       <div class="mt-4 text-center">
         <p class="text-xs text-slate-500">
@@ -177,13 +164,6 @@
         ? `<i data-lucide="eye-off" class="w-4 h-4"></i>` 
         : `<i data-lucide="eye" class="w-4 h-4"></i>`;
       lucide.createIcons();
-    });
-
-    // Quick Admin Fill Button
-    document.getElementById('btn-quick-admin').addEventListener('click', () => {
-      document.getElementById('email').value = 'admin@platformnikah.id';
-      document.getElementById('password').value = 'admin123';
-      showToast('Kredensial Admin terisi. Klik "Masuk ke Akun"!', 'info');
     });
 
     // Form Login Submit
