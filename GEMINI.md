@@ -24,13 +24,14 @@ ALTER TABLE planner_budgets DISABLE ROW LEVEL SECURITY;
 ALTER TABLE planner_checklists DISABLE ROW LEVEL SECURITY;
 ALTER TABLE planner_items DISABLE ROW LEVEL SECURITY;
 ALTER TABLE guests DISABLE ROW LEVEL SECURITY;
+ALTER TABLE site_settings DISABLE ROW LEVEL SECURITY;
 ```
 
 ---
 
-## 2. Struktur Schema & Kolom Database (8 Tabel)
+## 2. Struktur Schema & Kolom Database (9 Tabel)
 
-Berikut daftar 8 tabel database beserta nama-nama kolom resmi yang aktif:
+Berikut daftar 9 tabel database beserta nama-nama kolom resmi yang aktif:
 
 ### 1. `users`
 Tabel pengguna (Admin & Pengantin):
@@ -160,6 +161,15 @@ Buku tamu, RSVP, dan kuota undangan:
 - `wish_message` (text) - Ucapan & doa restu dari tamu
 - `rsvp_submitted_at` (timestamp) - Waktu konfirmasi RSVP dikirim
 - `created_at` (timestamp)
+
+### 9. `site_settings`
+Pengaturan harga lisensi dan kontak transaksi landing page:
+- `id` (integer / primary key)
+- `normal_price` (numeric / bigint) - Harga utama/normal tanpa diskon (contoh: 199000)
+- `discount_price` (numeric / bigint) - Harga setelah diskon (0 jika tidak ada promo)
+- `lynkid_url` (text) - Tautan checkout produk di Lynk.id
+- `admin_wa` (text) - Nomor WhatsApp admin pemesanan manual (format: 628...)
+- `updated_at` (timestamp)
 
 ---
 

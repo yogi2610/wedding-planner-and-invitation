@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Portal - Pengaturan Harga & Web | Platform Nikah</title>
+  <meta name="description" content="Portal Admin untuk mengatur harga normal, harga diskon, link Lynk.id, dan WhatsApp admin di landing page.">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#fffbf5',
+              100: '#f7eee1',
+              500: '#b48342',
+              600: '#996515',
+              gold: '#d4af37'
+            }
+          },
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+            serif: ['"Cormorant Garamond"', 'Georgia', 'serif']
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Supabase JS SDK v2 CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col">
+
+  <!-- Top Navigation Bar Admin -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        
+        <!-- Left Brand & Navigation Tabs -->
+        <div class="flex items-center space-x-6">
+          <a href="/" class="flex items-center space-x-2">
+            <div class="w-8 h-8 rounded-lg gold-gradient-bg flex items-center justify-center text-white shadow-sm">
+              <i data-lucide="shield" class="w-4 h-4"></i>
+            </div>
+            <span class="font-serif text-xl font-bold tracking-tight text-slate-900">PlatformNikah</span>
+          </a>
+
+          <!-- Admin Nav Menu -->
+          <nav class="hidden md:flex items-center space-x-1.5">
+            <a href="/admin/tokens.html" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors">
+              <i data-lucide="key" class="w-3.5 h-3.5 inline mr-1 text-slate-400"></i>
+              <span>Kelola Token Lynk.id</span>
+            </a>
+            <a href="/admin/templates.html" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors">
+              <i data-lucide="palette" class="w-3.5 h-3.5 inline mr-1 text-slate-400"></i>
+              <span>Kelola Template</span>
+            </a>
+            <a href="/admin/users.html" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors">
+              <i data-lucide="users" class="w-3.5 h-3.5 inline mr-1 text-slate-400"></i>
+              <span>Manajemen Akun</span>
+            </a>
+            <a href="/admin/pricing.html" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-900 text-white shadow-xs">
+              <i data-lucide="tag" class="w-3.5 h-3.5 inline mr-1 text-amber-400"></i>
+              <span>Pengaturan Harga</span>
+            </a>
+            <a href="/dashboard/index.html" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors">
+              <i data-lucide="layout-dashboard" class="w-3.5 h-3.5 inline mr-1 text-slate-400"></i>
+              <span>Dashboard Pengantin</span>
+            </a>
+          </nav>
+        </div>
+
+        <!-- Right Profile & Logout -->
+        <div class="flex items-center space-x-4">
+          <div class="hidden sm:flex flex-col text-right">
+            <span class="text-xs font-bold text-slate-800" id="admin-name">Super Admin</span>
+            <span class="text-[11px] text-slate-400" id="admin-email">admin@platformnikah.id</span>
+          </div>
+          <button 
+            onclick="logout()" 
+            class="px-3 py-1.5 rounded-xl border border-rose-200 bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer"
+          >
+            <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
+            <span>Keluar</span>
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+
+    <!-- Title & Description -->
+    <div>
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-50 border border-amber-200 text-amber-800 text-xs font-semibold mb-2">
+        <i data-lucide="settings" class="w-3.5 h-3.5 text-amber-600"></i>
+        <span>Pengaturan Toko & Landing Page</span>
+      </div>
+      <h1 class="font-serif text-3xl font-bold text-slate-900">Pengaturan Harga & Checkout</h1>
+      <p class="text-sm text-slate-500 mt-1 max-w-3xl">
+        Atur besaran harga normal dan promo diskon yang tampil di halaman depan website, serta sesuaikan tautan checkout Lynk.id dan kontak WhatsApp pemesanan manual.
+      </p>
+    </div>
+
+    <!-- 2-Column Grid: Form & Live Preview -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      
+      <!-- FORM COLUMN (7 Cols) -->
+      <div class="lg:col-span-7 bg-white p-6 sm:p-8 rounded-2xl border border-slate-200 shadow-xs space-y-6">
+        
+        <div class="border-b border-slate-100 pb-4 flex items-center justify-between">
+          <div>
+            <h2 class="font-serif text-xl font-bold text-slate-900">Formulir Harga & Kontak</h2>
+            <p class="text-xs text-slate-500 mt-0.5">Perubahan akan langsung ter-update secara live di landing page.</p>
+          </div>
+          <button 
+            type="button" 
+            onclick="loadSettings()" 
+            class="p-2 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-50 transition-colors"
+            title="Muat Ulang Data"
+          >
+            <i data-lucide="rotate-cw" class="w-4 h-4"></i>
+          </button>
+        </div>
+
+        <form id="pricing-form" class="space-y-5" onsubmit="saveSettings(event)">
+          
+          <!-- Harga Utama / Normal -->
+          <div>
+            <label for="input-normal-price" class="block text-xs font-bold text-slate-700 mb-1">
+              Harga Utama / Normal (Rp) *
+            </label>
+            <div class="relative">
+              <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400">Rp</span>
+              <input 
+                type="number" 
+                id="input-normal-price" 
+                required 
+                min="1000" 
+                step="1000" 
+                placeholder="199000" 
+                class="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-slate-300 text-sm font-semibold focus:ring-2 focus:ring-amber-500/40 focus:outline-none"
+              >
+            </div>
+            <p class="text-[11px] text-slate-500 mt-1">
+              Harga acuan dasar paket Platform Nikah sebelum potongan diskon.
+            </p>
+          </div>
+
+          <!-- Harga Promo Diskon -->
+          <div>
+            <div class="flex items-center justify-between mb-1">
+              <label for="input-discount-price" class="text-xs font-bold text-slate-700">
+                Harga Promo Setelah Diskon (Rp)
+              </label>
+              <button 
+                type="button" 
+                onclick="disableDiscount()" 
+                class="text-[11px] font-bold text-rose-600 hover:text-rose-800 hover:underline flex items-center gap-1 cursor-pointer"
+              >
+                <i data-lucide="x-circle" class="w-3.5 h-3.5"></i>
+                <span>Matikan Diskon (Set 0)</span>
+              </button>
+            </div>
+            <div class="relative">
+              <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400">Rp</span>
+              <input 
+                type="number" 
+                id="input-discount-price" 
+                min="0" 
+                step="1000" 
+                placeholder="99000" 
+                class="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-slate-300 text-sm font-semibold focus:ring-2 focus:ring-amber-500/40 focus:outline-none"
+              >
+            </div>
+            <p class="text-[11px] text-slate-500 mt-1">
+              <span class="font-semibold text-amber-800">Catatan:</span> Kosongkan atau isi <strong>0</strong> jika sedang tidak ada promo (harga normal akan tampil bersih tanpa coret). Jika diisi lebih kecil dari harga normal, harga normal akan dicoret dan badge hemat otomatis dihitung.
+            </p>
+          </div>
+
+          <!-- Lynk.id URL -->
+          <div>
+            <label for="input-lynkid-url" class="block text-xs font-bold text-slate-700 mb-1">
+              Link Produk Checkout Lynk.id *
+            </label>
+            <div class="relative">
+              <i data-lucide="link" class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+              <input 
+                type="url" 
+                id="input-lynkid-url" 
+                required 
+                placeholder="https://lynk.id/namatoko/produk-token" 
+                class="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-slate-300 text-xs font-mono focus:ring-2 focus:ring-amber-500/40 focus:outline-none"
+              >
+            </div>
+            <p class="text-[11px] text-slate-500 mt-1">
+              Tautan produk digital Anda di Lynk.id tempat pembeli bertransaksi dan mendapatkan token otomatis.
+            </p>
+          </div>
+
+          <!-- WhatsApp Admin -->
+          <div>
+            <label for="input-admin-wa" class="block text-xs font-bold text-slate-700 mb-1">
+              Nomor WhatsApp Admin Pemesanan Manual *
+            </label>
+            <div class="relative">
+              <i data-lucide="phone" class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+              <input 
+                type="text" 
+                id="input-admin-wa" 
+                required 
+                placeholder="6281234567890" 
+                class="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-slate-300 text-xs font-mono focus:ring-2 focus:ring-amber-500/40 focus:outline-none"
+              >
+            </div>
+            <p class="text-[11px] text-slate-500 mt-1">
+              Gunakan format internasional diawali <strong>62</strong> tanpa spasi atau tanda hubung (contoh: <code>6281234567890</code>).
+            </p>
+          </div>
+
+          <!-- Action Save Button -->
+          <div class="pt-4 border-t border-slate-100 flex items-center justify-end gap-3">
+            <button 
+              type="submit" 
+              id="btn-save" 
+              class="px-6 py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold shadow-md hover:shadow-lg transition-all flex items-center gap-2 cursor-pointer"
+            >
+              <i data-lucide="save" class="w-4 h-4 text-amber-400"></i>
+              <span id="btn-save-text">Simpan Pengaturan Harga</span>
+            </button>
+          </div>
+
+        </form>
+
+      </div>
+
+      <!-- LIVE PREVIEW COLUMN (5 Cols) -->
+      <div class="lg:col-span-5 space-y-4 lg:sticky lg:top-24">
+        
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="flex h-2.5 w-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span class="text-xs font-bold uppercase tracking-wider text-slate-600">Live Preview Landing Page</span>
+          </div>
+          <span class="text-[10px] text-slate-400">Tampilan Real-Time Pengunjung</span>
+        </div>
+
+        <!-- Miniature Card Preview -->
+        <div class="bg-white rounded-3xl border-2 border-amber-500/40 p-6 sm:p-7 shadow-xl shadow-amber-900/5 relative overflow-hidden">
+          
+          <!-- Top Badge Ribbon -->
+          <div class="absolute top-0 right-0">
+            <div class="bg-gradient-to-l from-amber-600 to-amber-500 text-white text-[10px] font-extrabold uppercase tracking-wider py-1 px-4 rounded-bl-xl shadow-xs">
+              All-in-One Lifetime
+            </div>
+          </div>
+
+          <div class="text-left">
+            <h3 class="font-serif text-2xl font-bold text-slate-900">
+              Paket Lengkap Pengantin
+            </h3>
+            <p class="text-xs text-slate-500 mt-0.5">
+              Smart Wedding Planner + Unlimited Digital Invitation
+            </p>
+
+            <!-- Dynamic Price Preview -->
+            <div class="mt-5 pb-5 border-b border-stone-100">
+              
+              <!-- Strikethrough & Badge Preview -->
+              <div id="preview-discount-wrapper" class="hidden items-center gap-2 mb-1">
+                <span id="preview-original-price" class="text-base text-slate-400 line-through font-serif font-bold">
+                  Rp 199.000
+                </span>
+                <span id="preview-discount-badge" class="px-2 py-0.5 rounded-full bg-rose-100 text-rose-700 text-[10px] font-bold font-mono">
+                  Hemat 50%
+                </span>
+              </div>
+
+              <!-- Main Price Preview -->
+              <div class="flex items-baseline gap-1.5">
+                <span id="preview-main-price" class="text-3xl font-extrabold text-slate-900 font-serif tracking-tight">
+                  Rp 199.000
+                </span>
+                <span class="text-[11px] text-slate-500 font-sans">
+                  / Sekali bayar
+                </span>
+              </div>
+              <p class="text-[10px] text-emerald-700 font-medium mt-1 flex items-center gap-1">
+                <i data-lucide="check-circle" class="w-3 h-3 text-emerald-600"></i>
+                <span>Tanpa biaya bulanan & bebas iklan</span>
+              </p>
+            </div>
+
+            <!-- Features Summary -->
+            <div class="mt-4 space-y-2 text-xs text-slate-600">
+              <div class="flex items-center gap-2">
+                <i data-lucide="check" class="w-3.5 h-3.5 text-emerald-600 shrink-0"></i>
+                <span>Smart Budget 7 Pos & Kalkulator Katering</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <i data-lucide="check" class="w-3.5 h-3.5 text-emerald-600 shrink-0"></i>
+                <span>Timeline 16 Tahap (Birokrasi KUA N1-N4)</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <i data-lucide="check" class="w-3.5 h-3.5 text-emerald-600 shrink-0"></i>
+                <span>Undangan Digital Bebas Pilih 8+ Desain</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <i data-lucide="check" class="w-3.5 h-3.5 text-emerald-600 shrink-0"></i>
+                <span>Unlimited Tamu & 1-Click WhatsApp Sender</span>
+              </div>
+            </div>
+
+            <!-- Button Preview -->
+            <div class="mt-6 space-y-2">
+              <a 
+                id="preview-btn-lynkid" 
+                href="#" 
+                target="_blank" 
+                class="w-full py-3 px-4 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-center text-xs shadow-md transition-all flex items-center justify-center gap-1.5"
+              >
+                <i data-lucide="shopping-bag" class="w-4 h-4 text-amber-200"></i>
+                <span>Beli Akses via Lynk.id (Otomatis Dapat Token)</span>
+              </a>
+
+              <a 
+                id="preview-btn-wa" 
+                href="#" 
+                target="_blank" 
+                class="w-full py-2.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-center text-xs shadow-xs transition-all flex items-center justify-center gap-1.5"
+              >
+                <i data-lucide="message-circle" class="w-3.5 h-3.5 text-emerald-200"></i>
+                <span>Beli Langsung via WhatsApp</span>
+              </a>
+
+              <p class="text-center text-[10px] text-slate-400 pt-1">
+                Sudah punya kode token? <span class="text-amber-700 font-semibold underline">Aktivasi Akun</span>
+              </p>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="p-4 rounded-xl bg-slate-100/80 border border-slate-200 text-xs text-slate-500 space-y-1">
+          <span class="font-bold text-slate-700 block">Status Database Supabase:</span>
+          <p id="status-db-info" class="text-[11px] font-mono text-slate-600">Menghubungkan ke tabel site_settings (id=1)...</p>
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- Scripts -->
+  <script src="/assets/js/config.js"></script>
+  <script>
+    lucide.createIcons();
+
+    // 1. Auth Guard
+    const currentUser = requireAuth('admin');
+    if (!currentUser) { /* Redirect di-handle oleh requireAuth */ }
+
+    // Tampilkan Nama & Email Admin
+    document.getElementById('admin-name').textContent = currentUser.name || 'Super Admin';
+    document.getElementById('admin-email').textContent = currentUser.email || 'admin@platformnikah.id';
+
+    // State
+    let currentSettings = {
+      id: 1,
+      normal_price: 199000,
+      discount_price: 99000,
+      lynkid_url: 'https://lynk.id/',
+      admin_wa: '6281234567890'
+    };
+
+    // 2. Load Settings dari Supabase
+    async function loadSettings() {
+      const statusEl = document.getElementById('status-db-info');
+      try {
+        const client = window.supabaseClient;
+        if (!client) {
+          showToast('Supabase Client tidak siap', 'error');
+          return;
+        }
+
+        const { data, error } = await client
+          .from('site_settings')
+          .select('*')
+          .eq('id', 1)
+          .maybeSingle();
+
+        if (error) {
+          checkRlsError(error);
+          throw error;
+        }
+
+        if (data) {
+          currentSettings = data;
+          statusEl.textContent = `Tersinkronisasi • Terakhir diupdate: ${data.updated_at ? new Date(data.updated_at).toLocaleString('id-ID') : 'Baru saja'}`;
+        } else {
+          statusEl.textContent = 'Baris setting id=1 belum ada. Nilai default akan disimpan saat submit.';
+        }
+
+        populateForm();
+        updateLivePreview();
+
+      } catch (err) {
+        console.error('Error load site_settings:', err);
+        statusEl.textContent = 'Gagal memuat: ' + err.message;
+        showToast('Gagal memuat pengaturan: ' + err.message, 'error');
+      }
+    }
+
+    // 3. Isi Nilai Form
+    function populateForm() {
+      document.getElementById('input-normal-price').value = currentSettings.normal_price || 199000;
+      document.getElementById('input-discount-price').value = currentSettings.discount_price || 0;
+      document.getElementById('input-lynkid-url').value = currentSettings.lynkid_url || 'https://lynk.id/';
+      document.getElementById('input-admin-wa').value = currentSettings.admin_wa || '6281234567890';
+    }
+
+    // 4. Update Live Preview Real-Time
+    function updateLivePreview() {
+      const normalPrice = Number(document.getElementById('input-normal-price').value) || 0;
+      const discountPrice = Number(document.getElementById('input-discount-price').value) || 0;
+      const lynkidUrl = document.getElementById('input-lynkid-url').value.trim() || 'https://lynk.id/';
+      const adminWa = document.getElementById('input-admin-wa').value.trim() || '6281234567890';
+
+      const hasDiscount = discountPrice > 0 && discountPrice < normalPrice;
+
+      const discountWrapper = document.getElementById('preview-discount-wrapper');
+      const originalPriceEl = document.getElementById('preview-original-price');
+      const discountBadgeEl = document.getElementById('preview-discount-badge');
+      const mainPriceEl = document.getElementById('preview-main-price');
+      const btnLynkid = document.getElementById('preview-btn-lynkid');
+      const btnWa = document.getElementById('preview-btn-wa');
+
+      if (hasDiscount) {
+        discountWrapper.classList.remove('hidden');
+        discountWrapper.classList.add('flex');
+        originalPriceEl.textContent = formatRupiah(normalPrice);
+        const percent = Math.round((1 - (discountPrice / normalPrice)) * 100);
+        discountBadgeEl.textContent = `Hemat ${percent}%`;
+        mainPriceEl.textContent = formatRupiah(discountPrice);
+        mainPriceEl.classList.add('text-amber-700');
+        mainPriceEl.classList.remove('text-slate-900');
+      } else {
+        discountWrapper.classList.add('hidden');
+        discountWrapper.classList.remove('flex');
+        mainPriceEl.textContent = formatRupiah(normalPrice);
+        mainPriceEl.classList.remove('text-amber-700');
+        mainPriceEl.classList.add('text-slate-900');
+      }
+
+      btnLynkid.href = lynkidUrl;
+
+      const cleanWa = adminWa.replace(/\D/g, '');
+      const msg = encodeURIComponent('Halo Admin, saya ingin membeli Kode Token Aktivasi platform Wedding Planner & Undangan Digital.');
+      btnWa.href = `https://wa.me/${cleanWa}?text=${msg}`;
+    }
+
+    // 5. Matikan Diskon (Set 0)
+    window.disableDiscount = function() {
+      document.getElementById('input-discount-price').value = 0;
+      updateLivePreview();
+      showToast('Diskon dimatikan (Harga akan tampil normal tanpa coret)', 'info');
+    };
+
+    // 6. Listen Input Perubahan untuk Live Preview Real-Time
+    ['input-normal-price', 'input-discount-price', 'input-lynkid-url', 'input-admin-wa'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.addEventListener('input', updateLivePreview);
+        el.addEventListener('change', updateLivePreview);
+      }
+    });
+
+    // 7. Simpan Pengaturan ke Supabase
+    async function saveSettings(e) {
+      e.preventDefault();
+      const saveBtn = document.getElementById('btn-save');
+      const saveText = document.getElementById('btn-save-text');
+
+      const normalPrice = Number(document.getElementById('input-normal-price').value);
+      const discountPrice = Number(document.getElementById('input-discount-price').value) || 0;
+      const lynkidUrl = document.getElementById('input-lynkid-url').value.trim();
+      const adminWa = document.getElementById('input-admin-wa').value.trim().replace(/\D/g, '');
+
+      if (!normalPrice || normalPrice <= 0) {
+        showToast('Harga normal harus lebih besar dari 0', 'warning');
+        return;
+      }
+
+      if (!lynkidUrl) {
+        showToast('Link Lynk.id wajib diisi', 'warning');
+        return;
+      }
+
+      if (!adminWa) {
+        showToast('Nomor WhatsApp admin wajib diisi', 'warning');
+        return;
+      }
+
+      saveBtn.disabled = true;
+      saveText.textContent = 'Menyimpan...';
+
+      try {
+        const client = window.supabaseClient;
+        const payload = {
+          id: 1,
+          normal_price: normalPrice,
+          discount_price: discountPrice,
+          lynkid_url: lynkidUrl,
+          admin_wa: adminWa,
+          updated_at: new Date().toISOString()
+        };
+
+        const { data, error } = await client
+          .from('site_settings')
+          .upsert(payload, { onConflict: 'id' })
+          .select();
+
+        if (error) {
+          checkRlsError(error);
+          throw error;
+        }
+
+        showToast('Pengaturan harga berhasil disimpan!', 'success');
+        await loadSettings();
+
+      } catch (err) {
+        console.error('Save settings err:', err);
+        showToast('Gagal menyimpan pengaturan: ' + err.message, 'error');
+      } finally {
+        saveBtn.disabled = false;
+        saveText.textContent = 'Simpan Pengaturan Harga';
+      }
+    }
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+      loadSettings();
+    });
+  </script>
+</body>
+</html>

@@ -36,6 +36,9 @@
   <!-- Lucide Icons CDN -->
   <script src="https://unpkg.com/lucide@latest"></script>
 
+  <!-- Supabase JS SDK v2 CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
   <!-- Custom CSS -->
   <link rel="stylesheet" href="/assets/css/style.css">
 </head>
@@ -60,7 +63,6 @@
         <nav class="hidden md:flex items-center space-x-8 text-sm font-medium text-slate-600">
           <a href="#fitur" class="hover:text-amber-700 transition-colors">Fitur Unggulan</a>
           <a href="#checklist" class="hover:text-amber-700 transition-colors">Timeline Indonesia</a>
-          <a href="#keunggulan" class="hover:text-amber-700 transition-colors">Perbandingan</a>
           <a href="#harga" class="hover:text-amber-700 transition-colors">Beli Lisensi</a>
         </nav>
 
@@ -268,6 +270,359 @@
     </div>
   </section>
 
+  <!-- Seksi Timeline Indonesia 16 Tahap -->
+  <section id="checklist" class="py-24 bg-white border-t border-stone-200/60 relative overflow-hidden">
+    <!-- Decorative background glow -->
+    <div class="absolute -top-40 right-0 w-96 h-96 bg-amber-100/40 rounded-full blur-3xl pointer-events-none -z-10"></div>
+    <div class="absolute -bottom-40 left-0 w-96 h-96 bg-rose-100/30 rounded-full blur-3xl pointer-events-none -z-10"></div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <!-- Section Header -->
+      <div class="text-center max-w-3xl mx-auto">
+        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-50 border border-amber-200 text-amber-900 text-xs font-semibold mb-4">
+          <i data-lucide="compass" class="w-3.5 h-3.5 text-amber-600"></i>
+          <span>Dirancang Khusus Alur Pernikahan Indonesia</span>
+        </div>
+        <h2 class="font-serif text-3xl sm:text-5xl font-bold text-slate-900 tracking-tight">
+          Panduan Langkah demi Langkah <br>
+          <span class="gold-gradient-text italic font-medium">Dari H-12 Bulan hingga Hari-H</span>
+        </h2>
+        <p class="mt-4 text-slate-600 text-base leading-relaxed">
+          Bukan sekadar to-do list umum luar negeri. Platform Nikah memahami birokrasi legalitas KUA, serah-serahan adat, distribusi seragam keluarga, hingga pembagian panitia lapangan di Indonesia.
+        </p>
+      </div>
+
+      <!-- 4 Fase Cards Grid -->
+      <div class="mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        
+        <!-- FASE 1 -->
+        <div class="relative bg-[#FCFBF9] p-6 rounded-3xl border border-stone-200/90 shadow-sm hover:shadow-md transition-all flex flex-col justify-between group">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <span class="px-3 py-1 rounded-full bg-amber-100/80 text-amber-900 text-xs font-bold font-mono">
+                FASE 1
+              </span>
+              <span class="text-xs font-semibold text-slate-400">H-12 s/d H-6 Bulan</span>
+            </div>
+            <div class="w-12 h-12 rounded-2xl bg-amber-500/10 text-amber-700 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+              <i data-lucide="building-2" class="w-6 h-6"></i>
+            </div>
+            <h3 class="font-serif text-xl font-bold text-slate-900 mb-2">Pondasi & Booking Vendor Utama</h3>
+            <p class="text-xs text-slate-500 leading-relaxed mb-4">
+              Kunci tanggal sakral dan amankan vendor berjadwal padat sebelum kehabisan slot.
+            </p>
+            <ul class="space-y-2.5 text-xs text-slate-600 border-t border-stone-200/60 pt-4">
+              <li class="flex items-start gap-2">
+                <i data-lucide="check" class="w-4 h-4 text-emerald-600 shrink-0 mt-0.5"></i>
+                <span>Kesepakatan tanggal nikah kedua keluarga besar</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <i data-lucide="check" class="w-4 h-4 text-emerald-600 shrink-0 mt-0.5"></i>
+                <span>Survei & <em>booking fee</em> gedung/venue resepsi</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <i data-lucide="check" class="w-4 h-4 text-emerald-600 shrink-0 mt-0.5"></i>
+                <span><em>Test food</em> katering & tentukan rasio porsi</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <i data-lucide="check" class="w-4 h-4 text-emerald-600 shrink-0 mt-0.5"></i>
+                <span>Kunci jadwal MUA & desainer busana pengantin</span>
+              </li>
+            </ul>
+          </div>
+          <div class="mt-6 pt-3 border-t border-stone-100 flex items-center justify-between text-[11px] font-semibold text-amber-700">
+            <span>Fase Kritis Vendor</span>
+            <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+          </div>
+        </div>
+
+        <!-- FASE 2 -->
+        <div class="relative bg-[#FCFBF9] p-6 rounded-3xl border border-stone-200/90 shadow-sm hover:shadow-md transition-all flex flex-col justify-between group">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <span class="px-3 py-1 rounded-full bg-rose-100/80 text-rose-900 text-xs font-bold font-mono">
+                FASE 2
+              </span>
+              <span class="text-xs font-semibold text-slate-400">H-6 s/d H-3 Bulan</span>
+            </div>
+            <div class="w-12 h-12 rounded-2xl bg-rose-500/10 text-rose-700 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+              <i data-lucide="gift" class="w-6 h-6"></i>
+            </div>
+            <h3 class="font-serif text-xl font-bold text-slate-900 mb-2">Tradisi, Cincin & Perlengkapan</h3>
+            <p class="text-xs text-slate-500 leading-relaxed mb-4">
+              Mulai mencicil perintilan esensial agar tidak membebani cashflow mendekati hari H.
+            </p>
+            <ul class="space-y-2.5 text-xs text-slate-600 border-t border-stone-200/60 pt-4">
+              <li class="flex items-start gap-2">
+                <i data-lucide="check" class="w-4 h-4 text-emerald-600 shrink-0 mt-0.5"></i>
+                <span>Cicil belanja & hias kotak seserahan hantaran</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <i data-lucide="check" class="w-4 h-4 text-emerald-600 shrink-0 mt-0.5"></i>
+                <span>Beli cincin kawin & ukir grafir nama mempelai</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <i data-lucide="check" class="w-4 h-4 text-emerald-600 shrink-0 mt-0.5"></i>
+                <span>Beli & bagikan kain seragam keluarga / bridesmaid</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <i data-lucide="check" class="w-4 h-4 text-emerald-600 shrink-0 mt-0.5"></i>
+                <span>Cicil penyusunan draft database tamu undangan</span>
+              </li>
+            </ul>
+          </div>
+          <div class="mt-6 pt-3 border-t border-stone-100 flex items-center justify-between text-[11px] font-semibold text-rose-700">
+            <span>Fase Belanja & Tradisi</span>
+            <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+          </div>
+        </div>
+
+        <!-- FASE 3 -->
+        <div class="relative bg-[#FCFBF9] p-6 rounded-3xl border border-stone-200/90 shadow-sm hover:shadow-md transition-all flex flex-col justify-between group">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <span class="px-3 py-1 rounded-full bg-emerald-100/80 text-emerald-900 text-xs font-bold font-mono">
+                FASE 3
+              </span>
+              <span class="text-xs font-semibold text-slate-400">H-3 s/d H-1 Bulan</span>
+            </div>
+            <div class="w-12 h-12 rounded-2xl bg-emerald-500/10 text-emerald-700 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+              <i data-lucide="file-check-2" class="w-6 h-6"></i>
+            </div>
+            <h3 class="font-serif text-xl font-bold text-slate-900 mb-2">Legalitas KUA & Pemantapan</h3>
+            <p class="text-xs text-slate-500 leading-relaxed mb-4">
+              Selesaikan administrasi negara, bimbingan nikah, dan fitting busana final.
+            </p>
+            <ul class="space-y-2.5 text-xs text-slate-600 border-t border-stone-200/60 pt-4">
+              <li class="flex items-start gap-2">
+                <i data-lucide="check" class="w-4 h-4 text-emerald-600 shrink-0 mt-0.5"></i>
+                <span>Surat pengantar RT/RW & berkas N1-N4 kelurahan</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <i data-lucide="check" class="w-4 h-4 text-emerald-600 shrink-0 mt-0.5"></i>
+                <span>Rekomendasi numpang nikah & daftar SIMKAH KUA</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <i data-lucide="check" class="w-4 h-4 text-emerald-600 shrink-0 mt-0.5"></i>
+                <span>Cek lab kesehatan Puskesmas & Bimwin pranikah</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <i data-lucide="check" class="w-4 h-4 text-emerald-600 shrink-0 mt-0.5"></i>
+                <span><em>Final fitting</em> busana pengantin & orang tua</span>
+              </li>
+            </ul>
+          </div>
+          <div class="mt-6 pt-3 border-t border-stone-100 flex items-center justify-between text-[11px] font-semibold text-emerald-700">
+            <span>Fase Birokrasi & Legal</span>
+            <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+          </div>
+        </div>
+
+        <!-- FASE 4 -->
+        <div class="relative bg-[#FCFBF9] p-6 rounded-3xl border border-stone-200/90 shadow-sm hover:shadow-md transition-all flex flex-col justify-between group">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <span class="px-3 py-1 rounded-full bg-indigo-100/80 text-indigo-900 text-xs font-bold font-mono">
+                FASE 4
+              </span>
+              <span class="text-xs font-semibold text-slate-400">H-30 s/d Hari-H</span>
+            </div>
+            <div class="w-12 h-12 rounded-2xl bg-indigo-500/10 text-indigo-700 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+              <i data-lucide="party-popper" class="w-6 h-6"></i>
+            </div>
+            <h3 class="font-serif text-xl font-bold text-slate-900 mb-2">Eksekusi, Sebar Link & D-Day</h3>
+            <p class="text-xs text-slate-500 leading-relaxed mb-4">
+              Sebarkan undangan digital, koordinasikan panitia, dan nikmati momen bahagia Anda.
+            </p>
+            <ul class="space-y-2.5 text-xs text-slate-600 border-t border-stone-200/60 pt-4">
+              <li class="flex items-start gap-2">
+                <i data-lucide="check" class="w-4 h-4 text-emerald-600 shrink-0 mt-0.5"></i>
+                <span>Generate ratusan link undangan 1-klik ke WhatsApp</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <i data-lucide="check" class="w-4 h-4 text-emerald-600 shrink-0 mt-0.5"></i>
+                <span>Pantau konfirmasi kehadiran RSVP secara live</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <i data-lucide="check" class="w-4 h-4 text-emerald-600 shrink-0 mt-0.5"></i>
+                <span>Bagi tugas Panitia Keluarga & simpan kontak PIC</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <i data-lucide="check" class="w-4 h-4 text-emerald-600 shrink-0 mt-0.5"></i>
+                <span>Cetak Rundown Acara resmi & Buku Tamu Meja A4</span>
+              </li>
+            </ul>
+          </div>
+          <div class="mt-6 pt-3 border-t border-stone-100 flex items-center justify-between text-[11px] font-semibold text-indigo-700">
+            <span>Fase Eksekusi Acara</span>
+            <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Bottom Interactive Callout -->
+      <div class="mt-12 text-center">
+        <a href="#harga" class="inline-flex items-center gap-2 text-sm font-bold text-amber-700 hover:text-amber-800 hover:underline">
+          <span>Semua checklist ini otomatis tersedia di akun Anda saat aktivasi token</span>
+          <i data-lucide="arrow-down" class="w-4 h-4"></i>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Seksi Beli Lisensi / Pricing Dinamis -->
+  <section id="harga" class="py-24 bg-stone-100/60 border-t border-b border-stone-200/60 relative overflow-hidden">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <!-- Section Header -->
+      <div class="text-center max-w-3xl mx-auto">
+        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-50 border border-amber-200 text-amber-900 text-xs font-semibold mb-4">
+          <i data-lucide="sparkles" class="w-3.5 h-3.5 text-amber-600"></i>
+          <span>Investasi Sekali untuk Pernikahan Sempurna</span>
+        </div>
+        <h2 class="font-serif text-3xl sm:text-5xl font-bold text-slate-900 tracking-tight">
+          Akses Penuh Wedding Planner <br>
+          <span class="gold-gradient-text italic font-medium">& Undangan Digital Tanpa Batas</span>
+        </h2>
+        <p class="mt-4 text-slate-600 text-base leading-relaxed">
+          Cukup satu kali aktivasi token tanpa biaya langganan bulanan. Aktif selamanya selama masa persiapan pernikahan Anda dan pasangan.
+        </p>
+      </div>
+
+      <!-- Pricing Card Container -->
+      <div class="mt-14 max-w-2xl mx-auto">
+        <div class="bg-white rounded-3xl border-2 border-amber-500/30 p-8 sm:p-10 shadow-xl shadow-amber-900/5 relative overflow-hidden">
+          
+          <!-- Top Ribbon Badge -->
+          <div class="absolute top-0 right-0">
+            <div class="bg-gradient-to-l from-amber-600 to-amber-500 text-white text-[11px] font-extrabold uppercase tracking-wider py-1.5 px-6 rounded-bl-2xl shadow-sm">
+              All-in-One Lifetime
+            </div>
+          </div>
+
+          <div class="text-left">
+            <h3 class="font-serif text-2xl sm:text-3xl font-bold text-slate-900">
+              Paket Lengkap Pengantin
+            </h3>
+            <p class="text-xs sm:text-sm text-slate-500 mt-1">
+              Smart Wedding Planner + Unlimited Digital Invitation + Master Tamu & RSVP
+            </p>
+
+            <!-- Price Display Area (Dynamic via Supabase) -->
+            <div class="mt-6 pb-6 border-b border-stone-100" id="pricing-display-area">
+              
+              <!-- Strikethrough & Discount Badge (Shown when discount is active) -->
+              <div id="pricing-discount-wrapper" class="hidden items-center gap-2.5 mb-1.5">
+                <span id="pricing-original-price" class="text-lg sm:text-xl text-slate-400 line-through font-serif font-bold">
+                  Rp 199.000
+                </span>
+                <span id="pricing-discount-badge" class="px-2.5 py-0.5 rounded-full bg-rose-100 text-rose-700 text-xs font-bold font-mono">
+                  Hemat 50%
+                </span>
+              </div>
+
+              <!-- Main Price -->
+              <div class="flex items-baseline gap-2">
+                <span id="pricing-main-price" class="text-4xl sm:text-5xl font-extrabold text-slate-900 font-serif tracking-tight">
+                  Rp 99.000
+                </span>
+                <span class="text-xs text-slate-500 font-medium font-sans">
+                  / Sekali bayar selamanya
+                </span>
+              </div>
+              <p class="text-[11px] text-emerald-700 font-medium mt-1.5 flex items-center gap-1.5">
+                <i data-lucide="check-circle" class="w-3.5 h-3.5 text-emerald-600"></i>
+                <span>Tanpa biaya perpanjangan bulanan & bebas iklan</span>
+              </p>
+            </div>
+
+            <!-- Features List -->
+            <div class="mt-6 space-y-3.5">
+              <span class="text-xs font-bold text-slate-800 uppercase tracking-wider block">Fitur yang Anda Dapatkan:</span>
+              <ul class="space-y-3 text-xs sm:text-sm text-slate-600">
+                <li class="flex items-start gap-2.5">
+                  <div class="w-5 h-5 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0 mt-0.5">
+                    <i data-lucide="check" class="w-3.5 h-3.5"></i>
+                  </div>
+                  <span><strong>Smart Budgeting 7 Pos Anggaran:</strong> Vendor tracker, DP/termin, & Kalkulator Katering akurat.</span>
+                </li>
+                <li class="flex items-start gap-2.5">
+                  <div class="w-5 h-5 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0 mt-0.5">
+                    <i data-lucide="check" class="w-3.5 h-3.5"></i>
+                  </div>
+                  <span><strong>Timeline Checklist 16 Tahap Indonesia:</strong> Lengkap dari H-12 hingga berkas KUA N1-N4 & D-Day.</span>
+                </li>
+                <li class="flex items-start gap-2.5">
+                  <div class="w-5 h-5 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0 mt-0.5">
+                    <i data-lucide="check" class="w-3.5 h-3.5"></i>
+                  </div>
+                  <span><strong>Undangan Digital Premium:</strong> Bebas pilih 8+ Preset Desain Elegan dengan URL unik (`/u/slug`).</span>
+                </li>
+                <li class="flex items-start gap-2.5">
+                  <div class="w-5 h-5 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0 mt-0.5">
+                    <i data-lucide="check" class="w-3.5 h-3.5"></i>
+                  </div>
+                  <span><strong>Master Tamu & WhatsApp Generator:</strong> 1-Click sebar tautan khusus nama tamu tanpa batas kuota.</span>
+                </li>
+                <li class="flex items-start gap-2.5">
+                  <div class="w-5 h-5 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0 mt-0.5">
+                    <i data-lucide="check" class="w-3.5 h-3.5"></i>
+                  </div>
+                  <span><strong>Smart RSVP Real-Time:</strong> Tamu konfirmasi jumlah pax & ucapan doa langsung sinkron ke dashboard.</span>
+                </li>
+                <li class="flex items-start gap-2.5">
+                  <div class="w-5 h-5 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0 mt-0.5">
+                    <i data-lucide="check" class="w-3.5 h-3.5"></i>
+                  </div>
+                  <span><strong>Modul Perlengkapan Lengkap:</strong> Kotak Seserahan, Seragam Bridesmaid, Panitia PIC, & Rundown Acara.</span>
+                </li>
+                <li class="flex items-start gap-2.5">
+                  <div class="w-5 h-5 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0 mt-0.5">
+                    <i data-lucide="check" class="w-3.5 h-3.5"></i>
+                  </div>
+                  <span><strong>Cetak Format A4:</strong> Cetak Buku Tamu Meja Resepsi bersih & Rundown Acara untuk panitia lapangan.</span>
+                </li>
+              </ul>
+            </div>
+
+            <!-- Action Buttons (3 Buttons as requested) -->
+            <div class="mt-8 space-y-3">
+              <!-- Tombol 1: Beli via Lynk.id -->
+              <a 
+                id="btn-buy-lynkid" 
+                href="https://lynk.id/" 
+                target="_blank" 
+                class="w-full py-4 px-6 rounded-2xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-center text-sm sm:text-base shadow-lg shadow-amber-600/30 hover:shadow-amber-600/40 transition-all flex items-center justify-center gap-2 group cursor-pointer"
+              >
+                <i data-lucide="shopping-bag" class="w-5 h-5 text-amber-200 group-hover:scale-110 transition-transform"></i>
+                <span>Beli Akses via Lynk.id (Otomatis Dapat Token)</span>
+              </a>
+
+              <!-- Tombol 2: Beli via WhatsApp -->
+              <a 
+                id="btn-buy-wa" 
+                href="https://wa.me/6281234567890" 
+                target="_blank" 
+                class="w-full py-3.5 px-6 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-center text-xs sm:text-sm shadow-sm hover:shadow transition-all flex items-center justify-center gap-2 cursor-pointer"
+              >
+                <i data-lucide="message-circle" class="w-4 h-4 text-emerald-200"></i>
+                <span>Beli Langsung via WhatsApp</span>
+              </a>
+
+              <!-- Tombol 3: Link Aktivasi Akun -->
+              <p class="text-center text-xs text-slate-500 pt-2">
+                Sudah punya kode token? <a href="/register.html" class="font-bold text-amber-700 hover:underline">Klik di sini untuk Aktivasi Akun</a>
+              </p>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
   <!-- CTA Box -->
   <section class="py-20">
     <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -308,14 +663,84 @@
       <div class="flex items-center space-x-6 text-xs text-slate-500 font-medium">
         <a href="/login.html" class="hover:text-amber-700">Masuk Akun</a>
         <a href="/register.html" class="hover:text-amber-700">Aktivasi Token</a>
-        <a href="/admin/tokens.html" class="hover:text-amber-700">Admin Portal</a>
       </div>
     </div>
   </footer>
 
-  <!-- Init Icons -->
+  <!-- Scripts -->
+  <script src="/assets/js/config.js"></script>
   <script>
     lucide.createIcons();
+
+    // Load Dynamic Pricing dari Supabase site_settings (id = 1)
+    async function loadPricingFromSupabase() {
+      try {
+        const client = window.supabaseClient;
+        if (!client) {
+          console.warn('Supabase client tidak tersedia.');
+          return;
+        }
+
+        const { data, error } = await client
+          .from('site_settings')
+          .select('normal_price, discount_price, lynkid_url, admin_wa')
+          .eq('id', 1)
+          .maybeSingle();
+
+        if (error) {
+          console.warn('Gagal memuat site_settings:', error);
+          return;
+        }
+
+        if (data) {
+          const normalPrice = Number(data.normal_price) || 199000;
+          const discountPrice = Number(data.discount_price) || 0;
+          const hasDiscount = discountPrice > 0 && discountPrice < normalPrice;
+
+          const discountWrapper = document.getElementById('pricing-discount-wrapper');
+          const originalPriceEl = document.getElementById('pricing-original-price');
+          const discountBadgeEl = document.getElementById('pricing-discount-badge');
+          const mainPriceEl = document.getElementById('pricing-main-price');
+
+          if (hasDiscount) {
+            discountWrapper.classList.remove('hidden');
+            discountWrapper.classList.add('flex');
+            originalPriceEl.textContent = formatRupiah(normalPrice);
+            const percent = Math.round((1 - (discountPrice / normalPrice)) * 100);
+            discountBadgeEl.textContent = `Hemat ${percent}% Hari Ini`;
+            mainPriceEl.textContent = formatRupiah(discountPrice);
+            mainPriceEl.classList.add('text-amber-700');
+            mainPriceEl.classList.remove('text-slate-900');
+          } else {
+            discountWrapper.classList.add('hidden');
+            discountWrapper.classList.remove('flex');
+            mainPriceEl.textContent = formatRupiah(normalPrice);
+            mainPriceEl.classList.remove('text-amber-700');
+            mainPriceEl.classList.add('text-slate-900');
+          }
+
+          // Tombol Lynk.id
+          const btnLynkid = document.getElementById('btn-buy-lynkid');
+          if (btnLynkid && data.lynkid_url) {
+            btnLynkid.href = data.lynkid_url;
+          }
+
+          // Tombol WhatsApp
+          const btnWa = document.getElementById('btn-buy-wa');
+          if (btnWa && data.admin_wa) {
+            const cleanWa = String(data.admin_wa).replace(/\D/g, '');
+            const msg = encodeURIComponent('Halo Admin, saya ingin membeli Kode Token Aktivasi platform Wedding Planner & Undangan Digital.');
+            btnWa.href = `https://wa.me/${cleanWa}?text=${msg}`;
+          }
+        }
+      } catch (err) {
+        console.warn('Error load pricing:', err);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      loadPricingFromSupabase();
+    });
   </script>
 </body>
 </html>
