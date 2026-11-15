@@ -1110,7 +1110,7 @@ Wassalamu'alaikum Warahmatullahi Wabarakatuh.`
 
         // Set wedding preview link
         if (currentWedding?.slug) {
-          const previewUrl = `/u/${currentWedding.slug}`;
+          const previewUrl = `/u?slug=${currentWedding.slug}&preview=true`;
           const navPreview = document.getElementById('link-preview-invitation');
           const btnPublicPreview = document.getElementById('btn-public-preview');
           if (navPreview) navPreview.href = previewUrl;
@@ -1435,7 +1435,7 @@ Wassalamu'alaikum Warahmatullahi Wabarakatuh.`
     function getGuestInvitationUrl(guestName) {
       const slug = currentWedding?.slug || 'preview';
       const origin = window.location.origin;
-      return `${origin}/u/${slug}?to=${encodeURIComponent(guestName || '')}`;
+      return `${origin}/u?slug=${slug}&to=${encodeURIComponent(guestName || '')}`;
     }
 
     function compileWaMessage(template, guest) {

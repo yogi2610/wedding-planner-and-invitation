@@ -2,6 +2,10 @@
   "cleanUrls": true,
   "rewrites": [
     {
+      "source": "/u",
+      "destination": "/u.html"
+    },
+    {
       "source": "/u/:slug",
       "destination": "/u.html?slug=:slug"
     }

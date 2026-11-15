@@ -119,10 +119,10 @@ class InvitationEngine {
     this.wedding = wedding;
 
     // Cek status publikasi
-    const currentUser = typeof getCurrentUser === 'function' ? getCurrentUser() : null;
-    const isOwner = currentUser && (currentUser.id === wedding.user_id || currentUser.role === 'admin');
+    const urlParams = new URLSearchParams(window.location.search);
+    const isPreview = urlParams.get('preview') === 'true';
 
-    if (!wedding.is_published && !isOwner) {
+    if (wedding.is_published === false && !isPreview) {
       this.showUnpublishedNotice();
       return false;
     }
@@ -141,7 +141,7 @@ class InvitationEngine {
   }
 
   /**
-   * Terapkan palet warna dinamis ke CSS Variables
+   * Terapkan palet warna dinamis ke CSS Variables & Background
    */
   applyThemeColors() {
     const custom = this.wedding.custom_theme_json || {};
@@ -151,12 +151,14 @@ class InvitationEngine {
     const card = custom.card || tplColors.card || '#FFFFFF';
     const text = custom.text || tplColors.text || '#2C352E';
     const accent = custom.accent || tplColors.accent || '#D4AF37';
+    const secondary = custom.secondary || tplColors.secondary || '#E2B170';
 
     const root = document.documentElement;
     root.style.setProperty('--bg-main', bg);
     root.style.setProperty('--bg-card', card);
     root.style.setProperty('--text-main', text);
     root.style.setProperty('--accent-color', accent);
+    root.style.setProperty('--accent-secondary', secondary);
 
     // Ubah background app container
     const app = document.getElementById('invitation-app-container');
@@ -164,21 +166,38 @@ class InvitationEngine {
       app.style.backgroundColor = bg;
       app.style.color = text;
     }
+
+    // Tampilkan Custom BG Image ATAU Lava Lamp Blobs Default
+    const customBg = custom.bg_image_url;
+    const bgImgEl = document.getElementById('custom-bg-image');
+    const lavaEl = document.getElementById('lava-lamp-container');
+
+    if (customBg && bgImgEl) {
+      bgImgEl.style.backgroundImage = `url('${customBg}')`;
+      bgImgEl.classList.remove('hidden');
+      if (lavaEl) lavaEl.classList.add('hidden');
+    } else {
+      if (bgImgEl) bgImgEl.classList.add('hidden');
+      if (lavaEl) lavaEl.classList.remove('hidden');
+    }
   }
 
   /**
-   * Terapkan ornamen visual berdasarkan template.slug
+   * Terapkan ornamen visual dan class berdasarkan template.slug (8 Preset Tema)
    */
   applyTemplateStyles() {
     const tplSlug = this.template?.slug || 'minimalist-sage';
     const container = document.getElementById('invitation-app-container');
     if (!container) return;
 
-    if (tplSlug === 'cozy-terracotta') {
-      container.classList.add('style-terracotta');
-    } else {
-      container.classList.add('style-minimalist');
-    }
+    // Bersihkan class theme sebelumnya
+    container.className = container.className
+      .split(' ')
+      .filter(c => !c.startsWith('theme-') && !c.startsWith('style-'))
+      .join(' ');
+
+    // Tambahkan class theme aktif
+    container.classList.add(`theme-${tplSlug}`);
   }
 
   /**
@@ -240,6 +259,19 @@ class InvitationEngine {
     if (audioBtn) {
       audioBtn.addEventListener('click', () => this.toggleAudio());
     }
+
+    if (this.audioElement) {
+      this.audioElement.addEventListener('ended', () => {
+        this.isPlayingAudio = false;
+        this.updateAudioButtonState();
+      });
+      this.audioElement.addEventListener('pause', () => {
+        if (!this.audioElement.seeking) {
+          this.isPlayingAudio = false;
+          this.updateAudioButtonState();
+        }
+      });
+    }
   }
 
   playAudio() {
@@ -279,14 +311,16 @@ class InvitationEngine {
     const btn = document.getElementById('audio-control');
     if (!btn) return;
 
+    const AUDIO_SPIN_SVG = `<svg class="w-5 h-5 animate-spin text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="3"></circle></svg>`;
+    const AUDIO_STOP_SVG = `<svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>`;
+
     if (this.isPlayingAudio) {
-      btn.innerHTML = `<i data-lucide="disc" class="w-5 h-5 animate-spin text-white"></i>`;
+      btn.innerHTML = AUDIO_SPIN_SVG;
       btn.setAttribute('title', 'Hentikan Musik');
     } else {
-      btn.innerHTML = `<i data-lucide="volume-x" class="w-5 h-5 text-white"></i>`;
+      btn.innerHTML = AUDIO_STOP_SVG;
       btn.setAttribute('title', 'Putar Musik');
     }
-    if (window.lucide) window.lucide.createIcons();
   }
 
   /**
@@ -371,24 +405,55 @@ class InvitationEngine {
    * 5. Hitung Mundur Detik demi Detik & Simpan ke Kalender
    */
   renderCountdownSection() {
-    const targetDate = this.wedding.akad_date || this.wedding.resepsi_date;
-    if (!targetDate) return;
+    let targetDate = this.wedding.akad_date || this.wedding.resepsi_date;
+    if (!targetDate && this.wedding.user?.wedding_date) {
+      targetDate = this.wedding.user.wedding_date;
+    }
+    if (!targetDate) {
+      targetDate = '2027-12-31';
+    }
 
     const daysEl = document.getElementById('countdown-days');
     const hoursEl = document.getElementById('countdown-hours');
     const minsEl = document.getElementById('countdown-minutes');
     const secsEl = document.getElementById('countdown-seconds');
 
-    if (typeof startLiveCountdown === 'function') {
-      startLiveCountdown(targetDate, (text, detailed) => {
-        if (detailed && daysEl) {
-          daysEl.textContent = String(detailed.days).padStart(2, '0');
-          hoursEl.textContent = String(detailed.hours).padStart(2, '0');
-          minsEl.textContent = String(detailed.minutes).padStart(2, '0');
-          secsEl.textContent = String(detailed.seconds).padStart(2, '0');
-        }
-      }, '08:00:00');
-    }
+    if (this.countdownInterval) clearInterval(this.countdownInterval);
+
+    const dateOnly = String(targetDate).split('T')[0];
+    const timeStr = this.wedding.akad_time || '08:00:00';
+    const timeParts = timeStr.replace(/\./g, ':').split(':');
+    const hh = String(timeParts[0] || '08').padStart(2, '0');
+    const mm = String(timeParts[1] || '00').padStart(2, '0');
+    const ss = String(timeParts[2] || '00').padStart(2, '0');
+
+    const targetTimestamp = new Date(`${dateOnly}T${hh}:${mm}:${ss}`).getTime();
+
+    const updateCountdown = () => {
+      const now = new Date().getTime();
+      const diff = targetTimestamp - now;
+
+      if (isNaN(targetTimestamp) || diff <= 0) {
+        if (daysEl) daysEl.textContent = '00';
+        if (hoursEl) hoursEl.textContent = '00';
+        if (minsEl) minsEl.textContent = '00';
+        if (secsEl) secsEl.textContent = '00';
+        return;
+      }
+
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+      if (daysEl) daysEl.textContent = String(days).padStart(2, '0');
+      if (hoursEl) hoursEl.textContent = String(hours).padStart(2, '0');
+      if (minsEl) minsEl.textContent = String(minutes).padStart(2, '0');
+      if (secsEl) secsEl.textContent = String(seconds).padStart(2, '0');
+    };
+
+    updateCountdown();
+    this.countdownInterval = setInterval(updateCountdown, 1000);
 
     // Tombol Simpan ke Google Calendar
     const calBtn = document.getElementById('btn-add-to-calendar');
@@ -662,7 +727,7 @@ class InvitationEngine {
           .from('guests')
           .update({
             rsvp_status: status,
-            confirmed_pax: pax,
+            confirmed_pax: Number(pax),
             wish_message: wish,
             rsvp_submitted_at: now
           })
@@ -677,10 +742,10 @@ class InvitationEngine {
             user_id: this.wedding.user_id,
             wedding_id: this.wedding.id,
             name: guestName,
-            group_category: 'Tamu Undangan',
+            group_category: 'Teman Pria',
             invitation_type: 'digital',
-            estimated_pax: pax || 2,
-            confirmed_pax: pax,
+            estimated_pax: 2,
+            confirmed_pax: Number(pax),
             rsvp_status: status,
             wish_message: wish,
             is_link_sent: true,
@@ -805,8 +870,8 @@ class InvitationEngine {
     const bride = this.wedding?.bride_nickname || 'Mempelai';
     this.renderNoticeScreen(
       'clock',
-      'Undangan Sedang Disiapkan',
-      `Website undangan pernikahan ${groom} & ${bride} masih dalam proses penyusunan dan belum dipublikasikan secara umum.`,
+      'Undangan Sedang Dalam Mode Draft',
+      `Undangan pernikahan ${groom} & ${bride} belum dipublikasikan oleh kedua mempelai. Silakan hubungi pengantin untuk informasi lebih lanjut.`,
       'Buka Dashboard Pengantin',
       '/login.html'
     );

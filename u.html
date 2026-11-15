@@ -45,22 +45,73 @@
       --bg-card: #FFFFFF;
       --text-main: #2C352E;
       --accent-color: #B48342;
+      --accent-secondary: #E2B170;
     }
 
-    /* Template Styles */
-    .style-minimalist .botanical-ornament {
-      display: block;
+    /* Lava Lamp Keyframe Animations */
+    @keyframes float-blob-1 {
+      0%, 100% { transform: translate(0px, 0px) scale(1); }
+      33% { transform: translate(30px, -45px) scale(1.12); }
+      66% { transform: translate(-25px, 25px) scale(0.92); }
     }
-    .style-minimalist .terracotta-ornament {
-      display: none;
+    @keyframes float-blob-2 {
+      0%, 100% { transform: translate(0px, 0px) scale(1); }
+      33% { transform: translate(-35px, 40px) scale(1.15); }
+      66% { transform: translate(25px, -30px) scale(0.88); }
+    }
+    @keyframes float-blob-3 {
+      0%, 100% { transform: translate(0px, 0px) scale(1); }
+      33% { transform: translate(30px, 30px) scale(0.95); }
+      66% { transform: translate(-35px, -40px) scale(1.08); }
+    }
+    @keyframes float-blob-4 {
+      0%, 100% { transform: translate(0px, 0px) scale(1); }
+      33% { transform: translate(-25px, -30px) scale(1.1); }
+      66% { transform: translate(30px, 35px) scale(0.9); }
     }
 
-    .style-terracotta .botanical-ornament {
-      display: none;
-    }
-    .style-terracotta .terracotta-ornament {
-      display: block;
-    }
+    .blob-1 { animation: float-blob-1 16s ease-in-out infinite; }
+    .blob-2 { animation: float-blob-2 20s ease-in-out infinite; }
+    .blob-3 { animation: float-blob-3 18s ease-in-out infinite; }
+    .blob-4 { animation: float-blob-4 22s ease-in-out infinite; }
+
+    /* 8 Theme Presets Custom Styles */
+    .theme-minimalist-sage { font-family: 'Plus Jakarta Sans', sans-serif; }
+    .theme-minimalist-sage .wedding-card { border-radius: 1.5rem; border: 1px solid rgba(107, 142, 120, 0.2); }
+
+    .theme-cozy-terracotta { font-family: 'Plus Jakarta Sans', sans-serif; }
+    .theme-cozy-terracotta .wedding-card { border-radius: 1.75rem; border: 1px solid rgba(198, 107, 78, 0.25); }
+
+    .theme-javanese-royal { font-family: 'Cormorant Garamond', Georgia, serif; background-color: #1C1613 !important; color: #F5EBE1 !important; }
+    .theme-javanese-royal .wedding-card { background-color: #2A221E !important; border: 1px solid rgba(212, 175, 55, 0.4) !important; color: #F5EBE1 !important; }
+    .theme-javanese-royal .wedding-card h1, 
+    .theme-javanese-royal .wedding-card h2, 
+    .theme-javanese-royal .wedding-card h3, 
+    .theme-javanese-royal .wedding-card h4, 
+    .theme-javanese-royal .wedding-card span, 
+    .theme-javanese-royal .wedding-card p { color: #F5EBE1 !important; }
+    .theme-javanese-royal .theme-ornament { color: #D4AF37 !important; }
+
+    .theme-romantic-blush { font-family: 'Plus Jakarta Sans', sans-serif; }
+    .theme-romantic-blush .wedding-card { border-radius: 1.5rem; border: 1px solid rgba(217, 119, 155, 0.25); }
+
+    .theme-luxury-midnight { font-family: 'Cormorant Garamond', Georgia, serif; background-color: #0F172A !important; color: #F8FAFC !important; }
+    .theme-luxury-midnight .wedding-card { background-color: #1E293B !important; border: 1px solid rgba(234, 179, 8, 0.35) !important; color: #F8FAFC !important; }
+    .theme-luxury-midnight .wedding-card h1, 
+    .theme-luxury-midnight .wedding-card h2, 
+    .theme-luxury-midnight .wedding-card h3, 
+    .theme-luxury-midnight .wedding-card h4, 
+    .theme-luxury-midnight .wedding-card span, 
+    .theme-luxury-midnight .wedding-card p { color: #F8FAFC !important; }
+
+    .theme-modern-monochrome { font-family: 'Plus Jakarta Sans', sans-serif; }
+    .theme-modern-monochrome .wedding-card { border-radius: 0.75rem; border: 1px solid #18181B; }
+
+    .theme-rustic-woodland { font-family: 'Plus Jakarta Sans', sans-serif; }
+    .theme-rustic-woodland .wedding-card { border-radius: 1.5rem; border: 1px solid rgba(74, 107, 83, 0.25); }
+
+    .theme-whimsical-fairy { font-family: 'Plus Jakarta Sans', sans-serif; }
+    .theme-whimsical-fairy .wedding-card { border-radius: 2rem; border: 1px solid rgba(124, 92, 252, 0.3); box-shadow: 0 4px 20px -2px rgba(124, 92, 252, 0.15); }
 
     .custom-scrollbar::-webkit-scrollbar {
       width: 4px;
@@ -91,6 +142,22 @@
 
   <!-- MOBILE-FIRST CENTERED APP CONTAINER -->
   <div id="invitation-app-container" class="w-full max-w-md min-h-screen bg-[var(--bg-main,#FCFBF9)] text-[var(--text-main,#2C352E)] shadow-2xl relative flex flex-col overflow-x-hidden overflow-y-auto">
+
+    <!-- Dynamic Ambient Background: Lava Lamp Blobs / Custom Background Image -->
+    <div id="invitation-bg-container" class="absolute inset-0 pointer-events-none z-0 overflow-hidden">
+      <!-- Custom Uploaded Background Image (with overlay) -->
+      <div id="custom-bg-image" class="absolute inset-0 bg-cover bg-center hidden">
+        <div class="absolute inset-0 bg-black/40 backdrop-blur-[0.5px]"></div>
+      </div>
+
+      <!-- Lava Lamp Floating Blobs -->
+      <div id="lava-lamp-container" class="absolute inset-0 overflow-hidden">
+        <div class="lava-blob blob-1 absolute -top-20 -left-20 w-80 h-80 rounded-full filter blur-3xl opacity-35 bg-[var(--accent-color,#b48342)]"></div>
+        <div class="lava-blob blob-2 absolute top-1/3 -right-24 w-88 h-88 rounded-full filter blur-3xl opacity-30 bg-[var(--accent-secondary,#e2b170)]"></div>
+        <div class="lava-blob blob-3 absolute -bottom-24 left-10 w-96 h-96 rounded-full filter blur-3xl opacity-35 bg-[var(--accent-color,#b48342)]"></div>
+        <div class="lava-blob blob-4 absolute top-2/3 -left-16 w-72 h-72 rounded-full filter blur-3xl opacity-25 bg-[var(--accent-secondary,#e2b170)]"></div>
+      </div>
+    </div>
 
     <!-- 1. FULL-SCREEN COVER OVERLAY (SAMPOEL DEPAN) -->
     <div id="cover-screen" class="fixed inset-0 z-50 bg-[#161412] text-white flex flex-col items-center justify-between p-6 sm:p-8 text-center transition-all duration-700 max-w-md mx-auto">
@@ -145,7 +212,7 @@
       style="right: max(1.5rem, calc(50% - 210px));"
       title="Putar / Hentikan Musik"
     >
-      <i data-lucide="disc" class="w-5 h-5 animate-spin text-white"></i>
+      <svg class="w-5 h-5 animate-spin text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="3"></circle></svg>
     </button>
 
     <!-- LIGHTBOX MODAL UNTUK GALERI FOTO -->
@@ -157,7 +224,7 @@
     </div>
 
     <!-- MAIN INVITATION CONTENT (MOBILE APP VIEW) -->
-    <main class="px-5 py-10 space-y-12 text-center">
+    <main class="px-5 py-10 space-y-12 text-center relative z-10">
       
       <!-- 2. HERO HEADER & AYAT KUTIPAN -->
       <section class="space-y-4 pt-6">
@@ -277,40 +344,40 @@
         <h3 class="font-serif text-2xl font-bold text-slate-900">Rangkaian Acara</h3>
 
         <!-- Akad Nikah -->
-        <div class="p-5 rounded-3xl bg-[var(--bg-card,#ffffff)] border border-stone-200/80 shadow-2xs text-left space-y-3">
-          <div class="flex items-center gap-2 text-amber-800 font-bold text-xs uppercase tracking-wider">
+        <div class="wedding-card p-6 rounded-3xl bg-[var(--bg-card,#ffffff)] border border-stone-200/80 shadow-2xs text-center flex flex-col items-center justify-center space-y-3">
+          <div class="inline-flex items-center justify-center gap-2 text-amber-800 font-bold text-xs uppercase tracking-wider">
             <i data-lucide="book-open" class="w-4 h-4"></i>
             <span>Akad Nikah</span>
           </div>
-          <div>
-            <div class="text-sm font-bold text-slate-900" id="akad-date">-</div>
+          <div class="text-center">
+            <div class="text-base font-bold text-slate-900" id="akad-date">-</div>
             <div class="text-xs text-amber-700 font-semibold mt-0.5" id="akad-time">Pukul 08.00 WIB - Selesai</div>
           </div>
-          <div class="pt-2 border-t border-stone-100 text-xs text-slate-600">
+          <div class="pt-2 border-t border-stone-100 text-xs text-slate-600 text-center w-full">
             <span class="font-bold text-slate-800 block" id="akad-venue">Lokasi Akad</span>
-            <span id="akad-address" class="text-slate-500 leading-relaxed block mt-0.5">Alamat lengkap akad</span>
+            <span id="akad-address" class="text-slate-500 leading-relaxed block mt-1 max-w-xs mx-auto">Alamat lengkap akad</span>
           </div>
-          <a id="akad-maps-btn" href="#" target="_blank" class="inline-flex items-center justify-center gap-1.5 w-full py-2 px-4 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold transition-colors hidden cursor-pointer">
+          <a id="akad-maps-btn" href="#" target="_blank" class="inline-flex items-center justify-center gap-1.5 w-full py-2.5 px-4 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold transition-colors hidden cursor-pointer shadow-xs">
             <i data-lucide="map-pin" class="w-3.5 h-3.5"></i>
             <span>Petunjuk Arah Google Maps</span>
           </a>
         </div>
 
         <!-- Resepsi Pernikahan -->
-        <div class="p-5 rounded-3xl bg-[var(--bg-card,#ffffff)] border border-stone-200/80 shadow-2xs text-left space-y-3">
-          <div class="flex items-center gap-2 text-slate-800 font-bold text-xs uppercase tracking-wider">
+        <div class="wedding-card p-6 rounded-3xl bg-[var(--bg-card,#ffffff)] border border-stone-200/80 shadow-2xs text-center flex flex-col items-center justify-center space-y-3">
+          <div class="inline-flex items-center justify-center gap-2 text-slate-800 font-bold text-xs uppercase tracking-wider">
             <i data-lucide="party-popper" class="w-4 h-4 text-amber-600"></i>
             <span>Resepsi Pernikahan</span>
           </div>
-          <div>
-            <div class="text-sm font-bold text-slate-900" id="resepsi-date">-</div>
+          <div class="text-center">
+            <div class="text-base font-bold text-slate-900" id="resepsi-date">-</div>
             <div class="text-xs text-amber-700 font-semibold mt-0.5" id="resepsi-time">Pukul 11.00 - 15.00 WIB</div>
           </div>
-          <div class="pt-2 border-t border-stone-100 text-xs text-slate-600">
+          <div class="pt-2 border-t border-stone-100 text-xs text-slate-600 text-center w-full">
             <span class="font-bold text-slate-800 block" id="resepsi-venue">Gedung / Tempat Resepsi</span>
-            <span id="resepsi-address" class="text-slate-500 leading-relaxed block mt-0.5">Alamat lengkap resepsi</span>
+            <span id="resepsi-address" class="text-slate-500 leading-relaxed block mt-1 max-w-xs mx-auto">Alamat lengkap resepsi</span>
           </div>
-          <a id="resepsi-maps-btn" href="#" target="_blank" class="inline-flex items-center justify-center gap-1.5 w-full py-2 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition-colors hidden cursor-pointer">
+          <a id="resepsi-maps-btn" href="#" target="_blank" class="inline-flex items-center justify-center gap-1.5 w-full py-2.5 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition-colors hidden cursor-pointer shadow-xs">
             <i data-lucide="map-pin" class="w-3.5 h-3.5 text-amber-400"></i>
             <span>Petunjuk Arah Google Maps</span>
           </a>

@@ -209,7 +209,7 @@
           </label>
           <div class="flex items-center">
             <span class="px-3 py-2 text-xs font-mono bg-stone-100 border border-r-0 border-stone-300 rounded-l-xl text-slate-500 select-none hidden sm:inline-block">
-              /u/
+              /u?slug=
             </span>
             <input 
               type="text" 
@@ -392,6 +392,46 @@
               <button type="button" class="px-4 py-1.5 rounded-full text-xs font-bold text-white shadow-xs transition-colors" id="theme-preview-button" style="background-color: #6B8E78;">
                 Buka Undangan
               </button>
+            </div>
+          </div>
+
+          <!-- Opsi Upload Background Kustom Sendiri -->
+          <div class="mt-6 pt-5 border-t border-stone-200/80">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
+              <div>
+                <label class="block text-xs font-bold text-slate-800">
+                  Upload Gambar Background Kustom (Opsional)
+                </label>
+                <p class="text-[11px] text-slate-500">
+                  Gunakan foto galeri / pemandangan Anda sebagai latar belakang undangan. Jika dikosongkan, efek animasi Lava Lamp otomatis aktif.
+                </p>
+              </div>
+              <button 
+                type="button" 
+                id="btn-remove-custom-bg" 
+                onclick="removeCustomBackground()" 
+                class="hidden inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-rose-200 text-rose-700 hover:bg-rose-50 text-xs font-semibold cursor-pointer shrink-0"
+              >
+                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                <span>Gunakan Lava Lamp Default</span>
+              </button>
+            </div>
+
+            <div class="flex items-center gap-4">
+              <div id="custom-bg-preview-box" class="w-24 h-24 rounded-2xl border-2 border-dashed border-stone-300 bg-stone-100 flex items-center justify-center overflow-hidden shrink-0 relative">
+                <img id="custom-bg-preview-img" src="" alt="Custom BG" class="w-full h-full object-cover hidden">
+                <span id="custom-bg-placeholder" class="text-[10px] text-slate-400 text-center px-1 font-semibold">Lava Lamp Aktif</span>
+              </div>
+              <div class="space-y-1.5 flex-1">
+                <input 
+                  type="file" 
+                  id="custom-bg-file-input" 
+                  accept="image/*" 
+                  onchange="handleCustomBgUpload(event)" 
+                  class="block w-full text-xs text-slate-500 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-amber-50 file:text-amber-800 hover:file:bg-amber-100 cursor-pointer"
+                >
+                <span class="text-[10px] text-slate-400 block" id="custom-bg-upload-status">Mendukung format JPG, PNG, WEBP (Otomatis dikompresi WebP &lt; 150KB).</span>
+              </div>
             </div>
           </div>
 
@@ -854,15 +894,22 @@
 
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label class="block text-xs font-bold text-slate-700 mb-1">Pilihan Lagu Romantis Bebas Royalti</label>
+              <label class="block text-xs font-bold text-slate-700 mb-1">10 Pilihan Lagu Wedding Romantis (Pixabay CDN)</label>
               <select 
                 id="preset-audio-select" 
                 onchange="handleAudioPresetChange(this.value)" 
                 class="w-full px-3 py-2 rounded-xl border border-stone-300 text-xs bg-white focus:outline-none focus:ring-2 focus:ring-amber-500/40"
               >
-                <option value="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3">1. Romantic Piano & Strings (Peaceful Love)</option>
-                <option value="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3">2. Acoustic Wedding Melodies</option>
-                <option value="https://assets.mixkit.co/music/preview/mixkit-romantic-dinner-6.mp3">3. Soft Serenade Piano</option>
+                <option value="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3">1. Romantic Wedding Piano</option>
+                <option value="https://cdn.pixabay.com/download/audio/2022/03/15/audio_c8c8a73467.mp3">2. Acoustic Guitar Love</option>
+                <option value="https://cdn.pixabay.com/download/audio/2022/01/18/audio_d0a13f69d2.mp3">3. Cinematic String Waltz</option>
+                <option value="https://cdn.pixabay.com/download/audio/2022/10/14/audio_9939f77626.mp3">4. Sweet Floral Melody</option>
+                <option value="https://cdn.pixabay.com/download/audio/2022/11/06/audio_c97b830d93.mp3">5. Javanese/Traditional Ambient</option>
+                <option value="https://cdn.pixabay.com/download/audio/2023/02/28/audio_550d815d31.mp3">6. Warm Sunset Serenade</option>
+                <option value="https://cdn.pixabay.com/download/audio/2022/08/02/audio_884fe92c21.mp3">7. Forever With You Violin</option>
+                <option value="https://cdn.pixabay.com/download/audio/2022/04/27/audio_30b3eb9687.mp3">8. Gentle Morning Breeze</option>
+                <option value="https://cdn.pixabay.com/download/audio/2021/09/06/audio_7322bf2f38.mp3">9. Pure Love Music Box</option>
+                <option value="https://cdn.pixabay.com/download/audio/2022/02/07/audio_1f237efb99.mp3">10. Joyful Celebration Instrumental</option>
                 <option value="custom">-- Masukkan Link MP3 Sendiri --</option>
               </select>
             </div>
@@ -886,10 +933,10 @@
               id="btn-test-audio" 
               class="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-indigo-200 bg-indigo-50 hover:bg-indigo-100 text-indigo-900 text-xs font-bold transition-colors cursor-pointer"
             >
-              <i data-lucide="play" class="w-3.5 h-3.5"></i>
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
               <span id="test-audio-text">Tes Putar Musik</span>
             </button>
-            <span class="text-[11px] text-slate-400">Pastikan format file berakhiran .mp3 publik</span>
+            <span class="text-[11px] text-slate-400">Pastikan speaker aktif untuk mendengarkan lagu</span>
           </div>
           <audio id="tester-audio" loop preload="none"></audio>
         </div>
@@ -1094,6 +1141,24 @@
       renderUserHeader();
 
       await loadTemplatesAndWedding();
+
+      // Reset audio test button state on ended/pause
+      const testerEl = document.getElementById('tester-audio');
+      if (testerEl) {
+        testerEl.addEventListener('ended', () => {
+          isAudioTesting = false;
+          const btn = document.getElementById('btn-test-audio');
+          if (btn) btn.innerHTML = `${AUDIO_TEST_PLAY_SVG}<span>Tes Putar Musik</span>`;
+        });
+        testerEl.addEventListener('pause', () => {
+          if (!testerEl.seeking) {
+            isAudioTesting = false;
+            const btn = document.getElementById('btn-test-audio');
+            if (btn) btn.innerHTML = `${AUDIO_TEST_PLAY_SVG}<span>Tes Putar Musik</span>`;
+          }
+        });
+      }
+
       lucide.createIcons();
     });
 
@@ -1136,6 +1201,74 @@
       }
     }
 
+    // 8 Preset Tema Resmi PlatformNikah
+    const PRESET_TEMPLATES = [
+      {
+        id: 1,
+        slug: 'minimalist-sage',
+        name: 'Minimalist Sage Botanical',
+        category: 'Botanical',
+        is_premium: false,
+        default_colors_json: { bg: '#F4F6F3', card: '#FFFFFF', text: '#2C352E', accent: '#6B8E78', secondary: '#A3B899' }
+      },
+      {
+        id: 2,
+        slug: 'cozy-terracotta',
+        name: 'Cozy Illustrated Terracotta',
+        category: 'Warm Earthy',
+        is_premium: false,
+        default_colors_json: { bg: '#FAF4EF', card: '#FFFFFF', text: '#3D2E2B', accent: '#C66B4E', secondary: '#E29578' }
+      },
+      {
+        id: 3,
+        slug: 'javanese-royal',
+        name: 'Royal Javanese Heritage',
+        category: 'Traditional Keraton',
+        is_premium: true,
+        default_colors_json: { bg: '#1C1613', card: '#2A221E', text: '#F5EBE1', accent: '#D4AF37', secondary: '#B8860B' }
+      },
+      {
+        id: 4,
+        slug: 'romantic-blush',
+        name: 'Romantic Peony Blush',
+        category: 'Romantic Floral',
+        is_premium: false,
+        default_colors_json: { bg: '#FFF5F7', card: '#FFFFFF', text: '#3B2C35', accent: '#D9779B', secondary: '#F2AEC1' }
+      },
+      {
+        id: 5,
+        slug: 'luxury-midnight',
+        name: 'Midnight Gold Ballroom',
+        category: 'Glamour Luxury',
+        is_premium: true,
+        default_colors_json: { bg: '#0F172A', card: '#1E293B', text: '#F8FAFC', accent: '#EAB308', secondary: '#FACC15' }
+      },
+      {
+        id: 6,
+        slug: 'modern-monochrome',
+        name: 'Editorial Monochrome',
+        category: 'Editorial Minimalist',
+        is_premium: false,
+        default_colors_json: { bg: '#F8F9FA', card: '#FFFFFF', text: '#09090B', accent: '#18181B', secondary: '#71717A' }
+      },
+      {
+        id: 7,
+        slug: 'rustic-woodland',
+        name: 'Rustic Pine & Woodland',
+        category: 'Rustic Forest',
+        is_premium: false,
+        default_colors_json: { bg: '#F4F1EA', card: '#FFFFFF', text: '#2D312E', accent: '#4A6B53', secondary: '#8FA68E' }
+      },
+      {
+        id: 8,
+        slug: 'whimsical-fairy',
+        name: 'Whimsical Starlight Lilac',
+        category: 'Fairytale',
+        is_premium: true,
+        default_colors_json: { bg: '#F6F4FF', card: '#FFFFFF', text: '#2D234D', accent: '#7C5CFC', secondary: '#A78BFA' }
+      }
+    ];
+
     // ==========================================
     // LOAD TEMPLATES & WEDDING DATA
     // ==========================================
@@ -1152,35 +1285,27 @@
           .order('id', { ascending: true });
 
         if (tplsError || !tpls || !tpls.length) {
-          // Fallback tema jika tabel templates kosong
-          templatesList = [
-            {
-              id: 1,
-              slug: 'minimalist-sage',
-              name: 'Minimalist Sage Botanical',
-              category: 'Minimalist',
-              is_premium: false,
-              default_colors_json: { bg: '#F4F6F3', card: '#FFFFFF', text: '#2C352E', accent: '#6B8E78' }
-            },
-            {
-              id: 2,
-              slug: 'cozy-terracotta',
-              name: 'Cozy Illustrated Terracotta',
-              category: 'Illustrated',
-              is_premium: true,
-              default_colors_json: { bg: '#FAF6F0', card: '#FFFDF9', text: '#3D352E', accent: '#C87D65' }
-            },
-            {
-              id: 3,
-              slug: 'royal-gold',
-              name: 'Royal Champagne & Gold',
-              category: 'Luxury',
-              is_premium: true,
-              default_colors_json: { bg: '#1A1815', card: '#25221D', text: '#F9F6F0', accent: '#D4AF37' }
-            }
-          ];
+          // Fallback 8 preset tema lengkap
+          templatesList = PRESET_TEMPLATES;
         } else {
-          templatesList = tpls;
+          // Gabungkan data DB Supabase dengan 8 preset
+          templatesList = PRESET_TEMPLATES.map(preset => {
+            const dbMatch = tpls.find(dbTpl => dbTpl.slug === preset.slug);
+            if (dbMatch) {
+              return {
+                ...preset,
+                id: dbMatch.id,
+                name: dbMatch.name || preset.name,
+                is_premium: dbMatch.is_premium !== undefined ? dbMatch.is_premium : preset.is_premium
+              };
+            }
+            return preset;
+          });
+          tpls.forEach(dbTpl => {
+            if (!templatesList.some(t => t.slug === dbTpl.slug || t.id === dbTpl.id)) {
+              templatesList.push(dbTpl);
+            }
+          });
         }
 
         // 2. Ambil / Buat baris wedding milik user
@@ -1244,12 +1369,13 @@
       selectedTemplateId = w.template_id || templatesList[0]?.id || 1;
       renderTemplatesCatalog();
 
-      // Custom Theme Colors
+      // Custom Theme Colors & Background
       if (w.custom_theme_json && typeof w.custom_theme_json === 'object') {
         customTheme = { ...customTheme, ...w.custom_theme_json };
       }
       setColorInputs(customTheme);
       updateThemePreview();
+      setCustomBgPreview(customTheme.bg_image_url || null);
 
       // Profil Pria (CPP)
       document.getElementById('groom-nickname').value = w.groom_nickname || '';
@@ -1353,7 +1479,7 @@
       if (slugInput.value !== clean) slugInput.value = clean;
 
       const previewEl = document.getElementById('slug-full-preview');
-      previewEl.textContent = clean ? `${window.location.origin}/u/${clean}` : '';
+      previewEl.textContent = clean ? `${window.location.origin}/u?slug=${clean}` : '';
 
       const msgEl = document.getElementById('slug-validation-msg');
 
@@ -1416,7 +1542,7 @@
 
     function openLivePreview() {
       const slug = document.getElementById('wedding-slug').value.trim() || currentWedding?.slug || 'preview';
-      const url = `/u.html?slug=${slug}&to=Bpk.+Budi+Santoso+%26+Partner`;
+      const url = `/u?slug=${slug}&preview=true&to=Bpk.+Budi+Santoso+%26+Partner`;
       window.open(url, '_blank');
     }
 
@@ -1540,6 +1666,66 @@
     }
 
     // ==========================================
+    // CUSTOM BACKGROUND IMAGE HELPERS
+    // ==========================================
+    function setCustomBgPreview(url) {
+      const img = document.getElementById('custom-bg-preview-img');
+      const placeholder = document.getElementById('custom-bg-placeholder');
+      const btnRemove = document.getElementById('btn-remove-custom-bg');
+      if (url) {
+        if (img) {
+          img.src = url;
+          img.classList.remove('hidden');
+        }
+        if (placeholder) placeholder.classList.add('hidden');
+        if (btnRemove) btnRemove.classList.remove('hidden');
+      } else {
+        if (img) {
+          img.src = '';
+          img.classList.add('hidden');
+        }
+        if (placeholder) placeholder.classList.remove('hidden');
+        if (btnRemove) btnRemove.classList.add('hidden');
+      }
+    }
+
+    async function handleCustomBgUpload(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const statusEl = document.getElementById('custom-bg-upload-status');
+      statusEl.textContent = 'Mengompresi dan mengunggah gambar latar...';
+      statusEl.className = 'text-[10px] text-amber-700 font-semibold block animate-pulse';
+
+      try {
+        const result = await uploadWeddingImage(file, 'backgrounds', 1200, 0.78);
+        customTheme.bg_image_url = result.url;
+        setCustomBgPreview(result.url);
+        statusEl.textContent = 'Background kustom berhasil diunggah! Jangan lupa simpan pengaturan.';
+        statusEl.className = 'text-[10px] text-emerald-600 font-semibold block';
+        showToast('Background kustom berhasil diunggah!', 'success');
+      } catch (err) {
+        console.error('Gagal upload background:', err);
+        statusEl.textContent = 'Gagal upload: ' + err.message;
+        statusEl.className = 'text-[10px] text-rose-500 font-semibold block';
+        showToast('Gagal mengunggah background: ' + err.message, 'error');
+      }
+    }
+
+    function removeCustomBackground() {
+      customTheme.bg_image_url = null;
+      setCustomBgPreview(null);
+      const input = document.getElementById('custom-bg-file-input');
+      if (input) input.value = '';
+      const statusEl = document.getElementById('custom-bg-upload-status');
+      if (statusEl) {
+        statusEl.textContent = 'Efek animasi Lava Lamp default akan digunakan. Simpan untuk menerapkan.';
+        statusEl.className = 'text-[10px] text-slate-500 block';
+      }
+      showToast('Background kustom dihapus. Menggunakan efek Lava Lamp.', 'info');
+    }
+
+    // ==========================================
     // TAB 2: PROFIL MEMPELAI & FOTO UPLOAD
     // ==========================================
     async function handlePhotoUpload(event, type) {
@@ -1631,36 +1817,34 @@
       }
     }
 
+    const AUDIO_TEST_PLAY_SVG = `<svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>`;
+    const AUDIO_TEST_STOP_SVG = `<svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>`;
+
     let isAudioTesting = false;
     function toggleAudioTest() {
       const audioEl = document.getElementById('tester-audio');
       const btn = document.getElementById('btn-test-audio');
-      const text = document.getElementById('test-audio-text');
       const url = document.getElementById('audio-url').value.trim();
 
       if (!url) {
-        showToast('Masukkan link audio MP3 terlebih dahulu', 'warning');
+        showToast('Pilih lagu atau masukkan link audio MP3 terlebih dahulu', 'warning');
         return;
       }
 
       if (isAudioTesting) {
         audioEl.pause();
         isAudioTesting = false;
-        text.textContent = 'Tes Putar Musik';
-        btn.innerHTML = `<i data-lucide="play" class="w-3.5 h-3.5"></i><span>Tes Putar Musik</span>`;
+        btn.innerHTML = `${AUDIO_TEST_PLAY_SVG}<span>Tes Putar Musik</span>`;
       } else {
         audioEl.src = url;
         audioEl.play().then(() => {
           isAudioTesting = true;
-          text.textContent = 'Hentikan Musik';
-          btn.innerHTML = `<i data-lucide="square" class="w-3.5 h-3.5"></i><span>Hentikan Musik</span>`;
-          lucide.createIcons();
+          btn.innerHTML = `${AUDIO_TEST_STOP_SVG}<span>Hentikan Musik</span>`;
         }).catch(err => {
           console.warn('Audio play error:', err);
           showToast('Gagal memutar audio: ' + err.message, 'error');
         });
       }
-      lucide.createIcons();
     }
 
     // Gallery upload handler
