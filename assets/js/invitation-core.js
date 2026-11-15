@@ -127,6 +127,22 @@ class InvitationEngine {
       return false;
     }
 
+    // Ambil data user pemilik acara (untuk wedding_date fallback jika belum diatur di wedding)
+    if (wedding.user_id) {
+      try {
+        const { data: userRow } = await client
+          .from('users')
+          .select('wedding_date, name')
+          .eq('id', wedding.user_id)
+          .maybeSingle();
+        if (userRow) {
+          this.weddingUser = userRow;
+        }
+      } catch (e) {
+        console.warn('Could not fetch wedding owner user data:', e);
+      }
+    }
+
     // Ambil data template
     if (wedding.template_id) {
       const { data: tpl } = await client
@@ -217,9 +233,8 @@ class InvitationEngine {
     if (coverCouple) coverCouple.textContent = couple;
     if (coverGuest) coverGuest.textContent = this.guestName;
     if (coverDate) {
-      coverDate.textContent = this.wedding.akad_date 
-        ? formatDateIndo(this.wedding.akad_date) 
-        : 'Menuju Hari Bahagia';
+      const cDate = this.wedding.akad_date || this.wedding.resepsi_date || this.weddingUser?.wedding_date;
+      coverDate.textContent = cDate ? formatDateIndo(cDate) : 'Menuju Hari Bahagia';
     }
 
     // Tombol Buka Undangan
@@ -271,15 +286,27 @@ class InvitationEngine {
           this.updateAudioButtonState();
         }
       });
+      // Fallback ke local track-1.mp3 jika custom audio link gagal dimuat/error
+      this.audioElement.addEventListener('error', (e) => {
+        console.warn('Audio failed to load, falling back to local track-1.mp3', e);
+        if (this.audioElement.src && !this.audioElement.src.includes('/assets/audio/track-1.mp3')) {
+          this.audioElement.src = '/assets/audio/track-1.mp3';
+          this.audioElement.load();
+          this.audioElement.play().then(() => {
+            this.isPlayingAudio = true;
+            this.updateAudioButtonState();
+          }).catch(() => {});
+        }
+      });
     }
   }
 
   playAudio() {
     if (!this.audioElement) return;
     
-    // Set audio source jika disediakan
-    const sourceUrl = this.wedding?.audio_url || 'https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3';
-    if (!this.audioElement.src || this.audioElement.src !== sourceUrl) {
+    // Set audio source jika disediakan (default fallback: /assets/audio/track-1.mp3)
+    const sourceUrl = this.wedding?.audio_url || '/assets/audio/track-1.mp3';
+    if (!this.audioElement.src || !this.audioElement.src.endsWith(sourceUrl)) {
       this.audioElement.src = sourceUrl;
     }
 
@@ -405,13 +432,8 @@ class InvitationEngine {
    * 5. Hitung Mundur Detik demi Detik & Simpan ke Kalender
    */
   renderCountdownSection() {
-    let targetDate = this.wedding.akad_date || this.wedding.resepsi_date;
-    if (!targetDate && this.wedding.user?.wedding_date) {
-      targetDate = this.wedding.user.wedding_date;
-    }
-    if (!targetDate) {
-      targetDate = '2027-12-31';
-    }
+    // Ambil tanggal berurutan: wedding.akad_date -> wedding.resepsi_date -> weddingUser.wedding_date -> default 2027-12-31
+    const rawDate = this.wedding.akad_date || this.wedding.resepsi_date || this.weddingUser?.wedding_date || '2027-12-31';
 
     const daysEl = document.getElementById('countdown-days');
     const hoursEl = document.getElementById('countdown-hours');
@@ -420,14 +442,27 @@ class InvitationEngine {
 
     if (this.countdownInterval) clearInterval(this.countdownInterval);
 
-    const dateOnly = String(targetDate).split('T')[0];
-    const timeStr = this.wedding.akad_time || '08:00:00';
-    const timeParts = timeStr.replace(/\./g, ':').split(':');
-    const hh = String(timeParts[0] || '08').padStart(2, '0');
-    const mm = String(timeParts[1] || '00').padStart(2, '0');
-    const ss = String(timeParts[2] || '00').padStart(2, '0');
+    // Parsing aman bebas bug timezone string
+    const dateStr = String(rawDate).split('T')[0].trim();
+    const parts = dateStr.split('-');
+    let year = 2027, month = 12, day = 31;
+    if (parts.length === 3) {
+      year = parseInt(parts[0], 10) || 2027;
+      month = parseInt(parts[1], 10) || 12;
+      day = parseInt(parts[2], 10) || 31;
+    }
 
-    const targetTimestamp = new Date(`${dateOnly}T${hh}:${mm}:${ss}`).getTime();
+    let hh = 8, mm = 0, ss = 0;
+    if (this.wedding.akad_time) {
+      const tMatch = String(this.wedding.akad_time).match(/(\d{1,2})[:.](\d{1,2})/);
+      if (tMatch) {
+        hh = parseInt(tMatch[1], 10);
+        mm = parseInt(tMatch[2], 10);
+      }
+    }
+
+    const targetDateObj = new Date(year, month - 1, day, hh, mm, ss);
+    const targetTimestamp = targetDateObj.getTime();
 
     const updateCountdown = () => {
       const now = new Date().getTime();
@@ -470,7 +505,8 @@ class InvitationEngine {
     const details = encodeURIComponent(`Pernikahan bahagia ${w.groom_fullname || groom} & ${w.bride_fullname || bride}.\n\nInfo lengkap & konfirmasi kehadiran: ${window.location.href}`);
     const location = encodeURIComponent(`${w.akad_venue || w.resepsi_venue || 'Lokasi Acara'}, ${w.akad_address || w.resepsi_address || ''}`);
 
-    const dateStr = (w.akad_date || '2027-08-14').replace(/-/g, '');
+    const rawDate = w.akad_date || w.resepsi_date || this.weddingUser?.wedding_date || '2027-12-31';
+    const dateStr = String(rawDate).split('T')[0].replace(/-/g, '');
     const start = `${dateStr}T080000`;
     const end = `${dateStr}T140000`;
 
@@ -535,7 +571,7 @@ class InvitationEngine {
 
     section.classList.remove('hidden');
     container.innerHTML = stories.map(s => `
-      <div class="p-4 rounded-2xl bg-[var(--bg-card,#ffffff)] border border-stone-200/80 shadow-2xs space-y-1 relative pl-5 border-l-4 border-l-[var(--accent-color,#b48342)]">
+      <div class="wedding-card backdrop-blur-md p-4 rounded-2xl bg-[var(--bg-card,#ffffff)]/85 border border-stone-200/80 shadow-2xs space-y-1 relative pl-5 border-l-4 border-l-[var(--accent-color,#b48342)]">
         <span class="text-[10px] font-bold font-mono text-[var(--accent-color,#b48342)] uppercase tracking-wider">${escapeHtml(s.year || '')}</span>
         <h4 class="font-serif text-base font-bold text-slate-900">${escapeHtml(s.title || '')}</h4>
         <p class="text-xs text-slate-600 leading-relaxed">${escapeHtml(s.story || '')}</p>
@@ -625,7 +661,7 @@ class InvitationEngine {
 
     if (hasEnvelopes) {
       container.innerHTML = envelopes.map(env => `
-        <div class="p-4 rounded-2xl bg-[var(--bg-card,#ffffff)] border border-stone-200/80 shadow-2xs flex items-center justify-between gap-3">
+        <div class="wedding-card backdrop-blur-md p-4 rounded-2xl bg-[var(--bg-card,#ffffff)]/85 border border-stone-200/80 shadow-2xs flex items-center justify-between gap-3">
           <div>
             <span class="text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded bg-amber-50 text-amber-900 border border-amber-200/70">
               ${escapeHtml(env.bank || 'Bank')}
@@ -835,7 +871,7 @@ class InvitationEngine {
       : `<span class="text-[9px] px-2 py-0.5 rounded-full font-bold bg-stone-100 text-stone-600">Berhalangan</span>`;
 
     return `
-      <div class="bg-[var(--bg-card,#ffffff)] p-4 rounded-2xl border border-stone-200/90 shadow-2xs space-y-2 animate-in fade-in duration-300">
+      <div class="wedding-card backdrop-blur-md bg-[var(--bg-card,#ffffff)]/85 p-4 rounded-2xl border border-stone-200/90 shadow-2xs space-y-2 animate-in fade-in duration-300">
         <div class="flex items-center justify-between gap-2">
           <div class="flex items-center gap-2">
             <div class="w-7 h-7 rounded-full bg-amber-100 text-amber-900 font-bold text-[10px] flex items-center justify-center font-serif">
