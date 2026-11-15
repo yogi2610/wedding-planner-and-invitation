@@ -1,6 +1,7 @@
-# GEMINI.md - Panduan & Aturan Permanen Proyek Platform Nikah
+# GEMINI.md - Panduan & Aturan Permanen Proyek MenikahBersama
 
-> **Sistem:** All-in-One Wedding Planner & Digital Invitation Platform (LIVE on GitHub + Vercel + Supabase)  
+> **Sistem:** All-in-One Wedding Planner & Digital Invitation Platform — MenikahBersama (LIVE on GitHub + Vercel + Supabase)  
+> **Domain Resmi (Live):** https://menikahbersama.my.id  
 > **Repository GitHub:** https://github.com/yogi2610/wedding-planner-and-invitation.git  
 > **Branch Utama:** `main`
 

@@ -224,7 +224,7 @@ class InvitationEngine {
     const bride = this.wedding.bride_nickname || 'Wanita';
     const couple = `${groom} & ${bride}`;
 
-    document.title = `Undangan Pernikahan ${couple} | Platform Nikah`;
+    document.title = `Undangan Pernikahan ${couple} — MenikahBersama | Wedding Planner & Undangan Digital`;
 
     const coverCouple = document.getElementById('cover-couple-name');
     const coverGuest = document.getElementById('cover-guest-name');
@@ -895,7 +895,7 @@ class InvitationEngine {
     this.renderNoticeScreen(
       'alert-circle',
       'Undangan Tidak Ditemukan',
-      msg || 'Alamat tautan undangan yang Anda buka tidak terdaftar di sistem PlatformNikah.',
+      msg || 'Alamat tautan undangan yang Anda buka tidak terdaftar di sistem MenikahBersama (menikahbersama.my.id).',
       'Kembali ke Beranda',
       '/'
     );
