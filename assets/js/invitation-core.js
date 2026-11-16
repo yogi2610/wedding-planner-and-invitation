@@ -715,6 +715,7 @@ class InvitationEngine {
       this.renderEnvelopesSection();
       this.renderRsvpSection();
       this.loadWishes();
+      this.applySectionVisibility();
 
       this.initScrollAnimations();
       this.initScrollSpy();
@@ -973,19 +974,132 @@ class InvitationEngine {
   }
 
   /**
-   * Live Preview Listener via postMessage
+   * Live Preview Listener via postMessage (Studio Integration Ala Canva & Katsudoto)
    */
   initLivePreviewListener() {
     window.addEventListener('message', (event) => {
       const msg = event.data;
-      if (!msg || (msg.type !== 'MB_PREVIEW_UPDATE' && msg.type !== 'PREVIEW_DATA')) return;
-      this.handleLivePreviewUpdate(msg.data || msg);
+      if (!msg) return;
+
+      // Quick Actions dari Toolbar Studio
+      if (msg.action === 'OPEN_INVITATION') {
+        this.openInvitation();
+        return;
+      }
+      if (msg.action === 'RESET_COVER') {
+        this.resetCover();
+        return;
+      }
+
+      // Live Updates data kustomisasi
+      if (msg.type === 'LIVE_PREVIEW_UPDATE' || msg.type === 'MB_PREVIEW_UPDATE' || msg.type === 'PREVIEW_DATA') {
+        const payload = msg.payload || msg.data || msg;
+        this.handleLivePreviewUpdate(payload);
+      }
     });
 
-    if (window.opener) {
+    // Beri sinyal ke parent window / opener bahwa iframe siap
+    const target = window.opener || (window.parent !== window ? window.parent : null);
+    if (target) {
       try {
-        window.opener.postMessage({ type: 'MB_PREVIEW_READY' }, '*');
+        target.postMessage({ type: 'MB_PREVIEW_READY' }, '*');
       } catch (e) {}
+    }
+  }
+
+  resetCover() {
+    const cover = document.getElementById('cover-screen');
+    const curtainLeft = document.getElementById('cover-curtain-left');
+    const curtainRight = document.getElementById('cover-curtain-right');
+    const dock = document.getElementById('bottom-dock');
+
+    if (cover) {
+      cover.style.display = 'flex';
+      cover.style.pointerEvents = 'auto';
+      setTimeout(() => {
+        cover.style.transform = 'translateY(0)';
+        cover.style.opacity = '1';
+      }, 30);
+    }
+
+    if (curtainLeft) {
+      curtainLeft.style.transform = 'translateX(0) scale(1)';
+      curtainLeft.style.opacity = '0.95';
+    }
+    if (curtainRight) {
+      curtainRight.style.transform = 'translateX(0) scale(1)';
+      curtainRight.style.opacity = '0.95';
+    }
+
+    if (dock) {
+      dock.classList.add('opacity-0', 'translate-y-10', 'pointer-events-none');
+      dock.classList.remove('opacity-100', 'translate-y-0', 'pointer-events-auto');
+    }
+
+    const app = document.getElementById('invitation-app-container');
+    if (app) app.scrollTop = 0;
+    window.scrollTo(0, 0);
+  }
+
+  applySectionVisibility() {
+    const custom = this.wedding?.custom_theme_json || {};
+    const sec = custom.sections || {};
+
+    // 1. Kutipan
+    const quoteEl = document.getElementById('section-quote');
+    if (quoteEl) {
+      if (sec.show_quote === false) quoteEl.classList.add('hidden');
+      else quoteEl.classList.remove('hidden');
+    }
+
+    // 2. Countdown
+    const countEl = document.getElementById('section-countdown');
+    if (countEl) {
+      if (sec.show_countdown === false) countEl.classList.add('hidden');
+      else countEl.classList.remove('hidden');
+    }
+
+    // 3. Resepsi
+    const resepsiEl = document.getElementById('card-event-resepsi');
+    if (resepsiEl) {
+      if (sec.show_resepsi === false) resepsiEl.classList.add('hidden');
+      else resepsiEl.classList.remove('hidden');
+    }
+
+    // 4. Kisah Cinta
+    const storyEl = document.getElementById('section-love-story');
+    if (storyEl) {
+      const hasStory = Array.isArray(this.wedding?.love_story_json) && this.wedding.love_story_json.length > 0;
+      if (sec.show_story === false || !hasStory) storyEl.classList.add('hidden');
+      else storyEl.classList.remove('hidden');
+    }
+
+    // 5. Galeri
+    const galleryEl = document.getElementById('section-gallery');
+    if (galleryEl) {
+      const hasPhotos = Array.isArray(this.wedding?.gallery_json) && this.wedding.gallery_json.length > 0;
+      if (sec.show_gallery === false || !hasPhotos) galleryEl.classList.add('hidden');
+      else galleryEl.classList.remove('hidden');
+    }
+
+    // 6. Amplop
+    const envelopeEl = document.getElementById('section-envelopes');
+    if (envelopeEl) {
+      const hasEnv = Array.isArray(this.wedding?.envelopes_json) && this.wedding.envelopes_json.length > 0;
+      const hasAddr = Boolean(custom.gift_address && custom.gift_address.trim() !== '');
+      if (sec.show_gift === false || (!hasEnv && !hasAddr)) envelopeEl.classList.add('hidden');
+      else envelopeEl.classList.remove('hidden');
+    }
+
+    // 7. Musik
+    const audioBtn = document.getElementById('audio-control');
+    if (audioBtn) {
+      if (sec.show_music === false) {
+        audioBtn.classList.add('hidden');
+        if (this.audioElement) this.audioElement.pause();
+      } else {
+        audioBtn.classList.remove('hidden');
+      }
     }
   }
 
@@ -1022,6 +1136,7 @@ class InvitationEngine {
     this.renderLoveStorySection();
     this.renderGallerySection();
     this.renderEnvelopesSection();
+    this.applySectionVisibility();
 
     if (window.lucide) {
       window.lucide.createIcons();
