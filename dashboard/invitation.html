@@ -435,6 +435,71 @@
             </div>
           </div>
 
+          <!-- Fitur Efek Visual Premium Tahap A: Partikel Jatuh & Bentuk Bingkai Foto -->
+          <div class="mt-6 pt-5 border-t border-stone-200/80 space-y-4">
+            <div>
+              <h4 class="font-serif text-base font-bold text-slate-900 flex items-center gap-2">
+                <i data-lucide="sparkle" class="w-4 h-4 text-amber-500"></i>
+                <span>Efek Partikel Jatuh & Bentuk Bingkai Foto Mempelai</span>
+              </h4>
+              <p class="text-[11px] text-slate-500">Atur efek visual partikel melayang dan bentuk bingkai foto pengantin yang tampil di undangan publik.</p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <!-- Pilihan Efek Partikel -->
+              <div class="space-y-1.5">
+                <label for="select-particle-effect" class="block text-xs font-bold text-slate-700">
+                  Efek Partikel Jatuh
+                </label>
+                <select 
+                  id="select-particle-effect" 
+                  onchange="handleParticleChange(this.value)" 
+                  class="w-full px-3.5 py-2 rounded-xl border border-stone-300 text-xs font-semibold focus:ring-2 focus:ring-amber-500/40 focus:outline-none bg-white"
+                >
+                  <option value="auto">✨ Otomatis (Mengikuti Karakter Tema)</option>
+                  <option value="petals">🌸 Kelopak Bunga Gugur (Sakura & Rose)</option>
+                  <option value="leaves">🍃 Dedaunan Sage Berguguran</option>
+                  <option value="gold_dust">✨ Kilau Bintang & Debu Emas (Glitter Sparkles)</option>
+                  <option value="snow">❄️ Butiran Salju Putih Halus</option>
+                  <option value="none">🚫 Nonaktifkan Efek Partikel</option>
+                </select>
+              </div>
+
+              <!-- Pilihan Bentuk Bingkai Foto -->
+              <div class="space-y-1.5">
+                <label for="select-frame-shape" class="block text-xs font-bold text-slate-700">
+                  Bentuk Bingkai Foto Mempelai
+                </label>
+                <select 
+                  id="select-frame-shape" 
+                  onchange="handleFrameShapeChange(this.value)" 
+                  class="w-full px-3.5 py-2 rounded-xl border border-stone-300 text-xs font-semibold focus:ring-2 focus:ring-amber-500/40 focus:outline-none bg-white"
+                >
+                  <option value="auto">✨ Otomatis (Mengikuti Karakter Tema)</option>
+                  <option value="arch">🏛️ Kubah / Arch Melengkung Modern</option>
+                  <option value="oval">🌿 Oval Klasik Vertikal</option>
+                  <option value="circle">⭕ Lingkaran dengan Cincin Berputar</option>
+                  <option value="octagon">👑 Segi Delapan / Royal Keraton</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Custom Ornament URL (Opsional) -->
+            <div class="pt-2">
+              <label for="custom-ornament-url" class="block text-xs font-bold text-slate-700 mb-1">
+                URL Gambar Ornamen Sudut Kustom (Opsional)
+              </label>
+              <input 
+                type="url" 
+                id="custom-ornament-url" 
+                placeholder="https://.../ornamen-transparan.png" 
+                oninput="handleCustomOrnamentInput(this.value)" 
+                class="w-full px-3.5 py-2 rounded-xl border border-stone-300 text-xs focus:ring-2 focus:ring-amber-500/40 focus:outline-none bg-white"
+              >
+              <span class="text-[10px] text-slate-400 block mt-1">Kosongkan untuk menggunakan ornamen ilustrasi SVG bergerak bawaan tema secara otomatis.</span>
+            </div>
+          </div>
+
         </div>
 
       </div>
@@ -1377,6 +1442,16 @@
       updateThemePreview();
       setCustomBgPreview(customTheme.bg_image_url || null);
 
+      // Visual Effects (Particle & Frame Shape & Custom Ornament)
+      const particleSelect = document.getElementById('select-particle-effect');
+      if (particleSelect) particleSelect.value = customTheme.particle_effect || 'auto';
+
+      const frameShapeSelect = document.getElementById('select-frame-shape');
+      if (frameShapeSelect) frameShapeSelect.value = customTheme.frame_shape || 'auto';
+
+      const ornamentInput = document.getElementById('custom-ornament-url');
+      if (ornamentInput) ornamentInput.value = customTheme.custom_ornament_url || '';
+
       // Profil Pria (CPP)
       document.getElementById('groom-nickname').value = w.groom_nickname || '';
       document.getElementById('groom-fullname').value = w.groom_fullname || '';
@@ -1540,11 +1615,76 @@
       }
     }
 
+    let livePreviewWindow = null;
+
     function openLivePreview() {
       const slug = document.getElementById('wedding-slug').value.trim() || currentWedding?.slug || 'preview';
       const url = `/u?slug=${slug}&preview=true&to=Bpk.+Budi+Santoso+%26+Partner`;
-      window.open(url, '_blank');
+      livePreviewWindow = window.open(url, 'mb_live_preview');
     }
+
+    function handleParticleChange(val) {
+      customTheme.particle_effect = val;
+      broadcastPreviewUpdate();
+    }
+
+    function handleFrameShapeChange(val) {
+      customTheme.frame_shape = val;
+      broadcastPreviewUpdate();
+    }
+
+    function handleCustomOrnamentInput(val) {
+      customTheme.custom_ornament_url = val.trim() || null;
+      broadcastPreviewUpdate();
+    }
+
+    function broadcastPreviewUpdate() {
+      if (!livePreviewWindow || livePreviewWindow.closed) return;
+      const tpl = templatesList.find(t => t.id === selectedTemplateId);
+      const data = {
+        wedding: {
+          slug: document.getElementById('wedding-slug').value.trim(),
+          groom_nickname: document.getElementById('groom-nickname').value.trim(),
+          groom_fullname: document.getElementById('groom-fullname').value.trim(),
+          groom_parents: document.getElementById('groom-parents').value.trim(),
+          groom_ig: document.getElementById('groom-ig').value.trim(),
+          bride_nickname: document.getElementById('bride-nickname').value.trim(),
+          bride_fullname: document.getElementById('bride-fullname').value.trim(),
+          bride_parents: document.getElementById('bride-parents').value.trim(),
+          bride_ig: document.getElementById('bride-ig').value.trim(),
+          akad_date: document.getElementById('akad-date').value,
+          akad_time: document.getElementById('akad-time').value.trim(),
+          akad_venue: document.getElementById('akad-venue').value.trim(),
+          akad_address: document.getElementById('akad-address').value.trim(),
+          akad_maps_url: document.getElementById('akad-maps-url').value.trim(),
+          resepsi_date: document.getElementById('resepsi-date').value,
+          resepsi_time: document.getElementById('resepsi-time').value.trim(),
+          resepsi_venue: document.getElementById('resepsi-venue').value.trim(),
+          resepsi_address: document.getElementById('resepsi-address').value.trim(),
+          resepsi_maps_url: document.getElementById('resepsi-maps-url').value.trim(),
+          quote_text: document.getElementById('quote-text').value.trim(),
+          quote_source: document.getElementById('quote-source').value.trim(),
+          audio_url: document.getElementById('audio-url').value.trim(),
+          gallery_json: galleryPhotos,
+          love_story_json: loveStories.filter(s => s.title || s.story),
+          envelopes_json: envelopes.filter(e => e.number && e.holder),
+          custom_theme_json: customTheme
+        },
+        presetSlug: tpl?.slug || 'minimalist-sage',
+        custom_theme_json: customTheme
+      };
+      try {
+        livePreviewWindow.postMessage({ type: 'MB_PREVIEW_UPDATE', data }, '*');
+      } catch (e) {
+        console.warn('broadcastPreviewUpdate notice:', e);
+      }
+    }
+
+    window.addEventListener('message', (event) => {
+      if (event.data && event.data.type === 'MB_PREVIEW_READY') {
+        broadcastPreviewUpdate();
+      }
+    });
 
     // ==========================================
     // TAB 1: TEMPLATES & COLORS
@@ -1602,6 +1742,7 @@
         setColorInputs(customTheme);
         updateThemePreview();
       }
+      broadcastPreviewUpdate();
       showToast('Tema dipilih! Palet warna otomatis diperbarui.', 'info');
     }
 
@@ -1633,6 +1774,7 @@
       document.getElementById('color-accent-hex').value = customTheme.accent;
 
       updateThemePreview();
+      broadcastPreviewUpdate();
     }
 
     function handleHexInput(prop, val) {
@@ -1649,6 +1791,7 @@
         customTheme = { ...customTheme, ...tpl.default_colors_json };
         setColorInputs(customTheme);
         updateThemePreview();
+        broadcastPreviewUpdate();
         showToast('Warna dikembalikan ke bawaan tema!', 'success');
       }
     }

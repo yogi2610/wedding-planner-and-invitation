@@ -1,8 +1,676 @@
 /**
- * invitation-core.js - Engine Interaksi & Penampil Undangan Publik Terpadu
- * Platform Nikah - All-in-One Wedding Planner & Digital Invitation Platform
+ * invitation-core.js - Engine Interaksi & Penampil Undangan Publik Terpadu (Tahap A)
+ * MenikahBersama - All-in-One Wedding Planner & Digital Invitation Platform (menikahbersama.my.id)
  */
 
+// ============================================================================
+// 1. MESIN PARTIKEL JATUH BERGERAK HALUS (PARTICLE ENGINE)
+// ============================================================================
+class ParticleEngine {
+  constructor(canvasId = 'particle-canvas') {
+    this.canvas = document.getElementById(canvasId);
+    this.ctx = this.canvas ? this.canvas.getContext('2d') : null;
+    this.particles = [];
+    this.animId = null;
+    this.effect = 'none';
+    this.width = 0;
+    this.height = 0;
+    this.isRunning = false;
+
+    if (this.canvas) {
+      this.resize();
+      window.addEventListener('resize', () => this.resize());
+    }
+  }
+
+  resize() {
+    if (!this.canvas) return;
+    const rect = this.canvas.getBoundingClientRect();
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    this.width = rect.width || Math.min(window.innerWidth, 448);
+    this.height = rect.height || window.innerHeight;
+    this.canvas.width = this.width * dpr;
+    this.canvas.height = this.height * dpr;
+    if (this.ctx) {
+      this.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+  }
+
+  setEffect(effectName) {
+    this.effect = effectName || 'none';
+    this.particles = [];
+    if (this.effect === 'none') {
+      this.stop();
+      if (this.ctx && this.canvas) {
+        this.ctx.clearRect(0, 0, this.width, this.height);
+      }
+    } else {
+      this.resize();
+      this.initParticles();
+      this.start();
+    }
+  }
+
+  initParticles() {
+    this.particles = [];
+    const count = this.effect === 'gold_dust' ? 30 : (this.effect === 'snow' ? 32 : 20);
+    for (let i = 0; i < count; i++) {
+      this.particles.push(this.createParticle(true));
+    }
+  }
+
+  createParticle(randomY = false) {
+    const y = randomY ? Math.random() * this.height : -20;
+    const x = Math.random() * this.width;
+
+    if (this.effect === 'petals') {
+      const colors = [
+        'rgba(244, 182, 205, 0.75)',
+        'rgba(235, 130, 160, 0.70)',
+        'rgba(255, 225, 235, 0.85)',
+        'rgba(217, 119, 155, 0.65)'
+      ];
+      return {
+        type: 'petal',
+        x, y,
+        size: 7 + Math.random() * 8,
+        speedY: 0.8 + Math.random() * 1.1,
+        speedX: -0.4 + Math.random() * 0.8,
+        angle: Math.random() * Math.PI * 2,
+        angularSpeed: 0.015 + Math.random() * 0.02,
+        swayFreq: 0.02 + Math.random() * 0.02,
+        swayAmp: 1.2 + Math.random() * 1.6,
+        pulse: Math.random() * 100,
+        color: colors[Math.floor(Math.random() * colors.length)]
+      };
+    }
+
+    if (this.effect === 'leaves') {
+      const colors = [
+        'rgba(107, 142, 120, 0.75)',
+        'rgba(142, 168, 157, 0.70)',
+        'rgba(180, 131, 66, 0.65)',
+        'rgba(198, 107, 78, 0.65)'
+      ];
+      return {
+        type: 'leaf',
+        x, y,
+        size: 8 + Math.random() * 8,
+        speedY: 0.9 + Math.random() * 1.2,
+        speedX: -0.4 + Math.random() * 0.8,
+        angle: Math.random() * Math.PI * 2,
+        angularSpeed: 0.018 + Math.random() * 0.022,
+        swayFreq: 0.02 + Math.random() * 0.02,
+        swayAmp: 1.4 + Math.random() * 1.8,
+        pulse: Math.random() * 100,
+        color: colors[Math.floor(Math.random() * colors.length)]
+      };
+    }
+
+    if (this.effect === 'gold_dust') {
+      const colors = [
+        '#FDE047',
+        '#EAB308',
+        '#F59E0B',
+        '#D4AF37'
+      ];
+      return {
+        type: 'sparkle',
+        x, y,
+        size: 2.2 + Math.random() * 3.5,
+        speedY: 0.35 + Math.random() * 0.65,
+        speedX: -0.3 + Math.random() * 0.6,
+        angle: Math.random() * Math.PI * 2,
+        angularSpeed: 0.02 + Math.random() * 0.03,
+        swayFreq: 0.015 + Math.random() * 0.02,
+        swayAmp: 0.8 + Math.random() * 1.2,
+        baseAlpha: 0.35 + Math.random() * 0.45,
+        pulse: Math.random() * Math.PI * 2,
+        pulseSpeed: 0.04 + Math.random() * 0.05,
+        color: colors[Math.floor(Math.random() * colors.length)]
+      };
+    }
+
+    if (this.effect === 'snow') {
+      return {
+        type: 'snow',
+        x, y,
+        size: 2.0 + Math.random() * 3.2,
+        speedY: 0.6 + Math.random() * 1.0,
+        speedX: -0.3 + Math.random() * 0.6,
+        angle: 0,
+        swayFreq: 0.02 + Math.random() * 0.02,
+        swayAmp: 0.8 + Math.random() * 1.2,
+        pulse: Math.random() * 100,
+        opacity: 0.4 + Math.random() * 0.5
+      };
+    }
+
+    return { x, y, size: 2, speedY: 1, speedX: 0 };
+  }
+
+  start() {
+    if (this.isRunning) return;
+    this.isRunning = true;
+    const loop = () => {
+      this.update();
+      this.draw();
+      if (this.isRunning) {
+        this.animId = requestAnimationFrame(loop);
+      }
+    };
+    this.animId = requestAnimationFrame(loop);
+  }
+
+  stop() {
+    this.isRunning = false;
+    if (this.animId) {
+      cancelAnimationFrame(this.animId);
+      this.animId = null;
+    }
+  }
+
+  update() {
+    for (let i = 0; i < this.particles.length; i++) {
+      const p = this.particles[i];
+      p.pulse += p.pulseSpeed || 0.03;
+      p.angle += p.angularSpeed || 0;
+      p.y += p.speedY;
+      p.x += p.speedX + Math.sin(p.pulse) * (p.swayAmp || 1);
+
+      if (p.y > this.height + 25 || p.x < -25 || p.x > this.width + 25) {
+        this.particles[i] = this.createParticle(false);
+      }
+    }
+  }
+
+  draw() {
+    if (!this.ctx) return;
+    this.ctx.clearRect(0, 0, this.width, this.height);
+
+    for (let i = 0; i < this.particles.length; i++) {
+      const p = this.particles[i];
+
+      if (p.type === 'petal') {
+        this.ctx.save();
+        this.ctx.translate(p.x, p.y);
+        this.ctx.rotate(p.angle);
+        this.ctx.scale(Math.cos(p.angle * 1.3), 1);
+        this.ctx.beginPath();
+        this.ctx.moveTo(0, -p.size);
+        this.ctx.bezierCurveTo(p.size * 0.85, -p.size * 0.5, p.size * 0.85, p.size * 0.85, 0, p.size);
+        this.ctx.bezierCurveTo(-p.size * 0.85, p.size * 0.85, -p.size * 0.85, -p.size * 0.5, 0, -p.size);
+        this.ctx.fillStyle = p.color;
+        this.ctx.fill();
+        this.ctx.restore();
+      } else if (p.type === 'leaf') {
+        this.ctx.save();
+        this.ctx.translate(p.x, p.y);
+        this.ctx.rotate(p.angle);
+        this.ctx.scale(Math.cos(p.angle * 1.1), 1);
+        this.ctx.beginPath();
+        this.ctx.moveTo(0, -p.size * 1.3);
+        this.ctx.quadraticCurveTo(p.size * 0.75, 0, 0, p.size * 1.3);
+        this.ctx.quadraticCurveTo(-p.size * 0.75, 0, 0, -p.size * 1.3);
+        this.ctx.fillStyle = p.color;
+        this.ctx.fill();
+        this.ctx.strokeStyle = 'rgba(255,255,255,0.3)';
+        this.ctx.lineWidth = 0.8;
+        this.ctx.beginPath();
+        this.ctx.moveTo(0, -p.size * 1.1);
+        this.ctx.lineTo(0, p.size * 1.1);
+        this.ctx.stroke();
+        this.ctx.restore();
+      } else if (p.type === 'sparkle') {
+        this.ctx.save();
+        this.ctx.translate(p.x, p.y);
+        this.ctx.rotate(p.angle);
+        const alpha = Math.max(0.1, Math.min(1, p.baseAlpha + Math.sin(p.pulse) * 0.35));
+        this.ctx.globalAlpha = alpha;
+        // Radial glow
+        const grad = this.ctx.createRadialGradient(0, 0, 0, 0, 0, p.size * 2);
+        grad.addColorStop(0, p.color);
+        grad.addColorStop(0.5, 'rgba(212, 175, 55, 0.4)');
+        grad.addColorStop(1, 'rgba(212, 175, 55, 0)');
+        this.ctx.fillStyle = grad;
+        this.ctx.beginPath();
+        this.ctx.arc(0, 0, p.size * 2, 0, Math.PI * 2);
+        this.ctx.fill();
+        // 4-point star core
+        this.ctx.fillStyle = '#FFFFFF';
+        this.ctx.beginPath();
+        this.ctx.moveTo(0, -p.size);
+        this.ctx.quadraticCurveTo(0, 0, p.size, 0);
+        this.ctx.quadraticCurveTo(0, 0, 0, p.size);
+        this.ctx.quadraticCurveTo(0, 0, -p.size, 0);
+        this.ctx.quadraticCurveTo(0, 0, 0, -p.size);
+        this.ctx.fill();
+        this.ctx.restore();
+      } else if (p.type === 'snow') {
+        this.ctx.save();
+        this.ctx.translate(p.x, p.y);
+        this.ctx.globalAlpha = p.opacity;
+        const grad = this.ctx.createRadialGradient(0, 0, 0, 0, 0, p.size);
+        grad.addColorStop(0, 'rgba(255, 255, 255, 0.95)');
+        grad.addColorStop(0.6, 'rgba(255, 255, 255, 0.5)');
+        grad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+        this.ctx.fillStyle = grad;
+        this.ctx.beginPath();
+        this.ctx.arc(0, 0, p.size, 0, Math.PI * 2);
+        this.ctx.fill();
+        this.ctx.restore();
+      }
+    }
+  }
+}
+
+// ============================================================================
+// 2. KATALOG ORNAMEN SVG BERGERAK UNTUK 8 TEMA PRESET (ORNAMENT THEMES)
+// ============================================================================
+const ORNAMENT_THEMES = {
+  'minimalist-sage': {
+    // 1. Eucalyptus & Olive branches with small white flowers
+    cornerTL: `<svg class="w-full h-full" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <g class="sway-top-left">
+        <path d="M0 0 C25 15, 50 35, 80 75" stroke="#5A7D66" stroke-width="1.8" stroke-linecap="round"/>
+        <path d="M18 12 C12 6, 26 2, 32 8 C36 14, 28 18, 18 12 Z" fill="#6B8E78" opacity="0.9"/>
+        <path d="M36 26 C30 18, 44 14, 50 20 C54 26, 46 32, 36 26 Z" fill="#6B8E78" opacity="0.9"/>
+        <path d="M56 46 C48 38, 62 34, 68 40 C72 46, 64 52, 56 46 Z" fill="#6B8E78" opacity="0.9"/>
+        <g class="sway-right">
+          <path d="M10 20 C4 18, 8 32, 16 28 C22 24, 16 18, 10 20 Z" fill="#8EA89D" opacity="0.85"/>
+          <path d="M26 36 C18 32, 24 48, 32 44 C38 40, 32 34, 26 36 Z" fill="#8EA89D" opacity="0.85"/>
+          <path d="M44 58 C36 52, 42 68, 52 62 C58 56, 50 50, 44 58 Z" fill="#8EA89D" opacity="0.85"/>
+        </g>
+        <circle cx="30" cy="14" r="2.8" fill="#FFFFFF"/>
+        <circle cx="30" cy="14" r="1.2" fill="#E2B170"/>
+        <circle cx="48" cy="32" r="2.8" fill="#FFFFFF"/>
+        <circle cx="48" cy="32" r="1.2" fill="#E2B170"/>
+        <circle cx="66" cy="52" r="2.5" fill="#FFFFFF"/>
+        <circle cx="66" cy="52" r="1" fill="#E2B170"/>
+      </g>
+    </svg>`,
+    cornerTR: `<svg class="w-full h-full transform scale-x-[-1]" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <g class="sway-top-right">
+        <path d="M0 0 C25 15, 50 35, 80 75" stroke="#5A7D66" stroke-width="1.8" stroke-linecap="round"/>
+        <path d="M18 12 C12 6, 26 2, 32 8 C36 14, 28 18, 18 12 Z" fill="#6B8E78" opacity="0.9"/>
+        <path d="M36 26 C30 18, 44 14, 50 20 C54 26, 46 32, 36 26 Z" fill="#6B8E78" opacity="0.9"/>
+        <path d="M56 46 C48 38, 62 34, 68 40 C72 46, 64 52, 56 46 Z" fill="#6B8E78" opacity="0.9"/>
+        <g class="sway-left">
+          <path d="M10 20 C4 18, 8 32, 16 28 C22 24, 16 18, 10 20 Z" fill="#8EA89D" opacity="0.85"/>
+          <path d="M26 36 C18 32, 24 48, 32 44 C38 40, 32 34, 26 36 Z" fill="#8EA89D" opacity="0.85"/>
+        </g>
+        <circle cx="30" cy="14" r="2.8" fill="#FFFFFF"/>
+        <circle cx="30" cy="14" r="1.2" fill="#E2B170"/>
+        <circle cx="48" cy="32" r="2.8" fill="#FFFFFF"/>
+        <circle cx="48" cy="32" r="1.2" fill="#E2B170"/>
+      </g>
+    </svg>`,
+    cornerBL: `<svg class="w-full h-full transform scale-y-[-1]" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <g class="sway-left">
+        <path d="M0 0 C25 15, 50 35, 80 75" stroke="#5A7D66" stroke-width="1.8" stroke-linecap="round"/>
+        <path d="M18 12 C12 6, 26 2, 32 8 C36 14, 28 18, 18 12 Z" fill="#6B8E78" opacity="0.9"/>
+        <path d="M36 26 C30 18, 44 14, 50 20 C54 26, 46 32, 36 26 Z" fill="#6B8E78" opacity="0.9"/>
+        <circle cx="30" cy="14" r="2.8" fill="#FFFFFF"/>
+        <circle cx="30" cy="14" r="1.2" fill="#E2B170"/>
+      </g>
+    </svg>`,
+    cornerBR: `<svg class="w-full h-full transform scale-[-1]" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <g class="sway-right">
+        <path d="M0 0 C25 15, 50 35, 80 75" stroke="#5A7D66" stroke-width="1.8" stroke-linecap="round"/>
+        <path d="M18 12 C12 6, 26 2, 32 8 C36 14, 28 18, 18 12 Z" fill="#6B8E78" opacity="0.9"/>
+        <path d="M36 26 C30 18, 44 14, 50 20 C54 26, 46 32, 36 26 Z" fill="#6B8E78" opacity="0.9"/>
+        <circle cx="30" cy="14" r="2.8" fill="#FFFFFF"/>
+        <circle cx="30" cy="14" r="1.2" fill="#E2B170"/>
+      </g>
+    </svg>`,
+    headerMotif: `<svg class="w-16 h-7" viewBox="0 0 120 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M60 5 C50 20, 35 28, 10 20 C30 35, 52 32, 60 38 C68 32, 90 35, 110 20 C85 28, 70 20, 60 5 Z" fill="#6B8E78" opacity="0.8"/>
+      <circle cx="60" cy="22" r="3" fill="#D4AF37"/>
+    </svg>`
+  },
+
+  'cozy-terracotta': {
+    // 2. Dried pampas, boho palm & terracotta roses
+    cornerTL: `<svg class="w-full h-full" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <g class="sway-top-left">
+        <!-- Boho Palm Fan lines -->
+        <path d="M0 0 C20 30, 45 45, 80 50" stroke="#C66B4E" stroke-width="1.5"/>
+        <path d="M0 0 C30 20, 50 35, 75 70" stroke="#C66B4E" stroke-width="1.5"/>
+        <path d="M0 0 C15 35, 30 55, 55 80" stroke="#D98A6C" stroke-width="1.5"/>
+        <!-- Dried pampas plumes -->
+        <g class="sway-right">
+          <path d="M30 20 Q45 28 65 24 Q50 34 30 20 Z" fill="#E2B170" opacity="0.75"/>
+          <path d="M45 40 Q65 48 85 40 Q68 55 45 40 Z" fill="#D98A6C" opacity="0.8"/>
+        </g>
+        <!-- Terracotta Rosebud -->
+        <circle cx="35" cy="35" r="9" fill="#C66B4E" opacity="0.9"/>
+        <circle cx="33" cy="33" r="5" fill="#8C432A"/>
+        <circle cx="35" cy="34" r="2.5" fill="#E2B170"/>
+      </g>
+    </svg>`,
+    cornerTR: `<svg class="w-full h-full transform scale-x-[-1]" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <g class="sway-top-right">
+        <path d="M0 0 C20 30, 45 45, 80 50" stroke="#C66B4E" stroke-width="1.5"/>
+        <path d="M0 0 C30 20, 50 35, 75 70" stroke="#C66B4E" stroke-width="1.5"/>
+        <g class="sway-left">
+          <path d="M30 20 Q45 28 65 24 Q50 34 30 20 Z" fill="#E2B170" opacity="0.75"/>
+          <path d="M45 40 Q65 48 85 40 Q68 55 45 40 Z" fill="#D98A6C" opacity="0.8"/>
+        </g>
+        <circle cx="35" cy="35" r="9" fill="#C66B4E" opacity="0.9"/>
+        <circle cx="33" cy="33" r="5" fill="#8C432A"/>
+      </g>
+    </svg>`,
+    cornerBL: `<svg class="w-full h-full transform scale-y-[-1]" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <g class="sway-left">
+        <path d="M0 0 C20 30, 45 45, 80 50" stroke="#C66B4E" stroke-width="1.5"/>
+        <circle cx="35" cy="35" r="8" fill="#C66B4E" opacity="0.9"/>
+      </g>
+    </svg>`,
+    cornerBR: `<svg class="w-full h-full transform scale-[-1]" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <g class="sway-right">
+        <path d="M0 0 C20 30, 45 45, 80 50" stroke="#C66B4E" stroke-width="1.5"/>
+        <circle cx="35" cy="35" r="8" fill="#C66B4E" opacity="0.9"/>
+      </g>
+    </svg>`,
+    headerMotif: `<svg class="w-16 h-8" viewBox="0 0 120 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M15 60 A45 45 0 0 1 105 60" stroke="#C66B4E" stroke-width="2"/>
+      <path d="M30 60 A30 30 0 0 1 90 60" stroke="#E2B170" stroke-width="1.5"/>
+      <circle cx="60" cy="22" r="4" fill="#C66B4E"/>
+    </svg>`
+  },
+
+  'javanese-royal': {
+    // 3. Golden Keraton Carvings, Jasmine (Melati), & Twin Gunungan Wayang
+    cornerTL: `<svg class="w-full h-full" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <g class="sway-top-left">
+        <!-- Ukiran Keraton Emas -->
+        <path d="M0 0 C30 5, 55 25, 75 55 C65 58, 55 50, 48 40 C40 30, 25 20, 0 20 Z" fill="#D4AF37" opacity="0.85"/>
+        <path d="M5 5 Q35 15 50 35 Q30 30 5 5 Z" fill="#F3E5AB" opacity="0.9"/>
+        <!-- Rangkaian Melati -->
+        <g class="sway-right">
+          <circle cx="48" cy="40" r="3" fill="#FFFFFF"/>
+          <circle cx="48" cy="40" r="1.2" fill="#D4AF37"/>
+          <circle cx="62" cy="54" r="3" fill="#FFFFFF"/>
+          <circle cx="62" cy="54" r="1.2" fill="#D4AF37"/>
+          <circle cx="76" cy="70" r="2.8" fill="#FFFFFF"/>
+          <circle cx="76" cy="70" r="1" fill="#D4AF37"/>
+        </g>
+      </g>
+    </svg>`,
+    cornerTR: `<svg class="w-full h-full transform scale-x-[-1]" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <g class="sway-top-right">
+        <path d="M0 0 C30 5, 55 25, 75 55 C65 58, 55 50, 48 40 C40 30, 25 20, 0 20 Z" fill="#D4AF37" opacity="0.85"/>
+        <path d="M5 5 Q35 15 50 35 Q30 30 5 5 Z" fill="#F3E5AB" opacity="0.9"/>
+        <g class="sway-left">
+          <circle cx="48" cy="40" r="3" fill="#FFFFFF"/>
+          <circle cx="48" cy="40" r="1.2" fill="#D4AF37"/>
+          <circle cx="62" cy="54" r="3" fill="#FFFFFF"/>
+          <circle cx="62" cy="54" r="1.2" fill="#D4AF37"/>
+        </g>
+      </g>
+    </svg>`,
+    cornerBL: `<svg class="w-full h-full transform scale-y-[-1]" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <g class="sway-left">
+        <path d="M0 0 C30 5, 55 25, 75 55 C65 58, 55 50, 48 40 C40 30, 25 20, 0 20 Z" fill="#D4AF37" opacity="0.85"/>
+        <circle cx="48" cy="40" r="3" fill="#FFFFFF"/>
+      </g>
+    </svg>`,
+    cornerBR: `<svg class="w-full h-full transform scale-[-1]" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <g class="sway-right">
+        <path d="M0 0 C30 5, 55 25, 75 55 C65 58, 55 50, 48 40 C40 30, 25 20, 0 20 Z" fill="#D4AF37" opacity="0.85"/>
+        <circle cx="48" cy="40" r="3" fill="#FFFFFF"/>
+      </g>
+    </svg>`,
+    headerMotif: `<svg class="w-20 h-10" viewBox="0 0 140 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- Ornamen Mahkota Keraton / Batikan -->
+      <path d="M70 5 L85 28 L115 32 L92 45 L98 60 L70 48 L42 60 L48 45 L25 32 L55 28 Z" fill="#D4AF37" opacity="0.85"/>
+      <circle cx="70" cy="30" r="4" fill="#FFFFFF"/>
+    </svg>`,
+    // Gunungan Wayang Kembar untuk Sampul Depan
+    gununganLeft: `<svg class="w-44 h-80 drop-shadow-2xl" viewBox="0 0 180 340" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="goldGradL" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#FDE047"/>
+          <stop offset="45%" stop-color="#D4AF37"/>
+          <stop offset="100%" stop-color="#996515"/>
+        </linearGradient>
+      </defs>
+      <!-- Siluet Gunungan Wayang Kiri -->
+      <path d="M175 10 C165 40, 140 80, 110 110 C80 140, 40 170, 20 210 C5 240, 5 280, 10 320 L175 320 Z" fill="url(#goldGradL)" opacity="0.95"/>
+      <path d="M165 25 C155 55, 130 92, 105 120 C78 148, 45 178, 28 215 C16 242, 16 275, 20 310 L165 310 Z" stroke="#1C1613" stroke-width="2" fill="none" opacity="0.6"/>
+      <!-- Detail Pohon Hayat & Ukiran -->
+      <path d="M175 160 C150 160, 130 180, 120 210 C130 230, 160 235, 175 235" stroke="#FFFFFF" stroke-width="1.5" opacity="0.5"/>
+      <path d="M175 250 C145 250, 120 265, 110 295 C130 305, 160 305, 175 305" stroke="#FFFFFF" stroke-width="1.5" opacity="0.5"/>
+    </svg>`,
+    gununganRight: `<svg class="w-44 h-80 drop-shadow-2xl transform scale-x-[-1]" viewBox="0 0 180 340" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="goldGradR" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#FDE047"/>
+          <stop offset="45%" stop-color="#D4AF37"/>
+          <stop offset="100%" stop-color="#996515"/>
+        </linearGradient>
+      </defs>
+      <path d="M175 10 C165 40, 140 80, 110 110 C80 140, 40 170, 20 210 C5 240, 5 280, 10 320 L175 320 Z" fill="url(#goldGradR)" opacity="0.95"/>
+      <path d="M165 25 C155 55, 130 92, 105 120 C78 148, 45 178, 28 215 C16 242, 16 275, 20 310 L165 310 Z" stroke="#1C1613" stroke-width="2" fill="none" opacity="0.6"/>
+      <path d="M175 160 C150 160, 130 180, 120 210 C130 230, 160 235, 175 235" stroke="#FFFFFF" stroke-width="1.5" opacity="0.5"/>
+      <path d="M175 250 C145 250, 120 265, 110 295 C130 305, 160 305, 175 305" stroke="#FFFFFF" stroke-width="1.5" opacity="0.5"/>
+    </svg>`
+  },
+
+  'romantic-blush': {
+    // 4. Blooming Peony & Pink Roses
+    cornerTL: `<svg class="w-full h-full" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <g class="sway-top-left">
+        <!-- Daun mawar -->
+        <path d="M10 25 C2 15, 20 5, 28 15 C34 22, 22 30, 10 25 Z" fill="#5E7D63" opacity="0.85"/>
+        <path d="M25 45 C15 38, 30 25, 40 32 C45 40, 35 48, 25 45 Z" fill="#5E7D63" opacity="0.85"/>
+        <!-- Kelopak Peony Berlapis -->
+        <circle cx="36" cy="32" r="14" fill="#F4B6CD" opacity="0.85"/>
+        <g class="sway-right">
+          <circle cx="38" cy="30" r="10" fill="#D9779B" opacity="0.85"/>
+          <circle cx="39" cy="28" r="6" fill="#AA4D70"/>
+          <circle cx="40" cy="28" r="2.5" fill="#FFE4E6"/>
+        </g>
+        <!-- Kuncup bunga samping -->
+        <circle cx="60" cy="48" r="7" fill="#F4B6CD" opacity="0.9"/>
+        <circle cx="62" cy="47" r="4" fill="#D9779B"/>
+      </g>
+    </svg>`,
+    cornerTR: `<svg class="w-full h-full transform scale-x-[-1]" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <g class="sway-top-right">
+        <path d="M10 25 C2 15, 20 5, 28 15 C34 22, 22 30, 10 25 Z" fill="#5E7D63" opacity="0.85"/>
+        <circle cx="36" cy="32" r="14" fill="#F4B6CD" opacity="0.85"/>
+        <g class="sway-left">
+          <circle cx="38" cy="30" r="10" fill="#D9779B" opacity="0.85"/>
+          <circle cx="39" cy="28" r="6" fill="#AA4D70"/>
+        </g>
+        <circle cx="60" cy="48" r="7" fill="#F4B6CD" opacity="0.9"/>
+      </g>
+    </svg>`,
+    cornerBL: `<svg class="w-full h-full transform scale-y-[-1]" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <g class="sway-left">
+        <circle cx="36" cy="32" r="12" fill="#F4B6CD" opacity="0.85"/>
+        <circle cx="38" cy="30" r="8" fill="#D9779B"/>
+      </g>
+    </svg>`,
+    cornerBR: `<svg class="w-full h-full transform scale-[-1]" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <g class="sway-right">
+        <circle cx="36" cy="32" r="12" fill="#F4B6CD" opacity="0.85"/>
+        <circle cx="38" cy="30" r="8" fill="#D9779B"/>
+      </g>
+    </svg>`,
+    headerMotif: `<svg class="w-16 h-7" viewBox="0 0 120 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M60 20 C45 5, 20 20, 35 35 C50 30, 55 25, 60 20 Z" fill="#F4B6CD" opacity="0.9"/>
+      <path d="M60 20 C75 5, 100 20, 85 35 C70 30, 65 25, 60 20 Z" fill="#F4B6CD" opacity="0.9"/>
+      <circle cx="60" cy="20" r="5" fill="#D9779B"/>
+    </svg>`
+  },
+
+  'luxury-midnight': {
+    // 5. Art Deco Golden Frame & Crystal Leaves
+    cornerTL: `<svg class="w-full h-full" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <g class="sway-top-left">
+        <path d="M0 0 L40 0 L0 40 Z" fill="#CA8A04" opacity="0.4"/>
+        <path d="M5 5 L60 5 L5 60 Z" stroke="#EAB308" stroke-width="1.5" fill="none"/>
+        <path d="M12 12 L45 12 L12 45 Z" stroke="#FDE047" stroke-width="1.2" fill="none"/>
+        <!-- Daun Kristal Emas -->
+        <g class="sway-right">
+          <polygon points="45,20 60,10 65,25 50,30" fill="#FDE047" opacity="0.85"/>
+          <polygon points="20,45 10,60 25,65 30,50" fill="#FDE047" opacity="0.85"/>
+          <circle cx="50" cy="50" r="3" fill="#FFFFFF"/>
+        </g>
+      </g>
+    </svg>`,
+    cornerTR: `<svg class="w-full h-full transform scale-x-[-1]" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <g class="sway-top-right">
+        <path d="M0 0 L40 0 L0 40 Z" fill="#CA8A04" opacity="0.4"/>
+        <path d="M5 5 L60 5 L5 60 Z" stroke="#EAB308" stroke-width="1.5" fill="none"/>
+        <polygon points="45,20 60,10 65,25 50,30" fill="#FDE047" opacity="0.85"/>
+      </g>
+    </svg>`,
+    cornerBL: `<svg class="w-full h-full transform scale-y-[-1]" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <g class="sway-left">
+        <path d="M5 5 L50 5 L5 50 Z" stroke="#EAB308" stroke-width="1.5" fill="none"/>
+      </g>
+    </svg>`,
+    cornerBR: `<svg class="w-full h-full transform scale-[-1]" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <g class="sway-right">
+        <path d="M5 5 L50 5 L5 50 Z" stroke="#EAB308" stroke-width="1.5" fill="none"/>
+      </g>
+    </svg>`,
+    headerMotif: `<svg class="w-16 h-7" viewBox="0 0 120 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <polygon points="60,5 75,20 60,35 45,20" stroke="#EAB308" stroke-width="1.8" fill="none"/>
+      <circle cx="60" cy="20" r="3" fill="#FDE047"/>
+      <line x1="10" y1="20" x2="40" y2="20" stroke="#CA8A04" stroke-width="1"/>
+      <line x1="80" y1="20" x2="110" y2="20" stroke="#CA8A04" stroke-width="1"/>
+    </svg>`
+  },
+
+  'modern-monochrome': {
+    // 6. Architectural minimal curves & Calla Lily
+    cornerTL: `<svg class="w-full h-full" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <g class="sway-top-left">
+        <path d="M0 45 C45 45, 45 0, 45 0" stroke="#18181B" stroke-width="2"/>
+        <path d="M0 65 C65 65, 65 0, 65 0" stroke="#71717A" stroke-width="1.2"/>
+        <!-- Calla Lily petal contour -->
+        <g class="sway-right">
+          <path d="M25 25 C15 35, 30 50, 45 40 C40 30, 30 20, 25 25 Z" fill="#27272A" opacity="0.85"/>
+          <circle cx="36" cy="34" r="2.5" fill="#D4AF37"/>
+        </g>
+      </g>
+    </svg>`,
+    cornerTR: `<svg class="w-full h-full transform scale-x-[-1]" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <g class="sway-top-right">
+        <path d="M0 45 C45 45, 45 0, 45 0" stroke="#18181B" stroke-width="2"/>
+        <path d="M0 65 C65 65, 65 0, 65 0" stroke="#71717A" stroke-width="1.2"/>
+      </g>
+    </svg>`,
+    cornerBL: `<svg class="w-full h-full transform scale-y-[-1]" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0 45 C45 45, 45 0, 45 0" stroke="#18181B" stroke-width="1.5"/>
+    </svg>`,
+    cornerBR: `<svg class="w-full h-full transform scale-[-1]" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0 45 C45 45, 45 0, 45 0" stroke="#18181B" stroke-width="1.5"/>
+    </svg>`,
+    headerMotif: `<svg class="w-16 h-4" viewBox="0 0 120 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <line x1="10" y1="10" x2="50" y2="10" stroke="#18181B" stroke-width="1.5"/>
+      <circle cx="60" cy="10" r="3" fill="#18181B"/>
+      <line x1="70" y1="10" x2="110" y2="10" stroke="#18181B" stroke-width="1.5"/>
+    </svg>`
+  },
+
+  'rustic-woodland': {
+    // 7. Pine needles, woodland ferns & wildflowers
+    cornerTL: `<svg class="w-full h-full" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <g class="sway-top-left">
+        <!-- Ranting pinus -->
+        <path d="M0 0 C25 20, 50 35, 80 60" stroke="#8B5E3C" stroke-width="2" stroke-linecap="round"/>
+        <!-- Jarum pinus -->
+        <path d="M20 15 L32 8 M20 15 L30 18 M20 15 L22 28" stroke="#4A6B53" stroke-width="1.5"/>
+        <path d="M40 30 L52 22 M40 30 L50 34 M40 30 L42 42" stroke="#4A6B53" stroke-width="1.5"/>
+        <!-- Pakis hutan -->
+        <g class="sway-right">
+          <path d="M15 35 C5 45, 25 55, 35 45 C40 38, 25 30, 15 35 Z" fill="#2D4A3E" opacity="0.85"/>
+          <!-- Bunga liar kuning -->
+          <circle cx="48" cy="46" r="3.2" fill="#FEF08A"/>
+          <circle cx="48" cy="46" r="1.3" fill="#8B5E3C"/>
+        </g>
+      </g>
+    </svg>`,
+    cornerTR: `<svg class="w-full h-full transform scale-x-[-1]" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <g class="sway-top-right">
+        <path d="M0 0 C25 20, 50 35, 80 60" stroke="#8B5E3C" stroke-width="2" stroke-linecap="round"/>
+        <path d="M20 15 L32 8 M20 15 L30 18" stroke="#4A6B53" stroke-width="1.5"/>
+      </g>
+    </svg>`,
+    cornerBL: `<svg class="w-full h-full transform scale-y-[-1]" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <g class="sway-left">
+        <path d="M0 0 C25 20, 50 35, 80 60" stroke="#8B5E3C" stroke-width="1.8"/>
+      </g>
+    </svg>`,
+    cornerBR: `<svg class="w-full h-full transform scale-[-1]" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <g class="sway-right">
+        <path d="M0 0 C25 20, 50 35, 80 60" stroke="#8B5E3C" stroke-width="1.8"/>
+      </g>
+    </svg>`,
+    headerMotif: `<svg class="w-16 h-7" viewBox="0 0 120 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M30 20 Q60 5 90 20" stroke="#8B5E3C" stroke-width="2" stroke-linecap="round"/>
+      <circle cx="60" cy="12" r="3.5" fill="#FEF08A"/>
+      <circle cx="60" cy="12" r="1.5" fill="#8B5E3C"/>
+    </svg>`
+  },
+
+  'whimsical-fairy': {
+    // 8. Cascading purple wisteria & twinkling fairy stars
+    cornerTL: `<svg class="w-full h-full" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <g class="sway-top-left">
+        <!-- Tangkai wisteria menjuntai -->
+        <path d="M10 0 Q30 25 25 60 Q20 80 15 95" stroke="#7C3AED" stroke-width="1.5"/>
+        <path d="M30 0 Q50 35 45 75" stroke="#7C3AED" stroke-width="1.3"/>
+        <!-- Rangkaian bulir bunga ungu wisteria -->
+        <g class="sway-right">
+          <circle cx="26" cy="30" r="4.5" fill="#C4B5FD" opacity="0.9"/>
+          <circle cx="24" cy="42" r="4" fill="#A78BFA" opacity="0.9"/>
+          <circle cx="21" cy="54" r="3.5" fill="#8B5CF6"/>
+          <circle cx="18" cy="66" r="3" fill="#7C3AED"/>
+          <circle cx="45" cy="40" r="4" fill="#C4B5FD" opacity="0.9"/>
+          <circle cx="43" cy="52" r="3.5" fill="#A78BFA"/>
+        </g>
+        <!-- Bintang peri berkilau -->
+        <polygon points="50,15 53,22 60,25 53,28 50,35 47,28 40,25 47,22" fill="#FFFFFF"/>
+        <polygon points="70,40 72,45 77,47 72,49 70,54 68,49 63,47 68,45" fill="#FFFFFF"/>
+      </g>
+    </svg>`,
+    cornerTR: `<svg class="w-full h-full transform scale-x-[-1]" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <g class="sway-top-right">
+        <path d="M10 0 Q30 25 25 60" stroke="#7C3AED" stroke-width="1.5"/>
+        <circle cx="26" cy="30" r="4.5" fill="#C4B5FD"/>
+        <circle cx="24" cy="42" r="4" fill="#A78BFA"/>
+        <polygon points="50,15 53,22 60,25 53,28 50,35 47,28 40,25 47,22" fill="#FFFFFF"/>
+      </g>
+    </svg>`,
+    cornerBL: `<svg class="w-full h-full transform scale-y-[-1]" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <g class="sway-left">
+        <circle cx="26" cy="30" r="4" fill="#C4B5FD"/>
+        <polygon points="40,25 43,30 48,32 43,34 40,39 37,34 32,32 37,30" fill="#FFFFFF"/>
+      </g>
+    </svg>`,
+    cornerBR: `<svg class="w-full h-full transform scale-[-1]" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <g class="sway-right">
+        <circle cx="26" cy="30" r="4" fill="#C4B5FD"/>
+        <polygon points="40,25 43,30 48,32 43,34 40,39 37,34 32,32 37,30" fill="#FFFFFF"/>
+      </g>
+    </svg>`,
+    headerMotif: `<svg class="w-16 h-7" viewBox="0 0 120 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <polygon points="60,8 63,18 73,20 63,22 60,32 57,22 47,20 57,18" fill="#FFFFFF"/>
+      <circle cx="35" cy="20" r="3" fill="#C4B5FD"/>
+      <circle cx="85" cy="20" r="3" fill="#C4B5FD"/>
+    </svg>`
+  }
+};
+
+// ============================================================================
+// 3. INVITATION ENGINE UTAMA (KELAS LENGKAP)
+// ============================================================================
 class InvitationEngine {
   constructor() {
     this.wedding = null;
@@ -12,6 +680,9 @@ class InvitationEngine {
     this.isPlayingAudio = false;
     this.audioElement = null;
     this.countdownInterval = null;
+    this.particleEngine = null;
+    this.scrollObserver = null;
+    this.scrollSpyObserver = null;
   }
 
   /**
@@ -22,12 +693,18 @@ class InvitationEngine {
       this.extractParams();
       this.initAudioController();
       this.initLightbox();
+      this.initParticleEngine();
+      this.initLivePreviewListener();
 
       const success = await this.loadWeddingData();
       if (!success) return;
 
       this.applyThemeColors();
       this.applyTemplateStyles();
+      this.applyPhotoFrameShape();
+      this.renderThemeOrnaments();
+      this.initParticleEffect();
+
       this.renderCoverSection();
       this.renderCoupleSection();
       this.renderQuotesSection();
@@ -38,6 +715,9 @@ class InvitationEngine {
       this.renderEnvelopesSection();
       this.renderRsvpSection();
       this.loadWishes();
+
+      this.initScrollAnimations();
+      this.initScrollSpy();
 
       // Inisialisasi Lucide Icons
       if (window.lucide) {
@@ -80,6 +760,271 @@ class InvitationEngine {
       } catch (e) {
         this.guestName = toParam.trim();
       }
+    }
+  }
+
+  /**
+   * Inisialisasi canvas partikel
+   */
+  initParticleEngine() {
+    try {
+      this.particleEngine = new ParticleEngine('particle-canvas');
+    } catch (e) {
+      console.warn('Particle engine init notice:', e);
+    }
+  }
+
+  initParticleEffect() {
+    if (!this.particleEngine) return;
+    const tplSlug = this.template?.slug || 'minimalist-sage';
+    const custom = this.wedding?.custom_theme_json || {};
+    const effect = custom.particle_effect || this.getDefaultParticleEffect(tplSlug);
+    this.particleEngine.setEffect(effect);
+  }
+
+  getDefaultParticleEffect(tplSlug) {
+    const defaults = {
+      'minimalist-sage': 'leaves',
+      'cozy-terracotta': 'leaves',
+      'javanese-royal': 'gold_dust',
+      'romantic-blush': 'petals',
+      'luxury-midnight': 'gold_dust',
+      'modern-monochrome': 'gold_dust',
+      'rustic-woodland': 'leaves',
+      'whimsical-fairy': 'gold_dust'
+    };
+    return defaults[tplSlug] || 'leaves';
+  }
+
+  /**
+   * Terapkan Bentuk Bingkai Foto Mempelai (Arch, Oval Floral, Circle, Octagon)
+   */
+  applyPhotoFrameShape(overrideShape) {
+    const tplSlug = this.template?.slug || 'minimalist-sage';
+    const custom = this.wedding?.custom_theme_json || {};
+    const shape = overrideShape || custom.frame_shape || this.getDefaultFrameShape(tplSlug);
+
+    const groomFrame = document.getElementById('groom-photo-frame');
+    const brideFrame = document.getElementById('bride-photo-frame');
+    const groomOuter = document.getElementById('groom-frame-outer');
+    const brideOuter = document.getElementById('bride-frame-outer');
+
+    [groomFrame, brideFrame].forEach(frame => {
+      if (!frame) return;
+      frame.classList.remove('frame-shape-arch', 'frame-shape-oval', 'frame-shape-circle', 'frame-shape-octagon');
+      frame.classList.add(`frame-shape-${shape}`);
+    });
+
+    // Tambah / Hapus ring dekoratif berputar untuk frame bentuk circle
+    [groomOuter, brideOuter].forEach(outer => {
+      if (!outer) return;
+      const existingRing = outer.querySelector('.frame-decorative-ring');
+      if (shape === 'circle') {
+        if (!existingRing) {
+          const ring = document.createElement('div');
+          ring.className = 'frame-decorative-ring absolute -inset-2.5 rounded-full border border-dashed border-amber-400/70 pointer-events-none animate-spin-slow';
+          outer.appendChild(ring);
+        }
+      } else {
+        if (existingRing) existingRing.remove();
+      }
+    });
+  }
+
+  getDefaultFrameShape(tplSlug) {
+    const defaults = {
+      'minimalist-sage': 'arch',
+      'cozy-terracotta': 'arch',
+      'javanese-royal': 'octagon',
+      'romantic-blush': 'oval',
+      'luxury-midnight': 'octagon',
+      'modern-monochrome': 'arch',
+      'rustic-woodland': 'oval',
+      'whimsical-fairy': 'circle'
+    };
+    return defaults[tplSlug] || 'arch';
+  }
+
+  /**
+   * Render Ornamen Sudut & Pembatas Bergerak (Swaying Corner Florals)
+   */
+  renderThemeOrnaments() {
+    const tplSlug = this.template?.slug || 'minimalist-sage';
+    const custom = this.wedding?.custom_theme_json || {};
+    const customOrnament = custom.custom_ornament_url;
+    const theme = ORNAMENT_THEMES[tplSlug] || ORNAMENT_THEMES['minimalist-sage'];
+
+    // 1. Ornamen di Sampul Depan (Cover Screen)
+    const coverTL = document.getElementById('cover-ornament-tl');
+    const coverTR = document.getElementById('cover-ornament-tr');
+    const coverBL = document.getElementById('cover-ornament-bl');
+    const coverBR = document.getElementById('cover-ornament-br');
+    const curtainL = document.getElementById('cover-curtain-left');
+    const curtainR = document.getElementById('cover-curtain-right');
+
+    if (customOrnament) {
+      const customImgHtml = `<img src="${customOrnament}" alt="Ornamen" class="w-full h-full object-contain filter drop-shadow sway-left">`;
+      if (coverTL) coverTL.innerHTML = customImgHtml;
+      if (coverTR) coverTR.innerHTML = customImgHtml;
+      if (coverBL) coverBL.innerHTML = customImgHtml;
+      if (coverBR) coverBR.innerHTML = customImgHtml;
+    } else {
+      if (coverTL) coverTL.innerHTML = theme.cornerTL;
+      if (coverTR) coverTR.innerHTML = theme.cornerTR;
+      if (coverBL) coverBL.innerHTML = theme.cornerBL;
+      if (coverBR) coverBR.innerHTML = theme.cornerBR;
+    }
+
+    // Gunungan Kembar / Royal Curtains
+    if (curtainL && curtainR) {
+      if (tplSlug === 'javanese-royal' && theme.gununganLeft) {
+        curtainL.innerHTML = theme.gununganLeft;
+        curtainR.innerHTML = theme.gununganRight;
+        curtainL.classList.remove('hidden');
+        curtainR.classList.remove('hidden');
+      } else {
+        curtainL.innerHTML = '';
+        curtainR.innerHTML = '';
+        curtainL.classList.add('hidden');
+        curtainR.classList.add('hidden');
+      }
+    }
+
+    // 2. Motif Header di Atas Nama Pengantin
+    const quoteHeader = document.getElementById('quote-header-ornament');
+    if (quoteHeader) {
+      quoteHeader.innerHTML = theme.headerMotif || '';
+    }
+
+    // 3. Ornamen Sudut Kartu-Kartu Undangan (.card-corner-slot)
+    const cardSlots = document.querySelectorAll('.card-corner-slot');
+    cardSlots.forEach(slot => {
+      const slotType = slot.getAttribute('data-slot');
+      if (customOrnament) {
+        slot.innerHTML = `<img src="${customOrnament}" alt="Ornamen" class="w-full h-full object-contain filter drop-shadow sway-left">`;
+      } else if (slotType === 'tl') {
+        slot.innerHTML = theme.cornerTL;
+      } else if (slotType === 'tr') {
+        slot.innerHTML = theme.cornerTR;
+      }
+    });
+  }
+
+  /**
+   * Animasi Interaktif Scroll-Reveal (IntersectionObserver)
+   */
+  initScrollAnimations() {
+    const animatedElements = document.querySelectorAll('[data-animate]');
+    if (!animatedElements.length) return;
+
+    if (this.scrollObserver) {
+      this.scrollObserver.disconnect();
+    }
+
+    this.scrollObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-revealed');
+        }
+      });
+    }, {
+      threshold: 0.12,
+      rootMargin: '0px 0px -30px 0px'
+    });
+
+    animatedElements.forEach(el => this.scrollObserver.observe(el));
+  }
+
+  /**
+   * Floating Bottom Navigation Dock & ScrollSpy
+   */
+  initScrollSpy() {
+    const sectionIds = ['section-couple', 'section-events', 'section-gallery', 'section-envelopes', 'section-rsvp'];
+    const sections = sectionIds.map(id => document.getElementById(id)).filter(Boolean);
+
+    if (this.scrollSpyObserver) {
+      this.scrollSpyObserver.disconnect();
+    }
+
+    this.scrollSpyObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const activeId = entry.target.id;
+          document.querySelectorAll('#bottom-dock .dock-btn').forEach(btn => {
+            if (btn.getAttribute('data-nav') === activeId) {
+              btn.classList.add('active');
+            } else {
+              btn.classList.remove('active');
+            }
+          });
+        }
+      });
+    }, {
+      threshold: 0.35
+    });
+
+    sections.forEach(sec => this.scrollSpyObserver.observe(sec));
+  }
+
+  scrollToSection(sectionId) {
+    const el = document.getElementById(sectionId);
+    if (!el) return;
+    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  /**
+   * Live Preview Listener via postMessage
+   */
+  initLivePreviewListener() {
+    window.addEventListener('message', (event) => {
+      const msg = event.data;
+      if (!msg || (msg.type !== 'MB_PREVIEW_UPDATE' && msg.type !== 'PREVIEW_DATA')) return;
+      this.handleLivePreviewUpdate(msg.data || msg);
+    });
+
+    if (window.opener) {
+      try {
+        window.opener.postMessage({ type: 'MB_PREVIEW_READY' }, '*');
+      } catch (e) {}
+    }
+  }
+
+  handleLivePreviewUpdate(data) {
+    if (!data) return;
+
+    // Merge wedding properties
+    if (data.wedding) {
+      this.wedding = { ...this.wedding, ...data.wedding };
+    } else {
+      this.wedding = { ...this.wedding, ...data };
+    }
+
+    const tplSlug = data.presetSlug || data.template_slug || this.wedding?.template_slug || this.template?.slug || 'minimalist-sage';
+    this.template = { ...(this.template || {}), slug: tplSlug };
+
+    this.applyTemplateStyles();
+    this.applyThemeColors();
+    this.renderThemeOrnaments();
+
+    const frameShape = data.custom_theme_json?.frame_shape || this.wedding.custom_theme_json?.frame_shape;
+    this.applyPhotoFrameShape(frameShape);
+
+    const particleEffect = data.custom_theme_json?.particle_effect || this.wedding.custom_theme_json?.particle_effect || this.getDefaultParticleEffect(tplSlug);
+    if (this.particleEngine) {
+      this.particleEngine.setEffect(particleEffect);
+    }
+
+    this.renderCoverSection();
+    this.renderCoupleSection();
+    this.renderQuotesSection();
+    this.renderCountdownSection();
+    this.renderEventsSection();
+    this.renderLoveStorySection();
+    this.renderGallerySection();
+    this.renderEnvelopesSection();
+
+    if (window.lucide) {
+      window.lucide.createIcons();
     }
   }
 
@@ -240,25 +1185,55 @@ class InvitationEngine {
     // Tombol Buka Undangan
     const openBtn = document.getElementById('btn-open-invitation');
     if (openBtn) {
-      openBtn.addEventListener('click', () => this.openInvitation());
+      openBtn.onclick = () => this.openInvitation();
     }
   }
 
   /**
-   * 2. Buka Sampul & Putar Musik
+   * 2. Buka Sampul, Tirai Membuka & Putar Musik
    */
   openInvitation() {
     const cover = document.getElementById('cover-screen');
-    if (cover) {
-      cover.classList.add('-translate-y-full', 'opacity-0', 'pointer-events-none');
-      setTimeout(() => {
-        cover.style.display = 'none';
-      }, 750);
+    const curtainLeft = document.getElementById('cover-curtain-left');
+    const curtainRight = document.getElementById('cover-curtain-right');
+    const dock = document.getElementById('bottom-dock');
+
+    // Efek Membuka Tirai Gunungan Wayang Kembar ke Kiri & Kanan
+    if (curtainLeft) {
+      curtainLeft.style.transform = 'translateX(-125%) scale(0.95)';
+      curtainLeft.style.opacity = '0';
+    }
+    if (curtainRight) {
+      curtainRight.style.transform = 'translateX(125%) scale(0.95)';
+      curtainRight.style.opacity = '0';
     }
 
-    // Buka lock scroll body
+    // Angkat Sampul Depan ke Atas
+    if (cover) {
+      cover.style.transform = 'translateY(-100%)';
+      cover.style.opacity = '0';
+      cover.style.pointerEvents = 'none';
+      setTimeout(() => {
+        cover.style.display = 'none';
+      }, 850);
+    }
+
+    // Buka lock scroll body & container
     document.body.classList.remove('overflow-hidden');
     document.getElementById('invitation-app-container')?.classList.remove('overflow-hidden');
+
+    // Tampilkan Floating Bottom Dock Navigasi
+    if (dock) {
+      dock.classList.remove('opacity-0', 'translate-y-10', 'pointer-events-none');
+      dock.classList.add('opacity-100', 'translate-y-0', 'pointer-events-auto');
+    }
+
+    // Pemicu reveal animasi seksi pertama
+    setTimeout(() => {
+      document.querySelectorAll('#section-quote [data-animate], #section-couple [data-animate]').forEach(el => {
+        el.classList.add('is-revealed');
+      });
+    }, 250);
 
     // Putar musik latar
     this.playAudio();
@@ -272,7 +1247,7 @@ class InvitationEngine {
     const audioBtn = document.getElementById('audio-control');
 
     if (audioBtn) {
-      audioBtn.addEventListener('click', () => this.toggleAudio());
+      audioBtn.onclick = () => this.toggleAudio();
     }
 
     if (this.audioElement) {
@@ -286,7 +1261,6 @@ class InvitationEngine {
           this.updateAudioButtonState();
         }
       });
-      // Fallback ke local track-1.mp3 jika custom audio link gagal dimuat/error
       this.audioElement.addEventListener('error', (e) => {
         console.warn('Audio failed to load, falling back to local track-1.mp3', e);
         if (this.audioElement.src && !this.audioElement.src.includes('/assets/audio/track-1.mp3')) {
@@ -304,7 +1278,6 @@ class InvitationEngine {
   playAudio() {
     if (!this.audioElement) return;
     
-    // Set audio source jika disediakan (default fallback: /assets/audio/track-1.mp3)
     const sourceUrl = this.wedding?.audio_url || '/assets/audio/track-1.mp3';
     if (!this.audioElement.src || !this.audioElement.src.endsWith(sourceUrl)) {
       this.audioElement.src = sourceUrl;
@@ -432,7 +1405,6 @@ class InvitationEngine {
    * 5. Hitung Mundur Detik demi Detik & Simpan ke Kalender
    */
   renderCountdownSection() {
-    // Ambil tanggal berurutan: wedding.akad_date -> wedding.resepsi_date -> weddingUser.wedding_date -> default 2027-12-31
     const rawDate = this.wedding.akad_date || this.wedding.resepsi_date || this.weddingUser?.wedding_date || '2027-12-31';
 
     const daysEl = document.getElementById('countdown-days');
@@ -442,7 +1414,6 @@ class InvitationEngine {
 
     if (this.countdownInterval) clearInterval(this.countdownInterval);
 
-    // Parsing aman bebas bug timezone string
     const dateStr = String(rawDate).split('T')[0].trim();
     const parts = dateStr.split('-');
     let year = 2027, month = 12, day = 31;
@@ -490,7 +1461,6 @@ class InvitationEngine {
     updateCountdown();
     this.countdownInterval = setInterval(updateCountdown, 1000);
 
-    // Tombol Simpan ke Google Calendar
     const calBtn = document.getElementById('btn-add-to-calendar');
     if (calBtn) {
       calBtn.href = this.generateGoogleCalendarUrl();
@@ -571,7 +1541,7 @@ class InvitationEngine {
 
     section.classList.remove('hidden');
     container.innerHTML = stories.map(s => `
-      <div class="wedding-card backdrop-blur-md p-4 rounded-2xl bg-[var(--bg-card,#ffffff)]/85 border border-stone-200/80 shadow-2xs space-y-1 relative pl-5 border-l-4 border-l-[var(--accent-color,#b48342)]">
+      <div class="wedding-card backdrop-blur-md p-4 rounded-2xl bg-[var(--bg-card,#ffffff)]/85 border border-stone-200/80 shadow-2xs space-y-1 relative pl-5 border-l-4 border-l-[var(--accent-color,#b48342)]" data-animate="fade-up">
         <span class="text-[10px] font-bold font-mono text-[var(--accent-color,#b48342)] uppercase tracking-wider">${escapeHtml(s.year || '')}</span>
         <h4 class="font-serif text-base font-bold text-slate-900">${escapeHtml(s.title || '')}</h4>
         <p class="text-xs text-slate-600 leading-relaxed">${escapeHtml(s.story || '')}</p>
@@ -661,8 +1631,10 @@ class InvitationEngine {
 
     if (hasEnvelopes) {
       container.innerHTML = envelopes.map(env => `
-        <div class="wedding-card backdrop-blur-md p-4 rounded-2xl bg-[var(--bg-card,#ffffff)]/85 border border-stone-200/80 shadow-2xs flex items-center justify-between gap-3">
-          <div>
+        <div class="wedding-card backdrop-blur-md p-4 rounded-2xl bg-[var(--bg-card,#ffffff)]/85 border border-stone-200/80 shadow-2xs flex items-center justify-between gap-3 relative overflow-hidden" data-animate="fade-up">
+          <div class="card-corner-slot top-0 left-0" data-slot="tl"></div>
+          <div class="card-corner-slot top-0 right-0" data-slot="tr"></div>
+          <div class="relative z-10">
             <span class="text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded bg-amber-50 text-amber-900 border border-amber-200/70">
               ${escapeHtml(env.bank || 'Bank')}
             </span>
@@ -672,7 +1644,7 @@ class InvitationEngine {
           <button 
             type="button" 
             onclick="window.invitationEngine.copyAccountNumber('${escapeHtml(env.number)}', this)" 
-            class="px-3 py-1.5 rounded-xl border border-stone-200 bg-stone-50 hover:bg-stone-100 text-slate-700 text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer shrink-0"
+            class="px-3 py-1.5 rounded-xl border border-stone-200 bg-stone-50 hover:bg-stone-100 text-slate-700 text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer shrink-0 relative z-10"
           >
             <i data-lucide="copy" class="w-3.5 h-3.5"></i>
             <span>Salin</span>
@@ -711,7 +1683,6 @@ class InvitationEngine {
    * Smart RSVP & Real-Time Wishes Wall
    */
   renderRsvpSection() {
-    // Pre-fill nama tamu dari parameter
     const nameInput = document.getElementById('guest_name_input');
     if (nameInput && this.guestName && this.guestName !== 'Tamu Kehormatan') {
       nameInput.value = this.guestName;
@@ -719,7 +1690,7 @@ class InvitationEngine {
 
     const form = document.getElementById('rsvp-form');
     if (form) {
-      form.addEventListener('submit', (e) => this.handleRsvpSubmit(e));
+      form.onsubmit = (e) => this.handleRsvpSubmit(e);
     }
   }
 
@@ -750,7 +1721,7 @@ class InvitationEngine {
       const now = new Date().toISOString();
 
       // 1. SMART MATCHING: Cek apakah tamu sudah ada di database tabel guests
-      const { data: existingGuest, error: checkError } = await client
+      const { data: existingGuest } = await client
         .from('guests')
         .select('id, name')
         .eq('wedding_id', this.wedding.id)
@@ -758,7 +1729,6 @@ class InvitationEngine {
         .maybeSingle();
 
       if (existingGuest?.id) {
-        // UPDATE BARIS TAMU YANG SUDAH ADA
         const { error: updateError } = await client
           .from('guests')
           .update({
@@ -771,7 +1741,6 @@ class InvitationEngine {
 
         if (updateError) checkRlsError(updateError);
       } else {
-        // TAMU BARU (MISAL DARI LINK GRUP): INSERT BARU
         const { error: insertError } = await client
           .from('guests')
           .insert([{
@@ -853,7 +1822,6 @@ class InvitationEngine {
     const container = document.getElementById('wishes-list');
     if (!container) return;
 
-    // Hapus placeholder kosong jika ada
     const emptyBox = container.querySelector('.text-stone-400');
     if (emptyBox) container.innerHTML = '';
 

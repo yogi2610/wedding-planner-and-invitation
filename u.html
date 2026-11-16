@@ -156,6 +156,162 @@
       background: #cbd5e1;
       border-radius: 4px;
     }
+
+    /* Swaying Wind & Breathing Keyframes */
+    @keyframes swayLeft {
+      0%, 100% {
+        transform: rotate(0deg) translate3d(0, 0, 0);
+      }
+      50% {
+        transform: rotate(-4.5deg) translate3d(-3px, -3px, 0) scale(1.02);
+      }
+    }
+    @keyframes swayRight {
+      0%, 100% {
+        transform: rotate(0deg) translate3d(0, 0, 0);
+      }
+      50% {
+        transform: rotate(4.5deg) translate3d(3px, -3px, 0) scale(1.02);
+      }
+    }
+    @keyframes floatBreathing {
+      0%, 100% {
+        transform: scale(1) translate3d(0, 0, 0);
+      }
+      50% {
+        transform: scale(1.05) translate3d(0, -5px, 0);
+      }
+    }
+    @keyframes spinSlow {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    @keyframes gununganCurtainLeft {
+      0% { transform: translateX(0); opacity: 0.95; }
+      100% { transform: translateX(-120%); opacity: 0; }
+    }
+    @keyframes gununganCurtainRight {
+      0% { transform: translateX(0); opacity: 0.95; }
+      100% { transform: translateX(120%); opacity: 0; }
+    }
+
+    .sway-left {
+      transform-origin: bottom left;
+      animation: swayLeft 5.2s infinite ease-in-out;
+    }
+    .sway-right {
+      transform-origin: bottom right;
+      animation: swayRight 5.8s infinite ease-in-out;
+    }
+    .sway-top-left {
+      transform-origin: top left;
+      animation: swayLeft 6.2s infinite ease-in-out;
+    }
+    .sway-top-right {
+      transform-origin: top right;
+      animation: swayRight 5.5s infinite ease-in-out;
+    }
+    .float-breathing {
+      animation: floatBreathing 4.5s infinite ease-in-out;
+    }
+    .animate-spin-slow {
+      animation: spinSlow 22s linear infinite;
+    }
+
+    /* Scroll Reveal Animations */
+    [data-animate] {
+      opacity: 0;
+      transition: opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1), transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+      will-change: opacity, transform;
+    }
+    [data-animate="fade-up"] {
+      transform: translate3d(0, 36px, 0);
+    }
+    [data-animate="zoom-in"] {
+      transform: scale(0.88);
+    }
+    [data-animate="slide-left"] {
+      transform: translate3d(-40px, 0, 0);
+    }
+    [data-animate="slide-right"] {
+      transform: translate3d(40px, 0, 0);
+    }
+    [data-animate].is-revealed {
+      opacity: 1 !important;
+      transform: translate3d(0, 0, 0) scale(1) !important;
+    }
+
+    /* Photo Frame Shapes */
+    .frame-shape-arch {
+      border-radius: 9999px 9999px 1.25rem 1.25rem !important;
+      aspect-ratio: 3 / 4 !important;
+      overflow: hidden;
+      border: 3px solid var(--accent-color, #d4af37) !important;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15), 0 0 0 3px rgba(255, 255, 255, 0.85);
+    }
+    .frame-shape-oval {
+      border-radius: 50% !important;
+      aspect-ratio: 3 / 4 !important;
+      overflow: hidden;
+      border: 3px solid var(--accent-color, #d4af37) !important;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15), 0 0 0 3px rgba(255, 255, 255, 0.85);
+    }
+    .frame-shape-circle {
+      border-radius: 9999px !important;
+      aspect-ratio: 1 / 1 !important;
+      overflow: hidden;
+      border: 3px solid var(--accent-color, #d4af37) !important;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15), 0 0 0 3px rgba(255, 255, 255, 0.85);
+    }
+    .frame-shape-octagon {
+      clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%) !important;
+      aspect-ratio: 1 / 1 !important;
+      overflow: hidden;
+      border: 3px solid var(--accent-color, #d4af37) !important;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Bottom Navigation Dock */
+    #bottom-dock {
+      transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .dock-btn {
+      position: relative;
+      transition: all 0.2s ease;
+    }
+    .dock-btn.active {
+      color: #F59E0B !important;
+      background: rgba(255, 255, 255, 0.12);
+      border-radius: 0.75rem;
+    }
+    .dock-btn.active::after {
+      content: '';
+      position: absolute;
+      bottom: 2px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background-color: #F59E0B;
+    }
+
+    .corner-slot {
+      pointer-events: none;
+      z-index: 15;
+    }
+    .cover-curtain {
+      pointer-events: none;
+      z-index: 12;
+      transition: transform 0.85s cubic-bezier(0.77, 0, 0.175, 1), opacity 0.75s ease;
+    }
+    .card-corner-slot {
+      pointer-events: none;
+      position: absolute;
+      z-index: 10;
+      width: 3.5rem;
+      height: 3.5rem;
+    }
   </style>
 </head>
 <body class="bg-[#141210] text-slate-800 antialiased min-h-screen flex justify-center selection:bg-amber-100 selection:text-amber-900 overflow-hidden">
@@ -195,11 +351,24 @@
       </div>
     </div>
 
-    <!-- 1. FULL-SCREEN COVER OVERLAY (SAMPOEL DEPAN) -->
-    <div id="cover-screen" class="fixed inset-0 z-50 bg-[#161412] text-white flex flex-col items-center justify-between p-6 sm:p-8 text-center transition-all duration-700 max-w-md mx-auto">
+    <!-- PARTICLE EFFECT CANVAS OVERLAY -->
+    <canvas id="particle-canvas" class="fixed inset-0 pointer-events-none z-30 max-w-md mx-auto"></canvas>
+
+    <!-- 1. FULL-SCREEN COVER OVERLAY (SAMPUL DEPAN) -->
+    <div id="cover-screen" class="fixed inset-0 z-50 bg-[#161412] text-white flex flex-col items-center justify-between p-6 sm:p-8 text-center transition-all duration-700 max-w-md mx-auto overflow-hidden">
       
+      <!-- 4 Corner Slots on Cover -->
+      <div id="cover-ornament-tl" class="corner-slot absolute top-0 left-0 w-28 h-28"></div>
+      <div id="cover-ornament-tr" class="corner-slot absolute top-0 right-0 w-28 h-28"></div>
+      <div id="cover-ornament-bl" class="corner-slot absolute bottom-0 left-0 w-28 h-28"></div>
+      <div id="cover-ornament-br" class="corner-slot absolute bottom-0 right-0 w-28 h-28"></div>
+
+      <!-- Twin Curtain Silhouettes (Gunungan Wayang / Gate Curtains) -->
+      <div id="cover-curtain-left" class="cover-curtain absolute inset-y-0 left-0 w-1/2 flex items-center justify-end pr-0.5 opacity-90"></div>
+      <div id="cover-curtain-right" class="cover-curtain absolute inset-y-0 right-0 w-1/2 flex items-center justify-start pl-0.5 opacity-90"></div>
+
       <!-- Top Floral / Modern Motif -->
-      <div class="pt-8 space-y-2">
+      <div class="pt-8 space-y-2 relative z-20">
         <span class="text-[10px] uppercase tracking-[0.3em] text-amber-300/90 font-semibold block">The Wedding Of</span>
         <h1 class="font-serif text-4xl sm:text-5xl font-bold tracking-tight text-white leading-tight" id="cover-couple-name">
           Mempelai & Mempelai
@@ -210,7 +379,7 @@
       </div>
 
       <!-- Dear Guest Box -->
-      <div class="w-full p-5 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-md shadow-xl space-y-3">
+      <div class="w-full p-5 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-md shadow-xl space-y-3 relative z-20">
         <span class="text-[11px] text-stone-400 block">Kepada Yth. Bapak/Ibu/Saudara/i:</span>
         <h3 class="font-serif text-2xl font-bold text-amber-200 tracking-wide" id="cover-guest-name">
           Tamu Kehormatan
@@ -230,7 +399,7 @@
       </div>
 
       <!-- Bottom Branding -->
-      <div class="pb-4 text-[10px] text-stone-500 tracking-wider uppercase font-mono">
+      <div class="pb-4 text-[10px] text-stone-500 tracking-wider uppercase font-mono relative z-20">
         MenikahBersama Digital Invitation
       </div>
     </div>
@@ -244,12 +413,36 @@
     <button 
       id="audio-control"
       type="button"
-      class="fixed bottom-6 z-40 w-11 h-11 rounded-full bg-slate-900/80 backdrop-blur-md text-white flex items-center justify-center shadow-xl hover:scale-110 transition-transform cursor-pointer border border-white/20"
-      style="right: max(1.5rem, calc(50% - 210px));"
+      class="fixed bottom-20 z-40 w-11 h-11 rounded-full bg-slate-900/85 backdrop-blur-md text-white flex items-center justify-center shadow-xl hover:scale-110 transition-transform cursor-pointer border border-white/20"
+      style="right: max(1.25rem, calc(50% - 210px));"
       title="Putar / Hentikan Musik"
     >
       <svg class="w-5 h-5 animate-spin text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="3"></circle></svg>
     </button>
+
+    <!-- FLOATING BOTTOM NAVIGATION DOCK (GLASSMORPHISM) -->
+    <nav id="bottom-dock" class="fixed bottom-4 left-1/2 -translate-x-1/2 z-40 max-w-xs w-[92%] bg-slate-900/85 backdrop-blur-md text-white border border-white/20 rounded-full shadow-2xl px-2.5 py-1.5 flex items-center justify-between transition-all duration-500 opacity-0 translate-y-10 pointer-events-none">
+      <button type="button" data-nav="section-couple" onclick="window.invitationEngine.scrollToSection('section-couple')" class="dock-btn flex flex-col items-center gap-0.5 text-stone-300 hover:text-amber-400 transition-colors px-2 py-1 cursor-pointer">
+        <i data-lucide="heart" class="w-4 h-4"></i>
+        <span class="text-[9px] font-semibold">Mempelai</span>
+      </button>
+      <button type="button" data-nav="section-events" onclick="window.invitationEngine.scrollToSection('section-events')" class="dock-btn flex flex-col items-center gap-0.5 text-stone-300 hover:text-amber-400 transition-colors px-2 py-1 cursor-pointer">
+        <i data-lucide="calendar" class="w-4 h-4"></i>
+        <span class="text-[9px] font-semibold">Acara</span>
+      </button>
+      <button type="button" data-nav="section-gallery" onclick="window.invitationEngine.scrollToSection('section-gallery')" class="dock-btn flex flex-col items-center gap-0.5 text-stone-300 hover:text-amber-400 transition-colors px-2 py-1 cursor-pointer">
+        <i data-lucide="image" class="w-4 h-4"></i>
+        <span class="text-[9px] font-semibold">Galeri</span>
+      </button>
+      <button type="button" data-nav="section-envelopes" onclick="window.invitationEngine.scrollToSection('section-envelopes')" class="dock-btn flex flex-col items-center gap-0.5 text-stone-300 hover:text-amber-400 transition-colors px-2 py-1 cursor-pointer">
+        <i data-lucide="gift" class="w-4 h-4"></i>
+        <span class="text-[9px] font-semibold">Amplop</span>
+      </button>
+      <button type="button" data-nav="section-rsvp" onclick="window.invitationEngine.scrollToSection('section-rsvp')" class="dock-btn flex flex-col items-center gap-0.5 text-stone-300 hover:text-amber-400 transition-colors px-2 py-1 cursor-pointer">
+        <i data-lucide="message-square" class="w-4 h-4"></i>
+        <span class="text-[9px] font-semibold">Ucapan</span>
+      </button>
+    </nav>
 
     <!-- LIGHTBOX MODAL UNTUK GALERI FOTO -->
     <div id="lightbox-modal" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-sm hidden items-center justify-center p-4">
@@ -263,21 +456,11 @@
     <main class="px-5 py-10 space-y-12 text-center relative z-10">
       
       <!-- 2. HERO HEADER & AYAT KUTIPAN -->
-      <section class="space-y-4 pt-6">
+      <section id="section-quote" class="space-y-4 pt-6" data-animate="fade-up">
         
-        <!-- Ornamen Botanical (Minimalist) -->
-        <div class="botanical-ornament text-amber-700/60 flex justify-center mb-1">
-          <svg class="w-12 h-6" viewBox="0 0 100 40" fill="currentColor">
-            <path d="M50 0 C45 15, 30 25, 10 20 C25 35, 45 35, 50 40 C55 35, 75 35, 90 20 C70 25, 55 15, 50 0 Z" opacity="0.4"/>
-          </svg>
-        </div>
-
-        <!-- Ornamen Arch (Terracotta) -->
-        <div class="terracotta-ornament text-amber-800/40 flex justify-center mb-1 hidden">
-          <svg class="w-16 h-8" viewBox="0 0 120 60" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M10 60 A50 50 0 0 1 110 60" />
-            <path d="M25 60 A35 35 0 0 1 95 60" />
-          </svg>
+        <!-- Ornamen Header Tema -->
+        <div class="theme-ornament-header text-amber-700/60 flex justify-center mb-1 float-breathing" id="quote-header-ornament">
+          <!-- Injected via JavaScript -->
         </div>
 
         <span class="text-[10px] uppercase tracking-[0.25em] text-amber-800 font-bold block">Momen Bahagia Pernikahan Kami</span>
@@ -287,28 +470,37 @@
         </h2>
 
         <!-- Teks Kutipan Suci -->
-        <div class="wedding-card backdrop-blur-md p-4 rounded-2xl bg-[var(--bg-card,#ffffff)]/85 border border-stone-200/70 shadow-2xs space-y-2 mt-4">
-          <p class="text-xs text-slate-600 italic font-serif leading-relaxed" id="quote-text">
+        <div class="wedding-card backdrop-blur-md p-5 rounded-2xl bg-[var(--bg-card,#ffffff)]/85 border border-stone-200/70 shadow-2xs space-y-2 mt-4 relative overflow-hidden" data-animate="zoom-in">
+          <div class="card-corner-slot top-0 left-0" data-slot="tl"></div>
+          <div class="card-corner-slot top-0 right-0" data-slot="tr"></div>
+          <p class="text-xs text-slate-600 italic font-serif leading-relaxed relative z-10" id="quote-text">
             "Dan di antara tanda-tanda kekuasaan-Nya ialah Dia menciptakan untukmu pasangan hidup dari jenismu sendiri, supaya kamu merasa tenteram di sampingnya."
           </p>
-          <span class="block text-[10px] font-sans not-italic text-amber-800 font-bold" id="quote-source">
+          <span class="block text-[10px] font-sans not-italic text-amber-800 font-bold relative z-10" id="quote-source">
             (QS. Ar-Rum: 21)
           </span>
         </div>
       </section>
 
       <!-- 3. PROFIL MEMPELAI PRIA & WANITA -->
-      <section class="space-y-6">
+      <section id="section-couple" class="space-y-6">
         
         <!-- Mempelai Pria -->
-        <div class="wedding-card backdrop-blur-md p-5 rounded-3xl bg-[var(--bg-card,#ffffff)]/85 border border-stone-200/80 shadow-2xs space-y-3">
-          <div class="w-24 h-24 rounded-full overflow-hidden mx-auto shadow-md border-2 border-amber-300/80 flex items-center justify-center bg-stone-100 relative">
-            <img id="groom-photo-img" src="" alt="Foto Pria" class="w-full h-full object-cover hidden">
-            <div class="w-full h-full gold-gradient-bg text-white font-serif text-2xl font-bold flex items-center justify-center" id="groom-avatar">
-              P
+        <div class="wedding-card backdrop-blur-md p-5 rounded-3xl bg-[var(--bg-card,#ffffff)]/85 border border-stone-200/80 shadow-2xs space-y-3 relative overflow-hidden" data-animate="slide-left">
+          <div class="card-corner-slot top-0 left-0" data-slot="tl"></div>
+          <div class="card-corner-slot top-0 right-0" data-slot="tr"></div>
+          
+          <div class="relative mx-auto my-1 flex items-center justify-center">
+            <div id="groom-frame-outer" class="relative">
+              <div id="groom-photo-frame" class="w-24 h-24 rounded-full overflow-hidden mx-auto shadow-md border-2 border-amber-300/80 flex items-center justify-center bg-stone-100 relative transition-all duration-500">
+                <img id="groom-photo-img" src="" alt="Foto Pria" class="w-full h-full object-cover hidden">
+                <div class="w-full h-full gold-gradient-bg text-white font-serif text-2xl font-bold flex items-center justify-center" id="groom-avatar">
+                  P
+                </div>
+              </div>
             </div>
           </div>
-          <div>
+          <div class="relative z-10">
             <h3 class="font-serif text-xl font-bold text-slate-900" id="groom-name">Mempelai Pria</h3>
             <p class="text-[11px] text-slate-500 mt-1" id="groom-parents">Putra tercinta dari Keluarga</p>
             <a id="groom-ig-link" href="#" target="_blank" class="inline-flex items-center gap-1 text-[10px] font-mono text-amber-800 hover:underline mt-2 hidden">
@@ -318,17 +510,24 @@
           </div>
         </div>
 
-        <div class="font-serif text-2xl font-bold text-amber-700">&</div>
+        <div class="font-serif text-2xl font-bold text-amber-700 float-breathing" data-animate="zoom-in">&</div>
 
         <!-- Mempelai Wanita -->
-        <div class="wedding-card backdrop-blur-md p-5 rounded-3xl bg-[var(--bg-card,#ffffff)]/85 border border-stone-200/80 shadow-2xs space-y-3">
-          <div class="w-24 h-24 rounded-full overflow-hidden mx-auto shadow-md border-2 border-amber-300/80 flex items-center justify-center bg-stone-100 relative">
-            <img id="bride-photo-img" src="" alt="Foto Wanita" class="w-full h-full object-cover hidden">
-            <div class="w-full h-full bg-gradient-to-tr from-rose-400 to-amber-300 text-slate-950 font-serif text-2xl font-bold flex items-center justify-center" id="bride-avatar">
-              W
+        <div class="wedding-card backdrop-blur-md p-5 rounded-3xl bg-[var(--bg-card,#ffffff)]/85 border border-stone-200/80 shadow-2xs space-y-3 relative overflow-hidden" data-animate="slide-right">
+          <div class="card-corner-slot top-0 left-0" data-slot="tl"></div>
+          <div class="card-corner-slot top-0 right-0" data-slot="tr"></div>
+          
+          <div class="relative mx-auto my-1 flex items-center justify-center">
+            <div id="bride-frame-outer" class="relative">
+              <div id="bride-photo-frame" class="w-24 h-24 rounded-full overflow-hidden mx-auto shadow-md border-2 border-amber-300/80 flex items-center justify-center bg-stone-100 relative transition-all duration-500">
+                <img id="bride-photo-img" src="" alt="Foto Wanita" class="w-full h-full object-cover hidden">
+                <div class="w-full h-full bg-gradient-to-tr from-rose-400 to-amber-300 text-slate-950 font-serif text-2xl font-bold flex items-center justify-center" id="bride-avatar">
+                  W
+                </div>
+              </div>
             </div>
           </div>
-          <div>
+          <div class="relative z-10">
             <h3 class="font-serif text-xl font-bold text-slate-900" id="bride-name">Mempelai Wanita</h3>
             <p class="text-[11px] text-slate-500 mt-1" id="bride-parents">Putri tercinta dari Keluarga</p>
             <a id="bride-ig-link" href="#" target="_blank" class="inline-flex items-center gap-1 text-[10px] font-mono text-rose-800 hover:underline mt-2 hidden">
@@ -341,10 +540,12 @@
       </section>
 
       <!-- 4. HITUNG MUNDUR REAL-TIME DETIK DEMI DETIK -->
-      <section class="wedding-card backdrop-blur-md p-6 rounded-3xl bg-[var(--bg-card,#ffffff)]/85 border border-stone-200/80 shadow-2xs space-y-4">
-        <span class="text-[10px] uppercase tracking-widest text-amber-800 font-bold block">Menuju Hari Bahagia</span>
+      <section id="section-countdown" class="wedding-card backdrop-blur-md p-6 rounded-3xl bg-[var(--bg-card,#ffffff)]/85 border border-stone-200/80 shadow-2xs space-y-4 relative overflow-hidden" data-animate="zoom-in">
+        <div class="card-corner-slot top-0 left-0" data-slot="tl"></div>
+        <div class="card-corner-slot top-0 right-0" data-slot="tr"></div>
+        <span class="text-[10px] uppercase tracking-widest text-amber-800 font-bold block relative z-10">Menuju Hari Bahagia</span>
         
-        <div class="grid grid-cols-4 gap-2">
+        <div class="grid grid-cols-4 gap-2 relative z-10">
           <div class="bg-amber-50/70 p-2.5 rounded-2xl border border-amber-200/60 text-center">
             <span class="text-xl font-extrabold text-amber-900 block font-mono" id="countdown-days">00</span>
             <span class="text-[9px] uppercase tracking-wider text-amber-700 font-semibold mt-0.5 block">Hari</span>
@@ -367,7 +568,7 @@
           id="btn-add-to-calendar" 
           href="#" 
           target="_blank" 
-          class="inline-flex items-center justify-center gap-1.5 w-full py-2.5 px-4 rounded-xl border border-amber-300 bg-amber-50 hover:bg-amber-100 text-amber-900 text-xs font-bold transition-colors cursor-pointer"
+          class="inline-flex items-center justify-center gap-1.5 w-full py-2.5 px-4 rounded-xl border border-amber-300 bg-amber-50 hover:bg-amber-100 text-amber-900 text-xs font-bold transition-colors cursor-pointer relative z-10"
         >
           <i data-lucide="calendar-plus" class="w-4 h-4 text-amber-700"></i>
           <span>Simpan ke Google Calendar</span>
@@ -375,45 +576,51 @@
       </section>
 
       <!-- 5. DETAIL ACARA (AKAD & RESEPSI) -->
-      <section class="space-y-4">
-        <span class="text-[10px] uppercase tracking-widest text-amber-800 font-bold block">Waktu & Tempat</span>
-        <h3 class="font-serif text-2xl font-bold text-slate-900">Rangkaian Acara</h3>
+      <section id="section-events" class="space-y-4">
+        <div data-animate="fade-up">
+          <span class="text-[10px] uppercase tracking-widest text-amber-800 font-bold block">Waktu & Tempat</span>
+          <h3 class="font-serif text-2xl font-bold text-slate-900">Rangkaian Acara</h3>
+        </div>
 
         <!-- Akad Nikah -->
-        <div class="wedding-card p-6 rounded-3xl bg-[var(--bg-card,#ffffff)] border border-stone-200/80 shadow-2xs text-center flex flex-col items-center justify-center space-y-3">
-          <div class="inline-flex items-center justify-center gap-2 text-amber-800 font-bold text-xs uppercase tracking-wider">
+        <div class="wedding-card p-6 rounded-3xl bg-[var(--bg-card,#ffffff)] border border-stone-200/80 shadow-2xs text-center flex flex-col items-center justify-center space-y-3 relative overflow-hidden" data-animate="fade-up">
+          <div class="card-corner-slot top-0 left-0" data-slot="tl"></div>
+          <div class="card-corner-slot top-0 right-0" data-slot="tr"></div>
+          <div class="inline-flex items-center justify-center gap-2 text-amber-800 font-bold text-xs uppercase tracking-wider relative z-10">
             <i data-lucide="book-open" class="w-4 h-4"></i>
             <span>Akad Nikah</span>
           </div>
-          <div class="text-center">
+          <div class="text-center relative z-10">
             <div class="text-base font-bold text-slate-900" id="akad-date">-</div>
             <div class="text-xs text-amber-700 font-semibold mt-0.5" id="akad-time">Pukul 08.00 WIB - Selesai</div>
           </div>
-          <div class="pt-2 border-t border-stone-100 text-xs text-slate-600 text-center w-full">
+          <div class="pt-2 border-t border-stone-100 text-xs text-slate-600 text-center w-full relative z-10">
             <span class="font-bold text-slate-800 block" id="akad-venue">Lokasi Akad</span>
             <span id="akad-address" class="text-slate-500 leading-relaxed block mt-1 max-w-xs mx-auto">Alamat lengkap akad</span>
           </div>
-          <a id="akad-maps-btn" href="#" target="_blank" class="inline-flex items-center justify-center gap-1.5 w-full py-2.5 px-4 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold transition-colors hidden cursor-pointer shadow-xs">
+          <a id="akad-maps-btn" href="#" target="_blank" class="inline-flex items-center justify-center gap-1.5 w-full py-2.5 px-4 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold transition-colors hidden cursor-pointer shadow-xs relative z-10">
             <i data-lucide="map-pin" class="w-3.5 h-3.5"></i>
             <span>Petunjuk Arah Google Maps</span>
           </a>
         </div>
 
         <!-- Resepsi Pernikahan -->
-        <div class="wedding-card p-6 rounded-3xl bg-[var(--bg-card,#ffffff)] border border-stone-200/80 shadow-2xs text-center flex flex-col items-center justify-center space-y-3">
-          <div class="inline-flex items-center justify-center gap-2 text-slate-800 font-bold text-xs uppercase tracking-wider">
+        <div class="wedding-card p-6 rounded-3xl bg-[var(--bg-card,#ffffff)] border border-stone-200/80 shadow-2xs text-center flex flex-col items-center justify-center space-y-3 relative overflow-hidden" data-animate="fade-up">
+          <div class="card-corner-slot top-0 left-0" data-slot="tl"></div>
+          <div class="card-corner-slot top-0 right-0" data-slot="tr"></div>
+          <div class="inline-flex items-center justify-center gap-2 text-slate-800 font-bold text-xs uppercase tracking-wider relative z-10">
             <i data-lucide="party-popper" class="w-4 h-4 text-amber-600"></i>
             <span>Resepsi Pernikahan</span>
           </div>
-          <div class="text-center">
+          <div class="text-center relative z-10">
             <div class="text-base font-bold text-slate-900" id="resepsi-date">-</div>
             <div class="text-xs text-amber-700 font-semibold mt-0.5" id="resepsi-time">Pukul 11.00 - 15.00 WIB</div>
           </div>
-          <div class="pt-2 border-t border-stone-100 text-xs text-slate-600 text-center w-full">
+          <div class="pt-2 border-t border-stone-100 text-xs text-slate-600 text-center w-full relative z-10">
             <span class="font-bold text-slate-800 block" id="resepsi-venue">Gedung / Tempat Resepsi</span>
             <span id="resepsi-address" class="text-slate-500 leading-relaxed block mt-1 max-w-xs mx-auto">Alamat lengkap resepsi</span>
           </div>
-          <a id="resepsi-maps-btn" href="#" target="_blank" class="inline-flex items-center justify-center gap-1.5 w-full py-2.5 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition-colors hidden cursor-pointer shadow-xs">
+          <a id="resepsi-maps-btn" href="#" target="_blank" class="inline-flex items-center justify-center gap-1.5 w-full py-2.5 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition-colors hidden cursor-pointer shadow-xs relative z-10">
             <i data-lucide="map-pin" class="w-3.5 h-3.5 text-amber-400"></i>
             <span>Petunjuk Arah Google Maps</span>
           </a>
@@ -422,7 +629,7 @@
       </section>
 
       <!-- 6. CERITA CINTA (LOVE STORY TIMELINE) -->
-      <section id="section-love-story" class="space-y-4 text-left hidden">
+      <section id="section-love-story" class="space-y-4 text-left hidden" data-animate="fade-up">
         <div class="text-center">
           <span class="text-[10px] uppercase tracking-widest text-amber-800 font-bold block">Kisah Kami</span>
           <h3 class="font-serif text-2xl font-bold text-slate-900">Perjalanan Cinta</h3>
@@ -433,7 +640,7 @@
       </section>
 
       <!-- 7. GALERI PREWEDDING -->
-      <section id="section-gallery" class="space-y-4 hidden">
+      <section id="section-gallery" class="space-y-4 hidden" data-animate="zoom-in">
         <div>
           <span class="text-[10px] uppercase tracking-widest text-amber-800 font-bold block">Momen Bahagia</span>
           <h3 class="font-serif text-2xl font-bold text-slate-900">Galeri Foto</h3>
@@ -444,7 +651,7 @@
       </section>
 
       <!-- 8. AMPLOP DIGITAL (CASHLESS GIFT) -->
-      <section id="section-envelopes" class="space-y-4 hidden">
+      <section id="section-envelopes" class="space-y-4 hidden" data-animate="fade-up">
         <div>
           <span class="text-[10px] uppercase tracking-widest text-amber-800 font-bold block">Tanda Kasih</span>
           <h3 class="font-serif text-2xl font-bold text-slate-900">Amplop Digital</h3>
@@ -455,23 +662,27 @@
         <div id="envelopes-cards-container" class="space-y-2.5 text-left">
           <!-- Injected via JavaScript -->
         </div>
-        <div id="physical-gift-container" class="hidden wedding-card backdrop-blur-md p-4 rounded-2xl bg-[var(--bg-card,#ffffff)]/85 border border-stone-200/80 text-left text-xs space-y-1.5">
-          <span class="font-bold text-slate-800 flex items-center gap-1.5 text-[11px]">
+        <div id="physical-gift-container" class="hidden wedding-card backdrop-blur-md p-4 rounded-2xl bg-[var(--bg-card,#ffffff)]/85 border border-stone-200/80 text-left text-xs space-y-1.5 relative overflow-hidden">
+          <div class="card-corner-slot top-0 left-0" data-slot="tl"></div>
+          <div class="card-corner-slot top-0 right-0" data-slot="tr"></div>
+          <span class="font-bold text-slate-800 flex items-center gap-1.5 text-[11px] relative z-10">
             <i data-lucide="package" class="w-3.5 h-3.5 text-amber-600"></i>
             <span>Alamat Kirim Kado Fisik:</span>
           </span>
-          <p id="physical-gift-text" class="text-slate-600 leading-relaxed whitespace-pre-line text-[11px]"></p>
+          <p id="physical-gift-text" class="text-slate-600 leading-relaxed whitespace-pre-line text-[11px] relative z-10"></p>
         </div>
       </section>
 
       <!-- 9. SMART RSVP & FORM KONFIRMASI -->
-      <section class="wedding-card backdrop-blur-md p-6 rounded-3xl bg-[var(--bg-card,#ffffff)]/85 border border-stone-200/80 shadow-2xs text-left space-y-4">
-        <div class="text-center">
+      <section id="section-rsvp" class="wedding-card backdrop-blur-md p-6 rounded-3xl bg-[var(--bg-card,#ffffff)]/85 border border-stone-200/80 shadow-2xs text-left space-y-4 relative overflow-hidden" data-animate="zoom-in">
+        <div class="card-corner-slot top-0 left-0" data-slot="tl"></div>
+        <div class="card-corner-slot top-0 right-0" data-slot="tr"></div>
+        <div class="text-center relative z-10">
           <h3 class="font-serif text-2xl font-bold text-slate-900">Konfirmasi Kehadiran</h3>
           <p class="text-[11px] text-slate-500 mt-1">Mohon konfirmasi kehadiran untuk estimasi katering kami.</p>
         </div>
 
-        <form id="rsvp-form" class="space-y-3.5">
+        <form id="rsvp-form" class="space-y-3.5 relative z-10">
           <div>
             <label for="guest_name_input" class="block text-xs font-semibold text-slate-700 mb-1">Nama Lengkap *</label>
             <input 
@@ -532,7 +743,7 @@
       </section>
 
       <!-- 10. REAL-TIME WISHES WALL -->
-      <section class="space-y-4 text-left">
+      <section id="section-wishes" class="space-y-4 text-left" data-animate="fade-up">
         <div class="text-center">
           <h3 class="font-serif text-2xl font-bold text-slate-900 flex items-center justify-center gap-2">
             <i data-lucide="heart" class="w-4 h-4 text-rose-500 fill-rose-500"></i>
@@ -547,7 +758,7 @@
       </section>
 
       <!-- 11. FOOTER -->
-      <footer class="pt-8 pb-4 border-t border-stone-200/60 text-center text-[11px] text-slate-400 space-y-2">
+      <footer class="pt-8 pb-4 border-t border-stone-200/60 text-center text-[11px] text-slate-400 space-y-2" data-animate="fade-up">
         <p class="font-serif text-base font-bold text-slate-700">Terima Kasih</p>
         <p class="max-w-xs mx-auto leading-relaxed">
           Merupakan suatu kehormatan dan kebahagiaan bagi kami atas kehadiran dan doa restu Anda.
