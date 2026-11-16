@@ -39,13 +39,32 @@
   <!-- Custom CSS -->
   <link rel="stylesheet" href="/assets/css/style.css">
 
+  <!-- Google Fonts - 11 Premium Fonts for Typography Selection -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Cinzel:wght@400;600;700;800&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Great+Vibes&family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=Montserrat:wght@300;400;500;600;700&family=Nunito:wght@300;400;600;700&family=Philosopher:ital,wght@0,400;0,700;1,400&family=Pinyon+Script&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
   <style>
     :root {
+      --font-heading: 'Cormorant Garamond', Georgia, serif;
+      --font-body: 'Plus Jakarta Sans', system-ui, sans-serif;
       --bg-main: #FCFBF9;
       --bg-card: #FFFFFF;
       --text-main: #2C352E;
       --accent-color: #B48342;
       --accent-secondary: #E2B170;
+    }
+
+    body, #invitation-app-container {
+      font-family: var(--font-body, 'Plus Jakarta Sans', system-ui, sans-serif);
+    }
+
+    .font-serif, h1, h2, h3, .wedding-heading, #cover-couple-name, #main-couple-name, #groom-name, #bride-name {
+      font-family: var(--font-heading, 'Cormorant Garamond', Georgia, serif);
+    }
+
+    .font-sans {
+      font-family: var(--font-body, 'Plus Jakarta Sans', system-ui, sans-serif);
     }
 
     /* Active Organic Lava Lamp Keyframe Animations */
@@ -218,27 +237,87 @@
       animation: spinSlow 22s linear infinite;
     }
 
-    /* Scroll Reveal Animations */
+    /* Scroll Reveal & Card Animations (7 Pilihan Animasi) */
     [data-animate] {
       opacity: 0;
-      transition: opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1), transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+      transition: opacity 0.85s cubic-bezier(0.22, 1, 0.36, 1), transform 0.85s cubic-bezier(0.22, 1, 0.36, 1);
       will-change: opacity, transform;
     }
     [data-animate="fade-up"] {
-      transform: translate3d(0, 36px, 0);
+      transform: translate3d(0, 42px, 0);
     }
-    [data-animate="zoom-in"] {
-      transform: scale(0.88);
+    [data-animate="fade-down"] {
+      transform: translate3d(0, -42px, 0);
     }
     [data-animate="slide-left"] {
-      transform: translate3d(-40px, 0, 0);
+      transform: translate3d(-50px, 0, 0);
     }
     [data-animate="slide-right"] {
-      transform: translate3d(40px, 0, 0);
+      transform: translate3d(50px, 0, 0);
+    }
+    [data-animate="alt-left"] {
+      transform: translate3d(-50px, 0, 0);
+    }
+    [data-animate="alt-right"] {
+      transform: translate3d(50px, 0, 0);
+    }
+    [data-animate="zoom-pop"], [data-animate="zoom-in"] {
+      transform: scale(0.82);
+    }
+    [data-animate="flip-3d"] {
+      transform: perspective(900px) rotateX(20deg) scale(0.92);
+      transform-origin: top center;
     }
     [data-animate].is-revealed {
       opacity: 1 !important;
-      transform: translate3d(0, 0, 0) scale(1) !important;
+      transform: translate3d(0, 0, 0) scale(1) rotateX(0deg) !important;
+    }
+
+    /* Particle Canvas Layering (Behind vs Front) */
+    .particle-behind {
+      z-index: 5 !important;
+    }
+    .particle-front {
+      z-index: 35 !important;
+    }
+    .wedding-card, .translucent-card, #cover-screen {
+      position: relative;
+      z-index: 10;
+    }
+
+    /* Cover Frame Shapes (Grand Arch, Classic Oval, Circle Royal, Octagon Heritage, Teardrop Botanical) */
+    .cover-frame-grand_arch {
+      border-radius: 9999px 9999px 1.5rem 1.5rem !important;
+      aspect-ratio: 3 / 4 !important;
+      border: 3px solid var(--accent-color, #d4af37) !important;
+      box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.45), 0 0 0 2px rgba(255, 255, 255, 0.25);
+    }
+    .cover-frame-classic_oval {
+      border-radius: 50% !important;
+      aspect-ratio: 3 / 4 !important;
+      border: 3px solid var(--accent-color, #d4af37) !important;
+      box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.45), 0 0 0 2px rgba(255, 255, 255, 0.25);
+    }
+    .cover-frame-circle_royal {
+      border-radius: 9999px !important;
+      aspect-ratio: 1 / 1 !important;
+      border: 3px solid var(--accent-color, #d4af37) !important;
+      box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.45), 0 0 0 2px rgba(255, 255, 255, 0.25);
+    }
+    .cover-frame-octagon_heritage {
+      clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%) !important;
+      aspect-ratio: 1 / 1 !important;
+      border: 3px solid var(--accent-color, #d4af37) !important;
+      box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.45);
+    }
+    .cover-frame-teardrop_botanical {
+      border-radius: 9999px 2rem 9999px 2rem !important;
+      aspect-ratio: 3 / 4 !important;
+      border: 3px solid var(--accent-color, #d4af37) !important;
+      box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.45), 0 0 0 2px rgba(255, 255, 255, 0.25);
+    }
+    .cover-frame-none {
+      display: none !important;
     }
 
     /* Photo Frame Shapes */
@@ -368,14 +447,27 @@
       <div id="cover-curtain-right" class="cover-curtain absolute inset-y-0 right-0 w-1/2 flex items-center justify-start pl-0.5 opacity-90"></div>
 
       <!-- Top Floral / Modern Motif -->
-      <div class="pt-8 space-y-2 relative z-20">
+      <div class="pt-6 sm:pt-8 space-y-2 relative z-20">
         <span class="text-[10px] uppercase tracking-[0.3em] text-amber-300/90 font-semibold block">The Wedding Of</span>
-        <h1 class="font-serif text-4xl sm:text-5xl font-bold tracking-tight text-white leading-tight" id="cover-couple-name">
+        <h1 class="font-serif text-3xl sm:text-4xl font-bold tracking-tight text-white leading-tight" id="cover-couple-name">
           Mempelai & Mempelai
         </h1>
         <p class="text-xs text-stone-400 font-serif italic" id="cover-wedding-date">
           Menuju Hari Bahagia
         </p>
+      </div>
+
+      <!-- Grand Cover Photo Frame (Fitur Foto Sampul Depan Utama) -->
+      <div id="cover-photo-container" class="relative my-2 sm:my-3 z-20 flex flex-col items-center justify-center max-w-[240px] sm:max-w-[260px] mx-auto transition-all duration-500 hidden">
+        <div id="cover-frame-outer" class="relative flex items-center justify-center">
+          <!-- Frame Ornament Overlay (Custom PNG or Preset Ornament) -->
+          <div id="cover-frame-ornament-el" class="pointer-events-none absolute -inset-3.5 z-20 flex items-center justify-center"></div>
+          
+          <!-- Photo Frame Element with Shape Class -->
+          <div id="cover-photo-frame" class="w-40 h-54 sm:w-44 sm:h-60 overflow-hidden shadow-2xl relative bg-stone-900 transition-all duration-300">
+            <img id="cover-photo-img" src="" alt="Foto Sampul" class="w-full h-full object-cover">
+          </div>
+        </div>
       </div>
 
       <!-- Dear Guest Box -->

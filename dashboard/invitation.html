@@ -39,6 +39,11 @@
   <!-- Custom CSS -->
   <link rel="stylesheet" href="/assets/css/style.css">
 
+  <!-- Google Fonts - 11 Premium Fonts for Typography Selection -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Cinzel:wght@400;600;700;800&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Great+Vibes&family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=Montserrat:wght@300;400;500;600;700&family=Nunito:wght@300;400;600;700&family=Philosopher:ital,wght@0,400;0,700;1,400&family=Pinyon+Script&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
   <style>
     .custom-scrollbar::-webkit-scrollbar {
       width: 5px;
@@ -353,6 +358,85 @@
               </div>
             </div>
           </div>
+
+          <!-- Kustomisasi Typography (Google Fonts Selection) -->
+          <div class="bg-white p-5 rounded-2xl border border-stone-200/90 shadow-2xs space-y-4">
+            <div class="flex items-center justify-between border-b border-stone-100 pb-2.5">
+              <div>
+                <h4 class="font-bold text-xs text-slate-800 flex items-center gap-1.5">
+                  <i data-lucide="type" class="w-4 h-4 text-amber-600"></i>
+                  <span>Kustomisasi Typography & Font</span>
+                </h4>
+                <p class="text-[11px] text-slate-500 mt-0.5">Pilih kombinasi font judul & teks isi yang serasi dengan konsep pernikahan.</p>
+              </div>
+            </div>
+
+            <!-- Pasangan Font Preset Cepat -->
+            <div class="space-y-1.5">
+              <label class="block text-[11px] font-bold text-slate-700">Preset Pasangan Font Populer:</label>
+              <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                <button type="button" onclick="applyFontPreset('romantic')" class="p-2 rounded-xl border border-stone-200 bg-stone-50 hover:bg-amber-50 hover:border-amber-300 text-left transition-all cursor-pointer">
+                  <span class="block text-xs font-bold text-slate-900" style="font-family: 'Great Vibes', cursive;">Great Vibes</span>
+                  <span class="block text-[10px] text-slate-500 font-serif">Lora (Romantis)</span>
+                </button>
+                <button type="button" onclick="applyFontPreset('modern')" class="p-2 rounded-xl border border-stone-200 bg-stone-50 hover:bg-amber-50 hover:border-amber-300 text-left transition-all cursor-pointer">
+                  <span class="block text-xs font-bold text-slate-900" style="font-family: 'Playfair Display', serif;">Playfair Display</span>
+                  <span class="block text-[10px] text-slate-500">Jakarta Sans (Modern)</span>
+                </button>
+                <button type="button" onclick="applyFontPreset('royal')" class="p-2 rounded-xl border border-stone-200 bg-stone-50 hover:bg-amber-50 hover:border-amber-300 text-left transition-all cursor-pointer">
+                  <span class="block text-xs font-bold text-slate-900" style="font-family: 'Cinzel', serif;">CINZEL ROYAL</span>
+                  <span class="block text-[10px] text-slate-500 font-serif">Cormorant (Keraton)</span>
+                </button>
+                <button type="button" onclick="applyFontPreset('poetic')" class="p-2 rounded-xl border border-stone-200 bg-stone-50 hover:bg-amber-50 hover:border-amber-300 text-left transition-all cursor-pointer">
+                  <span class="block text-xs font-bold text-slate-900" style="font-family: 'Philosopher', sans-serif;">Philosopher</span>
+                  <span class="block text-[10px] text-slate-500">Nunito (Puitis)</span>
+                </button>
+                <button type="button" onclick="applyFontPreset('script')" class="p-2 rounded-xl border border-stone-200 bg-stone-50 hover:bg-amber-50 hover:border-amber-300 text-left transition-all cursor-pointer">
+                  <span class="block text-xs font-bold text-slate-900" style="font-family: 'Alex Brush', cursive;">Alex Brush</span>
+                  <span class="block text-[10px] text-slate-500">Montserrat (Script)</span>
+                </button>
+                <button type="button" onclick="applyFontPreset('classic')" class="p-2 rounded-xl border border-stone-200 bg-stone-50 hover:bg-amber-50 hover:border-amber-300 text-left transition-all cursor-pointer">
+                  <span class="block text-xs font-bold text-slate-900" style="font-family: 'Cormorant Garamond', serif;">Cormorant Garamond</span>
+                  <span class="block text-[10px] text-slate-500">Jakarta Sans (Klasik)</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+              <!-- Font Judul -->
+              <div class="space-y-1">
+                <label for="select-font-heading" class="block text-[11px] font-bold text-slate-700">Font Judul & Nama Pengantin:</label>
+                <select 
+                  id="select-font-heading" 
+                  onchange="handleTypographyChange()" 
+                  class="w-full px-3 py-2 rounded-xl border border-stone-300 text-xs font-semibold focus:ring-2 focus:ring-amber-500/40 focus:outline-none bg-white cursor-pointer"
+                >
+                  <option value="'Cormorant Garamond', serif">Cormorant Garamond (Klasik Elegan)</option>
+                  <option value="'Great Vibes', cursive">Great Vibes (Kaligrafi Romantis Mewah)</option>
+                  <option value="'Playfair Display', serif">Playfair Display (Editorial Majalah Modern)</option>
+                  <option value="'Alex Brush', cursive">Alex Brush (Script Halus Mengalir)</option>
+                  <option value="'Cinzel', serif">Cinzel (Kerajaan / Royal Heritage)</option>
+                  <option value="'Pinyon Script', cursive">Pinyon Script (Bangsawan Eropa Klasik)</option>
+                  <option value="'Philosopher', sans-serif">Philosopher (Unik & Puitis)</option>
+                </select>
+              </div>
+
+              <!-- Font Teks Isi -->
+              <div class="space-y-1">
+                <label for="select-font-body" class="block text-[11px] font-bold text-slate-700">Font Teks Isi & Detail:</label>
+                <select 
+                  id="select-font-body" 
+                  onchange="handleTypographyChange()" 
+                  class="w-full px-3 py-2 rounded-xl border border-stone-300 text-xs font-semibold focus:ring-2 focus:ring-amber-500/40 focus:outline-none bg-white cursor-pointer"
+                >
+                  <option value="'Plus Jakarta Sans', sans-serif">Plus Jakarta Sans (Modern & Jelas)</option>
+                  <option value="'Lora', serif">Lora (Serif Hangat & Nyaman Dibaca)</option>
+                  <option value="'Montserrat', sans-serif">Montserrat (Geometris Bersih)</option>
+                  <option value="'Nunito', sans-serif">Nunito (Bulat Lembut & Ramah)</option>
+                </select>
+              </div>
+            </div>
+          </div>
         </div>
 
         <!-- =============================================================== -->
@@ -368,28 +452,62 @@
             <p class="text-xs text-slate-500 mt-1">Hidupkan undangan dengan efek daun gugur, bentuk bingkai foto, dan ornamen transparan.</p>
           </div>
 
-          <!-- 1. Efek Animasi Partikel Jatuh -->
-          <div class="bg-white p-5 rounded-2xl border border-stone-200/90 shadow-2xs space-y-3">
-            <div class="flex items-center justify-between">
+          <!-- 1. Efek Animasi Partikel Jatuh & Fisika -->
+          <div class="bg-white p-5 rounded-2xl border border-stone-200/90 shadow-2xs space-y-4">
+            <div class="flex items-center justify-between border-b border-stone-100 pb-2">
               <label for="select-particle-effect" class="block text-xs font-bold text-slate-800">
                 Efek Partikel Jatuh Melayang (Canvas 60fps)
               </label>
             </div>
-            <select 
-              id="select-particle-effect" 
-              onchange="handleParticleChange(this.value)" 
-              class="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 text-xs font-semibold focus:ring-2 focus:ring-amber-500/40 focus:outline-none bg-white"
-            >
-              <option value="auto">✨ Otomatis (Mengikuti Karakter Tema)</option>
-              <option value="petals">🌸 Kelopak Bunga Gugur (Sakura & Rose)</option>
-              <option value="leaves">🍃 Dedaunan Sage Berguguran</option>
-              <option value="gold_dust">✨ Kilau Bintang & Debu Emas (Glitter Sparkles)</option>
-              <option value="snow">❄️ Butiran Salju Putih Halus</option>
-              <option value="none">🚫 Nonaktifkan Efek Partikel</option>
-            </select>
-            <p class="text-[11px] text-slate-400 leading-relaxed">
-              Partikel melayang berayun tertiup angin secara halus di atas undangan tanpa mengganggu keterbacaan teks.
-            </p>
+            
+            <div class="space-y-1">
+              <label class="block text-[11px] font-bold text-slate-700">Jenis Butiran Partikel:</label>
+              <select 
+                id="select-particle-effect" 
+                onchange="handleParticleChange(this.value)" 
+                class="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 text-xs font-semibold focus:ring-2 focus:ring-amber-500/40 focus:outline-none bg-white cursor-pointer"
+              >
+                <option value="auto">✨ Otomatis (Mengikuti Karakter Tema)</option>
+                <option value="petals">🌸 Kelopak Bunga Gugur (Sakura & Rose)</option>
+                <option value="leaves">🍃 Dedaunan Sage Berguguran</option>
+                <option value="gold_dust">✨ Kilau Bintang & Debu Emas (Glitter Sparkles)</option>
+                <option value="snow">❄️ Butiran Salju Putih Halus</option>
+                <option value="none">🚫 Nonaktifkan Efek Partikel</option>
+              </select>
+            </div>
+
+            <!-- 4 Pilihan Fisika Animasi Partikel -->
+            <div class="space-y-1">
+              <label for="select-particle-physics" class="block text-[11px] font-bold text-slate-700">
+                Pola Gerakan Fisika Partikel:
+              </label>
+              <select 
+                id="select-particle-physics" 
+                onchange="handleParticlePhysicsChange(this.value)" 
+                class="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 text-xs font-semibold focus:ring-2 focus:ring-amber-500/40 focus:outline-none bg-white cursor-pointer"
+              >
+                <option value="breeze_right">🍃 Tiupan Angin Sepoi Kanan (Turun Miring Mengalir)</option>
+                <option value="flutter_wide">🍂 Gugur Melayang Natural (Ayunan Pendulum Kiri-Kanan)</option>
+                <option value="float_up">✨ Melayang Naik Berkilau (Kunang-Kunang / Debu Emas)</option>
+                <option value="soft_swirl">🌀 Pusaran Angin Halus (Gelombang Sinus Ganda)</option>
+              </select>
+            </div>
+
+            <!-- Posisi Layer Partikel: Di Depan vs Di Belakang Kartu Konten -->
+            <div class="space-y-1.5 pt-1">
+              <label class="block text-[11px] font-bold text-slate-700">Lapisan Layer Partikel:</label>
+              <div class="grid grid-cols-2 gap-2">
+                <label class="flex items-center gap-2 p-2.5 rounded-xl border border-stone-200 bg-stone-50 hover:bg-amber-50 cursor-pointer transition-colors">
+                  <input type="radio" name="particle_layer_radio" value="behind" checked onchange="handleParticleLayerChange(this.value)" class="text-amber-600 focus:ring-amber-500">
+                  <span class="text-xs font-bold text-slate-800">🛡️ Di Belakang Kartu (Z-5)</span>
+                </label>
+                <label class="flex items-center gap-2 p-2.5 rounded-xl border border-stone-200 bg-stone-50 hover:bg-amber-50 cursor-pointer transition-colors">
+                  <input type="radio" name="particle_layer_radio" value="front" onchange="handleParticleLayerChange(this.value)" class="text-amber-600 focus:ring-amber-500">
+                  <span class="text-xs font-bold text-slate-800">🌟 Di Depan Layar (Z-35)</span>
+                </label>
+              </div>
+              <p class="text-[10px] text-slate-400">Pilihan "Di Belakang Kartu" memastikan tulisan dan teks undangan 100% bersih tanpa tertutup daun/kelopak.</p>
+            </div>
           </div>
 
           <!-- 2. Bentuk Bingkai Foto Mempelai -->
@@ -400,7 +518,7 @@
             <select 
               id="select-frame-shape" 
               onchange="handleFrameShapeChange(this.value)" 
-              class="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 text-xs font-semibold focus:ring-2 focus:ring-amber-500/40 focus:outline-none bg-white"
+              class="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 text-xs font-semibold focus:ring-2 focus:ring-amber-500/40 focus:outline-none bg-white cursor-pointer"
             >
               <option value="auto">✨ Otomatis (Mengikuti Karakter Tema)</option>
               <option value="arch">🏛️ Kubah / Arch Melengkung Modern</option>
@@ -410,20 +528,25 @@
             </select>
           </div>
 
-          <!-- 3. Gaya Animasi Scroll Reveal -->
+          <!-- 3. Gaya Animasi Scroll Reveal & Card (7 Pilihan) -->
           <div class="bg-white p-5 rounded-2xl border border-stone-200/90 shadow-2xs space-y-3">
-            <label for="select-animation-style" class="block text-xs font-bold text-slate-800">
-              Gaya Animasi Saat Tamu Scroll (Scroll Reveal)
+            <label for="select-card-animation" class="block text-xs font-bold text-slate-800">
+              Gaya Animasi Munculnya Kartu Saat Tamu Scroll
             </label>
             <select 
-              id="select-animation-style" 
-              onchange="handleAnimationStyleChange(this.value)" 
-              class="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 text-xs font-semibold focus:ring-2 focus:ring-amber-500/40 focus:outline-none bg-white"
+              id="select-card-animation" 
+              onchange="handleCardAnimationChange(this.value)" 
+              class="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 text-xs font-semibold focus:ring-2 focus:ring-amber-500/40 focus:outline-none bg-white cursor-pointer"
             >
-              <option value="smooth">✨ Smooth Elegant (Transisi Halus Ala Invisimple)</option>
-              <option value="dynamic">⚡ Dynamic Zoom & Scale (Lebih Ekspresif)</option>
-              <option value="minimal">🍃 Minimal Fade (Sederhana & Ringan)</option>
+              <option value="fade-up">⬆️ Muncul Halus dari Bawah ke Atas (Fade Up)</option>
+              <option value="fade-down">⬇️ Muncul Halus dari Atas ke Bawah (Fade Down)</option>
+              <option value="slide-left">⬅️ Meluncur Masuk dari Samping Kiri (Slide Left)</option>
+              <option value="slide-right">➡️ Meluncur Masuk dari Samping Kanan (Slide Right)</option>
+              <option value="alternate-lr">🔀 Selang-Seling Kiri & Kanan Otomatis (Zig-Zag)</option>
+              <option value="zoom-pop">🔍 Membesar Halus dari Tengah (Zoom Pop)</option>
+              <option value="flip-3d">📖 Efek Membuka 3D Halus (3D Perspective Unfold)</option>
             </select>
+            <p class="text-[11px] text-slate-400">Efek animasi transisi halus dengan akselerasi GPU 60fps saat setiap kartu memasuki layar.</p>
           </div>
 
           <!-- 4. Upload Background Kustom Sendiri -->
@@ -461,39 +584,130 @@
             </div>
           </div>
 
-          <!-- 5. Upload Ornamen Bunga Sudut Kustom Sendiri -->
-          <div class="bg-white p-5 rounded-2xl border border-stone-200/90 shadow-2xs space-y-3">
-            <div>
-              <label class="block text-xs font-bold text-slate-800">Upload Ornamen Bunga PNG Transparan Sendiri (Opsional)</label>
-              <p class="text-[11px] text-slate-500">Bagi Anda yang membuat ilustrasi sendiri di Photoshop/Canva, unggah PNG transparan di sini.</p>
+          <!-- 5. Sistem Ilustrasi PNG Asli untuk 4 Sudut & Pembatas Seksi -->
+          <div class="bg-white p-5 rounded-2xl border border-stone-200/90 shadow-2xs space-y-4">
+            <div class="border-b border-stone-100 pb-2.5">
+              <label class="block text-xs font-bold text-slate-800">
+                Sistem Ilustrasi PNG Transparan untuk 4 Sudut & Pembatas
+              </label>
+              <p class="text-[11px] text-slate-500 mt-0.5">
+                Gunakan ilustrasi bunga/ornamen PNG transparan asli agar undangan tampil premium setara Invisimple.
+              </p>
             </div>
 
-            <div class="flex items-center gap-3">
-              <div id="custom-ornament-preview-box" class="w-16 h-16 rounded-xl border-2 border-dashed border-stone-300 bg-stone-50 flex items-center justify-center overflow-hidden shrink-0 relative">
-                <img id="custom-ornament-preview-img" src="" alt="Ornamen" class="w-full h-full object-contain hidden">
-                <span id="custom-ornament-placeholder" class="text-[9px] text-slate-400 text-center font-semibold px-1">SVG Tema</span>
-              </div>
-              <div class="flex-1 space-y-1">
-                <input 
-                  type="file" 
-                  id="custom-ornament-file-input" 
-                  accept="image/png,image/webp,image/svg+xml" 
-                  onchange="handleCustomOrnamentUpload(event)" 
-                  class="block w-full text-xs text-slate-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-amber-50 file:text-amber-800 hover:file:bg-amber-100 cursor-pointer"
-                >
-                <span class="text-[10px] text-slate-400 block" id="custom-ornament-upload-status">Mendukung format PNG transparan atau WebP.</span>
-              </div>
-            </div>
-
-            <div>
-              <label for="custom-ornament-url" class="block text-[11px] font-bold text-slate-600 mb-1">Atau Masukkan URL Gambar Ornamen:</label>
-              <input 
-                type="url" 
-                id="custom-ornament-url" 
-                placeholder="https://.../ornamen-transparan.png" 
-                oninput="handleCustomOrnamentInput(this.value)" 
-                class="w-full px-3 py-2 rounded-xl border border-stone-300 text-xs focus:ring-2 focus:ring-amber-500/40 focus:outline-none"
+            <!-- Mode Switcher: Mode Praktis vs Mode Detail -->
+            <div class="flex items-center gap-2 p-1 bg-stone-100 rounded-xl">
+              <button 
+                type="button" 
+                id="btn-ornament-mode-master" 
+                onclick="setOrnamentMode('master')" 
+                class="flex-1 py-1.5 px-2 rounded-lg text-[11px] font-bold bg-white text-amber-800 shadow-xs cursor-pointer transition-all"
               >
+                🌸 Mode Praktis (1 PNG 4 Sudut)
+              </button>
+              <button 
+                type="button" 
+                id="btn-ornament-mode-detail" 
+                onclick="setOrnamentMode('detail')" 
+                class="flex-1 py-1.5 px-2 rounded-lg text-[11px] font-bold text-slate-600 hover:text-slate-900 cursor-pointer transition-all"
+              >
+                🎨 Mode Detail (4 Sudut Terpisah)
+              </button>
+            </div>
+
+            <!-- Bagian A: Mode Praktis (1 PNG Master untuk 4 Sudut Mirrored) -->
+            <div id="wrapper-ornament-master" class="space-y-3">
+              <div class="flex items-center justify-between">
+                <label class="block text-[11px] font-bold text-slate-700">Upload 1 PNG Bunga Sudut Utama:</label>
+                <button type="button" onclick="removeCornerMasterPng()" class="text-[10px] text-rose-600 font-bold hover:underline cursor-pointer">Reset Default</button>
+              </div>
+
+              <div class="flex items-center gap-3">
+                <div id="preview-corner-master-box" class="w-16 h-16 rounded-xl border-2 border-dashed border-stone-300 bg-stone-50 flex items-center justify-center overflow-hidden shrink-0 relative">
+                  <img id="preview-corner-master-img" src="" alt="Corner Master" class="w-full h-full object-contain hidden">
+                  <span id="placeholder-corner-master" class="text-[9px] text-slate-400 text-center font-semibold px-1">SVG Tema</span>
+                </div>
+                <div class="flex-1 space-y-1">
+                  <input 
+                    type="file" 
+                    id="corner-master-file-input" 
+                    accept="image/png,image/webp,image/svg+xml" 
+                    onchange="handleCornerMasterUpload(event)" 
+                    class="block w-full text-xs text-slate-500 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-[11px] file:font-bold file:bg-amber-50 file:text-amber-800 hover:file:bg-amber-100 cursor-pointer"
+                  >
+                  <input 
+                    type="url" 
+                    id="corner-master-url" 
+                    placeholder="Atau tempel URL gambar PNG bunga..." 
+                    oninput="handleCornerMasterUrl(this.value)" 
+                    class="w-full px-2.5 py-1.5 rounded-lg border border-stone-300 text-xs focus:outline-none"
+                  >
+                </div>
+              </div>
+              <p class="text-[10px] text-slate-500 leading-relaxed bg-amber-50/60 p-2.5 rounded-xl border border-amber-200/60">
+                💡 <strong>Otomatis 4 Sudut:</strong> 1 gambar PNG ini otomatis ditampilkan di sudut kiri-atas, di-mirror horizontal untuk kanan-atas, di-flip vertikal untuk kiri-bawah, dan di-mirror keduanya untuk kanan-bawah lengkap dengan animasi goyang tertiup angin!
+              </p>
+            </div>
+
+            <!-- Bagian B: Mode Detail (4 Sudut Terpisah) -->
+            <div id="wrapper-ornament-detail" class="hidden space-y-3">
+              <label class="block text-[11px] font-bold text-slate-700">Upload PNG Terpisah Tiap Sudut:</label>
+              <div class="grid grid-cols-2 gap-2.5">
+                <div class="p-2.5 bg-stone-50 rounded-xl border border-stone-200 space-y-1">
+                  <span class="text-[10px] font-bold text-slate-700 block">Kiri Atas (TL):</span>
+                  <input type="file" accept="image/png,image/webp" onchange="handleCornerSlotUpload(event, 'tl')" class="text-[10px] w-full text-slate-500">
+                  <input type="url" id="corner-tl-url" placeholder="URL PNG..." oninput="handleCornerSlotUrl('tl', this.value)" class="w-full px-2 py-1 rounded text-[10px] border border-stone-300">
+                </div>
+                <div class="p-2.5 bg-stone-50 rounded-xl border border-stone-200 space-y-1">
+                  <span class="text-[10px] font-bold text-slate-700 block">Kanan Atas (TR):</span>
+                  <input type="file" accept="image/png,image/webp" onchange="handleCornerSlotUpload(event, 'tr')" class="text-[10px] w-full text-slate-500">
+                  <input type="url" id="corner-tr-url" placeholder="URL PNG..." oninput="handleCornerSlotUrl('tr', this.value)" class="w-full px-2 py-1 rounded text-[10px] border border-stone-300">
+                </div>
+                <div class="p-2.5 bg-stone-50 rounded-xl border border-stone-200 space-y-1">
+                  <span class="text-[10px] font-bold text-slate-700 block">Kiri Bawah (BL):</span>
+                  <input type="file" accept="image/png,image/webp" onchange="handleCornerSlotUpload(event, 'bl')" class="text-[10px] w-full text-slate-500">
+                  <input type="url" id="corner-bl-url" placeholder="URL PNG..." oninput="handleCornerSlotUrl('bl', this.value)" class="w-full px-2 py-1 rounded text-[10px] border border-stone-300">
+                </div>
+                <div class="p-2.5 bg-stone-50 rounded-xl border border-stone-200 space-y-1">
+                  <span class="text-[10px] font-bold text-slate-700 block">Kanan Bawah (BR):</span>
+                  <input type="file" accept="image/png,image/webp" onchange="handleCornerSlotUpload(event, 'br')" class="text-[10px] w-full text-slate-500">
+                  <input type="url" id="corner-br-url" placeholder="URL PNG..." oninput="handleCornerSlotUrl('br', this.value)" class="w-full px-2 py-1 rounded text-[10px] border border-stone-300">
+                </div>
+              </div>
+            </div>
+
+            <!-- Ilustrasi Pembatas / Header Seksi (section_divider_png) -->
+            <div class="pt-3 border-t border-stone-100 space-y-2">
+              <div class="flex items-center justify-between">
+                <div>
+                  <label class="block text-[11px] font-bold text-slate-800">Ilustrasi Pembatas / Header Seksi (Opsional):</label>
+                  <p class="text-[10px] text-slate-500">Muncul di atas judul tiap seksi (Momen, Acara, Galeri, dll).</p>
+                </div>
+                <button type="button" onclick="removeSectionDividerPng()" class="text-[10px] text-rose-600 font-bold hover:underline cursor-pointer">Hapus</button>
+              </div>
+
+              <div class="flex items-center gap-3">
+                <div id="preview-section-divider-box" class="w-16 h-10 rounded-lg border-2 border-dashed border-stone-300 bg-stone-50 flex items-center justify-center overflow-hidden shrink-0">
+                  <img id="preview-section-divider-img" src="" alt="Divider" class="w-full h-full object-contain hidden">
+                  <span class="text-[8px] text-slate-400 text-center font-semibold">Divider</span>
+                </div>
+                <div class="flex-1 space-y-1">
+                  <input 
+                    type="file" 
+                    id="section-divider-file-input" 
+                    accept="image/png,image/webp,image/svg+xml" 
+                    onchange="handleSectionDividerUpload(event)" 
+                    class="block w-full text-xs text-slate-500 file:mr-2 file:py-1 file:px-2 file:rounded-lg file:border-0 file:text-[10px] file:font-bold file:bg-amber-50 file:text-amber-800 cursor-pointer"
+                  >
+                  <input 
+                    type="url" 
+                    id="section-divider-url" 
+                    placeholder="URL gambar pembatas PNG..." 
+                    oninput="handleSectionDividerUrl(this.value)" 
+                    class="w-full px-2.5 py-1.5 rounded-lg border border-stone-300 text-xs focus:outline-none"
+                  >
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -511,11 +725,138 @@
             <p class="text-xs text-slate-500 mt-1">Lengkapi nama, keluarga, dan foto profil calon pengantin pria dan wanita.</p>
           </div>
 
+          <!-- 1. Foto Sampul Depan Utama (Cover Photo) -->
+          <div class="bg-white p-5 rounded-2xl border border-stone-200/90 shadow-2xs space-y-4">
+            <div class="flex items-center justify-between border-b border-stone-100 pb-2">
+              <div class="flex items-center gap-2">
+                <span class="px-2 py-0.5 rounded-md bg-amber-100 text-amber-900 font-bold text-[10px]">SAMPUL</span>
+                <h4 class="font-serif text-base font-bold text-slate-900">Foto Utama Sampul Depan</h4>
+              </div>
+              <button 
+                type="button" 
+                id="btn-remove-cover-photo" 
+                onclick="removeCoverPhoto()" 
+                class="hidden text-[11px] font-bold text-rose-600 hover:underline cursor-pointer"
+              >
+                Hapus Foto
+              </button>
+            </div>
+
+            <div class="flex items-center gap-3">
+              <div class="relative w-20 h-28 rounded-2xl overflow-hidden bg-stone-100 border-2 border-amber-400 shrink-0 flex items-center justify-center shadow-xs">
+                <img id="preview-cover-photo" src="" alt="Foto Sampul" class="w-full h-full object-cover hidden">
+                <span id="placeholder-cover-photo" class="text-2xl text-stone-300 font-serif font-bold">🖼️</span>
+                <div id="loading-cover-photo" class="absolute inset-0 bg-slate-900/60 hidden items-center justify-center text-white">
+                  <i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i>
+                </div>
+              </div>
+              <div class="space-y-1.5 flex-1">
+                <label class="block text-[11px] font-bold text-slate-700">Pilih & Potong Foto Sampul Depan</label>
+                <input 
+                  type="file" 
+                  id="cover-photo-file-input"
+                  accept="image/*" 
+                  onchange="handlePhotoUpload(event, 'cover')" 
+                  class="block w-full text-xs text-slate-500 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-[11px] file:font-bold file:bg-amber-50 file:text-amber-800 cursor-pointer"
+                >
+                <div class="flex items-center gap-2">
+                  <button 
+                    type="button" 
+                    id="btn-recrop-cover" 
+                    onclick="openReCrop('cover')" 
+                    class="hidden text-[10px] font-bold text-amber-700 bg-amber-50 hover:bg-amber-100 px-2 py-0.5 rounded-md border border-amber-200 transition-colors cursor-pointer"
+                  >
+                    ✂️ Sesuaikan / Crop
+                  </button>
+                  <span id="badge-cover-compress" class="text-[10px] text-slate-400 block">Editor Zoom & WebP Otomatis</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+              <!-- Pilihan Bentuk Bingkai Sampul -->
+              <div>
+                <label for="select-cover-frame-shape" class="block text-xs font-bold text-slate-700 mb-1">
+                  Bentuk Bingkai Foto Sampul:
+                </label>
+                <select 
+                  id="select-cover-frame-shape" 
+                  onchange="handleCoverFrameShapeChange(this.value)" 
+                  class="w-full px-3 py-2 rounded-xl border border-stone-300 text-xs font-semibold focus:ring-2 focus:ring-amber-500/40 focus:outline-none bg-white cursor-pointer"
+                >
+                  <option value="grand_arch">🏛️ Grand Arch (Kubah Lengkung Tinggi)</option>
+                  <option value="classic_oval">🌿 Classic Oval (Oval Portret Mewah)</option>
+                  <option value="circle_royal">⭕ Circle Royal (Lingkaran Cincin)</option>
+                  <option value="octagon_heritage">👑 Octagon Heritage (Segi Delapan Keraton)</option>
+                  <option value="teardrop_botanical">🍃 Teardrop Botanical (Kubah Daun Asimetris)</option>
+                  <option value="none">🚫 Sembunyikan Foto di Sampul</option>
+                </select>
+              </div>
+
+              <!-- Pilihan Ornamen Hiasan Bingkai Sampul -->
+              <div>
+                <label for="select-cover-frame-ornament" class="block text-xs font-bold text-slate-700 mb-1">
+                  Hiasan di Sekeliling Bingkai Sampul:
+                </label>
+                <select 
+                  id="select-cover-frame-ornament" 
+                  onchange="handleCoverFrameOrnamentChange(this.value)" 
+                  class="w-full px-3 py-2 rounded-xl border border-stone-300 text-xs font-semibold focus:ring-2 focus:ring-amber-500/40 focus:outline-none bg-white cursor-pointer"
+                >
+                  <option value="floral_wreath">🌸 Karangan Bunga Melingkar (Wreath)</option>
+                  <option value="twin_gold_lines">✨ Garis Kembar Emas Berlian</option>
+                  <option value="javanese_carving">👑 Ukiran Jawa Keraton Klasik</option>
+                  <option value="minimal_clean">🍃 Minimalis Bersih (Clean Border)</option>
+                  <option value="custom">🖼️ Upload PNG Bingkai Kustom Sendiri</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Upload PNG Bingkai Kustom Sendiri (jika opsi custom dipilih) -->
+            <div id="custom-cover-frame-wrapper" class="hidden p-3 bg-stone-50 rounded-xl border border-stone-200 space-y-2">
+              <div class="flex items-center justify-between">
+                <label class="block text-[11px] font-bold text-slate-800">Upload PNG Bingkai Transparan Kustom:</label>
+                <button type="button" onclick="removeCustomCoverFramePng()" class="text-[10px] text-rose-600 font-bold hover:underline cursor-pointer">Hapus</button>
+              </div>
+              <div class="flex items-center gap-3">
+                <div id="preview-custom-cover-frame-box" class="w-12 h-14 rounded-lg border-2 border-dashed border-stone-300 bg-white flex items-center justify-center overflow-hidden shrink-0">
+                  <img id="preview-custom-cover-frame-img" src="" alt="Custom Frame" class="w-full h-full object-contain hidden">
+                  <span class="text-[9px] text-slate-400 text-center font-semibold">PNG</span>
+                </div>
+                <div class="flex-1 space-y-1">
+                  <input 
+                    type="file" 
+                    accept="image/png,image/webp,image/svg+xml" 
+                    onchange="handleCustomCoverFrameUpload(event)" 
+                    class="block w-full text-xs text-slate-500 file:mr-2 file:py-1 file:px-2 file:rounded-lg file:border-0 file:text-[10px] file:font-bold file:bg-amber-100 file:text-amber-900 cursor-pointer"
+                  >
+                  <input 
+                    type="url" 
+                    id="custom-cover-frame-url" 
+                    placeholder="Atau tempel URL PNG transparan..." 
+                    oninput="handleCustomCoverFrameUrl(this.value)" 
+                    class="w-full px-2.5 py-1.5 rounded-lg border border-stone-300 text-xs focus:outline-none"
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+
           <!-- Mempelai Pria (CPP) -->
           <div class="bg-white p-5 rounded-2xl border border-stone-200/90 shadow-2xs space-y-4">
-            <div class="flex items-center gap-2 border-b border-stone-100 pb-2">
-              <span class="px-2 py-0.5 rounded-md bg-blue-100 text-blue-900 font-bold text-[10px]">CPP</span>
-              <h4 class="font-serif text-base font-bold text-slate-900">Mempelai Pria</h4>
+            <div class="flex items-center justify-between border-b border-stone-100 pb-2">
+              <div class="flex items-center gap-2">
+                <span class="px-2 py-0.5 rounded-md bg-blue-100 text-blue-900 font-bold text-[10px]">CPP</span>
+                <h4 class="font-serif text-base font-bold text-slate-900">Mempelai Pria</h4>
+              </div>
+              <button 
+                type="button" 
+                id="btn-remove-groom-photo" 
+                onclick="removePersonPhoto('groom')" 
+                class="hidden text-[11px] font-bold text-rose-600 hover:underline cursor-pointer"
+              >
+                Hapus Foto
+              </button>
             </div>
 
             <div class="flex items-center gap-3">
@@ -534,7 +875,17 @@
                   onchange="handlePhotoUpload(event, 'groom')" 
                   class="block w-full text-xs text-slate-500 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-[11px] file:font-bold file:bg-amber-50 file:text-amber-800 cursor-pointer"
                 >
-                <span id="badge-groom-compress" class="text-[10px] text-slate-400 block">WebP Kompres Otomatis &lt; 200KB</span>
+                <div class="flex items-center gap-2">
+                  <button 
+                    type="button" 
+                    id="btn-recrop-groom" 
+                    onclick="openReCrop('groom')" 
+                    class="hidden text-[10px] font-bold text-amber-700 bg-amber-50 hover:bg-amber-100 px-2 py-0.5 rounded-md border border-amber-200 transition-colors cursor-pointer"
+                  >
+                    ✂️ Sesuaikan / Crop
+                  </button>
+                  <span id="badge-groom-compress" class="text-[10px] text-slate-400 block">Editor Zoom & WebP</span>
+                </div>
               </div>
             </div>
 
@@ -562,9 +913,19 @@
 
           <!-- Mempelai Wanita (CPW) -->
           <div class="bg-white p-5 rounded-2xl border border-stone-200/90 shadow-2xs space-y-4">
-            <div class="flex items-center gap-2 border-b border-stone-100 pb-2">
-              <span class="px-2 py-0.5 rounded-md bg-rose-100 text-rose-900 font-bold text-[10px]">CPW</span>
-              <h4 class="font-serif text-base font-bold text-slate-900">Mempelai Wanita</h4>
+            <div class="flex items-center justify-between border-b border-stone-100 pb-2">
+              <div class="flex items-center gap-2">
+                <span class="px-2 py-0.5 rounded-md bg-rose-100 text-rose-900 font-bold text-[10px]">CPW</span>
+                <h4 class="font-serif text-base font-bold text-slate-900">Mempelai Wanita</h4>
+              </div>
+              <button 
+                type="button" 
+                id="btn-remove-bride-photo" 
+                onclick="removePersonPhoto('bride')" 
+                class="hidden text-[11px] font-bold text-rose-600 hover:underline cursor-pointer"
+              >
+                Hapus Foto
+              </button>
             </div>
 
             <div class="flex items-center gap-3">
@@ -583,7 +944,17 @@
                   onchange="handlePhotoUpload(event, 'bride')" 
                   class="block w-full text-xs text-slate-500 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-[11px] file:font-bold file:bg-rose-50 file:text-rose-800 cursor-pointer"
                 >
-                <span id="badge-bride-compress" class="text-[10px] text-slate-400 block">WebP Kompres Otomatis &lt; 200KB</span>
+                <div class="flex items-center gap-2">
+                  <button 
+                    type="button" 
+                    id="btn-recrop-bride" 
+                    onclick="openReCrop('bride')" 
+                    class="hidden text-[10px] font-bold text-rose-700 bg-rose-50 hover:bg-rose-100 px-2 py-0.5 rounded-md border border-rose-200 transition-colors cursor-pointer"
+                  >
+                    ✂️ Sesuaikan / Crop
+                  </button>
+                  <span id="badge-bride-compress" class="text-[10px] text-slate-400 block">Editor Zoom & WebP</span>
+                </div>
               </div>
             </div>
 
@@ -1103,6 +1474,7 @@
   <!-- Scripts -->
   <script src="/assets/js/config.js"></script>
   <script src="/assets/js/webp-compressor.js"></script>
+  <script src="/assets/js/image-cropper.js"></script>
 
   <script>
     // ==========================================
@@ -1123,8 +1495,27 @@
       secondary: '#E2B170',
       bg_image_url: null,
       custom_ornament_url: null,
+      cover_frame_shape: 'grand_arch',
+      cover_frame_ornament: 'floral_wreath',
+      custom_cover_frame_png: null,
+      ornaments: {
+        mode: 'master',
+        corner_master_png: null,
+        corner_tl_png: null,
+        corner_tr_png: null,
+        corner_bl_png: null,
+        corner_br_png: null,
+        section_divider_png: null
+      },
+      typography: {
+        font_heading: "'Cormorant Garamond', serif",
+        font_body: "'Plus Jakarta Sans', sans-serif"
+      },
       particle_effect: 'auto',
+      particle_physics: 'breeze_right',
+      particle_layer: 'behind',
       frame_shape: 'auto',
+      card_animation: 'fade-up',
       animation_style: 'smooth',
       sections: {
         show_quote: true,
@@ -1284,11 +1675,53 @@
       setCustomBgPreview(customTheme.bg_image_url || null);
       setCustomOrnamentPreview(customTheme.custom_ornament_url || null);
 
-      // Effects & Frame
+      // Effects, Physics, Layer & Animations
       document.getElementById('select-particle-effect').value = customTheme.particle_effect || 'auto';
+      document.getElementById('select-particle-physics').value = customTheme.particle_physics || 'breeze_right';
+      const particleLayerRadio = document.querySelector(`input[name="particle_layer_radio"][value="${customTheme.particle_layer || 'behind'}"]`);
+      if (particleLayerRadio) particleLayerRadio.checked = true;
+
       document.getElementById('select-frame-shape').value = customTheme.frame_shape || 'auto';
+      document.getElementById('select-card-animation').value = customTheme.card_animation || 'fade-up';
       document.getElementById('select-animation-style').value = customTheme.animation_style || 'smooth';
-      document.getElementById('custom-ornament-url').value = customTheme.custom_ornament_url || '';
+
+      // Typography
+      if (customTheme.typography) {
+        if (customTheme.typography.font_heading) {
+          document.getElementById('select-font-heading').value = customTheme.typography.font_heading;
+        }
+        if (customTheme.typography.font_body) {
+          document.getElementById('select-font-body').value = customTheme.typography.font_body;
+        }
+      }
+
+      // Ornaments & Dividers
+      setOrnamentMode(customTheme.ornaments?.mode || 'master');
+      if (customTheme.ornaments?.corner_master_png) {
+        setCornerMasterPreview(customTheme.ornaments.corner_master_png);
+        document.getElementById('corner-master-url').value = customTheme.ornaments.corner_master_png;
+      }
+      if (customTheme.ornaments?.section_divider_png) {
+        setSectionDividerPreview(customTheme.ornaments.section_divider_png);
+        document.getElementById('section-divider-url').value = customTheme.ornaments.section_divider_png;
+      }
+      ['tl', 'tr', 'bl', 'br'].forEach(slot => {
+        const slotVal = customTheme.ornaments?.[`corner_${slot}_png`];
+        const slotInput = document.getElementById(`corner-${slot}-url`);
+        if (slotInput && slotVal) slotInput.value = slotVal;
+      });
+
+      // Foto Sampul & Bingkai Sampul
+      if (w.cover_photo) setPhotoPreview('cover', w.cover_photo);
+      document.getElementById('select-cover-frame-shape').value = customTheme.cover_frame_shape || 'grand_arch';
+      document.getElementById('select-cover-frame-ornament').value = customTheme.cover_frame_ornament || 'floral_wreath';
+      if (customTheme.cover_frame_ornament === 'custom') {
+        document.getElementById('custom-cover-frame-wrapper')?.classList.remove('hidden');
+      }
+      if (customTheme.custom_cover_frame_png) {
+        setCustomCoverFramePreview(customTheme.custom_cover_frame_png);
+        document.getElementById('custom-cover-frame-url').value = customTheme.custom_cover_frame_png;
+      }
 
       // Profil CPP
       document.getElementById('groom-nickname').value = w.groom_nickname || '';
@@ -1416,14 +1849,17 @@
       const payload = {
         wedding: {
           slug: document.getElementById('wedding-slug').value.trim(),
+          cover_photo: currentWedding?.cover_photo || null,
           groom_nickname: document.getElementById('groom-nickname').value.trim(),
           groom_fullname: document.getElementById('groom-fullname').value.trim(),
           groom_parents: document.getElementById('groom-parents').value.trim(),
           groom_ig: document.getElementById('groom-ig').value.trim(),
+          groom_photo: currentWedding?.groom_photo || null,
           bride_nickname: document.getElementById('bride-nickname').value.trim(),
           bride_fullname: document.getElementById('bride-fullname').value.trim(),
           bride_parents: document.getElementById('bride-parents').value.trim(),
           bride_ig: document.getElementById('bride-ig').value.trim(),
+          bride_photo: currentWedding?.bride_photo || null,
           akad_date: document.getElementById('akad-date').value,
           akad_time: document.getElementById('akad-time').value.trim(),
           akad_venue: document.getElementById('akad-venue').value.trim(),
@@ -1745,48 +2181,391 @@
     }
 
     // ==========================================
-    // TAB 3: PROFIL MEMPELAI
+    // TAB 3: PROFIL MEMPELAI & FOTO SAMPUL
     // ==========================================
-    async function handlePhotoUpload(event, type) {
-      const file = event.target.files[0];
+    function handlePhotoUpload(event, type) {
+      const file = event.target.files?.[0];
       if (!file) return;
 
+      const aspectRatio = type === 'cover' ? '3:4' : '1:1';
+      let title = 'Sesuaikan Foto Sampul Depan';
+      if (type === 'groom') title = 'Sesuaikan Foto Mempelai Pria (CPP)';
+      else if (type === 'bride') title = 'Sesuaikan Foto Mempelai Wanita (CPW)';
+
+      // Buka Interactive Canvas Cropper (Zoom/Rotate/Crop)
+      if (typeof window.openImageCropper === 'function') {
+        window.openImageCropper({
+          file,
+          targetType: type,
+          aspectRatio,
+          title,
+          onComplete: (res) => {
+            if (!res || !res.url) return;
+            setPhotoPreview(type, res.url);
+            if (type === 'cover') {
+              currentWedding.cover_photo = res.url;
+            } else if (type === 'groom') {
+              currentWedding.groom_photo = res.url;
+            } else if (type === 'bride') {
+              currentWedding.bride_photo = res.url;
+            }
+
+            const badgeEl = document.getElementById(`badge-${type}-compress`);
+            if (badgeEl && res.infoText) {
+              badgeEl.textContent = res.infoText;
+              badgeEl.className = 'text-[10px] text-emerald-700 font-bold block';
+            }
+
+            broadcastToIframe();
+            showToast(`Foto ${type === 'cover' ? 'Sampul' : (type === 'groom' ? 'Pria' : 'Wanita')} berhasil diunggah!`, 'success');
+          }
+        });
+      } else {
+        // Fallback langsung jika cropper belum siap
+        directUploadPhoto(file, type);
+      }
+
+      event.target.value = '';
+    }
+
+    async function directUploadPhoto(file, type) {
       const loadingEl = document.getElementById(`loading-${type}-photo`);
       const badgeEl = document.getElementById(`badge-${type}-compress`);
 
-      loadingEl.classList.remove('hidden');
-      loadingEl.classList.add('flex');
-      badgeEl.textContent = 'Mengompresi & mengunggah...';
+      if (loadingEl) { loadingEl.classList.remove('hidden'); loadingEl.classList.add('flex'); }
+      if (badgeEl) badgeEl.textContent = 'Mengompresi & mengunggah...';
 
       try {
-        const result = await uploadWeddingImage(file, `${type}_profile`, 500, 0.8);
+        const result = await uploadWeddingImage(file, `${type}_photo`, type === 'cover' ? 1000 : 500, 0.8);
         setPhotoPreview(type, result.url);
+        if (type === 'cover') currentWedding.cover_photo = result.url;
+        else if (type === 'groom') currentWedding.groom_photo = result.url;
+        else if (type === 'bride') currentWedding.bride_photo = result.url;
 
-        badgeEl.textContent = result.infoText;
-        badgeEl.className = 'text-[10px] text-emerald-700 font-bold block';
-        showToast(`Foto ${type === 'groom' ? 'Pria' : 'Wanita'} berhasil diunggah!`, 'success');
+        if (badgeEl) {
+          badgeEl.textContent = result.infoText;
+          badgeEl.className = 'text-[10px] text-emerald-700 font-bold block';
+        }
         broadcastToIframe();
+        showToast('Foto berhasil diunggah!', 'success');
       } catch (err) {
-        console.error('Photo upload failed:', err);
-        badgeEl.textContent = 'Gagal upload: ' + err.message;
-        badgeEl.className = 'text-[10px] text-rose-600 font-semibold block';
+        if (badgeEl) {
+          badgeEl.textContent = 'Gagal: ' + err.message;
+          badgeEl.className = 'text-[10px] text-rose-600 font-semibold block';
+        }
         showToast('Gagal mengunggah foto: ' + err.message, 'error');
       } finally {
-        loadingEl.classList.add('hidden');
-        loadingEl.classList.remove('flex');
+        if (loadingEl) { loadingEl.classList.add('hidden'); loadingEl.classList.remove('flex'); }
       }
+    }
+
+    function openReCrop(type) {
+      let currentUrl = null;
+      if (type === 'cover') currentUrl = currentWedding?.cover_photo;
+      else if (type === 'groom') currentUrl = currentWedding?.groom_photo;
+      else if (type === 'bride') currentUrl = currentWedding?.bride_photo;
+
+      if (!currentUrl) {
+        showToast('Silakan pilih file foto terlebih dahulu.', 'warning');
+        return;
+      }
+
+      const aspectRatio = type === 'cover' ? '3:4' : '1:1';
+      let title = type === 'cover' ? 'Sesuaikan Foto Sampul Depan' : (type === 'groom' ? 'Sesuaikan Foto Mempelai Pria' : 'Sesuaikan Foto Mempelai Wanita');
+
+      window.openImageCropper({
+        source: currentUrl,
+        imageUrl: currentUrl,
+        targetType: type,
+        aspectRatio,
+        title,
+        onComplete: (res) => {
+          if (!res || !res.url) return;
+          setPhotoPreview(type, res.url);
+          if (type === 'cover') currentWedding.cover_photo = res.url;
+          else if (type === 'groom') currentWedding.groom_photo = res.url;
+          else if (type === 'bride') currentWedding.bride_photo = res.url;
+          broadcastToIframe();
+          showToast('Penyesuaian foto berhasil disimpan!', 'success');
+        }
+      });
+    }
+
+    function removeCoverPhoto() {
+      if (currentWedding) {
+        currentWedding.cover_photo = null;
+      }
+      setPhotoPreview('cover', null);
+      const input = document.getElementById('cover-photo-file-input');
+      if (input) input.value = '';
+      broadcastToIframe();
+      showToast('Foto sampul berhasil dihapus.', 'info');
+    }
+
+    function removePersonPhoto(type) {
+      if (currentWedding) {
+        currentWedding[`${type}_photo`] = null;
+      }
+      setPhotoPreview(type, null);
+      broadcastToIframe();
+      showToast(`Foto ${type === 'groom' ? 'Pria' : 'Wanita'} berhasil dihapus.`, 'info');
     }
 
     function setPhotoPreview(type, url) {
       const img = document.getElementById(`preview-${type}-photo`);
       const placeholder = document.getElementById(`placeholder-${type}-photo`);
-      if (img && placeholder) {
-        img.src = url;
-        img.classList.remove('hidden');
-        placeholder.classList.add('hidden');
+      const removeBtn = document.getElementById(`btn-remove-${type}-photo`);
+      const recropBtn = document.getElementById(`btn-recrop-${type}`);
+
+      if (url) {
+        if (img) {
+          img.src = url;
+          img.classList.remove('hidden');
+        }
+        if (placeholder) placeholder.classList.add('hidden');
+        if (removeBtn) removeBtn.classList.remove('hidden');
+        if (recropBtn) recropBtn.classList.remove('hidden');
+      } else {
+        if (img) {
+          img.src = '';
+          img.classList.add('hidden');
+        }
+        if (placeholder) placeholder.classList.remove('hidden');
+        if (removeBtn) removeBtn.classList.add('hidden');
+        if (recropBtn) recropBtn.classList.add('hidden');
       }
       if (currentWedding) {
         currentWedding[`${type}_photo`] = url;
+      }
+    }
+
+    // Cover Frame Shape & Ornament Handlers
+    function handleCoverFrameShapeChange(val) {
+      customTheme.cover_frame_shape = val;
+      broadcastToIframe();
+    }
+
+    function handleCoverFrameOrnamentChange(val) {
+      customTheme.cover_frame_ornament = val;
+      const wrapper = document.getElementById('custom-cover-frame-wrapper');
+      if (wrapper) {
+        if (val === 'custom') wrapper.classList.remove('hidden');
+        else wrapper.classList.add('hidden');
+      }
+      broadcastToIframe();
+    }
+
+    async function handleCustomCoverFrameUpload(e) {
+      const file = e.target.files?.[0];
+      if (!file) return;
+      try {
+        const res = await uploadWeddingImage(file, 'cover_frames', 800, 0.9);
+        customTheme.custom_cover_frame_png = res.url;
+        setCustomCoverFramePreview(res.url);
+        document.getElementById('custom-cover-frame-url').value = res.url;
+        broadcastToIframe();
+        showToast('Bingkai transparan kustom berhasil diunggah!', 'success');
+      } catch (err) {
+        showToast('Gagal upload bingkai: ' + err.message, 'error');
+      }
+    }
+
+    function handleCustomCoverFrameUrl(val) {
+      customTheme.custom_cover_frame_png = val.trim() || null;
+      setCustomCoverFramePreview(customTheme.custom_cover_frame_png);
+      broadcastToIframe();
+    }
+
+    function removeCustomCoverFramePng() {
+      customTheme.custom_cover_frame_png = null;
+      setCustomCoverFramePreview(null);
+      document.getElementById('custom-cover-frame-url').value = '';
+      broadcastToIframe();
+    }
+
+    function setCustomCoverFramePreview(url) {
+      const img = document.getElementById('preview-custom-cover-frame-img');
+      if (img) {
+        if (url) {
+          img.src = url;
+          img.classList.remove('hidden');
+        } else {
+          img.src = '';
+          img.classList.add('hidden');
+        }
+      }
+    }
+
+    // Typography Handlers
+    function handleTypographyChange() {
+      const heading = document.getElementById('select-font-heading').value;
+      const body = document.getElementById('select-font-body').value;
+      customTheme.typography = { font_heading: heading, font_body: body };
+      broadcastToIframe();
+    }
+
+    function applyFontPreset(preset) {
+      const presets = {
+        romantic: { heading: "'Great Vibes', cursive", body: "'Lora', serif" },
+        modern: { heading: "'Playfair Display', serif", body: "'Plus Jakarta Sans', sans-serif" },
+        royal: { heading: "'Cinzel', serif", body: "'Cormorant Garamond', serif" },
+        poetic: { heading: "'Philosopher', sans-serif", body: "'Nunito', sans-serif" },
+        script: { heading: "'Alex Brush', cursive", body: "'Montserrat', sans-serif" },
+        classic: { heading: "'Cormorant Garamond', serif", body: "'Plus Jakarta Sans', sans-serif" }
+      };
+      const chosen = presets[preset];
+      if (!chosen) return;
+      document.getElementById('select-font-heading').value = chosen.heading;
+      document.getElementById('select-font-body').value = chosen.body;
+      handleTypographyChange();
+      showToast(`Preset font "${preset}" diterapkan!`, 'info');
+    }
+
+    // Particle Physics & Layer Handlers
+    function handleParticlePhysicsChange(val) {
+      customTheme.particle_physics = val;
+      broadcastToIframe();
+    }
+
+    function handleParticleLayerChange(val) {
+      customTheme.particle_layer = val;
+      broadcastToIframe();
+    }
+
+    // Card Scroll Animation Handler
+    function handleCardAnimationChange(val) {
+      customTheme.card_animation = val;
+      broadcastToIframe();
+    }
+
+    // Ornaments System Handlers
+    function setOrnamentMode(mode) {
+      if (!customTheme.ornaments) customTheme.ornaments = {};
+      customTheme.ornaments.mode = mode;
+      const btnMaster = document.getElementById('btn-ornament-mode-master');
+      const btnDetail = document.getElementById('btn-ornament-mode-detail');
+      const wrapMaster = document.getElementById('wrapper-ornament-master');
+      const wrapDetail = document.getElementById('wrapper-ornament-detail');
+
+      if (!btnMaster || !btnDetail || !wrapMaster || !wrapDetail) return;
+
+      if (mode === 'master') {
+        btnMaster.className = 'flex-1 py-1.5 px-2 rounded-lg text-[11px] font-bold bg-white text-amber-800 shadow-xs cursor-pointer transition-all';
+        btnDetail.className = 'flex-1 py-1.5 px-2 rounded-lg text-[11px] font-bold text-slate-600 hover:text-slate-900 cursor-pointer transition-all';
+        wrapMaster.classList.remove('hidden');
+        wrapDetail.classList.add('hidden');
+      } else {
+        btnMaster.className = 'flex-1 py-1.5 px-2 rounded-lg text-[11px] font-bold text-slate-600 hover:text-slate-900 cursor-pointer transition-all';
+        btnDetail.className = 'flex-1 py-1.5 px-2 rounded-lg text-[11px] font-bold bg-white text-amber-800 shadow-xs cursor-pointer transition-all';
+        wrapMaster.classList.add('hidden');
+        wrapDetail.classList.remove('hidden');
+      }
+    }
+
+    async function handleCornerMasterUpload(e) {
+      const file = e.target.files?.[0];
+      if (!file) return;
+      try {
+        const res = await uploadWeddingImage(file, 'corners', 800, 0.9);
+        if (!customTheme.ornaments) customTheme.ornaments = {};
+        customTheme.ornaments.corner_master_png = res.url;
+        setCornerMasterPreview(res.url);
+        document.getElementById('corner-master-url').value = res.url;
+        broadcastToIframe();
+        showToast('PNG bunga sudut master berhasil diunggah!', 'success');
+      } catch (err) {
+        showToast('Gagal upload: ' + err.message, 'error');
+      }
+    }
+
+    function handleCornerMasterUrl(val) {
+      if (!customTheme.ornaments) customTheme.ornaments = {};
+      customTheme.ornaments.corner_master_png = val.trim() || null;
+      setCornerMasterPreview(customTheme.ornaments.corner_master_png);
+      broadcastToIframe();
+    }
+
+    function removeCornerMasterPng() {
+      if (customTheme.ornaments) {
+        customTheme.ornaments.corner_master_png = null;
+      }
+      setCornerMasterPreview(null);
+      document.getElementById('corner-master-url').value = '';
+      broadcastToIframe();
+      showToast('Ornamen sudut master direset ke default.', 'info');
+    }
+
+    function setCornerMasterPreview(url) {
+      const img = document.getElementById('preview-corner-master-img');
+      const ph = document.getElementById('placeholder-corner-master');
+      if (url) {
+        if (img) { img.src = url; img.classList.remove('hidden'); }
+        if (ph) ph.classList.add('hidden');
+      } else {
+        if (img) { img.src = ''; img.classList.add('hidden'); }
+        if (ph) ph.classList.remove('hidden');
+      }
+    }
+
+    async function handleCornerSlotUpload(e, slot) {
+      const file = e.target.files?.[0];
+      if (!file) return;
+      try {
+        const res = await uploadWeddingImage(file, `corner_${slot}`, 600, 0.9);
+        if (!customTheme.ornaments) customTheme.ornaments = {};
+        customTheme.ornaments[`corner_${slot}_png`] = res.url;
+        const urlInput = document.getElementById(`corner-${slot}-url`);
+        if (urlInput) urlInput.value = res.url;
+        broadcastToIframe();
+        showToast(`Sudut ${slot.toUpperCase()} diunggah!`, 'success');
+      } catch (err) {
+        showToast('Gagal upload: ' + err.message, 'error');
+      }
+    }
+
+    function handleCornerSlotUrl(slot, val) {
+      if (!customTheme.ornaments) customTheme.ornaments = {};
+      customTheme.ornaments[`corner_${slot}_png`] = val.trim() || null;
+      broadcastToIframe();
+    }
+
+    async function handleSectionDividerUpload(e) {
+      const file = e.target.files?.[0];
+      if (!file) return;
+      try {
+        const res = await uploadWeddingImage(file, 'dividers', 700, 0.9);
+        if (!customTheme.ornaments) customTheme.ornaments = {};
+        customTheme.ornaments.section_divider_png = res.url;
+        setSectionDividerPreview(res.url);
+        document.getElementById('section-divider-url').value = res.url;
+        broadcastToIframe();
+        showToast('Ilustrasi pembatas seksi berhasil diunggah!', 'success');
+      } catch (err) {
+        showToast('Gagal upload divider: ' + err.message, 'error');
+      }
+    }
+
+    function handleSectionDividerUrl(val) {
+      if (!customTheme.ornaments) customTheme.ornaments = {};
+      customTheme.ornaments.section_divider_png = val.trim() || null;
+      setSectionDividerPreview(customTheme.ornaments.section_divider_png);
+      broadcastToIframe();
+    }
+
+    function removeSectionDividerPng() {
+      if (customTheme.ornaments) {
+        customTheme.ornaments.section_divider_png = null;
+      }
+      setSectionDividerPreview(null);
+      document.getElementById('section-divider-url').value = '';
+      broadcastToIframe();
+    }
+
+    function setSectionDividerPreview(url) {
+      const img = document.getElementById('preview-section-divider-img');
+      if (img) {
+        if (url) { img.src = url; img.classList.remove('hidden'); }
+        else { img.src = ''; img.classList.add('hidden'); }
       }
     }
 
@@ -2200,6 +2979,9 @@
           template_id: selectedTemplateId,
           is_published: document.getElementById('wedding-is-published').checked,
           custom_theme_json: customTheme,
+
+          // Foto Sampul Utama
+          cover_photo: currentWedding.cover_photo || null,
 
           // CPP
           groom_nickname: groomNickname,

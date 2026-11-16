@@ -13,6 +13,8 @@ class ParticleEngine {
     this.particles = [];
     this.animId = null;
     this.effect = 'none';
+    this.physics = 'breeze_right'; // 'breeze_right' | 'flutter_wide' | 'float_up' | 'soft_swirl'
+    this.layer = 'behind'; // 'behind' | 'front'
     this.width = 0;
     this.height = 0;
     this.isRunning = false;
@@ -36,6 +38,25 @@ class ParticleEngine {
     }
   }
 
+  setPhysics(physicsMode) {
+    this.physics = physicsMode || 'breeze_right';
+    if (this.isRunning) {
+      this.initParticles();
+    }
+  }
+
+  setLayer(layer) {
+    this.layer = layer || 'behind';
+    if (!this.canvas) return;
+    if (this.layer === 'front') {
+      this.canvas.classList.remove('particle-behind');
+      this.canvas.classList.add('particle-front');
+    } else {
+      this.canvas.classList.remove('particle-front');
+      this.canvas.classList.add('particle-behind');
+    }
+  }
+
   setEffect(effectName) {
     this.effect = effectName || 'none';
     this.particles = [];
@@ -53,56 +74,81 @@ class ParticleEngine {
 
   initParticles() {
     this.particles = [];
-    const count = this.effect === 'gold_dust' ? 30 : (this.effect === 'snow' ? 32 : 20);
+    const count = this.effect === 'gold_dust' ? 36 : (this.effect === 'snow' ? 38 : 26);
     for (let i = 0; i < count; i++) {
       this.particles.push(this.createParticle(true));
     }
   }
 
   createParticle(randomY = false) {
-    const y = randomY ? Math.random() * this.height : -20;
-    const x = Math.random() * this.width;
+    let x, y;
+    if (this.physics === 'float_up') {
+      y = randomY ? Math.random() * this.height : (this.height + 15 + Math.random() * 25);
+      x = Math.random() * (this.width || 400);
+    } else if (this.physics === 'breeze_right') {
+      if (randomY) {
+        y = Math.random() * this.height;
+        x = -30 + Math.random() * ((this.width || 400) + 40);
+      } else {
+        // Sebagian muncul dari atas, sebagian dari sisi kiri untuk tiupan sepoi alami
+        if (Math.random() < 0.65) {
+          y = -25 - Math.random() * 20;
+          x = -30 + Math.random() * ((this.width || 400) + 20);
+        } else {
+          x = -20 - Math.random() * 20;
+          y = Math.random() * (this.height * 0.7);
+        }
+      }
+    } else {
+      // flutter_wide & soft_swirl
+      y = randomY ? Math.random() * this.height : (-20 - Math.random() * 25);
+      x = -20 + Math.random() * ((this.width || 400) + 40);
+    }
+
+    const depthScale = 0.7 + Math.random() * 0.6; // Variasi ukuran depth-of-field 3D
 
     if (this.effect === 'petals') {
       const colors = [
-        'rgba(244, 182, 205, 0.75)',
-        'rgba(235, 130, 160, 0.70)',
-        'rgba(255, 225, 235, 0.85)',
-        'rgba(217, 119, 155, 0.65)'
+        'rgba(244, 182, 205, 0.78)',
+        'rgba(235, 130, 160, 0.72)',
+        'rgba(255, 225, 235, 0.88)',
+        'rgba(217, 119, 155, 0.68)'
       ];
       return {
         type: 'petal',
         x, y,
-        size: 7 + Math.random() * 8,
-        speedY: 0.8 + Math.random() * 1.1,
-        speedX: -0.4 + Math.random() * 0.8,
+        size: (7 + Math.random() * 8) * depthScale,
+        speedY: (0.75 + Math.random() * 1.0) * depthScale,
+        speedX: this.physics === 'breeze_right' ? (0.6 + Math.random() * 1.0) : (-0.3 + Math.random() * 0.6),
         angle: Math.random() * Math.PI * 2,
-        angularSpeed: 0.015 + Math.random() * 0.02,
+        angularSpeed: 0.015 + Math.random() * 0.025,
         swayFreq: 0.02 + Math.random() * 0.02,
-        swayAmp: 1.2 + Math.random() * 1.6,
+        swayAmp: (1.5 + Math.random() * 1.8) * depthScale,
         pulse: Math.random() * 100,
+        depthScale,
         color: colors[Math.floor(Math.random() * colors.length)]
       };
     }
 
     if (this.effect === 'leaves') {
       const colors = [
-        'rgba(107, 142, 120, 0.75)',
-        'rgba(142, 168, 157, 0.70)',
-        'rgba(180, 131, 66, 0.65)',
-        'rgba(198, 107, 78, 0.65)'
+        'rgba(107, 142, 120, 0.78)',
+        'rgba(142, 168, 157, 0.72)',
+        'rgba(180, 131, 66, 0.68)',
+        'rgba(198, 107, 78, 0.68)'
       ];
       return {
         type: 'leaf',
         x, y,
-        size: 8 + Math.random() * 8,
-        speedY: 0.9 + Math.random() * 1.2,
-        speedX: -0.4 + Math.random() * 0.8,
+        size: (8 + Math.random() * 8) * depthScale,
+        speedY: (0.85 + Math.random() * 1.1) * depthScale,
+        speedX: this.physics === 'breeze_right' ? (0.7 + Math.random() * 1.1) : (-0.3 + Math.random() * 0.6),
         angle: Math.random() * Math.PI * 2,
-        angularSpeed: 0.018 + Math.random() * 0.022,
+        angularSpeed: 0.018 + Math.random() * 0.025,
         swayFreq: 0.02 + Math.random() * 0.02,
-        swayAmp: 1.4 + Math.random() * 1.8,
+        swayAmp: (1.6 + Math.random() * 2.0) * depthScale,
         pulse: Math.random() * 100,
+        depthScale,
         color: colors[Math.floor(Math.random() * colors.length)]
       };
     }
@@ -117,16 +163,17 @@ class ParticleEngine {
       return {
         type: 'sparkle',
         x, y,
-        size: 2.2 + Math.random() * 3.5,
-        speedY: 0.35 + Math.random() * 0.65,
-        speedX: -0.3 + Math.random() * 0.6,
+        size: (2.2 + Math.random() * 3.5) * depthScale,
+        speedY: (this.physics === 'float_up' ? -0.55 - Math.random() * 0.8 : (0.4 + Math.random() * 0.65)) * depthScale,
+        speedX: this.physics === 'breeze_right' ? (0.4 + Math.random() * 0.8) : (-0.3 + Math.random() * 0.6),
         angle: Math.random() * Math.PI * 2,
         angularSpeed: 0.02 + Math.random() * 0.03,
         swayFreq: 0.015 + Math.random() * 0.02,
-        swayAmp: 0.8 + Math.random() * 1.2,
+        swayAmp: (0.8 + Math.random() * 1.4) * depthScale,
         baseAlpha: 0.35 + Math.random() * 0.45,
         pulse: Math.random() * Math.PI * 2,
         pulseSpeed: 0.04 + Math.random() * 0.05,
+        depthScale,
         color: colors[Math.floor(Math.random() * colors.length)]
       };
     }
@@ -135,18 +182,19 @@ class ParticleEngine {
       return {
         type: 'snow',
         x, y,
-        size: 2.0 + Math.random() * 3.2,
-        speedY: 0.6 + Math.random() * 1.0,
-        speedX: -0.3 + Math.random() * 0.6,
+        size: (2.0 + Math.random() * 3.2) * depthScale,
+        speedY: (this.physics === 'float_up' ? -0.5 - Math.random() * 0.6 : (0.55 + Math.random() * 0.9)) * depthScale,
+        speedX: this.physics === 'breeze_right' ? (0.4 + Math.random() * 0.7) : (-0.3 + Math.random() * 0.6),
         angle: 0,
         swayFreq: 0.02 + Math.random() * 0.02,
-        swayAmp: 0.8 + Math.random() * 1.2,
+        swayAmp: (0.9 + Math.random() * 1.4) * depthScale,
         pulse: Math.random() * 100,
-        opacity: 0.4 + Math.random() * 0.5
+        opacity: 0.45 + Math.random() * 0.45,
+        depthScale
       };
     }
 
-    return { x, y, size: 2, speedY: 1, speedX: 0 };
+    return { x, y, size: 2, speedY: 1, speedX: 0, pulse: 0 };
   }
 
   start() {
@@ -175,11 +223,40 @@ class ParticleEngine {
       const p = this.particles[i];
       p.pulse += p.pulseSpeed || 0.03;
       p.angle += p.angularSpeed || 0;
-      p.y += p.speedY;
-      p.x += p.speedX + Math.sin(p.pulse) * (p.swayAmp || 1);
 
-      if (p.y > this.height + 25 || p.x < -25 || p.x > this.width + 25) {
-        this.particles[i] = this.createParticle(false);
+      // Update posisi sesuai pilihan Fisika Animasi
+      if (this.physics === 'float_up') {
+        p.y -= Math.abs(p.speedY);
+        p.x += (p.speedX || 0) + Math.sin(p.pulse) * (p.swayAmp || 1);
+        if (p.y < -30) {
+          this.particles[i] = this.createParticle(false);
+        }
+      } else if (this.physics === 'breeze_right') {
+        p.y += p.speedY;
+        p.x += p.speedX + (Math.sin(p.pulse) * (p.swayAmp * 0.5) + 0.75);
+        if (p.y > this.height + 30 || p.x > this.width + 40) {
+          this.particles[i] = this.createParticle(false);
+        }
+      } else if (this.physics === 'flutter_wide') {
+        p.y += p.speedY;
+        p.x += (p.speedX || 0) + Math.sin(p.pulse) * (p.swayAmp * 1.8);
+        p.angle = Math.sin(p.pulse * 0.85) * 0.75;
+        if (p.y > this.height + 30) {
+          this.particles[i] = this.createParticle(false);
+        }
+      } else if (this.physics === 'soft_swirl') {
+        p.y += p.speedY;
+        p.x += Math.sin(p.pulse) * (p.swayAmp * 1.3) + Math.cos(p.pulse * 0.5) * (p.swayAmp * 0.5);
+        if (p.y > this.height + 30) {
+          this.particles[i] = this.createParticle(false);
+        }
+      } else {
+        // Default standard
+        p.y += p.speedY;
+        p.x += p.speedX + Math.sin(p.pulse) * (p.swayAmp || 1);
+        if (p.y > this.height + 25 || p.x < -30 || p.x > this.width + 30) {
+          this.particles[i] = this.createParticle(false);
+        }
       }
     }
   }
@@ -702,6 +779,7 @@ class InvitationEngine {
       this.applyThemeColors();
       this.applyTemplateStyles();
       this.applyPhotoFrameShape();
+      this.applyCoverPhotoAndFrame();
       this.renderThemeOrnaments();
       this.initParticleEffect();
 
@@ -717,6 +795,7 @@ class InvitationEngine {
       this.loadWishes();
       this.applySectionVisibility();
 
+      this.applyCardAnimations();
       this.initScrollAnimations();
       this.initScrollSpy();
 
@@ -780,6 +859,11 @@ class InvitationEngine {
     const tplSlug = this.template?.slug || 'minimalist-sage';
     const custom = this.wedding?.custom_theme_json || {};
     const effect = custom.particle_effect || this.getDefaultParticleEffect(tplSlug);
+    const physics = custom.particle_physics || 'breeze_right';
+    const layer = custom.particle_layer || 'behind';
+
+    this.particleEngine.setLayer(layer);
+    this.particleEngine.setPhysics(physics);
     this.particleEngine.setEffect(effect);
   }
 
@@ -847,12 +931,88 @@ class InvitationEngine {
   }
 
   /**
-   * Render Ornamen Sudut & Pembatas Bergerak (Swaying Corner Florals)
+   * Terapkan Bingkai Foto Pengantin Besar di Sampul Depan (Cover Photo)
+   */
+  applyCoverPhotoAndFrame() {
+    const container = document.getElementById('cover-photo-container');
+    const frame = document.getElementById('cover-photo-frame');
+    const img = document.getElementById('cover-photo-img');
+    const ornamentEl = document.getElementById('cover-frame-ornament-el');
+    if (!container || !frame || !img) return;
+
+    const coverPhoto = this.wedding?.cover_photo;
+    const custom = this.wedding?.custom_theme_json || {};
+    const frameShape = custom.cover_frame_shape || 'grand_arch';
+    const frameOrnament = custom.cover_frame_ornament || 'floral_wreath';
+    const customFramePng = custom.custom_cover_frame_png;
+
+    if (coverPhoto && frameShape !== 'none') {
+      container.classList.remove('hidden');
+      img.src = coverPhoto;
+
+      // Bersihkan class cover-frame sebelumnya
+      frame.className = frame.className
+        .split(' ')
+        .filter(c => !c.startsWith('cover-frame-'))
+        .join(' ');
+      frame.classList.add(`cover-frame-${frameShape}`);
+
+      // Render Ornamen Hiasan Bingkai Sampul
+      if (ornamentEl) {
+        if (customFramePng) {
+          ornamentEl.innerHTML = `<img src="${customFramePng}" alt="Bingkai Kustom" class="w-full h-full object-contain filter drop-shadow">`;
+        } else if (frameOrnament === 'floral_wreath') {
+          ornamentEl.innerHTML = `
+            <svg class="w-full h-full text-amber-300/80 filter drop-shadow-md pointer-events-none" viewBox="0 0 200 240" fill="none" stroke="currentColor">
+              <ellipse cx="100" cy="120" rx="94" ry="114" stroke="currentColor" stroke-width="1.5" stroke-dasharray="4 3" opacity="0.75" />
+              <circle cx="100" cy="8" r="4" fill="currentColor" />
+              <circle cx="100" cy="232" r="4" fill="currentColor" />
+              <circle cx="8" cy="120" r="4" fill="currentColor" />
+              <circle cx="192" cy="120" r="4" fill="currentColor" />
+              <path d="M88 6 C96 2, 104 2, 112 6" stroke="currentColor" stroke-width="2" />
+              <path d="M88 234 C96 238, 104 238, 112 234" stroke="currentColor" stroke-width="2" />
+            </svg>
+          `;
+        } else if (frameOrnament === 'twin_gold_lines') {
+          ornamentEl.innerHTML = `
+            <div class="w-full h-full border border-amber-300/50 rounded-2xl pointer-events-none relative scale-105">
+              <span class="absolute -top-1 -left-1 w-2.5 h-2.5 rotate-45 bg-amber-400 shadow-xs"></span>
+              <span class="absolute -top-1 -right-1 w-2.5 h-2.5 rotate-45 bg-amber-400 shadow-xs"></span>
+              <span class="absolute -bottom-1 -left-1 w-2.5 h-2.5 rotate-45 bg-amber-400 shadow-xs"></span>
+              <span class="absolute -bottom-1 -right-1 w-2.5 h-2.5 rotate-45 bg-amber-400 shadow-xs"></span>
+            </div>
+          `;
+        } else if (frameOrnament === 'javanese_carving') {
+          ornamentEl.innerHTML = `
+            <div class="w-full h-full flex flex-col justify-between items-center pointer-events-none py-1">
+              <svg class="w-20 h-6 text-amber-400 filter drop-shadow" viewBox="0 0 100 30" fill="currentColor">
+                <path d="M50 0 L58 14 L75 14 L62 23 L67 38 L50 28 L33 38 L38 23 L25 14 L42 14 Z" transform="scale(0.7) translate(22, -6)"/>
+              </svg>
+              <svg class="w-20 h-6 text-amber-400 filter drop-shadow rotate-180" viewBox="0 0 100 30" fill="currentColor">
+                <path d="M50 0 L58 14 L75 14 L62 23 L67 38 L50 28 L33 38 L38 23 L25 14 L42 14 Z" transform="scale(0.7) translate(22, -6)"/>
+              </svg>
+            </div>
+          `;
+        } else {
+          // minimal_clean
+          ornamentEl.innerHTML = `
+            <div class="w-full h-full border border-white/20 rounded-2xl pointer-events-none shadow-sm"></div>
+          `;
+        }
+      }
+    } else {
+      container.classList.add('hidden');
+    }
+  }
+
+  /**
+   * Render Ornamen Sudut & Pembatas Bergerak (Swaying Corner Florals & Section Dividers)
    */
   renderThemeOrnaments() {
     const tplSlug = this.template?.slug || 'minimalist-sage';
     const custom = this.wedding?.custom_theme_json || {};
-    const customOrnament = custom.custom_ornament_url;
+    const ornaments = custom.ornaments || {};
+    const cornerMaster = ornaments.corner_master_png || custom.custom_ornament_url;
     const theme = ORNAMENT_THEMES[tplSlug] || ORNAMENT_THEMES['minimalist-sage'];
 
     // 1. Ornamen di Sampul Depan (Cover Screen)
@@ -863,12 +1023,18 @@ class InvitationEngine {
     const curtainL = document.getElementById('cover-curtain-left');
     const curtainR = document.getElementById('cover-curtain-right');
 
-    if (customOrnament) {
-      const customImgHtml = `<img src="${customOrnament}" alt="Ornamen" class="w-full h-full object-contain filter drop-shadow sway-left">`;
-      if (coverTL) coverTL.innerHTML = customImgHtml;
-      if (coverTR) coverTR.innerHTML = customImgHtml;
-      if (coverBL) coverBL.innerHTML = customImgHtml;
-      if (coverBR) coverBR.innerHTML = customImgHtml;
+    if (cornerMaster) {
+      // Mode Praktis (1 PNG Master untuk 4 Sudut dengan Mirroring Otomatis)
+      if (coverTL) coverTL.innerHTML = `<img src="${cornerMaster}" alt="Ornamen" class="w-full h-full object-contain filter drop-shadow sway-top-left">`;
+      if (coverTR) coverTR.innerHTML = `<img src="${cornerMaster}" alt="Ornamen" class="w-full h-full object-contain filter drop-shadow sway-top-right" style="transform: scaleX(-1);">`;
+      if (coverBL) coverBL.innerHTML = `<img src="${cornerMaster}" alt="Ornamen" class="w-full h-full object-contain filter drop-shadow sway-left" style="transform: scaleY(-1);">`;
+      if (coverBR) coverBR.innerHTML = `<img src="${cornerMaster}" alt="Ornamen" class="w-full h-full object-contain filter drop-shadow sway-right" style="transform: scale(-1, -1);">`;
+    } else if (ornaments.corner_tl_png || ornaments.corner_tr_png || ornaments.corner_bl_png || ornaments.corner_br_png) {
+      // Mode Detail (4 Sudut Terpisah)
+      if (coverTL && ornaments.corner_tl_png) coverTL.innerHTML = `<img src="${ornaments.corner_tl_png}" alt="Ornamen" class="w-full h-full object-contain filter drop-shadow sway-top-left">`;
+      if (coverTR && ornaments.corner_tr_png) coverTR.innerHTML = `<img src="${ornaments.corner_tr_png}" alt="Ornamen" class="w-full h-full object-contain filter drop-shadow sway-top-right">`;
+      if (coverBL && ornaments.corner_bl_png) coverBL.innerHTML = `<img src="${ornaments.corner_bl_png}" alt="Ornamen" class="w-full h-full object-contain filter drop-shadow sway-left">`;
+      if (coverBR && ornaments.corner_br_png) coverBR.innerHTML = `<img src="${ornaments.corner_br_png}" alt="Ornamen" class="w-full h-full object-contain filter drop-shadow sway-right">`;
     } else {
       if (coverTL) coverTL.innerHTML = theme.cornerTL;
       if (coverTR) coverTR.innerHTML = theme.cornerTR;
@@ -891,24 +1057,63 @@ class InvitationEngine {
       }
     }
 
-    // 2. Motif Header di Atas Nama Pengantin
+    // 2. Motif Header / Section Divider di Atas Judul Seksi
+    const dividerPng = ornaments.section_divider_png;
     const quoteHeader = document.getElementById('quote-header-ornament');
-    if (quoteHeader) {
-      quoteHeader.innerHTML = theme.headerMotif || '';
+    const sectionHeaders = document.querySelectorAll('.theme-ornament-header');
+
+    if (dividerPng) {
+      sectionHeaders.forEach(hdr => {
+        hdr.innerHTML = `<img src="${dividerPng}" alt="Pembatas Seksi" class="max-h-7 sm:max-h-8 object-contain mx-auto filter drop-shadow float-breathing my-1">`;
+      });
+    } else {
+      if (quoteHeader) quoteHeader.innerHTML = theme.headerMotif || '';
     }
 
     // 3. Ornamen Sudut Kartu-Kartu Undangan (.card-corner-slot)
     const cardSlots = document.querySelectorAll('.card-corner-slot');
     cardSlots.forEach(slot => {
       const slotType = slot.getAttribute('data-slot');
-      if (customOrnament) {
-        slot.innerHTML = `<img src="${customOrnament}" alt="Ornamen" class="w-full h-full object-contain filter drop-shadow sway-left">`;
+      if (cornerMaster) {
+        if (slotType === 'tl') {
+          slot.innerHTML = `<img src="${cornerMaster}" alt="Ornamen" class="w-full h-full object-contain filter drop-shadow sway-top-left">`;
+        } else if (slotType === 'tr') {
+          slot.innerHTML = `<img src="${cornerMaster}" alt="Ornamen" class="w-full h-full object-contain filter drop-shadow sway-top-right" style="transform: scaleX(-1);">`;
+        }
+      } else if (ornaments.corner_tl_png || ornaments.corner_tr_png) {
+        if (slotType === 'tl' && ornaments.corner_tl_png) {
+          slot.innerHTML = `<img src="${ornaments.corner_tl_png}" alt="Ornamen" class="w-full h-full object-contain filter drop-shadow sway-top-left">`;
+        } else if (slotType === 'tr' && ornaments.corner_tr_png) {
+          slot.innerHTML = `<img src="${ornaments.corner_tr_png}" alt="Ornamen" class="w-full h-full object-contain filter drop-shadow sway-top-right">`;
+        }
       } else if (slotType === 'tl') {
         slot.innerHTML = theme.cornerTL;
       } else if (slotType === 'tr') {
         slot.innerHTML = theme.cornerTR;
       }
     });
+  }
+
+  /**
+   * Terapkan Gaya & Arah Animasi Card Saat Di-Scroll (7 Pilihan Animasi)
+   */
+  applyCardAnimations(overrideAnim) {
+    const custom = this.wedding?.custom_theme_json || {};
+    const animStyle = overrideAnim || custom.card_animation || 'fade-up';
+
+    const cards = document.querySelectorAll('.wedding-card, #card-event-akad, #card-event-resepsi');
+    cards.forEach((card, idx) => {
+      if (animStyle === 'alternate-lr') {
+        const altType = idx % 2 === 0 ? 'alt-left' : 'alt-right';
+        card.setAttribute('data-animate', altType);
+      } else {
+        card.setAttribute('data-animate', animStyle);
+      }
+    });
+
+    if (this.scrollObserver) {
+      this.initScrollAnimations();
+    }
   }
 
   /**
@@ -929,8 +1134,8 @@ class InvitationEngine {
         }
       });
     }, {
-      threshold: 0.12,
-      rootMargin: '0px 0px -30px 0px'
+      threshold: 0.10,
+      rootMargin: '0px 0px -25px 0px'
     });
 
     animatedElements.forEach(el => this.scrollObserver.observe(el));
@@ -1120,13 +1325,24 @@ class InvitationEngine {
     this.applyThemeColors();
     this.renderThemeOrnaments();
 
-    const frameShape = data.custom_theme_json?.frame_shape || this.wedding.custom_theme_json?.frame_shape;
+    const customTheme = data.custom_theme_json || this.wedding?.custom_theme_json || {};
+
+    const frameShape = customTheme.frame_shape || this.wedding?.custom_theme_json?.frame_shape;
     this.applyPhotoFrameShape(frameShape);
 
-    const particleEffect = data.custom_theme_json?.particle_effect || this.wedding.custom_theme_json?.particle_effect || this.getDefaultParticleEffect(tplSlug);
+    this.applyCoverPhotoAndFrame();
+
+    const particleEffect = customTheme.particle_effect || this.wedding?.custom_theme_json?.particle_effect || this.getDefaultParticleEffect(tplSlug);
+    const particlePhysics = customTheme.particle_physics || 'breeze_right';
+    const particleLayer = customTheme.particle_layer || 'behind';
+
     if (this.particleEngine) {
+      this.particleEngine.setLayer(particleLayer);
+      this.particleEngine.setPhysics(particlePhysics);
       this.particleEngine.setEffect(particleEffect);
     }
+
+    this.applyCardAnimations(customTheme.card_animation);
 
     this.renderCoverSection();
     this.renderCoupleSection();
@@ -1235,6 +1451,13 @@ class InvitationEngine {
     root.style.setProperty('--text-main', text);
     root.style.setProperty('--accent-color', accent);
     root.style.setProperty('--accent-secondary', secondary);
+
+    // Kustomisasi Typography (Google Fonts Selection)
+    const typography = custom.typography || {};
+    const fontHeading = typography.font_heading || "'Cormorant Garamond', Georgia, serif";
+    const fontBody = typography.font_body || "'Plus Jakarta Sans', system-ui, sans-serif";
+    root.style.setProperty('--font-heading', fontHeading);
+    root.style.setProperty('--font-body', fontBody);
 
     // Ubah background app container
     const app = document.getElementById('invitation-app-container');
