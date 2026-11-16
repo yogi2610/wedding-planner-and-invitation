@@ -2016,12 +2016,72 @@
       renderTemplatesCatalog();
 
       const tpl = templatesList.find(t => t.id === tId);
-      if (tpl && tpl.default_colors_json) {
-        customTheme = { ...customTheme, ...tpl.default_colors_json };
-        setColorInputs(customTheme);
+      if (tpl) {
+        if (tpl.default_colors_json) {
+          customTheme = { ...customTheme, ...tpl.default_colors_json };
+          setColorInputs(customTheme);
+        }
+        if (tpl.config_json) {
+          const cfg = tpl.config_json;
+          if (cfg.typography) {
+            customTheme.typography = { ...(customTheme.typography || {}), ...cfg.typography };
+            if (cfg.typography.font_heading && document.getElementById('select-font-heading')) {
+              document.getElementById('select-font-heading').value = cfg.typography.font_heading;
+            }
+            if (cfg.typography.font_body && document.getElementById('select-font-body')) {
+              document.getElementById('select-font-body').value = cfg.typography.font_body;
+            }
+          }
+          if (cfg.ornaments) {
+            customTheme.ornaments = { ...(customTheme.ornaments || {}), ...cfg.ornaments };
+            if (cfg.ornaments.corner_master_png && typeof setCornerMasterPreview === 'function') {
+              setCornerMasterPreview(cfg.ornaments.corner_master_png);
+              const el = document.getElementById('corner-master-url');
+              if (el) el.value = cfg.ornaments.corner_master_png;
+            }
+            if (cfg.ornaments.section_divider_png && typeof setSectionDividerPreview === 'function') {
+              setSectionDividerPreview(cfg.ornaments.section_divider_png);
+              const el = document.getElementById('section-divider-url');
+              if (el) el.value = cfg.ornaments.section_divider_png;
+            }
+          }
+          if (cfg.cover_frame_shape) {
+            customTheme.cover_frame_shape = cfg.cover_frame_shape;
+            const el = document.getElementById('cover-frame-shape-select');
+            if (el) el.value = cfg.cover_frame_shape;
+          }
+          if (cfg.cover_frame_ornament) {
+            customTheme.cover_frame_ornament = cfg.cover_frame_ornament;
+            const el = document.getElementById('cover-frame-ornament-select');
+            if (el) el.value = cfg.cover_frame_ornament;
+          }
+          if (cfg.particle_effect) {
+            customTheme.particle_effect = cfg.particle_effect;
+            const el = document.getElementById('particle-effect-select');
+            if (el) el.value = cfg.particle_effect;
+          }
+          if (cfg.particle_physics) {
+            customTheme.particle_physics = cfg.particle_physics;
+            const el = document.getElementById('particle-physics-select');
+            if (el) el.value = cfg.particle_physics;
+          }
+          if (cfg.particle_layer) {
+            customTheme.particle_layer = cfg.particle_layer;
+            const el = document.querySelector(`input[name="particle_layer"][value="${cfg.particle_layer}"]`);
+            if (el) el.checked = true;
+          }
+          if (cfg.card_animation) {
+            customTheme.card_animation = cfg.card_animation;
+            const el = document.getElementById('card-animation-select');
+            if (el) el.value = cfg.card_animation;
+          }
+          if (cfg.bg_image_url) {
+            customTheme.bg_image_url = cfg.bg_image_url;
+          }
+        }
       }
       broadcastToIframe();
-      showToast('Tema dipilih! Live preview diperbarui.', 'info');
+      showToast('Tema dipilih! Pengaturan & ornamen default tema diterapkan.', 'info');
     }
 
     function setColorInputs(c) {

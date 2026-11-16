@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Kelola Template Undangan — MenikahBersama | Wedding Planner & Undangan Digital</title>
-  <meta name="description" content="Portal Admin untuk mengelola katalog tema desain undangan digital, palet warna bawaan, dan status aktif template.">
+  <title>Master Template Builder Studio — MenikahBersama | Portal Admin</title>
+  <meta name="description" content="Master Template Builder Studio untuk merakit, mengonfigurasi palet warna, typography, ornamen PNG per seksi, fisika partikel, dan animasi card undangan digital.">
 
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -36,10 +36,35 @@
   <!-- Supabase JS SDK v2 CDN -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+  <!-- Google Fonts - 11 Premium Fonts for Master Typography Selection -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Cinzel:wght@400;600;700;800&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Great+Vibes&family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=Montserrat:wght@300;400;500;600;700&family=Nunito:wght@300;400;600;700&family=Philosopher:ital,wght@0,400;0,700;1,400&family=Pinyon+Script&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
   <!-- Custom CSS -->
   <link rel="stylesheet" href="/assets/css/style.css">
+
+  <style>
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+    .color-swatch-ring {
+      box-shadow: 0 0 0 2px #ffffff, 0 0 0 3px #e2e8f0;
+    }
+    .phone-mockup-frame {
+      box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.35), 0 0 0 12px #1e293b, 0 0 0 14px #0f172a;
+    }
+  </style>
 </head>
-<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col">
+<body class="bg-slate-100 text-slate-800 antialiased min-h-screen flex flex-col font-sans">
 
   <!-- Top Navigation Bar Admin -->
   <header class="bg-white border-b border-slate-200 sticky top-0 z-40">
@@ -63,7 +88,7 @@
             </a>
             <a href="/admin/templates.html" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-900 text-white shadow-xs">
               <i data-lucide="palette" class="w-3.5 h-3.5 inline mr-1 text-amber-400"></i>
-              <span>Kelola Template</span>
+              <span>Master Template Studio</span>
             </a>
             <a href="/admin/users.html" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors">
               <i data-lucide="users" class="w-3.5 h-3.5 inline mr-1 text-slate-400"></i>
@@ -99,24 +124,29 @@
     </div>
   </header>
 
-  <!-- Main Content -->
-  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+  <!-- ========================================================================= -->
+  <!-- 1. VIEW MODE: KATALOG & DAFTAR TEMPLATE                                    -->
+  <!-- ========================================================================= -->
+  <div id="view-catalog" class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
     
     <!-- Title & Action Button -->
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
       <div>
-        <h1 class="font-serif text-3xl font-bold text-slate-900">Manajemen Template Desain</h1>
+        <div class="flex items-center gap-2">
+          <h1 class="font-serif text-3xl font-bold text-slate-900">Master Template Builder Studio</h1>
+          <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-900 border border-amber-300">Admin Pro</span>
+        </div>
         <p class="text-sm text-slate-500 mt-1">
-          Katalog tema undangan digital, konfigurasi warna default, dan status ketersediaan tema bagi pengantin.
+          Katalog tema undangan digital platform. Rakit dan ciptakan tema baru dengan palet warna, typography, ilustrasi PNG per seksi, dan fisika partikel real-time.
         </p>
       </div>
 
       <button 
-        onclick="openAddTemplateModal()" 
-        class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold shadow-sm transition-colors cursor-pointer self-start sm:self-auto"
+        onclick="openCreateNewTemplateStudio()" 
+        class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold shadow-md hover:shadow-lg transition-all cursor-pointer self-start sm:self-auto"
       >
         <i data-lucide="plus-circle" class="w-4 h-4 text-amber-400"></i>
-        <span>Tambah Template Baru</span>
+        <span>+ Buat Template Baru</span>
       </button>
     </div>
 
@@ -125,7 +155,7 @@
       <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs">
         <span class="text-xs font-bold uppercase tracking-wider text-slate-500 block">Total Template</span>
         <span class="text-3xl font-extrabold text-slate-900 mt-1 block" id="metric-total-templates">0</span>
-        <span class="text-[11px] text-slate-400 mt-1 block">Tema dalam sistem</span>
+        <span class="text-[11px] text-slate-400 mt-1 block">Tema dalam sistem platform</span>
       </div>
 
       <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs">
@@ -137,169 +167,986 @@
       <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs">
         <span class="text-xs font-bold uppercase tracking-wider text-slate-500 block">Template Premium</span>
         <span class="text-3xl font-extrabold text-amber-700 mt-1 block" id="metric-premium-templates">0</span>
-        <span class="text-[11px] text-amber-600 mt-1 block">Edisi eksklusif</span>
+        <span class="text-[11px] text-amber-600 mt-1 block">Edisi eksklusif berlisensi</span>
       </div>
     </div>
 
-    <!-- Templates Table -->
-    <div class="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
+    <!-- Search & Filter Bar -->
+    <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-xs flex flex-wrap items-center justify-between gap-3">
+      <div class="flex-1 min-w-[240px] relative">
+        <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+        <input 
+          type="text" 
+          id="search-template-input" 
+          oninput="renderTemplatesGrid()" 
+          placeholder="Cari berdasarkan nama template atau slug..."
+          class="w-full pl-9 pr-4 py-2 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-amber-500/40 focus:outline-none"
+        >
+      </div>
+
+      <div class="flex items-center gap-2 flex-wrap">
+        <select id="filter-category" onchange="renderTemplatesGrid()" class="px-3 py-2 rounded-xl border border-slate-200 text-xs bg-white text-slate-700">
+          <option value="all">Semua Kategori</option>
+          <option value="Minimalist">Minimalist</option>
+          <option value="Illustrated">Illustrated</option>
+          <option value="Luxury">Luxury</option>
+          <option value="Rustic">Rustic</option>
+          <option value="Islamic">Islamic</option>
+          <option value="Modern">Modern</option>
+          <option value="Traditional">Traditional</option>
+        </select>
+
+        <select id="filter-status" onchange="renderTemplatesGrid()" class="px-3 py-2 rounded-xl border border-slate-200 text-xs bg-white text-slate-700">
+          <option value="all">Semua Status</option>
+          <option value="active">Hanya Aktif</option>
+          <option value="inactive">Hanya Nonaktif</option>
+          <option value="premium">Hanya Premium</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Templates Grid Cards -->
+    <div id="templates-grid-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <!-- Injected via JavaScript -->
+    </div>
+
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- 2. VIEW MODE: MASTER TEMPLATE BUILDER STUDIO (SPLIT-SCREEN)              -->
+  <!-- ========================================================================= -->
+  <div id="view-studio" class="hidden flex-1 flex flex-col min-h-0 bg-slate-100">
+    
+    <!-- Top Studio Header Toolbar -->
+    <div class="bg-white border-b border-slate-200 px-4 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-3 sticky top-16 z-30 shadow-2xs">
       
-      <div class="p-4 border-b border-slate-100 flex flex-wrap items-center justify-between gap-3">
-        <h3 class="font-serif text-lg font-bold text-slate-900">Katalog Tema Undangan</h3>
-        
-        <div class="flex items-center gap-2">
-          <select id="filter-status" onchange="renderTemplatesTable()" class="px-3 py-1.5 rounded-xl border border-slate-200 text-xs bg-white">
-            <option value="all">Semua Status</option>
-            <option value="active">Hanya Aktif</option>
-            <option value="inactive">Nonaktif</option>
-          </select>
+      <div class="flex items-center gap-3">
+        <button 
+          onclick="closeStudioView()" 
+          class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs font-semibold transition-colors cursor-pointer"
+          title="Kembali ke Katalog Template"
+        >
+          <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i>
+          <span>Katalog Template</span>
+        </button>
+
+        <div class="h-5 w-px bg-slate-200 hidden sm:block"></div>
+
+        <div>
+          <div class="flex items-center gap-2">
+            <h2 class="font-serif text-lg font-bold text-slate-900" id="studio-template-title">Edit Template</h2>
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold" id="studio-badge-premium">Free</span>
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-slate-100 text-slate-600" id="studio-badge-category">Minimalist</span>
+          </div>
+          <span class="font-mono text-[11px] text-slate-400 block" id="studio-template-slug-display">/templates/slug</span>
         </div>
       </div>
 
-      <div class="overflow-x-auto">
-        <table class="w-full text-left text-xs text-slate-600">
-          <thead class="bg-slate-50 border-b border-slate-200/80 text-[11px] font-bold text-slate-500 uppercase tracking-wider">
-            <tr>
-              <th class="py-3 px-4 w-12 text-center">ID</th>
-              <th class="py-3 px-4">Nama Template & Slug</th>
-              <th class="py-3 px-4">Kategori</th>
-              <th class="py-3 px-4">Palet Warna Default</th>
-              <th class="py-3 px-4 text-center">Tipe</th>
-              <th class="py-3 px-4 text-center">Status Aktif</th>
-              <th class="py-3 px-4 text-center w-28">Aksi</th>
-            </tr>
-          </thead>
-          <tbody id="templates-tbody" class="divide-y divide-slate-100">
-            <!-- Injected via JavaScript -->
-          </tbody>
-        </table>
-      </div>
+      <div class="flex items-center gap-2">
+        <span class="text-[11px] text-slate-400 hidden lg:inline flex items-center gap-1.5 mr-1" id="save-status-indicator">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 inline-block"></span>
+          <span>Tersimpan</span>
+        </span>
 
-    </div>
+        <button 
+          type="button" 
+          onclick="openLivePreviewNewTab()" 
+          class="px-3 py-1.5 rounded-xl border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs font-semibold inline-flex items-center gap-1.5 transition-colors cursor-pointer"
+          title="Buka Pratinjau di Tab Baru"
+        >
+          <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+          <span class="hidden sm:inline">Tab Baru</span>
+        </button>
 
-  </main>
+        <button 
+          type="button" 
+          onclick="resetCurrentStudioTemplate()" 
+          class="px-3 py-1.5 rounded-xl border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs font-semibold inline-flex items-center gap-1.5 transition-colors cursor-pointer"
+          title="Reset ke Nilai Semula"
+        >
+          <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+          <span class="hidden sm:inline">Reset</span>
+        </button>
 
-  <!-- MODAL TAMBAH / EDIT TEMPLATE -->
-  <div id="modal-template" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs hidden items-center justify-center p-4">
-    <div class="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 space-y-4 animate-in fade-in duration-150">
-      
-      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
-        <h3 class="font-serif text-lg font-bold text-slate-900" id="modal-template-title">Tambah Template Baru</h3>
-        <button onclick="closeTemplateModal()" class="text-slate-400 hover:text-slate-600 p-1 cursor-pointer">
-          <i data-lucide="x" class="w-5 h-5"></i>
+        <button 
+          type="button" 
+          id="btn-save-master-template"
+          onclick="saveMasterTemplate()" 
+          class="px-5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold shadow-md hover:shadow-lg transition-all inline-flex items-center gap-2 cursor-pointer"
+        >
+          <i data-lucide="save" class="w-4 h-4 text-amber-400"></i>
+          <span>Simpan Template Master</span>
         </button>
       </div>
 
-      <form id="form-template" onsubmit="handleTemplateSubmit(event)" class="space-y-3.5">
-        <input type="hidden" id="tpl-id">
+    </div>
 
-        <div class="grid grid-cols-2 gap-3">
-          <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">Nama Template *</label>
-            <input 
-              type="text" 
-              id="tpl-name" 
-              required 
-              placeholder="Contoh: Minimalist Sage Botanical" 
-              class="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-xs focus:ring-2 focus:ring-amber-500/40 focus:outline-none"
-            >
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">Slug Unik *</label>
-            <input 
-              type="text" 
-              id="tpl-slug" 
-              required 
-              placeholder="contoh: minimalist-sage" 
-              class="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-xs font-mono focus:ring-2 focus:ring-amber-500/40 focus:outline-none"
-            >
-          </div>
-        </div>
-
-        <div class="grid grid-cols-2 gap-3">
-          <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">Kategori *</label>
-            <select id="tpl-category" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs bg-white">
-              <option value="Minimalist">Minimalist</option>
-              <option value="Illustrated">Illustrated</option>
-              <option value="Luxury">Luxury</option>
-              <option value="Rustic">Rustic</option>
-              <option value="Islamic">Islamic</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">Opsi Lisensi</label>
-            <div class="flex items-center gap-4 pt-2">
-              <label class="flex items-center gap-1.5 cursor-pointer text-xs font-semibold text-slate-700">
-                <input type="checkbox" id="tpl-is-premium" class="rounded text-amber-600">
-                <span>Premium</span>
-              </label>
-              <label class="flex items-center gap-1.5 cursor-pointer text-xs font-semibold text-slate-700">
-                <input type="checkbox" id="tpl-is-active" checked class="rounded text-emerald-600">
-                <span>Aktif</span>
-              </label>
-            </div>
-          </div>
-        </div>
-
-        <!-- Palet Warna Default -->
-        <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-2.5">
-          <span class="text-xs font-bold text-slate-800 block">Palet Warna Default Tema:</span>
-          
-          <div class="grid grid-cols-4 gap-2">
-            <div>
-              <label class="block text-[10px] text-slate-500 mb-0.5">Background</label>
-              <input type="color" id="tpl-color-bg" value="#F4F6F3" class="w-full h-8 rounded border-0 cursor-pointer">
-            </div>
-            <div>
-              <label class="block text-[10px] text-slate-500 mb-0.5">Kartu</label>
-              <input type="color" id="tpl-color-card" value="#FFFFFF" class="w-full h-8 rounded border-0 cursor-pointer">
-            </div>
-            <div>
-              <label class="block text-[10px] text-slate-500 mb-0.5">Teks</label>
-              <input type="color" id="tpl-color-text" value="#2C352E" class="w-full h-8 rounded border-0 cursor-pointer">
-            </div>
-            <div>
-              <label class="block text-[10px] text-slate-500 mb-0.5">Aksen</label>
-              <input type="color" id="tpl-color-accent" value="#6B8E78" class="w-full h-8 rounded border-0 cursor-pointer">
-            </div>
-          </div>
-        </div>
-
-        <!-- Submit Buttons -->
-        <div class="flex items-center justify-end gap-2 pt-3 border-t border-slate-100">
+    <!-- Studio Main Workspace: Left Controls (54%) + Right Mobile Live Preview (46%) -->
+    <div class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 grid grid-cols-1 lg:grid-cols-12 gap-6 min-h-0">
+      
+      <!-- SISI KIRI: PANEL MASTER EDITOR TABS (7 COLUMNS / ~58%) -->
+      <div class="lg:col-span-7 flex flex-col space-y-4">
+        
+        <!-- Tab Navigation Bar -->
+        <div class="bg-white p-1.5 rounded-2xl border border-slate-200/90 shadow-2xs flex items-center justify-between gap-1 overflow-x-auto custom-scrollbar">
           <button 
             type="button" 
-            onclick="closeTemplateModal()" 
-            class="px-4 py-2 rounded-xl border border-slate-300 text-xs font-semibold text-slate-600 hover:bg-slate-50 cursor-pointer"
+            onclick="switchStudioTab('identity')" 
+            id="tab-btn-identity" 
+            class="studio-tab-btn flex-1 min-w-[120px] py-2 px-3 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all bg-slate-900 text-white shadow-xs cursor-pointer"
           >
-            Batal
+            <i data-lucide="info" class="w-3.5 h-3.5"></i>
+            <span>A. Identitas</span>
           </button>
+          
           <button 
-            type="submit" 
-            id="btn-submit-tpl"
-            class="px-5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold shadow-xs transition-colors cursor-pointer"
+            type="button" 
+            onclick="switchStudioTab('palette')" 
+            id="tab-btn-palette" 
+            class="studio-tab-btn flex-1 min-w-[120px] py-2 px-3 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all text-slate-600 hover:text-slate-900 hover:bg-slate-100 cursor-pointer"
           >
-            Simpan Template
+            <i data-lucide="palette" class="w-3.5 h-3.5"></i>
+            <span>B. Warna & Font</span>
+          </button>
+          
+          <button 
+            type="button" 
+            onclick="switchStudioTab('assets')" 
+            id="tab-btn-assets" 
+            class="studio-tab-btn flex-1 min-w-[120px] py-2 px-3 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all text-slate-600 hover:text-slate-900 hover:bg-slate-100 cursor-pointer"
+          >
+            <i data-lucide="image" class="w-3.5 h-3.5"></i>
+            <span>C. Aset PNG Seksi</span>
+          </button>
+          
+          <button 
+            type="button" 
+            onclick="switchStudioTab('effects')" 
+            id="tab-btn-effects" 
+            class="studio-tab-btn flex-1 min-w-[120px] py-2 px-3 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all text-slate-600 hover:text-slate-900 hover:bg-slate-100 cursor-pointer"
+          >
+            <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
+            <span>D. Animasi & Fisika</span>
           </button>
         </div>
 
-      </form>
+        <!-- ============================================================== -->
+        <!-- TAB PANEL A: IDENTITAS & THUMBNAIL PREVIEW                     -->
+        <!-- ============================================================== -->
+        <div id="panel-identity" class="studio-panel space-y-4">
+          <div class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-2xs space-y-4">
+            <h3 class="font-serif text-base font-bold text-slate-900 flex items-center gap-2 border-b border-slate-100 pb-2.5">
+              <i data-lucide="layout" class="w-4 h-4 text-amber-600"></i>
+              <span>Informasi & Konfigurasi Dasar Template</span>
+            </h3>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Nama Template *</label>
+                <input 
+                  type="text" 
+                  id="tpl-name" 
+                  oninput="handleTemplateMetaChange()" 
+                  placeholder="Contoh: Minimalist Sage Botanical" 
+                  class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs focus:ring-2 focus:ring-amber-500/40 focus:outline-none"
+                >
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Slug Unik Tema *</label>
+                <div class="flex items-center gap-1.5">
+                  <input 
+                    type="text" 
+                    id="tpl-slug" 
+                    oninput="handleTemplateMetaChange()" 
+                    placeholder="contoh: minimalist-sage" 
+                    class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs font-mono focus:ring-2 focus:ring-amber-500/40 focus:outline-none"
+                  >
+                  <button 
+                    type="button" 
+                    onclick="autoGenerateSlugFromName()" 
+                    class="px-2.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700 text-xs font-bold whitespace-nowrap cursor-pointer"
+                    title="Buat slug otomatis dari nama template"
+                  >
+                    Auto
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Kategori Desain</label>
+                <select id="tpl-category" onchange="handleTemplateMetaChange()" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs bg-white text-slate-700">
+                  <option value="Minimalist">Minimalist</option>
+                  <option value="Illustrated">Illustrated</option>
+                  <option value="Luxury">Luxury</option>
+                  <option value="Rustic">Rustic</option>
+                  <option value="Islamic">Islamic</option>
+                  <option value="Modern">Modern</option>
+                  <option value="Traditional">Traditional</option>
+                </select>
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Status & Lisensi</label>
+                <div class="flex items-center gap-4 pt-2">
+                  <label class="flex items-center gap-2 cursor-pointer text-xs font-semibold text-slate-700">
+                    <input type="checkbox" id="tpl-is-premium" onchange="handleTemplateMetaChange()" class="w-4 h-4 rounded text-amber-600 focus:ring-amber-500">
+                    <span>👑 Tema Premium</span>
+                  </label>
+                  <label class="flex items-center gap-2 cursor-pointer text-xs font-semibold text-slate-700">
+                    <input type="checkbox" id="tpl-is-active" checked onchange="handleTemplateMetaChange()" class="w-4 h-4 rounded text-emerald-600 focus:ring-emerald-500">
+                    <span>Aktif (Tampil di Katalog)</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+            <!-- Upload Thumbnail Preview Tema -->
+            <div class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-2xs space-y-3.5">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
+              <h3 class="font-serif text-base font-bold text-slate-900 flex items-center gap-2">
+                <i data-lucide="image" class="w-4 h-4 text-amber-600"></i>
+                <span>Thumbnail Preview Tema (`preview_url`)</span>
+              </h3>
+              <span class="text-[11px] text-slate-400">Format WebP / PNG / JPG</span>
+            </div>
+
+            <div class="flex flex-col sm:flex-row items-center gap-4">
+              <!-- Thumbnail Container -->
+              <div class="w-36 h-48 rounded-2xl border-2 border-dashed border-slate-200 overflow-hidden bg-slate-50 flex items-center justify-center relative flex-shrink-0 group">
+                <img id="tpl-preview-thumb-img" src="" alt="Thumbnail" class="w-full h-full object-cover hidden">
+                <div id="tpl-preview-thumb-placeholder" class="text-center p-3 text-slate-400 space-y-1">
+                  <i data-lucide="image-plus" class="w-8 h-8 mx-auto text-slate-300"></i>
+                  <span class="text-[10px] block font-semibold">Belum Ada Thumbnail</span>
+                </div>
+              </div>
+
+              <!-- Upload Controls -->
+              <div class="flex-1 space-y-2.5 w-full">
+                <p class="text-xs text-slate-500 leading-relaxed">
+                  Gambar thumbnail ini akan tampil di katalog pemilihan tema pengantin pada halaman Studio Desain User (`dashboard/invitation.html`).
+                </p>
+
+                <div class="flex items-center gap-2">
+                  <input type="file" id="tpl-thumb-file-input" accept="image/*" class="hidden" onchange="handleThumbnailUpload(event)">
+                  <button 
+                    type="button" 
+                    onclick="document.getElementById('tpl-thumb-file-input').click()" 
+                    class="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold inline-flex items-center gap-1.5 cursor-pointer"
+                  >
+                    <i data-lucide="upload-cloud" class="w-3.5 h-3.5 text-amber-400"></i>
+                    <span>Unggah File Thumbnail</span>
+                  </button>
+
+                  <button 
+                    type="button" 
+                    id="btn-remove-thumb" 
+                    onclick="removeTemplateThumbnail()" 
+                    class="hidden px-3 py-2 rounded-xl border border-rose-200 bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-semibold inline-flex items-center gap-1 cursor-pointer"
+                  >
+                    <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                    <span>Hapus</span>
+                  </button>
+                </div>
+
+                <div class="pt-1">
+                  <label class="block text-[10px] font-bold text-slate-500 mb-1">Atau Masukkan Tautan URL Langsung:</label>
+                  <input 
+                    type="url" 
+                    id="tpl-preview-url-input" 
+                    oninput="handleThumbnailUrlInput(this.value)" 
+                    placeholder="https://..." 
+                    class="w-full px-3 py-1.5 rounded-xl border border-slate-200 text-xs font-mono focus:ring-2 focus:ring-amber-500/40 focus:outline-none"
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ============================================================== -->
+        <!-- TAB PANEL B: PALET WARNA & TYPOGRAPHY DEFAULT                   -->
+        <!-- ============================================================== -->
+        <div id="panel-palette" class="studio-panel hidden space-y-4">
+          
+          <!-- Palet Warna Default Template -->
+          <div class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-2xs space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
+              <div>
+                <h3 class="font-serif text-base font-bold text-slate-900 flex items-center gap-2">
+                  <i data-lucide="palette" class="w-4 h-4 text-amber-600"></i>
+                  <span>Palet Warna Bawaan (`default_colors_json`)</span>
+                </h3>
+                <p class="text-xs text-slate-400 mt-0.5">Warna bawaan yang otomatis diterapkan saat pengantin memilih tema ini.</p>
+              </div>
+            </div>
+
+            <!-- 5 Color Swatches Inputs -->
+            <div class="grid grid-cols-2 sm:grid-cols-5 gap-3">
+              <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-200/80 space-y-1.5">
+                <label class="block text-[11px] font-bold text-slate-700">1. Background</label>
+                <div class="flex items-center gap-2">
+                  <input type="color" id="color-bg" oninput="handleColorChange()" class="w-8 h-8 rounded-lg border-0 cursor-pointer p-0 bg-transparent">
+                  <input type="text" id="color-bg-hex" oninput="handleHexInput('bg', this.value)" class="w-full px-2 py-1 rounded-lg border border-slate-200 text-xs font-mono text-center">
+                </div>
+              </div>
+
+              <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-200/80 space-y-1.5">
+                <label class="block text-[11px] font-bold text-slate-700">2. Kartu (Card)</label>
+                <div class="flex items-center gap-2">
+                  <input type="color" id="color-card" oninput="handleColorChange()" class="w-8 h-8 rounded-lg border-0 cursor-pointer p-0 bg-transparent">
+                  <input type="text" id="color-card-hex" oninput="handleHexInput('card', this.value)" class="w-full px-2 py-1 rounded-lg border border-slate-200 text-xs font-mono text-center">
+                </div>
+              </div>
+
+              <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-200/80 space-y-1.5">
+                <label class="block text-[11px] font-bold text-slate-700">3. Teks Utama</label>
+                <div class="flex items-center gap-2">
+                  <input type="color" id="color-text" oninput="handleColorChange()" class="w-8 h-8 rounded-lg border-0 cursor-pointer p-0 bg-transparent">
+                  <input type="text" id="color-text-hex" oninput="handleHexInput('text', this.value)" class="w-full px-2 py-1 rounded-lg border border-slate-200 text-xs font-mono text-center">
+                </div>
+              </div>
+
+              <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-200/80 space-y-1.5">
+                <label class="block text-[11px] font-bold text-slate-700">4. Aksen Utama</label>
+                <div class="flex items-center gap-2">
+                  <input type="color" id="color-accent" oninput="handleColorChange()" class="w-8 h-8 rounded-lg border-0 cursor-pointer p-0 bg-transparent">
+                  <input type="text" id="color-accent-hex" oninput="handleHexInput('accent', this.value)" class="w-full px-2 py-1 rounded-lg border border-slate-200 text-xs font-mono text-center">
+                </div>
+              </div>
+
+              <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-200/80 space-y-1.5">
+                <label class="block text-[11px] font-bold text-slate-700">5. Aksen Sekunder</label>
+                <div class="flex items-center gap-2">
+                  <input type="color" id="color-secondary" oninput="handleColorChange()" class="w-8 h-8 rounded-lg border-0 cursor-pointer p-0 bg-transparent">
+                  <input type="text" id="color-secondary-hex" oninput="handleHexInput('secondary', this.value)" class="w-full px-2 py-1 rounded-lg border border-slate-200 text-xs font-mono text-center">
+                </div>
+              </div>
+            </div>
+
+            <!-- 8 Quick Palette Presets -->
+            <div class="pt-2 border-t border-slate-100">
+              <span class="text-xs font-bold text-slate-700 block mb-2">Preset Palet Warna Cepat:</span>
+              <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                <button type="button" onclick="applyPresetPalette('sage')" class="p-2 rounded-xl border border-slate-200 hover:border-slate-400 text-left transition-all text-xs font-semibold flex items-center justify-between">
+                  <span>Sage Botanical</span>
+                  <div class="flex -space-x-1"><span class="w-3 h-3 rounded-full bg-[#F4F6F3]"></span><span class="w-3 h-3 rounded-full bg-[#6B8E78]"></span></div>
+                </button>
+                <button type="button" onclick="applyPresetPalette('terracotta')" class="p-2 rounded-xl border border-slate-200 hover:border-slate-400 text-left transition-all text-xs font-semibold flex items-center justify-between">
+                  <span>Cozy Terracotta</span>
+                  <div class="flex -space-x-1"><span class="w-3 h-3 rounded-full bg-[#FAF5F0]"></span><span class="w-3 h-3 rounded-full bg-[#C66B4E]"></span></div>
+                </button>
+                <button type="button" onclick="applyPresetPalette('javanese')" class="p-2 rounded-xl border border-slate-200 hover:border-slate-400 text-left transition-all text-xs font-semibold flex items-center justify-between">
+                  <span>Javanese Royal</span>
+                  <div class="flex -space-x-1"><span class="w-3 h-3 rounded-full bg-[#1C1613]"></span><span class="w-3 h-3 rounded-full bg-[#D4AF37]"></span></div>
+                </button>
+                <button type="button" onclick="applyPresetPalette('blush')" class="p-2 rounded-xl border border-slate-200 hover:border-slate-400 text-left transition-all text-xs font-semibold flex items-center justify-between">
+                  <span>Romantic Blush</span>
+                  <div class="flex -space-x-1"><span class="w-3 h-3 rounded-full bg-[#FFF9FA]"></span><span class="w-3 h-3 rounded-full bg-[#D9779B]"></span></div>
+                </button>
+                <button type="button" onclick="applyPresetPalette('midnight')" class="p-2 rounded-xl border border-slate-200 hover:border-slate-400 text-left transition-all text-xs font-semibold flex items-center justify-between">
+                  <span>Luxury Midnight</span>
+                  <div class="flex -space-x-1"><span class="w-3 h-3 rounded-full bg-[#0F172A]"></span><span class="w-3 h-3 rounded-full bg-[#EAB308]"></span></div>
+                </button>
+                <button type="button" onclick="applyPresetPalette('monochrome')" class="p-2 rounded-xl border border-slate-200 hover:border-slate-400 text-left transition-all text-xs font-semibold flex items-center justify-between">
+                  <span>Monochrome</span>
+                  <div class="flex -space-x-1"><span class="w-3 h-3 rounded-full bg-[#FAFAFA]"></span><span class="w-3 h-3 rounded-full bg-[#18181B]"></span></div>
+                </button>
+                <button type="button" onclick="applyPresetPalette('woodland')" class="p-2 rounded-xl border border-slate-200 hover:border-slate-400 text-left transition-all text-xs font-semibold flex items-center justify-between">
+                  <span>Rustic Woodland</span>
+                  <div class="flex -space-x-1"><span class="w-3 h-3 rounded-full bg-[#F6F8F5]"></span><span class="w-3 h-3 rounded-full bg-[#4A6B53]"></span></div>
+                </button>
+                <button type="button" onclick="applyPresetPalette('fairy')" class="p-2 rounded-xl border border-slate-200 hover:border-slate-400 text-left transition-all text-xs font-semibold flex items-center justify-between">
+                  <span>Whimsical Fairy</span>
+                  <div class="flex -space-x-1"><span class="w-3 h-3 rounded-full bg-[#FBF9FE]"></span><span class="w-3 h-3 rounded-full bg-[#8B5CF6]"></span></div>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Typography Default Template (11 Google Fonts) -->
+          <div class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-2xs space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
+              <div>
+                <h3 class="font-serif text-base font-bold text-slate-900 flex items-center gap-2">
+                  <i data-lucide="type" class="w-4 h-4 text-amber-600"></i>
+                  <span>Typography & Pasangan Font Default (`config_json.typography`)</span>
+                </h3>
+                <p class="text-xs text-slate-400 mt-0.5">Pilihan jenis font Google Fonts premium yang langsung aktif saat tema digunakan.</p>
+              </div>
+            </div>
+
+            <!-- Quick Font Pair Presets -->
+            <div>
+              <span class="text-xs font-bold text-slate-700 block mb-2">Preset Pasangan Font Cepat:</span>
+              <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                <button type="button" onclick="applyMasterFontPreset('romantic')" class="p-2.5 rounded-xl border border-slate-200 hover:border-amber-400 text-left text-xs transition-all">
+                  <span class="font-bold text-slate-900 block" style="font-family: 'Great Vibes', cursive;">Romantic Script</span>
+                  <span class="text-[10px] text-slate-400">Great Vibes + Jakarta Sans</span>
+                </button>
+                <button type="button" onclick="applyMasterFontPreset('modern')" class="p-2.5 rounded-xl border border-slate-200 hover:border-amber-400 text-left text-xs transition-all">
+                  <span class="font-bold text-slate-900 block" style="font-family: 'Playfair Display', serif;">Modern Luxury</span>
+                  <span class="text-[10px] text-slate-400">Playfair + Montserrat</span>
+                </button>
+                <button type="button" onclick="applyMasterFontPreset('royal')" class="p-2.5 rounded-xl border border-slate-200 hover:border-amber-400 text-left text-xs transition-all">
+                  <span class="font-bold text-slate-900 block" style="font-family: 'Cinzel', serif;">Royal Heritage</span>
+                  <span class="text-[10px] text-slate-400">Cinzel + Lora</span>
+                </button>
+                <button type="button" onclick="applyMasterFontPreset('poetic')" class="p-2.5 rounded-xl border border-slate-200 hover:border-amber-400 text-left text-xs transition-all">
+                  <span class="font-bold text-slate-900 block" style="font-family: 'Alex Brush', cursive;">Poetic Calligraphy</span>
+                  <span class="text-[10px] text-slate-400">Alex Brush + Jakarta Sans</span>
+                </button>
+                <button type="button" onclick="applyMasterFontPreset('clean')" class="p-2.5 rounded-xl border border-slate-200 hover:border-amber-400 text-left text-xs transition-all">
+                  <span class="font-bold text-slate-900 block" style="font-family: 'Philosopher', sans-serif;">Clean Elegant</span>
+                  <span class="text-[10px] text-slate-400">Philosopher + Nunito</span>
+                </button>
+                <button type="button" onclick="applyMasterFontPreset('classic')" class="p-2.5 rounded-xl border border-slate-200 hover:border-amber-400 text-left text-xs transition-all">
+                  <span class="font-bold text-slate-900 block" style="font-family: 'Cormorant Garamond', serif;">Classic Traditional</span>
+                  <span class="text-[10px] text-slate-400">Cormorant + Jakarta Sans</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Font Selectors -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5 pt-2 border-t border-slate-100">
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Font Judul / Nama Mempelai (`font_heading`)</label>
+                <select id="select-font-heading" onchange="handleTypographyChange()" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs bg-white text-slate-800 font-semibold">
+                  <option value="'Cormorant Garamond', Georgia, serif">Cormorant Garamond (Klasik Wedding Mewah)</option>
+                  <option value="'Great Vibes', cursive">Great Vibes (Kaligrafi Romantis Menawan)</option>
+                  <option value="'Playfair Display', Georgia, serif">Playfair Display (Modern Editorial Luxury)</option>
+                  <option value="'Alex Brush', cursive">Alex Brush (Tinta Halus & Elegan)</option>
+                  <option value="'Cinzel', Georgia, serif">Cinzel (Kerajaan & Istana Abadi)</option>
+                  <option value="'Pinyon Script', cursive">Pinyon Script (Klasik Aristokrat)</option>
+                  <option value="'Philosopher', sans-serif">Philosopher (Modern Eksotis)</option>
+                </select>
+                <!-- Specimen Heading Preview -->
+                <div class="mt-2 p-3 rounded-xl bg-slate-50 border border-slate-200/80 text-center">
+                  <span id="specimen-heading" class="text-xl font-bold text-slate-900 block" style="font-family: 'Cormorant Garamond', Georgia, serif;">
+                    Yoga Pratama & Anindita Kirana
+                  </span>
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Font Teks Isi / Informasi (`font_body`)</label>
+                <select id="select-font-body" onchange="handleTypographyChange()" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs bg-white text-slate-800">
+                  <option value="'Plus Jakarta Sans', system-ui, sans-serif">Plus Jakarta Sans (Sangat Mudah Dibaca di HP)</option>
+                  <option value="'Lora', Georgia, serif">Lora (Serif Hangat & Santun)</option>
+                  <option value="'Montserrat', system-ui, sans-serif">Montserrat (Geometrik Bersih & Tegas)</option>
+                  <option value="'Nunito', system-ui, sans-serif">Nunito (Bulat Lembut & Bersahabat)</option>
+                </select>
+                <!-- Specimen Body Preview -->
+                <div class="mt-2 p-3 rounded-xl bg-slate-50 border border-slate-200/80 text-center">
+                  <p id="specimen-body" class="text-xs text-slate-600 leading-relaxed" style="font-family: 'Plus Jakarta Sans', system-ui, sans-serif;">
+                    Maha Suci Allah yang telah menciptakan makhluk-Nya berpasang-pasangan untuk membangun mahligai rumah tangga.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- ============================================================== -->
+        <!-- TAB PANEL C: STUDIO ILUSTRASI & ASET PNG PER SEKSI             -->
+        <!-- ============================================================== -->
+        <div id="panel-assets" class="studio-panel hidden space-y-4">
+          
+          <div class="p-3.5 rounded-2xl bg-amber-50/70 border border-amber-200/80 flex items-start gap-2.5 text-xs text-amber-900">
+            <i data-lucide="shield-check" class="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5"></i>
+            <div>
+              <span class="font-bold">Studio Master Ilustrasi & Ornamen Transparan:</span> Seluruh aset PNG yang diunggah akan disimpan di bucket Supabase Storage <code class="font-mono bg-white/70 px-1 py-0.5 rounded text-[11px]">wedding-media/templates/{slug}/...</code> dan dicatat di dalam kolom <code class="font-mono bg-white/70 px-1 py-0.5 rounded text-[11px]">config_json</code>.
+            </div>
+          </div>
+
+          <!-- 1. Background Bawaan Template (Lava Lamp vs Tekstur Gambar) -->
+          <div class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-2xs space-y-3.5">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
+              <h3 class="font-serif text-base font-bold text-slate-900 flex items-center gap-2">
+                <i data-lucide="image" class="w-4 h-4 text-amber-600"></i>
+                <span>1. Latar Belakang Bawaan Template (`bg_image_url`)</span>
+              </h3>
+            </div>
+
+            <div class="space-y-3">
+              <div class="flex items-center gap-4">
+                <label class="flex items-center gap-2 cursor-pointer text-xs font-semibold text-slate-700">
+                  <input type="radio" name="master_bg_type" value="lava" checked onchange="handleMasterBgTypeChange('lava')" class="text-amber-600">
+                  <span>Animasi Lava Lamp Bergerak Aktif</span>
+                </label>
+                <label class="flex items-center gap-2 cursor-pointer text-xs font-semibold text-slate-700">
+                  <input type="radio" name="master_bg_type" value="image" onchange="handleMasterBgTypeChange('image')" class="text-amber-600">
+                  <span>Gambar Tekstur / Background Kustom</span>
+                </label>
+              </div>
+
+              <!-- Upload Background Box -->
+              <div id="master-bg-image-box" class="hidden p-3.5 rounded-xl bg-slate-50 border border-slate-200/80 space-y-2">
+                <div class="flex items-center gap-2">
+                  <input type="file" id="master-bg-file" accept="image/*" class="hidden" onchange="handleAssetUpload(event, 'bg_image_url')">
+                  <button type="button" onclick="document.getElementById('master-bg-file').click()" class="px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold inline-flex items-center gap-1.5 cursor-pointer">
+                    <i data-lucide="upload" class="w-3.5 h-3.5 text-amber-400"></i>
+                    <span>Unggah Background</span>
+                  </button>
+                  <button type="button" id="btn-del-bg" onclick="removeAssetUrl('bg_image_url')" class="hidden px-2.5 py-1.5 rounded-xl border border-rose-200 bg-rose-50 text-rose-700 text-xs font-semibold cursor-pointer">Hapus</button>
+                </div>
+                <input type="url" id="asset-url-bg_image_url" oninput="handleAssetUrlInput('bg_image_url', this.value)" placeholder="Tautan URL Background: https://..." class="w-full px-3 py-1.5 rounded-xl border border-slate-200 text-xs font-mono">
+              </div>
+            </div>
+          </div>
+
+          <!-- 2. Bunga & Ornamen 4 Sudut Layar -->
+          <div class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-2xs space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
+              <div>
+                <h3 class="font-serif text-base font-bold text-slate-900 flex items-center gap-2">
+                  <i data-lucide="flower" class="w-4 h-4 text-amber-600"></i>
+                  <span>2. Bunga & Ornamen 4 Sudut (Corner Ornaments)</span>
+                </h3>
+                <p class="text-xs text-slate-400 mt-0.5">Ornamen yang melayang di 4 sudut layar dengan efek tertiup angin hidup.</p>
+              </div>
+            </div>
+
+            <!-- Mode Selector: Mode Praktis (1 PNG Master) vs Mode Detail (4 Sudut Terpisah) -->
+            <div class="flex items-center gap-2 p-1 bg-slate-100 rounded-xl max-w-sm">
+              <button type="button" onclick="setCornerMode('master')" id="corner-mode-btn-master" class="flex-1 py-1.5 px-3 rounded-lg text-xs font-bold transition-all bg-white text-slate-900 shadow-2xs cursor-pointer">
+                Mode Praktis (1 PNG Master)
+              </button>
+              <button type="button" onclick="setCornerMode('detail')" id="corner-mode-btn-detail" class="flex-1 py-1.5 px-3 rounded-lg text-xs font-semibold transition-all text-slate-600 hover:text-slate-900 cursor-pointer">
+                Mode Detail (4 Sudut)
+              </button>
+            </div>
+
+            <!-- Mode Praktis: 1 Master PNG -->
+            <div id="corner-box-master" class="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-3">
+              <div class="flex items-center gap-4">
+                <div class="w-16 h-16 rounded-xl border border-dashed border-slate-300 bg-white flex items-center justify-center overflow-hidden flex-shrink-0">
+                  <img id="preview-corner_master_png" src="" alt="Master PNG" class="w-full h-full object-contain hidden">
+                  <i data-lucide="flower" id="placeholder-corner_master_png" class="w-6 h-6 text-slate-300"></i>
+                </div>
+                <div class="flex-1 space-y-1.5">
+                  <span class="text-xs font-bold text-slate-800 block">PNG Bunga Master:</span>
+                  <p class="text-[11px] text-slate-500">1 file PNG ini otomatis didistribusikan ke 4 sudut dengan cermin simetris.</p>
+                  <div class="flex items-center gap-2">
+                    <input type="file" id="file-corner_master_png" accept="image/png,image/webp" class="hidden" onchange="handleAssetUpload(event, 'corner_master_png')">
+                    <button type="button" onclick="document.getElementById('file-corner_master_png').click()" class="px-3 py-1.5 rounded-xl bg-slate-900 text-white text-xs font-bold inline-flex items-center gap-1 cursor-pointer">
+                      <i data-lucide="upload" class="w-3 h-3 text-amber-400"></i>
+                      <span>Unggah PNG</span>
+                    </button>
+                    <button type="button" id="btn-del-corner_master_png" onclick="removeAssetUrl('corner_master_png')" class="hidden px-2.5 py-1.5 rounded-xl border border-rose-200 bg-rose-50 text-rose-700 text-xs font-semibold cursor-pointer">Reset</button>
+                  </div>
+                </div>
+              </div>
+              <input type="url" id="asset-url-corner_master_png" oninput="handleAssetUrlInput('corner_master_png', this.value)" placeholder="Tautan URL PNG Master: https://..." class="w-full px-3 py-1.5 rounded-xl border border-slate-200 text-xs font-mono">
+            </div>
+
+            <!-- Mode Detail: 4 Sudut Terpisah -->
+            <div id="corner-box-detail" class="hidden grid grid-cols-2 gap-3">
+              <!-- Kiri Atas -->
+              <div class="p-3 rounded-xl bg-slate-50 border border-slate-200/80 space-y-2">
+                <span class="text-xs font-bold text-slate-700 block">Kiri Atas (Top-Left)</span>
+                <input type="file" id="file-corner_tl_png" accept="image/png,image/webp" class="hidden" onchange="handleAssetUpload(event, 'corner_tl_png')">
+                <button type="button" onclick="document.getElementById('file-corner_tl_png').click()" class="w-full py-1.5 rounded-lg bg-white border border-slate-200 text-xs font-bold text-slate-700 hover:bg-slate-100 cursor-pointer">Unggah TL</button>
+                <input type="url" id="asset-url-corner_tl_png" oninput="handleAssetUrlInput('corner_tl_png', this.value)" placeholder="URL TL" class="w-full px-2 py-1 rounded-lg border border-slate-200 text-[11px] font-mono">
+              </div>
+              <!-- Kanan Atas -->
+              <div class="p-3 rounded-xl bg-slate-50 border border-slate-200/80 space-y-2">
+                <span class="text-xs font-bold text-slate-700 block">Kanan Atas (Top-Right)</span>
+                <input type="file" id="file-corner_tr_png" accept="image/png,image/webp" class="hidden" onchange="handleAssetUpload(event, 'corner_tr_png')">
+                <button type="button" onclick="document.getElementById('file-corner_tr_png').click()" class="w-full py-1.5 rounded-lg bg-white border border-slate-200 text-xs font-bold text-slate-700 hover:bg-slate-100 cursor-pointer">Unggah TR</button>
+                <input type="url" id="asset-url-corner_tr_png" oninput="handleAssetUrlInput('corner_tr_png', this.value)" placeholder="URL TR" class="w-full px-2 py-1 rounded-lg border border-slate-200 text-[11px] font-mono">
+              </div>
+              <!-- Kiri Bawah -->
+              <div class="p-3 rounded-xl bg-slate-50 border border-slate-200/80 space-y-2">
+                <span class="text-xs font-bold text-slate-700 block">Kiri Bawah (Bottom-Left)</span>
+                <input type="file" id="file-corner_bl_png" accept="image/png,image/webp" class="hidden" onchange="handleAssetUpload(event, 'corner_bl_png')">
+                <button type="button" onclick="document.getElementById('file-corner_bl_png').click()" class="w-full py-1.5 rounded-lg bg-white border border-slate-200 text-xs font-bold text-slate-700 hover:bg-slate-100 cursor-pointer">Unggah BL</button>
+                <input type="url" id="asset-url-corner_bl_png" oninput="handleAssetUrlInput('corner_bl_png', this.value)" placeholder="URL BL" class="w-full px-2 py-1 rounded-lg border border-slate-200 text-[11px] font-mono">
+              </div>
+              <!-- Kanan Bawah -->
+              <div class="p-3 rounded-xl bg-slate-50 border border-slate-200/80 space-y-2">
+                <span class="text-xs font-bold text-slate-700 block">Kanan Bawah (Bottom-Right)</span>
+                <input type="file" id="file-corner_br_png" accept="image/png,image/webp" class="hidden" onchange="handleAssetUpload(event, 'corner_br_png')">
+                <button type="button" onclick="document.getElementById('file-corner_br_png').click()" class="w-full py-1.5 rounded-lg bg-white border border-slate-200 text-xs font-bold text-slate-700 hover:bg-slate-100 cursor-pointer">Unggah BR</button>
+                <input type="url" id="asset-url-corner_br_png" oninput="handleAssetUrlInput('corner_br_png', this.value)" placeholder="URL BR" class="w-full px-2 py-1 rounded-lg border border-slate-200 text-[11px] font-mono">
+              </div>
+            </div>
+
+            <!-- Corner Size & Sway Speed Controls -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-3 border-t border-slate-100">
+              <div>
+                <div class="flex items-center justify-between text-xs font-bold text-slate-700 mb-1">
+                  <span>Ukuran Ornamen Sudut:</span>
+                  <span id="label-corner-size" class="text-amber-600 font-mono">112px</span>
+                </div>
+                <input 
+                  type="range" 
+                  id="slider-corner-size" 
+                  min="80" 
+                  max="240" 
+                  step="4" 
+                  value="112" 
+                  oninput="handleCornerSizeChange(this.value)" 
+                  class="w-full accent-amber-600 cursor-pointer"
+                >
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Kecepatan Ayunan Angin (`sway_speed`)</label>
+                <select id="select-sway-speed" onchange="handleSwaySpeedChange(this.value)" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs bg-white text-slate-800">
+                  <option value="slow">Lambat & Tenang (8.5s)</option>
+                  <option value="normal" selected>Normal & Semilir (5.5s)</option>
+                  <option value="fast">Cepat & Dinamis (3.2s)</option>
+                </select>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- 3. Ilustrasi Spesifik per Seksi -->
+          <div class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-2xs space-y-4">
+            <h3 class="font-serif text-base font-bold text-slate-900 flex items-center gap-2 border-b border-slate-100 pb-2.5">
+              <i data-lucide="layers" class="w-4 h-4 text-amber-600"></i>
+              <span>3. Ilustrasi Spesifik per Seksi Acara</span>
+            </h3>
+
+            <!-- Slot A: Header Sampul Depan -->
+            <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80 space-y-2">
+              <div class="flex items-center justify-between">
+                <div>
+                  <span class="text-xs font-bold text-slate-800 block">Header Sampul Depan (`cover_header_png`)</span>
+                  <p class="text-[11px] text-slate-400">Motif ornamen/logo di atas teks "The Wedding Of".</p>
+                </div>
+                <div class="flex items-center gap-1.5">
+                  <input type="file" id="file-cover_header_png" accept="image/png,image/webp" class="hidden" onchange="handleAssetUpload(event, 'cover_header_png')">
+                  <button type="button" onclick="document.getElementById('file-cover_header_png').click()" class="px-2.5 py-1 rounded-lg bg-slate-900 text-white text-xs font-bold cursor-pointer">Unggah</button>
+                  <button type="button" id="btn-del-cover_header_png" onclick="removeAssetUrl('cover_header_png')" class="hidden px-2 py-1 rounded-lg border border-rose-200 bg-rose-50 text-rose-700 text-xs font-semibold cursor-pointer">Hapus</button>
+                </div>
+              </div>
+              <input type="url" id="asset-url-cover_header_png" oninput="handleAssetUrlInput('cover_header_png', this.value)" placeholder="Tautan URL: https://..." class="w-full px-3 py-1.5 rounded-lg border border-slate-200 text-xs font-mono">
+            </div>
+
+            <!-- Slot B: Bingkai PNG Foto Sampul & Bentuk Bingkai Default -->
+            <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80 space-y-2.5">
+              <div>
+                <span class="text-xs font-bold text-slate-800 block">Bingkai & Ornamen Foto Sampul Depan</span>
+                <p class="text-[11px] text-slate-400">Bentuk bingkai default dan opsi upload PNG bingkai overlay kustom.</p>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label class="block text-[11px] font-bold text-slate-600 mb-1">Bentuk Bingkai Default:</label>
+                  <select id="cover-frame-shape-select" onchange="handleCoverFrameChange()" class="w-full px-3 py-1.5 rounded-lg border border-slate-300 text-xs bg-white text-slate-800">
+                    <option value="grand_arch">Kubah Kubik Mewah (Grand Arch)</option>
+                    <option value="classic_oval">Oval Klasik (Classic Oval)</option>
+                    <option value="circle_royal">Lingkaran Kerajaan (Circle Royal)</option>
+                    <option value="octagon_heritage">Oktagon Warisan (Octagon)</option>
+                    <option value="teardrop_botanical">Tetesan Embun (Teardrop)</option>
+                    <option value="none">Tanpa Bingkai (Persegi Polos)</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label class="block text-[11px] font-bold text-slate-600 mb-1">Ornamen Bingkai Bawaan:</label>
+                  <select id="cover-frame-ornament-select" onchange="handleCoverFrameChange()" class="w-full px-3 py-1.5 rounded-lg border border-slate-300 text-xs bg-white text-slate-800">
+                    <option value="floral_wreath">Karangan Bunga Melingkar (Floral Wreath)</option>
+                    <option value="twin_gold_lines">Garis Ganda Emas Klasik (Twin Gold Lines)</option>
+                    <option value="javanese_carving">Ukiran Mahkota Emas (Javanese Carving)</option>
+                    <option value="minimal_clean">Garis Minimalis Bersih (Minimal Clean)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="pt-1.5 border-t border-slate-200/60">
+                <div class="flex items-center justify-between mb-1">
+                  <span class="text-[11px] font-bold text-slate-600">Atau Unggah PNG Bingkai Kustom (`custom_cover_frame_png`):</span>
+                  <div class="flex items-center gap-1.5">
+                    <input type="file" id="file-custom_cover_frame_png" accept="image/png,image/webp" class="hidden" onchange="handleAssetUpload(event, 'custom_cover_frame_png')">
+                    <button type="button" onclick="document.getElementById('file-custom_cover_frame_png').click()" class="px-2 py-0.5 rounded bg-slate-900 text-white text-[11px] font-bold cursor-pointer">Unggah PNG</button>
+                    <button type="button" id="btn-del-custom_cover_frame_png" onclick="removeAssetUrl('custom_cover_frame_png')" class="hidden px-2 py-0.5 rounded border border-rose-200 bg-rose-50 text-rose-700 text-[11px] font-semibold cursor-pointer">Hapus</button>
+                  </div>
+                </div>
+                <input type="url" id="asset-url-custom_cover_frame_png" oninput="handleAssetUrlInput('custom_cover_frame_png', this.value)" placeholder="Tautan URL PNG Bingkai: https://..." class="w-full px-3 py-1.5 rounded-lg border border-slate-200 text-xs font-mono">
+              </div>
+            </div>
+
+            <!-- Slot C: Pembatas Antar Seksi / Divider -->
+            <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80 space-y-2">
+              <div class="flex items-center justify-between">
+                <div>
+                  <span class="text-xs font-bold text-slate-800 block">Pembatas Antar Seksi / Divider (`section_divider_png`)</span>
+                  <p class="text-[11px] text-slate-400">Ornamen dekoratif yang tampil di atas judul setiap seksi undangan.</p>
+                </div>
+                <div class="flex items-center gap-1.5">
+                  <input type="file" id="file-section_divider_png" accept="image/png,image/webp" class="hidden" onchange="handleAssetUpload(event, 'section_divider_png')">
+                  <button type="button" onclick="document.getElementById('file-section_divider_png').click()" class="px-2.5 py-1 rounded-lg bg-slate-900 text-white text-xs font-bold cursor-pointer">Unggah</button>
+                  <button type="button" id="btn-del-section_divider_png" onclick="removeAssetUrl('section_divider_png')" class="hidden px-2 py-1 rounded-lg border border-rose-200 bg-rose-50 text-rose-700 text-xs font-semibold cursor-pointer">Hapus</button>
+                </div>
+              </div>
+              <input type="url" id="asset-url-section_divider_png" oninput="handleAssetUrlInput('section_divider_png', this.value)" placeholder="Tautan URL: https://..." class="w-full px-3 py-1.5 rounded-lg border border-slate-200 text-xs font-mono">
+            </div>
+
+            <!-- Slot D: Watermark Kartu Undangan -->
+            <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80 space-y-2">
+              <div class="flex items-center justify-between">
+                <div>
+                  <span class="text-xs font-bold text-slate-800 block">Watermark Latar Kartu (`card_watermark_png`)</span>
+                  <p class="text-[11px] text-slate-400">Ilustrasi transparan di latar belakang kartu mempelai & acara.</p>
+                </div>
+                <div class="flex items-center gap-1.5">
+                  <input type="file" id="file-card_watermark_png" accept="image/png,image/webp" class="hidden" onchange="handleAssetUpload(event, 'card_watermark_png')">
+                  <button type="button" onclick="document.getElementById('file-card_watermark_png').click()" class="px-2.5 py-1 rounded-lg bg-slate-900 text-white text-xs font-bold cursor-pointer">Unggah</button>
+                  <button type="button" id="btn-del-card_watermark_png" onclick="removeAssetUrl('card_watermark_png')" class="hidden px-2 py-1 rounded-lg border border-rose-200 bg-rose-50 text-rose-700 text-xs font-semibold cursor-pointer">Hapus</button>
+                </div>
+              </div>
+              <input type="url" id="asset-url-card_watermark_png" oninput="handleAssetUrlInput('card_watermark_png', this.value)" placeholder="Tautan URL: https://..." class="w-full px-3 py-1.5 rounded-lg border border-slate-200 text-xs font-mono">
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- ============================================================== -->
+        <!-- TAB PANEL D: KONFIGURASI ANIMASI & PARTIKEL BAWAAN             -->
+        <!-- ============================================================== -->
+        <div id="panel-effects" class="studio-panel hidden space-y-4">
+          
+          <div class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-2xs space-y-4">
+            <h3 class="font-serif text-base font-bold text-slate-900 flex items-center gap-2 border-b border-slate-100 pb-2.5">
+              <i data-lucide="sparkles" class="w-4 h-4 text-amber-600"></i>
+              <span>Efek Animasi Partikel Jatuh & Fisika Natural</span>
+            </h3>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Jenis Partikel Default</label>
+                <select id="select-particle-effect" onchange="handleEffectsChange()" class="w-full px-3 py-2.5 rounded-xl border border-slate-300 text-xs bg-white text-slate-800 font-semibold">
+                  <option value="leaves">Daun Gugur (Leaves - Sage/Terracotta)</option>
+                  <option value="petals">Kelopak Bunga Sakura/Mawar (Petals - Blush)</option>
+                  <option value="gold_dust">Butiran Emas Berkelip (Gold Dust - Royal)</option>
+                  <option value="snow">Hujan Salju Romantis (Snow)</option>
+                  <option value="none">Tanpa Efek Partikel</option>
+                </select>
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Gerakan Fisika Partikel (`particle_physics`)</label>
+                <select id="select-particle-physics" onchange="handleEffectsChange()" class="w-full px-3 py-2.5 rounded-xl border border-slate-300 text-xs bg-white text-slate-800 font-semibold">
+                  <option value="breeze_right">Breeze Right (Tertiup Angin Semilir ke Kanan)</option>
+                  <option value="flutter_wide">Flutter Wide (Melayang Zig-Zag Bergoyang Lebar)</option>
+                  <option value="float_up">Float Up (Melayang Naik Seperti Kunang-kunang)</option>
+                  <option value="soft_swirl">Soft Swirl (Pusaran Lembut Natural)</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Particle Layer: Behind vs Front -->
+            <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80 space-y-2">
+              <span class="text-xs font-bold text-slate-800 block">Posisi Layer Partikel (`particle_layer`)</span>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                <label class="p-2.5 rounded-xl border border-slate-200 bg-white hover:border-amber-400 cursor-pointer flex items-start gap-2 text-xs">
+                  <input type="radio" name="master_particle_layer" value="behind" checked onchange="handleEffectsChange()" class="mt-0.5 text-amber-600">
+                  <div>
+                    <span class="font-bold text-slate-900 block">Layer Belakang (Behind)</span>
+                    <span class="text-[11px] text-slate-400">Partikel melayang di belakang kartu sehingga teks tetap sangat nyaman dibaca (Rekomendasi).</span>
+                  </div>
+                </label>
+
+                <label class="p-2.5 rounded-xl border border-slate-200 bg-white hover:border-amber-400 cursor-pointer flex items-start gap-2 text-xs">
+                  <input type="radio" name="master_particle_layer" value="front" onchange="handleEffectsChange()" class="mt-0.5 text-amber-600">
+                  <div>
+                    <span class="font-bold text-slate-900 block">Layer Depan (Front)</span>
+                    <span class="text-[11px] text-slate-400">Partikel melayang di layer teratas di depan kartu teks secara dramatis.</span>
+                  </div>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Animasi Card Saat Di-Scroll & Bentuk Frame CPP/CPW -->
+          <div class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-2xs space-y-4">
+            <h3 class="font-serif text-base font-bold text-slate-900 flex items-center gap-2 border-b border-slate-100 pb-2.5">
+              <i data-lucide="play" class="w-4 h-4 text-amber-600"></i>
+              <span>Animasi Kartu Saat Di-Scroll & Bingkai Foto Mempelai</span>
+            </h3>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Gaya & Arah Animasi Card (`card_animation`)</label>
+                <select id="select-card-animation" onchange="handleEffectsChange()" class="w-full px-3 py-2.5 rounded-xl border border-slate-300 text-xs bg-white text-slate-800 font-semibold">
+                  <option value="fade-up">Fade Up (Meluncur Lembut dari Bawah)</option>
+                  <option value="fade-down">Fade Down (Meluncur dari Atas)</option>
+                  <option value="slide-left">Slide Left (Masuk dari Sisi Kiri)</option>
+                  <option value="slide-right">Slide Right (Masuk dari Sisi Kanan)</option>
+                  <option value="alternate-lr">Alternate Left-Right (Selang-seling Kiri & Kanan)</option>
+                  <option value="zoom-pop">Zoom Pop (Muncul Membesar Dramatis)</option>
+                  <option value="flip-3d">Flip 3D (Terbuka Berputar 3D Elegan)</option>
+                </select>
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Bentuk Bingkai Foto Mempelai Pria/Wanita (`frame_shape`)</label>
+                <select id="select-person-frame-shape" onchange="handleEffectsChange()" class="w-full px-3 py-2.5 rounded-xl border border-slate-300 text-xs bg-white text-slate-800 font-semibold">
+                  <option value="arch">Kubah Kubik (Arch Lengkung)</option>
+                  <option value="circle">Lingkaran Emas (Circle Royal)</option>
+                  <option value="oval">Oval Klasik (Oval Floral)</option>
+                  <option value="octagon">Oktagon Tradisional (Octagon Heritage)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- SISI KANAN: LIVE MOBILE PREVIEW HP SIMULATOR (5 COLUMNS / ~42% STICKY) -->
+      <div class="lg:col-span-5 flex flex-col items-center">
+        
+        <div class="sticky top-32 w-full max-w-[380px] space-y-3">
+          
+          <!-- Device Simulator Toolbar -->
+          <div class="bg-white px-4 py-2 rounded-2xl border border-slate-200/90 shadow-2xs flex items-center justify-between text-xs">
+            <span class="font-bold text-slate-700 flex items-center gap-1.5">
+              <i data-lucide="smartphone" class="w-4 h-4 text-amber-600"></i>
+              <span>Live Mobile Preview</span>
+            </span>
+
+            <div class="flex items-center gap-1.5">
+              <button 
+                type="button" 
+                onclick="sendIframeAction('RESET_COVER')" 
+                class="p-1.5 rounded-lg hover:bg-slate-100 text-slate-600 hover:text-slate-900 transition-colors cursor-pointer"
+                title="Tutup Sampul Depan"
+              >
+                <i data-lucide="lock" class="w-3.5 h-3.5"></i>
+              </button>
+              <button 
+                type="button" 
+                onclick="sendIframeAction('OPEN_INVITATION')" 
+                class="p-1.5 rounded-lg hover:bg-slate-100 text-slate-600 hover:text-slate-900 transition-colors cursor-pointer"
+                title="Buka Undangan"
+              >
+                <i data-lucide="mail-open" class="w-3.5 h-3.5"></i>
+              </button>
+              <button 
+                type="button" 
+                onclick="reloadPreviewFrame()" 
+                class="p-1.5 rounded-lg hover:bg-slate-100 text-slate-600 hover:text-slate-900 transition-colors cursor-pointer"
+                title="Segarkan Pratinjau"
+              >
+                <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Smartphone Outer Chassis -->
+          <div class="relative w-full rounded-[42px] bg-slate-900 p-3.5 shadow-2xl phone-mockup-frame overflow-hidden">
+            
+            <!-- Top Speaker & Dynamic Notch -->
+            <div class="absolute top-5 left-1/2 -translate-x-1/2 w-28 h-4 bg-slate-950 rounded-full z-40 flex items-center justify-center">
+              <div class="w-8 h-1 bg-slate-800 rounded-full"></div>
+            </div>
+
+            <!-- Iframe Window Container -->
+            <div class="w-full h-[660px] rounded-[32px] overflow-hidden bg-stone-900 relative">
+              <iframe 
+                id="admin-preview-frame" 
+                src="/u.html?preview=true&admin_template_preview=true" 
+                class="w-full h-full border-0"
+              ></iframe>
+            </div>
+
+            <!-- Bottom Home Bar -->
+            <div class="absolute bottom-4 left-1/2 -translate-x-1/2 w-32 h-1 bg-slate-600 rounded-full z-40 pointer-events-none"></div>
+
+          </div>
+
+          <p class="text-center text-[11px] text-slate-400">
+            Perubahan warna, font, PNG, dan animasi langsung tersinkronisasi via <span class="font-mono text-slate-500">postMessage</span> ke layar simulasi HP.
+          </p>
+
+        </div>
+
+      </div>
 
     </div>
+
   </div>
 
   <!-- Scripts -->
   <script src="/assets/js/config.js"></script>
+  <script src="/assets/js/webp-compressor.js"></script>
+  <script src="/assets/js/image-cropper.js"></script>
+
   <script>
+    // State Aplikasi Admin Master Template Studio
     let templates = [];
     let currentAdmin = null;
+    let currentTemplate = null;
+    let isEditingNew = false;
+    let isUnsaved = false;
+    let broadcastDebounceTimer = null;
 
+    // Struktur Data Default Template State
+    let templateState = {
+      id: null,
+      name: '',
+      slug: '',
+      category: 'Minimalist',
+      is_premium: false,
+      is_active: true,
+      preview_url: null,
+      default_colors_json: {
+        bg: '#F4F6F3',
+        card: '#FFFFFF',
+        text: '#2C352E',
+        accent: '#6B8E78',
+        secondary: '#E2B170'
+      },
+      config_json: {
+        typography: {
+          font_heading: "'Cormorant Garamond', Georgia, serif",
+          font_body: "'Plus Jakarta Sans', system-ui, sans-serif"
+        },
+        ornaments: {
+          mode: 'master',
+          corner_master_png: null,
+          corner_tl_png: null,
+          corner_tr_png: null,
+          corner_bl_png: null,
+          corner_br_png: null,
+          corner_size: 112,
+          sway_speed: 'normal',
+          cover_header_png: null,
+          custom_cover_frame_png: null,
+          section_divider_png: null,
+          card_watermark_png: null
+        },
+        cover_frame_shape: 'grand_arch',
+        cover_frame_ornament: 'floral_wreath',
+        frame_shape: 'arch',
+        particle_effect: 'leaves',
+        particle_physics: 'breeze_right',
+        particle_layer: 'behind',
+        card_animation: 'fade-up',
+        bg_image_url: null,
+        bg_type: 'lava'
+      }
+    };
+
+    // =========================================================================
+    // 1. INITIALIZATION & AUTH GUARD
+    // =========================================================================
     document.addEventListener('DOMContentLoaded', async () => {
-      // 1. Auth check: Superadmin only
       currentAdmin = getCurrentUser();
       if (!currentAdmin || currentAdmin.role !== 'admin') {
-        alert('Akses ditolak: Halaman ini hanya untuk Superadmin.');
+        alert('Akses ditolak: Halaman Master Template Studio hanya untuk Superadmin.');
         window.location.href = '/login.html';
         return;
       }
@@ -309,6 +1156,14 @@
 
       await loadTemplates();
       lucide.createIcons();
+
+      // Cek URL Query untuk membuka langsung template tertentu ke studio
+      const params = new URLSearchParams(window.location.search);
+      const studioId = params.get('studio_id');
+      if (studioId) {
+        const found = templates.find(t => String(t.id) === String(studioId));
+        if (found) openStudioForTemplate(found.id);
+      }
     });
 
     async function loadTemplates() {
@@ -325,11 +1180,11 @@
         templates = data || [];
 
         renderMetrics();
-        renderTemplatesTable();
+        renderTemplatesGrid();
 
       } catch (err) {
         console.error('Error load templates:', err);
-        showToast('Gagal memuat template: ' + err.message, 'error');
+        showToast('Gagal memuat katalog template: ' + err.message, 'error');
       }
     }
 
@@ -339,75 +1194,157 @@
       document.getElementById('metric-premium-templates').textContent = templates.filter(t => t.is_premium).length;
     }
 
-    function renderTemplatesTable() {
-      const tbody = document.getElementById('templates-tbody');
-      const filter = document.getElementById('filter-status').value;
+    // =========================================================================
+    // 2. KATALOG TEMPLATE GRID RENDERER
+    // =========================================================================
+    function renderTemplatesGrid() {
+      const container = document.getElementById('templates-grid-container');
+      const searchQuery = (document.getElementById('search-template-input')?.value || '').toLowerCase().trim();
+      const catFilter = document.getElementById('filter-category')?.value || 'all';
+      const statusFilter = document.getElementById('filter-status')?.value || 'all';
 
       const filtered = templates.filter(t => {
-        if (filter === 'active') return t.is_active;
-        if (filter === 'inactive') return !t.is_active;
-        return true;
+        // Filter nama/slug
+        const matchSearch = !searchQuery || 
+          (t.name && t.name.toLowerCase().includes(searchQuery)) || 
+          (t.slug && t.slug.toLowerCase().includes(searchQuery));
+
+        // Filter kategori
+        const matchCat = catFilter === 'all' || (t.category && t.category.toLowerCase() === catFilter.toLowerCase());
+
+        // Filter status
+        let matchStatus = true;
+        if (statusFilter === 'active') matchStatus = Boolean(t.is_active);
+        else if (statusFilter === 'inactive') matchStatus = !t.is_active;
+        else if (statusFilter === 'premium') matchStatus = Boolean(t.is_premium);
+
+        return matchSearch && matchCat && matchStatus;
       });
 
       if (!filtered.length) {
-        tbody.innerHTML = `
-          <tr>
-            <td colspan="7" class="py-8 text-center text-xs text-slate-400">
-              Tidak ada template yang sesuai filter.
-            </td>
-          </tr>
+        container.innerHTML = `
+          <div class="col-span-full py-16 text-center bg-white rounded-3xl border border-slate-200/80 p-8 space-y-3">
+            <div class="w-12 h-12 mx-auto rounded-full bg-slate-100 flex items-center justify-center text-slate-400">
+              <i data-lucide="palette" class="w-6 h-6"></i>
+            </div>
+            <h4 class="font-serif text-lg font-bold text-slate-800">Tidak ada template yang cocok</h4>
+            <p class="text-xs text-slate-400 max-w-sm mx-auto">Coba ubah kata kunci pencarian atau ganti filter kategori/status di atas.</p>
+          </div>
         `;
+        lucide.createIcons();
         return;
       }
 
-      tbody.innerHTML = filtered.map(t => {
-        const colors = t.default_colors_json || { bg: '#fff', card: '#fff', text: '#333', accent: '#d4af37' };
-        
+      container.innerHTML = filtered.map(t => {
+        const colors = t.default_colors_json || { bg: '#F4F6F3', card: '#FFFFFF', text: '#2C352E', accent: '#6B8E78' };
+        const cfg = t.config_json || {};
+        const headingFont = cfg.typography?.font_heading ? cfg.typography.font_heading.split(',')[0].replace(/'/g, '') : 'Cormorant Garamond';
+        const particle = cfg.particle_effect || 'leaves';
+        const hasCustomOrnaments = Boolean(cfg.ornaments?.corner_master_png || cfg.ornaments?.corner_tl_png);
+
         return `
-          <tr class="hover:bg-slate-50/80 transition-colors">
-            <td class="py-3 px-4 text-center font-mono font-bold text-slate-400">
-              #${t.id}
-            </td>
-            <td class="py-3 px-4">
-              <div class="font-bold text-slate-900">${escapeHtml(t.name)}</div>
-              <div class="font-mono text-[11px] text-slate-400 mt-0.5">/templates/${escapeHtml(t.slug)}</div>
-            </td>
-            <td class="py-3 px-4">
-              <span class="px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-slate-100 text-slate-700">
-                ${escapeHtml(t.category || 'Umum')}
-              </span>
-            </td>
-            <td class="py-3 px-4">
-              <div class="flex items-center gap-1">
-                <div class="w-4 h-4 rounded-full border border-slate-300 shadow-2xs" style="background-color: ${colors.bg}" title="BG: ${colors.bg}"></div>
-                <div class="w-4 h-4 rounded-full border border-slate-300 shadow-2xs" style="background-color: ${colors.card}" title="Card: ${colors.card}"></div>
-                <div class="w-4 h-4 rounded-full border border-slate-300 shadow-2xs" style="background-color: ${colors.text}" title="Text: ${colors.text}"></div>
-                <div class="w-4 h-4 rounded-full border border-slate-300 shadow-2xs" style="background-color: ${colors.accent}" title="Accent: ${colors.accent}"></div>
+          <div class="bg-white rounded-3xl border border-slate-200/90 shadow-xs hover:shadow-md transition-all overflow-hidden flex flex-col group">
+            
+            <!-- Card Thumbnail Banner -->
+            <div class="relative h-44 bg-slate-900 overflow-hidden flex items-center justify-center">
+              ${t.preview_url ? `
+                <img src="${t.preview_url}" alt="${escapeHtml(t.name)}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
+              ` : `
+                <div class="w-full h-full flex flex-col items-center justify-center p-4 text-center" style="background-color: ${colors.bg}; color: ${colors.text};">
+                  <span class="font-serif text-xl font-bold tracking-tight mb-1" style="color: ${colors.accent};">${escapeHtml(t.name)}</span>
+                  <span class="text-[10px] font-mono opacity-60">/templates/${escapeHtml(t.slug)}</span>
+                </div>
+              `}
+
+              <!-- Top Badges -->
+              <div class="absolute top-3 left-3 flex items-center gap-1.5">
+                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold shadow-xs ${t.is_premium ? 'bg-amber-400 text-slate-950' : 'bg-emerald-500 text-white'}">
+                  ${t.is_premium ? '👑 Premium' : 'Free'}
+                </span>
+                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-white/90 backdrop-blur-xs text-slate-800 shadow-xs">
+                  ${escapeHtml(t.category || 'Minimalist')}
+                </span>
               </div>
-            </td>
-            <td class="py-3 px-4 text-center">
-              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${t.is_premium ? 'bg-amber-100 text-amber-900 border border-amber-300' : 'bg-emerald-50 text-emerald-700 border border-emerald-200'}">
-                ${t.is_premium ? '👑 Premium' : 'Free'}
-              </span>
-            </td>
-            <td class="py-3 px-4 text-center">
-              <label class="relative inline-flex items-center cursor-pointer">
-                <input type="checkbox" ${t.is_active ? 'checked' : ''} onchange="toggleTemplateActive(${t.id}, this.checked)" class="sr-only peer">
-                <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-emerald-600"></div>
-              </label>
-            </td>
-            <td class="py-3 px-4 text-center">
-              <div class="flex items-center justify-center gap-1.5">
+
+              <!-- Top Right Active Switch -->
+              <div class="absolute top-3 right-3 bg-white/90 backdrop-blur-xs px-2 py-1 rounded-full shadow-xs flex items-center gap-1.5">
+                <label class="relative inline-flex items-center cursor-pointer">
+                  <input type="checkbox" ${t.is_active ? 'checked' : ''} onchange="toggleTemplateActive(${t.id}, this.checked)" class="sr-only peer">
+                  <div class="w-7 h-4 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:bg-emerald-600"></div>
+                </label>
+              </div>
+
+              <!-- Bottom Palette Dots on Banner -->
+              <div class="absolute bottom-3 left-3 flex items-center gap-1.5">
+                <div class="w-4 h-4 rounded-full border border-white/80 shadow-xs" style="background-color: ${colors.bg}" title="Background: ${colors.bg}"></div>
+                <div class="w-4 h-4 rounded-full border border-white/80 shadow-xs" style="background-color: ${colors.card}" title="Card: ${colors.card}"></div>
+                <div class="w-4 h-4 rounded-full border border-white/80 shadow-xs" style="background-color: ${colors.text}" title="Text: ${colors.text}"></div>
+                <div class="w-4 h-4 rounded-full border border-white/80 shadow-xs" style="background-color: ${colors.accent}" title="Aksen: ${colors.accent}"></div>
+              </div>
+
+              <div class="absolute bottom-3 right-3 font-mono text-[10px] text-white/80 bg-black/40 px-2 py-0.5 rounded-full">
+                #${t.id}
+              </div>
+            </div>
+
+            <!-- Card Content Body -->
+            <div class="p-5 flex-1 flex flex-col justify-between space-y-4">
+              <div>
+                <h3 class="font-serif text-lg font-bold text-slate-900 group-hover:text-amber-700 transition-colors">${escapeHtml(t.name)}</h3>
+                <span class="font-mono text-[11px] text-slate-400 block mt-0.5">/templates/${escapeHtml(t.slug)}</span>
+
+                <!-- Quick Visual Meta Tags -->
+                <div class="flex items-center gap-2 flex-wrap pt-2.5 text-[11px] text-slate-500">
+                  <span class="inline-flex items-center gap-1 bg-slate-50 border border-slate-200/80 px-2 py-0.5 rounded-lg">
+                    <i data-lucide="type" class="w-3 h-3 text-slate-400"></i>
+                    <span>${headingFont}</span>
+                  </span>
+                  <span class="inline-flex items-center gap-1 bg-slate-50 border border-slate-200/80 px-2 py-0.5 rounded-lg">
+                    <i data-lucide="sparkles" class="w-3 h-3 text-slate-400"></i>
+                    <span class="capitalize">${particle}</span>
+                  </span>
+                  ${hasCustomOrnaments ? `
+                    <span class="inline-flex items-center gap-1 bg-amber-50 border border-amber-200/80 text-amber-800 px-2 py-0.5 rounded-lg font-semibold">
+                      <i data-lucide="flower" class="w-3 h-3 text-amber-600"></i>
+                      <span>PNG Custom</span>
+                    </span>
+                  ` : ''}
+                </div>
+              </div>
+
+              <!-- Card Action Buttons -->
+              <div class="flex items-center gap-2 pt-3 border-t border-slate-100">
                 <button 
-                  onclick="openEditTemplateModal(${t.id})" 
-                  class="p-1.5 rounded-lg border border-slate-200 hover:bg-slate-100 text-slate-600 hover:text-slate-900 transition-colors cursor-pointer"
-                  title="Edit Template"
+                  type="button" 
+                  onclick="openStudioForTemplate(${t.id})" 
+                  class="flex-1 py-2 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold inline-flex items-center justify-center gap-1.5 shadow-xs transition-all cursor-pointer"
                 >
-                  <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
+                  <i data-lucide="palette" class="w-3.5 h-3.5 text-amber-400"></i>
+                  <span>Buka di Studio Master</span>
+                </button>
+
+                <button 
+                  type="button" 
+                  onclick="duplicateTemplate(${t.id})" 
+                  class="p-2 rounded-xl border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs font-semibold inline-flex items-center justify-center transition-colors cursor-pointer"
+                  title="Duplikat Template (Salin untuk Tema Baru)"
+                >
+                  <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                </button>
+
+                <button 
+                  type="button" 
+                  onclick="deleteTemplate(${t.id})" 
+                  class="p-2 rounded-xl border border-rose-200 hover:bg-rose-50 text-rose-600 text-xs font-semibold inline-flex items-center justify-center transition-colors cursor-pointer"
+                  title="Hapus Template"
+                >
+                  <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
                 </button>
               </div>
-            </td>
-          </tr>
+            </div>
+
+          </div>
         `;
       }).join('');
 
@@ -432,109 +1369,869 @@
         showToast(`Template #${id} diubah jadi ${isActive ? 'Aktif' : 'Nonaktif'}!`, 'success');
       } catch (err) {
         console.error('Toggle error:', err);
-        showToast('Gagal mengubah status template', 'error');
+        showToast('Gagal mengubah status template: ' + err.message, 'error');
       }
     }
 
-    function openAddTemplateModal() {
-      document.getElementById('modal-template-title').textContent = 'Tambah Template Baru';
-      document.getElementById('tpl-id').value = '';
-      document.getElementById('tpl-name').value = '';
-      document.getElementById('tpl-slug').value = '';
-      document.getElementById('tpl-category').value = 'Minimalist';
-      document.getElementById('tpl-is-premium').checked = false;
-      document.getElementById('tpl-is-active').checked = true;
+    // =========================================================================
+    // 3. FITUR DUPLIKASI TEMPLATE (1 MENIT MELAHIRKAN TEMA BARU)
+    // =========================================================================
+    async function duplicateTemplate(id) {
+      const source = templates.find(x => x.id === id);
+      if (!source) return;
 
-      document.getElementById('tpl-color-bg').value = '#F4F6F3';
-      document.getElementById('tpl-color-card').value = '#FFFFFF';
-      document.getElementById('tpl-color-text').value = '#2C352E';
-      document.getElementById('tpl-color-accent').value = '#6B8E78';
+      const randomSuffix = Math.floor(100 + Math.random() * 900);
+      const newName = `${source.name} (Salinan)`;
+      const newSlug = `${source.slug}-copy-${randomSuffix}`;
 
-      const modal = document.getElementById('modal-template');
-      modal.classList.remove('hidden');
-      modal.classList.add('flex');
-      lucide.createIcons();
+      const payload = {
+        name: newName,
+        slug: newSlug,
+        category: source.category || 'Minimalist',
+        is_premium: Boolean(source.is_premium),
+        is_active: false, // Dibuat nonaktif dahulu agar admin bisa kustomisasi
+        preview_url: source.preview_url || null,
+        default_colors_json: JSON.parse(JSON.stringify(source.default_colors_json || {})),
+        config_json: JSON.parse(JSON.stringify(source.config_json || {}))
+      };
+
+      try {
+        const client = window.supabaseClient;
+        if (!client) throw new Error('Supabase client tidak siap');
+
+        const { data, error } = await client
+          .from('templates')
+          .insert([payload])
+          .select()
+          .single();
+
+        if (error) throw error;
+
+        templates.push(data);
+        renderMetrics();
+        renderTemplatesGrid();
+
+        showToast(`Template berhasil diduplikasi menjadi "${newName}"! Membuka di Studio Master...`, 'success', 4000);
+        
+        // Otomatis buka template baru di Studio Master
+        setTimeout(() => {
+          openStudioForTemplate(data.id);
+        }, 500);
+
+      } catch (err) {
+        console.error('Duplicate error:', err);
+        showToast('Gagal menduplikasi template: ' + err.message, 'error');
+      }
     }
 
-    function openEditTemplateModal(id) {
+    async function deleteTemplate(id) {
       const t = templates.find(x => x.id === id);
       if (!t) return;
 
-      document.getElementById('modal-template-title').textContent = 'Edit Template';
-      document.getElementById('tpl-id').value = t.id;
-      document.getElementById('tpl-name').value = t.name || '';
-      document.getElementById('tpl-slug').value = t.slug || '';
-      document.getElementById('tpl-category').value = t.category || 'Minimalist';
-      document.getElementById('tpl-is-premium').checked = Boolean(t.is_premium);
-      document.getElementById('tpl-is-active').checked = Boolean(t.is_active);
+      if (!confirm(`Apakah Anda yakin ingin menghapus template "${t.name}" (#${t.id}) secara permanen?`)) {
+        return;
+      }
 
-      const colors = t.default_colors_json || {};
-      document.getElementById('tpl-color-bg').value = colors.bg || '#F4F6F3';
-      document.getElementById('tpl-color-card').value = colors.card || '#FFFFFF';
-      document.getElementById('tpl-color-text').value = colors.text || '#2C352E';
-      document.getElementById('tpl-color-accent').value = colors.accent || '#6B8E78';
+      try {
+        const client = window.supabaseClient;
+        if (!client) throw new Error('Supabase client tidak siap');
 
-      const modal = document.getElementById('modal-template');
-      modal.classList.remove('hidden');
-      modal.classList.add('flex');
+        const { error } = await client
+          .from('templates')
+          .delete()
+          .eq('id', id);
+
+        if (error) throw error;
+
+        templates = templates.filter(x => x.id !== id);
+        renderMetrics();
+        renderTemplatesGrid();
+        showToast(`Template "${t.name}" berhasil dihapus.`, 'info');
+
+      } catch (err) {
+        console.error('Delete template error:', err);
+        showToast('Gagal menghapus template: ' + err.message, 'error');
+      }
+    }
+
+    // =========================================================================
+    // 4. STUDIO WORKSPACE CONTROLLER
+    // =========================================================================
+    function openCreateNewTemplateStudio() {
+      isEditingNew = true;
+      currentTemplate = null;
+
+      // Inisialisasi State Baru
+      templateState = {
+        id: null,
+        name: 'New Custom Template',
+        slug: `theme-${Date.now().toString().slice(-4)}`,
+        category: 'Minimalist',
+        is_premium: false,
+        is_active: true,
+        preview_url: null,
+        default_colors_json: {
+          bg: '#F4F6F3',
+          card: '#FFFFFF',
+          text: '#2C352E',
+          accent: '#6B8E78',
+          secondary: '#E2B170'
+        },
+        config_json: {
+          typography: {
+            font_heading: "'Cormorant Garamond', Georgia, serif",
+            font_body: "'Plus Jakarta Sans', system-ui, sans-serif"
+          },
+          ornaments: {
+            mode: 'master',
+            corner_master_png: null,
+            corner_tl_png: null,
+            corner_tr_png: null,
+            corner_bl_png: null,
+            corner_br_png: null,
+            corner_size: 112,
+            sway_speed: 'normal',
+            cover_header_png: null,
+            custom_cover_frame_png: null,
+            section_divider_png: null,
+            card_watermark_png: null
+          },
+          cover_frame_shape: 'grand_arch',
+          cover_frame_ornament: 'floral_wreath',
+          frame_shape: 'arch',
+          particle_effect: 'leaves',
+          particle_physics: 'breeze_right',
+          particle_layer: 'behind',
+          card_animation: 'fade-up',
+          bg_image_url: null,
+          bg_type: 'lava'
+        }
+      };
+
+      populateStudioForm();
+      showStudioView();
+    }
+
+    function openStudioForTemplate(id) {
+      isEditingNew = false;
+      const t = templates.find(x => x.id === id);
+      if (!t) return;
+
+      currentTemplate = t;
+
+      // Deep copy ke templateState
+      templateState = {
+        id: t.id,
+        name: t.name || '',
+        slug: t.slug || '',
+        category: t.category || 'Minimalist',
+        is_premium: Boolean(t.is_premium),
+        is_active: Boolean(t.is_active),
+        preview_url: t.preview_url || null,
+        default_colors_json: JSON.parse(JSON.stringify(t.default_colors_json || {
+          bg: '#F4F6F3', card: '#FFFFFF', text: '#2C352E', accent: '#6B8E78', secondary: '#E2B170'
+        })),
+        config_json: JSON.parse(JSON.stringify(t.config_json || {
+          typography: {
+            font_heading: "'Cormorant Garamond', Georgia, serif",
+            font_body: "'Plus Jakarta Sans', system-ui, sans-serif"
+          },
+          ornaments: {
+            mode: 'master',
+            corner_master_png: null,
+            corner_tl_png: null,
+            corner_tr_png: null,
+            corner_bl_png: null,
+            corner_br_png: null,
+            corner_size: 112,
+            sway_speed: 'normal',
+            cover_header_png: null,
+            custom_cover_frame_png: null,
+            section_divider_png: null,
+            card_watermark_png: null
+          },
+          cover_frame_shape: 'grand_arch',
+          cover_frame_ornament: 'floral_wreath',
+          frame_shape: 'arch',
+          particle_effect: 'leaves',
+          particle_physics: 'breeze_right',
+          particle_layer: 'behind',
+          card_animation: 'fade-up',
+          bg_image_url: null,
+          bg_type: 'lava'
+        }))
+      };
+
+      populateStudioForm();
+      showStudioView();
+    }
+
+    function showStudioView() {
+      document.getElementById('view-catalog').classList.add('hidden');
+      document.getElementById('view-studio').classList.remove('hidden');
+      isUnsaved = false;
+      updateUnsavedIndicator();
+
+      // Set default tab ke Identitas
+      switchStudioTab('identity');
+      
+      // Kirim initial state ke iframe Live Preview
+      setTimeout(() => {
+        broadcastToLivePreview();
+      }, 400);
+
+      window.scrollTo(0, 0);
       lucide.createIcons();
     }
 
-    function closeTemplateModal() {
-      const modal = document.getElementById('modal-template');
-      modal.classList.add('hidden');
-      modal.classList.remove('flex');
+    function closeStudioView() {
+      if (isUnsaved) {
+        if (!confirm('Anda memiliki perubahan desain yang belum disimpan. Yakin ingin kembali ke katalog?')) {
+          return;
+        }
+      }
+      document.getElementById('view-studio').classList.add('hidden');
+      document.getElementById('view-catalog').classList.remove('hidden');
+      window.scrollTo(0, 0);
+      renderMetrics();
+      renderTemplatesGrid();
     }
 
-    async function handleTemplateSubmit(e) {
-      e.preventDefault();
+    function switchStudioTab(tabKey) {
+      document.querySelectorAll('.studio-panel').forEach(p => p.classList.add('hidden'));
+      document.querySelectorAll('.studio-tab-btn').forEach(b => {
+        b.classList.remove('bg-slate-900', 'text-white', 'shadow-xs');
+        b.classList.add('text-slate-600', 'hover:text-slate-900', 'hover:bg-slate-100');
+      });
 
-      const id = document.getElementById('tpl-id').value;
+      const activePanel = document.getElementById(`panel-${tabKey}`);
+      const activeBtn = document.getElementById(`tab-btn-${tabKey}`);
+
+      if (activePanel) activePanel.classList.remove('hidden');
+      if (activeBtn) {
+        activeBtn.classList.remove('text-slate-600', 'hover:text-slate-900', 'hover:bg-slate-100');
+        activeBtn.classList.add('bg-slate-900', 'text-white', 'shadow-xs');
+      }
+
+      lucide.createIcons();
+    }
+
+    // =========================================================================
+    // 5. POPULATE FORM STATE TO DOM
+    // =========================================================================
+    function populateStudioForm() {
+      // Header Title
+      document.getElementById('studio-template-title').textContent = templateState.name || 'Template Baru';
+      document.getElementById('studio-template-slug-display').textContent = `/templates/${templateState.slug || 'theme-slug'}`;
+      
+      const badgePrem = document.getElementById('studio-badge-premium');
+      badgePrem.textContent = templateState.is_premium ? '👑 Premium' : 'Free';
+      badgePrem.className = `px-2 py-0.5 rounded-full text-[10px] font-bold ${templateState.is_premium ? 'bg-amber-100 text-amber-900 border border-amber-300' : 'bg-emerald-100 text-emerald-800'}`;
+
+      const badgeCat = document.getElementById('studio-badge-category');
+      badgeCat.textContent = templateState.category || 'Minimalist';
+
+      // Panel A: Identitas
+      document.getElementById('tpl-name').value = templateState.name || '';
+      document.getElementById('tpl-slug').value = templateState.slug || '';
+      document.getElementById('tpl-category').value = templateState.category || 'Minimalist';
+      document.getElementById('tpl-is-premium').checked = Boolean(templateState.is_premium);
+      document.getElementById('tpl-is-active').checked = Boolean(templateState.is_active);
+
+      // Thumbnail
+      setThumbnailPreview(templateState.preview_url);
+
+      // Panel B: Palet Warna
+      const colors = templateState.default_colors_json || {};
+      setColorPicker('bg', colors.bg || '#F4F6F3');
+      setColorPicker('card', colors.card || '#FFFFFF');
+      setColorPicker('text', colors.text || '#2C352E');
+      setColorPicker('accent', colors.accent || '#6B8E78');
+      setColorPicker('secondary', colors.secondary || '#E2B170');
+
+      // Typography
+      const typo = templateState.config_json?.typography || {};
+      if (typo.font_heading) document.getElementById('select-font-heading').value = typo.font_heading;
+      if (typo.font_body) document.getElementById('select-font-body').value = typo.font_body;
+      updateFontSpecimens();
+
+      // Panel C: Studio Ilustrasi Aset
+      const orn = templateState.config_json?.ornaments || {};
+      setCornerMode(orn.mode || 'master');
+      setAssetPreview('corner_master_png', orn.corner_master_png);
+      setAssetPreview('corner_tl_png', orn.corner_tl_png);
+      setAssetPreview('corner_tr_png', orn.corner_tr_png);
+      setAssetPreview('corner_bl_png', orn.corner_bl_png);
+      setAssetPreview('corner_br_png', orn.corner_br_png);
+
+      document.getElementById('slider-corner-size').value = orn.corner_size || 112;
+      document.getElementById('label-corner-size').textContent = `${orn.corner_size || 112}px`;
+      document.getElementById('select-sway-speed').value = orn.sway_speed || 'normal';
+
+      setAssetPreview('cover_header_png', orn.cover_header_png);
+      setAssetPreview('custom_cover_frame_png', orn.custom_cover_frame_png);
+      setAssetPreview('section_divider_png', orn.section_divider_png);
+      setAssetPreview('card_watermark_png', orn.card_watermark_png);
+
+      // Cover Frame shape & ornament
+      document.getElementById('cover-frame-shape-select').value = templateState.config_json?.cover_frame_shape || 'grand_arch';
+      document.getElementById('cover-frame-ornament-select').value = templateState.config_json?.cover_frame_ornament || 'floral_wreath';
+
+      // Background Type
+      const bgType = templateState.config_json?.bg_type || (templateState.config_json?.bg_image_url ? 'image' : 'lava');
+      handleMasterBgTypeChange(bgType, false);
+      setAssetPreview('bg_image_url', templateState.config_json?.bg_image_url);
+
+      // Panel D: Animasi & Fisika
+      document.getElementById('select-particle-effect').value = templateState.config_json?.particle_effect || 'leaves';
+      document.getElementById('select-particle-physics').value = templateState.config_json?.particle_physics || 'breeze_right';
+      
+      const pLayer = templateState.config_json?.particle_layer || 'behind';
+      const pLayerRadio = document.querySelector(`input[name="master_particle_layer"][value="${pLayer}"]`);
+      if (pLayerRadio) pLayerRadio.checked = true;
+
+      document.getElementById('select-card-animation').value = templateState.config_json?.card_animation || 'fade-up';
+      document.getElementById('select-person-frame-shape').value = templateState.config_json?.frame_shape || 'arch';
+    }
+
+    function setColorPicker(key, hex) {
+      const picker = document.getElementById(`color-${key}`);
+      const text = document.getElementById(`color-${key}-hex`);
+      if (picker) picker.value = hex;
+      if (text) text.value = hex;
+    }
+
+    // =========================================================================
+    // 6. EVENT HANDLERS & REAL-TIME PREVIEW BROADCAST
+    // =========================================================================
+    function markAsUnsaved() {
+      isUnsaved = true;
+      updateUnsavedIndicator();
+    }
+
+    function updateUnsavedIndicator() {
+      const el = document.getElementById('save-status-indicator');
+      if (!el) return;
+      if (isUnsaved) {
+        el.innerHTML = `<span class="w-2 h-2 rounded-full bg-amber-500 inline-block animate-pulse"></span><span class="text-amber-700 font-semibold">Perubahan Belum Disimpan</span>`;
+      } else {
+        el.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-500 inline-block"></span><span>Tersimpan</span>`;
+      }
+    }
+
+    function handleTemplateMetaChange() {
+      templateState.name = document.getElementById('tpl-name').value.trim();
+      templateState.slug = document.getElementById('tpl-slug').value.trim();
+      templateState.category = document.getElementById('tpl-category').value;
+      templateState.is_premium = document.getElementById('tpl-is-premium').checked;
+      templateState.is_active = document.getElementById('tpl-is-active').checked;
+
+      document.getElementById('studio-template-title').textContent = templateState.name || 'Template Baru';
+      document.getElementById('studio-template-slug-display').textContent = `/templates/${templateState.slug || 'theme-slug'}`;
+      document.getElementById('studio-badge-category').textContent = templateState.category;
+      
+      const badgePrem = document.getElementById('studio-badge-premium');
+      badgePrem.textContent = templateState.is_premium ? '👑 Premium' : 'Free';
+      badgePrem.className = `px-2 py-0.5 rounded-full text-[10px] font-bold ${templateState.is_premium ? 'bg-amber-100 text-amber-900 border border-amber-300' : 'bg-emerald-100 text-emerald-800'}`;
+
+      markAsUnsaved();
+      scheduleBroadcast();
+    }
+
+    function autoGenerateSlugFromName() {
       const name = document.getElementById('tpl-name').value.trim();
-      const slug = document.getElementById('tpl-slug').value.trim();
-      const category = document.getElementById('tpl-category').value;
-      const isPremium = document.getElementById('tpl-is-premium').checked;
-      const isActive = document.getElementById('tpl-is-active').checked;
+      if (!name) return;
+      const cleanSlug = name
+        .toLowerCase()
+        .replace(/[^a-z0-9\s-]/g, '')
+        .replace(/\s+/g, '-')
+        .replace(/-+/g, '-');
+      document.getElementById('tpl-slug').value = cleanSlug;
+      handleTemplateMetaChange();
+    }
 
-      const colors = {
-        bg: document.getElementById('tpl-color-bg').value,
-        card: document.getElementById('tpl-color-card').value,
-        text: document.getElementById('tpl-color-text').value,
-        accent: document.getElementById('tpl-color-accent').value
+    // Warna Handlers
+    function handleColorChange() {
+      templateState.default_colors_json = {
+        bg: document.getElementById('color-bg').value,
+        card: document.getElementById('color-card').value,
+        text: document.getElementById('color-text').value,
+        accent: document.getElementById('color-accent').value,
+        secondary: document.getElementById('color-secondary').value
       };
+      document.getElementById('color-bg-hex').value = templateState.default_colors_json.bg;
+      document.getElementById('color-card-hex').value = templateState.default_colors_json.card;
+      document.getElementById('color-text-hex').value = templateState.default_colors_json.text;
+      document.getElementById('color-accent-hex').value = templateState.default_colors_json.accent;
+      document.getElementById('color-secondary-hex').value = templateState.default_colors_json.secondary;
+
+      markAsUnsaved();
+      scheduleBroadcast();
+    }
+
+    function handleHexInput(key, hexVal) {
+      if (/^#[0-9A-Fa-f]{6}$/.test(hexVal)) {
+        document.getElementById(`color-${key}`).value = hexVal;
+        handleColorChange();
+      }
+    }
+
+    function applyPresetPalette(key) {
+      const presets = {
+        sage: { bg: '#F4F6F3', card: '#FFFFFF', text: '#2C352E', accent: '#6B8E78', secondary: '#E2B170' },
+        terracotta: { bg: '#FAF5F0', card: '#FFFFFF', text: '#3D2E28', accent: '#C66B4E', secondary: '#E2B170' },
+        javanese: { bg: '#1C1613', card: '#2A221E', text: '#F5EBE1', accent: '#D4AF37', secondary: '#E2B170' },
+        blush: { bg: '#FFF9FA', card: '#FFFFFF', text: '#3E2723', accent: '#D9779B', secondary: '#E2B170' },
+        midnight: { bg: '#0F172A', card: '#1E293B', text: '#F8FAFC', accent: '#EAB308', secondary: '#F59E0B' },
+        monochrome: { bg: '#FAFAFA', card: '#FFFFFF', text: '#18181B', accent: '#27272A', secondary: '#71717A' },
+        woodland: { bg: '#F6F8F5', card: '#FFFFFF', text: '#223326', accent: '#4A6B53', secondary: '#B48342' },
+        fairy: { bg: '#FBF9FE', card: '#FFFFFF', text: '#2E2140', accent: '#8B5CF6', secondary: '#D9779B' }
+      };
+
+      const p = presets[key];
+      if (!p) return;
+      templateState.default_colors_json = { ...p };
+      setColorPicker('bg', p.bg);
+      setColorPicker('card', p.card);
+      setColorPicker('text', p.text);
+      setColorPicker('accent', p.accent);
+      setColorPicker('secondary', p.secondary);
+
+      markAsUnsaved();
+      scheduleBroadcast();
+      showToast(`Palet ${key.toUpperCase()} diterapkan!`, 'info');
+    }
+
+    // Typography Handlers
+    function handleTypographyChange() {
+      const heading = document.getElementById('select-font-heading').value;
+      const body = document.getElementById('select-font-body').value;
+
+      if (!templateState.config_json) templateState.config_json = {};
+      templateState.config_json.typography = {
+        font_heading: heading,
+        font_body: body
+      };
+
+      updateFontSpecimens();
+      markAsUnsaved();
+      scheduleBroadcast();
+    }
+
+    function updateFontSpecimens() {
+      const heading = document.getElementById('select-font-heading')?.value || "'Cormorant Garamond', serif";
+      const body = document.getElementById('select-font-body')?.value || "'Plus Jakarta Sans', sans-serif";
+      
+      const spHeading = document.getElementById('specimen-heading');
+      const spBody = document.getElementById('specimen-body');
+      if (spHeading) spHeading.style.fontFamily = heading;
+      if (spBody) spBody.style.fontFamily = body;
+    }
+
+    function applyMasterFontPreset(key) {
+      const presets = {
+        romantic: { heading: "'Great Vibes', cursive", body: "'Plus Jakarta Sans', system-ui, sans-serif" },
+        modern: { heading: "'Playfair Display', Georgia, serif", body: "'Montserrat', system-ui, sans-serif" },
+        royal: { heading: "'Cinzel', Georgia, serif", body: "'Lora', Georgia, serif" },
+        poetic: { heading: "'Alex Brush', cursive", body: "'Plus Jakarta Sans', system-ui, sans-serif" },
+        clean: { heading: "'Philosopher', sans-serif", body: "'Nunito', system-ui, sans-serif" },
+        classic: { heading: "'Cormorant Garamond', Georgia, serif", body: "'Plus Jakarta Sans', system-ui, sans-serif" }
+      };
+
+      const p = presets[key];
+      if (!p) return;
+
+      document.getElementById('select-font-heading').value = p.heading;
+      document.getElementById('select-font-body').value = p.body;
+      handleTypographyChange();
+      showToast(`Pasangan font ${key.toUpperCase()} diterapkan!`, 'info');
+    }
+
+    // Thumbnail Preview Handler
+    function setThumbnailPreview(url) {
+      const img = document.getElementById('tpl-preview-thumb-img');
+      const placeholder = document.getElementById('tpl-preview-thumb-placeholder');
+      const delBtn = document.getElementById('btn-remove-thumb');
+      const input = document.getElementById('tpl-preview-url-input');
+
+      if (url) {
+        if (img) { img.src = url; img.classList.remove('hidden'); }
+        if (placeholder) placeholder.classList.add('hidden');
+        if (delBtn) delBtn.classList.remove('hidden');
+        if (input) input.value = url;
+      } else {
+        if (img) { img.src = ''; img.classList.add('hidden'); }
+        if (placeholder) placeholder.classList.remove('hidden');
+        if (delBtn) delBtn.classList.add('hidden');
+        if (input) input.value = '';
+      }
+    }
+
+    async function handleThumbnailUpload(e) {
+      const file = e.target.files?.[0];
+      if (!file) return;
+
+      try {
+        showToast('Mengompresi & mengunggah thumbnail...', 'info');
+        const slug = templateState.slug || 'template';
+        const res = await uploadTemplateAssetDirect(file, slug, 'thumb');
+        templateState.preview_url = res.url;
+        setThumbnailPreview(res.url);
+        markAsUnsaved();
+        showToast('Thumbnail tema berhasil diunggah!', 'success');
+      } catch (err) {
+        console.error('Upload thumbnail error:', err);
+        showToast('Gagal mengunggah thumbnail: ' + err.message, 'error');
+      }
+    }
+
+    function handleThumbnailUrlInput(val) {
+      templateState.preview_url = val.trim() || null;
+      setThumbnailPreview(templateState.preview_url);
+      markAsUnsaved();
+    }
+
+    function removeTemplateThumbnail() {
+      templateState.preview_url = null;
+      setThumbnailPreview(null);
+      markAsUnsaved();
+      showToast('Thumbnail dihapus.', 'info');
+    }
+
+    // Background Type Handler
+    function handleMasterBgTypeChange(type, triggerBroadcast = true) {
+      if (!templateState.config_json) templateState.config_json = {};
+      templateState.config_json.bg_type = type;
+
+      const imgBox = document.getElementById('master-bg-image-box');
+      const radio = document.querySelector(`input[name="master_bg_type"][value="${type}"]`);
+      if (radio) radio.checked = true;
+
+      if (type === 'image') {
+        if (imgBox) imgBox.classList.remove('hidden');
+      } else {
+        if (imgBox) imgBox.classList.add('hidden');
+        templateState.config_json.bg_image_url = null;
+        setAssetPreview('bg_image_url', null);
+      }
+
+      if (triggerBroadcast) {
+        markAsUnsaved();
+        scheduleBroadcast();
+      }
+    }
+
+    // Corner Ornaments Mode & Settings Handlers
+    function setCornerMode(mode) {
+      if (!templateState.config_json) templateState.config_json = {};
+      if (!templateState.config_json.ornaments) templateState.config_json.ornaments = {};
+      templateState.config_json.ornaments.mode = mode;
+
+      const btnMaster = document.getElementById('corner-mode-btn-master');
+      const btnDetail = document.getElementById('corner-mode-btn-detail');
+      const boxMaster = document.getElementById('corner-box-master');
+      const boxDetail = document.getElementById('corner-box-detail');
+
+      if (mode === 'master') {
+        if (btnMaster) { btnMaster.classList.add('bg-white', 'text-slate-900', 'shadow-2xs'); btnMaster.classList.remove('text-slate-600'); }
+        if (btnDetail) { btnDetail.classList.remove('bg-white', 'text-slate-900', 'shadow-2xs'); btnDetail.classList.add('text-slate-600'); }
+        if (boxMaster) boxMaster.classList.remove('hidden');
+        if (boxDetail) boxDetail.classList.add('hidden');
+      } else {
+        if (btnDetail) { btnDetail.classList.add('bg-white', 'text-slate-900', 'shadow-2xs'); btnDetail.classList.remove('text-slate-600'); }
+        if (btnMaster) { btnMaster.classList.remove('bg-white', 'text-slate-900', 'shadow-2xs'); btnMaster.classList.add('text-slate-600'); }
+        if (boxMaster) boxMaster.classList.add('hidden');
+        if (boxDetail) boxDetail.classList.remove('hidden');
+      }
+    }
+
+    function handleCornerSizeChange(val) {
+      document.getElementById('label-corner-size').textContent = `${val}px`;
+      if (!templateState.config_json) templateState.config_json = {};
+      if (!templateState.config_json.ornaments) templateState.config_json.ornaments = {};
+      templateState.config_json.ornaments.corner_size = parseInt(val, 10);
+      markAsUnsaved();
+      scheduleBroadcast();
+    }
+
+    function handleSwaySpeedChange(val) {
+      if (!templateState.config_json) templateState.config_json = {};
+      if (!templateState.config_json.ornaments) templateState.config_json.ornaments = {};
+      templateState.config_json.ornaments.sway_speed = val;
+      markAsUnsaved();
+      scheduleBroadcast();
+    }
+
+    function handleCoverFrameChange() {
+      const shape = document.getElementById('cover-frame-shape-select').value;
+      const ornament = document.getElementById('cover-frame-ornament-select').value;
+
+      if (!templateState.config_json) templateState.config_json = {};
+      templateState.config_json.cover_frame_shape = shape;
+      templateState.config_json.cover_frame_ornament = ornament;
+
+      markAsUnsaved();
+      scheduleBroadcast();
+    }
+
+    function handleEffectsChange() {
+      const effect = document.getElementById('select-particle-effect').value;
+      const physics = document.getElementById('select-particle-physics').value;
+      const layer = document.querySelector('input[name="master_particle_layer"]:checked')?.value || 'behind';
+      const anim = document.getElementById('select-card-animation').value;
+      const frameShape = document.getElementById('select-person-frame-shape').value;
+
+      if (!templateState.config_json) templateState.config_json = {};
+      templateState.config_json.particle_effect = effect;
+      templateState.config_json.particle_physics = physics;
+      templateState.config_json.particle_layer = layer;
+      templateState.config_json.card_animation = anim;
+      templateState.config_json.frame_shape = frameShape;
+
+      markAsUnsaved();
+      scheduleBroadcast();
+    }
+
+    // Generic Asset Upload & Preview Handler
+    async function handleAssetUpload(e, key) {
+      const file = e.target.files?.[0];
+      if (!file) return;
+
+      try {
+        showToast(`Mengunggah ilustrasi ${key}...`, 'info');
+        const slug = templateState.slug || 'template';
+        const res = await uploadTemplateAssetDirect(file, slug, key);
+        
+        applyAssetUrlToState(key, res.url);
+        setAssetPreview(key, res.url);
+        markAsUnsaved();
+        scheduleBroadcast();
+        showToast(`Ilustrasi ${key} berhasil diunggah!`, 'success');
+      } catch (err) {
+        console.error('Asset upload error:', err);
+        showToast('Gagal mengunggah aset: ' + err.message, 'error');
+      }
+    }
+
+    function handleAssetUrlInput(key, val) {
+      const cleanVal = val.trim() || null;
+      applyAssetUrlToState(key, cleanVal);
+      setAssetPreview(key, cleanVal);
+      markAsUnsaved();
+      scheduleBroadcast();
+    }
+
+    function removeAssetUrl(key) {
+      applyAssetUrlToState(key, null);
+      setAssetPreview(key, null);
+      markAsUnsaved();
+      scheduleBroadcast();
+      showToast(`Aset ${key} dihapus.`, 'info');
+    }
+
+    function applyAssetUrlToState(key, url) {
+      if (!templateState.config_json) templateState.config_json = {};
+      
+      if (key === 'bg_image_url') {
+        templateState.config_json.bg_image_url = url;
+        return;
+      }
+
+      if (!templateState.config_json.ornaments) templateState.config_json.ornaments = {};
+      templateState.config_json.ornaments[key] = url;
+    }
+
+    function setAssetPreview(key, url) {
+      const input = document.getElementById(`asset-url-${key}`);
+      const delBtn = document.getElementById(`btn-del-${key}`);
+      const previewImg = document.getElementById(`preview-${key}`);
+      const placeholder = document.getElementById(`placeholder-${key}`);
+
+      if (input) input.value = url || '';
+      if (delBtn) {
+        if (url) delBtn.classList.remove('hidden');
+        else delBtn.classList.add('hidden');
+      }
+      if (previewImg) {
+        if (url) {
+          previewImg.src = url;
+          previewImg.classList.remove('hidden');
+          if (placeholder) placeholder.classList.add('hidden');
+        } else {
+          previewImg.src = '';
+          previewImg.classList.add('hidden');
+          if (placeholder) placeholder.classList.remove('hidden');
+        }
+      }
+    }
+
+    // Helper Upload Langsung ke Supabase Storage wedding-media/templates/{slug}/...
+    async function uploadTemplateAssetDirect(file, slug, assetType) {
+      const client = window.supabaseClient;
+      const cleanSlug = (slug || 'common').replace(/[^a-z0-9_-]/gi, '');
+      const timestamp = Date.now();
+      const ext = file.type === 'image/png' ? 'png' : 'webp';
+      const fileName = `templates/${cleanSlug}/${assetType}_${timestamp}.${ext}`;
+
+      if (!client || !client.storage) {
+        // Fallback FileReader base64
+        return new Promise((resolve) => {
+          const reader = new FileReader();
+          reader.onload = (e) => resolve({ url: e.target.result, success: true });
+          reader.readAsDataURL(file);
+        });
+      }
+
+      const { data, error } = await client.storage
+        .from('wedding-media')
+        .upload(fileName, file, {
+          contentType: file.type || 'image/png',
+          upsert: true
+        });
+
+      if (error) {
+        console.warn('Storage upload error, using local fallback:', error);
+        return new Promise((resolve) => {
+          const reader = new FileReader();
+          reader.onload = (e) => resolve({ url: e.target.result, success: true });
+          reader.readAsDataURL(file);
+        });
+      }
+
+      const { data: publicUrlData } = client.storage
+        .from('wedding-media')
+        .getPublicUrl(fileName);
+
+      return {
+        success: true,
+        url: publicUrlData?.publicUrl || ''
+      };
+    }
+
+    // =========================================================================
+    // 7. REAL-TIME IFRAME COMMUNICATION & SYNC (POSTMESSAGE)
+    // =========================================================================
+    function scheduleBroadcast() {
+      if (broadcastDebounceTimer) clearTimeout(broadcastDebounceTimer);
+      broadcastDebounceTimer = setTimeout(() => {
+        broadcastToLivePreview();
+      }, 100);
+    }
+
+    function broadcastToLivePreview() {
+      const iframe = document.getElementById('admin-preview-frame');
+      if (!iframe || !iframe.contentWindow) return;
+
+      const payload = {
+        type: 'MB_PREVIEW_UPDATE',
+        presetSlug: templateState.slug || 'minimalist-sage',
+        template: {
+          id: templateState.id,
+          name: templateState.name,
+          slug: templateState.slug,
+          category: templateState.category,
+          default_colors_json: templateState.default_colors_json,
+          config_json: templateState.config_json
+        },
+        default_colors_json: templateState.default_colors_json,
+        config_json: templateState.config_json,
+        custom_theme_json: {
+          ...templateState.default_colors_json,
+          ...templateState.config_json
+        }
+      };
+
+      try {
+        iframe.contentWindow.postMessage(payload, '*');
+      } catch (e) {
+        console.warn('postMessage to iframe preview failed:', e);
+      }
+    }
+
+    function sendIframeAction(action) {
+      const iframe = document.getElementById('admin-preview-frame');
+      if (!iframe || !iframe.contentWindow) return;
+      iframe.contentWindow.postMessage({ action }, '*');
+    }
+
+    function reloadPreviewFrame() {
+      const iframe = document.getElementById('admin-preview-frame');
+      if (!iframe) return;
+      iframe.src = '/u.html?preview=true&admin_template_preview=true&r=' + Date.now();
+      showToast('Pratinjau disinkronisasi ulang.', 'info');
+      setTimeout(() => broadcastToLivePreview(), 600);
+    }
+
+    function openLivePreviewNewTab() {
+      const tplSlug = templateState.slug || 'minimalist-sage';
+      const url = `/u.html?preview=true&admin_template_preview=true&tpl_slug=${encodeURIComponent(tplSlug)}`;
+      window.open(url, '_blank');
+    }
+
+    function resetCurrentStudioTemplate() {
+      if (isEditingNew) {
+        openCreateNewTemplateStudio();
+      } else if (currentTemplate) {
+        openStudioForTemplate(currentTemplate.id);
+      }
+      showToast('Pengaturan template direset ke data database semula.', 'info');
+    }
+
+    // =========================================================================
+    // 8. SIMPAN TEMPLATE MASTER KE DATABASE SUPABASE
+    // =========================================================================
+    async function saveMasterTemplate() {
+      const btn = document.getElementById('btn-save-master-template');
+      const name = templateState.name || document.getElementById('tpl-name').value.trim();
+      const slug = templateState.slug || document.getElementById('tpl-slug').value.trim();
+
+      if (!name) {
+        showToast('Mohon isi nama template terlebih dahulu.', 'warning');
+        switchStudioTab('identity');
+        return;
+      }
+      if (!slug) {
+        showToast('Mohon isi slug unik template.', 'warning');
+        switchStudioTab('identity');
+        return;
+      }
+
+      btn.disabled = true;
+      btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin text-amber-400"></i><span>Menyimpan...</span>`;
+      if (window.lucide) window.lucide.createIcons();
 
       const payload = {
         name,
         slug,
-        category,
-        is_premium: isPremium,
-        is_active: isActive,
-        default_colors_json: colors
+        category: templateState.category || 'Minimalist',
+        is_premium: Boolean(templateState.is_premium),
+        is_active: Boolean(templateState.is_active),
+        preview_url: templateState.preview_url || null,
+        default_colors_json: templateState.default_colors_json,
+        config_json: templateState.config_json
       };
-
-      const btn = document.getElementById('btn-submit-tpl');
-      btn.disabled = true;
-      btn.textContent = 'Menyimpan...';
 
       try {
         const client = window.supabaseClient;
         if (!client) throw new Error('Supabase client belum siap');
 
-        if (id) {
-          // UPDATE
+        if (templateState.id) {
+          // UPDATE TEMPLATE
           const { data, error } = await client
             .from('templates')
             .update(payload)
-            .eq('id', id)
+            .eq('id', templateState.id)
             .select()
             .single();
 
           if (error) throw error;
-          const idx = templates.findIndex(x => x.id == id);
+          
+          const idx = templates.findIndex(x => x.id === templateState.id);
           if (idx !== -1) templates[idx] = data;
-          showToast('Template berhasil diperbarui!', 'success');
+          currentTemplate = data;
+          showToast(`Template "${name}" berhasil diperbarui!`, 'success');
         } else {
-          // INSERT
+          // INSERT TEMPLATE BARU
           const { data, error } = await client
             .from('templates')
             .insert([payload])
@@ -542,23 +2239,30 @@
             .single();
 
           if (error) throw error;
+
+          templateState.id = data.id;
           templates.push(data);
-          showToast('Template baru berhasil ditambahkan!', 'success');
+          currentTemplate = data;
+          isEditingNew = false;
+          showToast(`Template baru "${name}" (#${data.id}) berhasil dibuat & disimpan!`, 'success');
         }
 
+        isUnsaved = false;
+        updateUnsavedIndicator();
         renderMetrics();
-        renderTemplatesTable();
-        closeTemplateModal();
+        broadcastToLivePreview();
 
       } catch (err) {
         console.error('Save template error:', err);
         showToast('Gagal menyimpan template: ' + err.message, 'error');
       } finally {
         btn.disabled = false;
-        btn.textContent = 'Simpan Template';
+        btn.innerHTML = `<i data-lucide="save" class="w-4 h-4 text-amber-400"></i><span>Simpan Template Master</span>`;
+        if (window.lucide) window.lucide.createIcons();
       }
     }
 
+    // Helper escapeHtml
     function escapeHtml(str) {
       if (!str) return '';
       return String(str)

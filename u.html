@@ -216,25 +216,39 @@
 
     .sway-left {
       transform-origin: bottom left;
-      animation: swayLeft 5.2s infinite ease-in-out;
+      animation: swayLeft var(--sway-duration, 5.2s) infinite ease-in-out;
     }
     .sway-right {
       transform-origin: bottom right;
-      animation: swayRight 5.8s infinite ease-in-out;
+      animation: swayRight var(--sway-duration, 5.8s) infinite ease-in-out;
     }
     .sway-top-left {
       transform-origin: top left;
-      animation: swayLeft 6.2s infinite ease-in-out;
+      animation: swayLeft var(--sway-duration, 6.2s) infinite ease-in-out;
     }
     .sway-top-right {
       transform-origin: top right;
-      animation: swayRight 5.5s infinite ease-in-out;
+      animation: swayRight var(--sway-duration, 5.5s) infinite ease-in-out;
     }
     .float-breathing {
       animation: floatBreathing 4.5s infinite ease-in-out;
     }
     .animate-spin-slow {
       animation: spinSlow 22s linear infinite;
+    }
+
+    .wedding-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      background-image: var(--card-watermark-url, none);
+      background-size: 65% auto;
+      background-repeat: no-repeat;
+      background-position: center;
+      opacity: 0.08;
+      border-radius: inherit;
     }
 
     /* Scroll Reveal & Card Animations (7 Pilihan Animasi) */
@@ -378,6 +392,9 @@
     .corner-slot {
       pointer-events: none;
       z-index: 15;
+      width: var(--corner-size, 7rem);
+      height: var(--corner-size, 7rem);
+      transition: width 0.3s ease, height 0.3s ease;
     }
     .cover-curtain {
       pointer-events: none;
@@ -437,10 +454,10 @@
     <div id="cover-screen" class="fixed inset-0 z-50 bg-[#161412] text-white flex flex-col items-center justify-between p-6 sm:p-8 text-center transition-all duration-700 max-w-md mx-auto overflow-hidden">
       
       <!-- 4 Corner Slots on Cover -->
-      <div id="cover-ornament-tl" class="corner-slot absolute top-0 left-0 w-28 h-28"></div>
-      <div id="cover-ornament-tr" class="corner-slot absolute top-0 right-0 w-28 h-28"></div>
-      <div id="cover-ornament-bl" class="corner-slot absolute bottom-0 left-0 w-28 h-28"></div>
-      <div id="cover-ornament-br" class="corner-slot absolute bottom-0 right-0 w-28 h-28"></div>
+      <div id="cover-ornament-tl" class="corner-slot absolute top-0 left-0"></div>
+      <div id="cover-ornament-tr" class="corner-slot absolute top-0 right-0"></div>
+      <div id="cover-ornament-bl" class="corner-slot absolute bottom-0 left-0"></div>
+      <div id="cover-ornament-br" class="corner-slot absolute bottom-0 right-0"></div>
 
       <!-- Twin Curtain Silhouettes (Gunungan Wayang / Gate Curtains) -->
       <div id="cover-curtain-left" class="cover-curtain absolute inset-y-0 left-0 w-1/2 flex items-center justify-end pr-0.5 opacity-90"></div>
@@ -448,6 +465,7 @@
 
       <!-- Top Floral / Modern Motif -->
       <div class="pt-6 sm:pt-8 space-y-2 relative z-20">
+        <div id="cover-header-ornament" class="mx-auto flex items-center justify-center pointer-events-none empty:hidden mb-1"></div>
         <span class="text-[10px] uppercase tracking-[0.3em] text-amber-300/90 font-semibold block">The Wedding Of</span>
         <h1 class="font-serif text-3xl sm:text-4xl font-bold tracking-tight text-white leading-tight" id="cover-couple-name">
           Mempelai & Mempelai

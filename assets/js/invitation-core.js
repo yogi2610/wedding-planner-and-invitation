@@ -886,8 +886,9 @@ class InvitationEngine {
    */
   applyPhotoFrameShape(overrideShape) {
     const tplSlug = this.template?.slug || 'minimalist-sage';
+    const tplConfig = this.template?.config_json || {};
     const custom = this.wedding?.custom_theme_json || {};
-    const shape = overrideShape || custom.frame_shape || this.getDefaultFrameShape(tplSlug);
+    const shape = overrideShape || custom.frame_shape || tplConfig.frame_shape || this.getDefaultFrameShape(tplSlug);
 
     const groomFrame = document.getElementById('groom-photo-frame');
     const brideFrame = document.getElementById('bride-photo-frame');
@@ -940,11 +941,12 @@ class InvitationEngine {
     const ornamentEl = document.getElementById('cover-frame-ornament-el');
     if (!container || !frame || !img) return;
 
+    const tplConfig = this.template?.config_json || {};
     const coverPhoto = this.wedding?.cover_photo;
     const custom = this.wedding?.custom_theme_json || {};
-    const frameShape = custom.cover_frame_shape || 'grand_arch';
-    const frameOrnament = custom.cover_frame_ornament || 'floral_wreath';
-    const customFramePng = custom.custom_cover_frame_png;
+    const frameShape = custom.cover_frame_shape || tplConfig.cover_frame_shape || 'grand_arch';
+    const frameOrnament = custom.cover_frame_ornament || tplConfig.cover_frame_ornament || 'floral_wreath';
+    const customFramePng = custom.custom_cover_frame_png || tplConfig.ornaments?.custom_cover_frame_png;
 
     if (coverPhoto && frameShape !== 'none') {
       container.classList.remove('hidden');
@@ -1010,10 +1012,41 @@ class InvitationEngine {
    */
   renderThemeOrnaments() {
     const tplSlug = this.template?.slug || 'minimalist-sage';
+    const tplConfig = this.template?.config_json || {};
+    const tplOrnaments = tplConfig.ornaments || {};
     const custom = this.wedding?.custom_theme_json || {};
-    const ornaments = custom.ornaments || {};
-    const cornerMaster = ornaments.corner_master_png || custom.custom_ornament_url;
+    const ornaments = { ...tplOrnaments, ...(custom.ornaments || {}) };
+    const cornerMaster = ornaments.corner_master_png || custom.custom_ornament_url || tplOrnaments.corner_master_png;
+    const cornerSize = ornaments.corner_size || tplOrnaments.corner_size || 112;
+    const swaySpeed = ornaments.sway_speed || tplOrnaments.sway_speed || 'normal';
+    const coverHeaderPng = ornaments.cover_header_png || tplOrnaments.cover_header_png;
+    const cardWatermark = ornaments.card_watermark_png || tplOrnaments.card_watermark_png;
     const theme = ORNAMENT_THEMES[tplSlug] || ORNAMENT_THEMES['minimalist-sage'];
+
+    // Update CSS Variables untuk ukuran sudut, kecepatan ayunan angin & watermark kartu
+    const app = document.getElementById('invitation-app-container');
+    if (app) {
+      app.style.setProperty('--corner-size', `${cornerSize}px`);
+      const swayDur = swaySpeed === 'fast' ? '3.2s' : (swaySpeed === 'slow' ? '8.5s' : '5.5s');
+      app.style.setProperty('--sway-duration', swayDur);
+      if (cardWatermark) {
+        app.style.setProperty('--card-watermark-url', `url('${cardWatermark}')`);
+      } else {
+        app.style.setProperty('--card-watermark-url', 'none');
+      }
+    }
+
+    // Cover Header Ornament (Ilustrasi di atas The Wedding Of)
+    const coverHeaderEl = document.getElementById('cover-header-ornament');
+    if (coverHeaderEl) {
+      if (coverHeaderPng) {
+        coverHeaderEl.innerHTML = `<img src="${coverHeaderPng}" alt="Header Motif" class="max-h-12 object-contain mx-auto filter drop-shadow float-breathing">`;
+        coverHeaderEl.classList.remove('hidden');
+      } else {
+        coverHeaderEl.innerHTML = '';
+        coverHeaderEl.classList.add('hidden');
+      }
+    }
 
     // 1. Ornamen di Sampul Depan (Cover Screen)
     const coverTL = document.getElementById('cover-ornament-tl');
@@ -1311,6 +1344,23 @@ class InvitationEngine {
   handleLivePreviewUpdate(data) {
     if (!data) return;
 
+    // Merge template properties (Admin Master Studio & User Theme)
+    if (data.template) {
+      this.template = { ...(this.template || {}), ...data.template };
+    }
+    if (data.config_json) {
+      this.template = {
+        ...(this.template || {}),
+        config_json: { ...((this.template && this.template.config_json) || {}), ...data.config_json }
+      };
+    }
+    if (data.default_colors_json) {
+      this.template = {
+        ...(this.template || {}),
+        default_colors_json: { ...((this.template && this.template.default_colors_json) || {}), ...data.default_colors_json }
+      };
+    }
+
     // Merge wedding properties
     if (data.wedding) {
       this.wedding = { ...this.wedding, ...data.wedding };
@@ -1325,16 +1375,17 @@ class InvitationEngine {
     this.applyThemeColors();
     this.renderThemeOrnaments();
 
+    const tplConfig = this.template?.config_json || {};
     const customTheme = data.custom_theme_json || this.wedding?.custom_theme_json || {};
 
-    const frameShape = customTheme.frame_shape || this.wedding?.custom_theme_json?.frame_shape;
+    const frameShape = customTheme.frame_shape || this.wedding?.custom_theme_json?.frame_shape || tplConfig.frame_shape;
     this.applyPhotoFrameShape(frameShape);
 
     this.applyCoverPhotoAndFrame();
 
-    const particleEffect = customTheme.particle_effect || this.wedding?.custom_theme_json?.particle_effect || this.getDefaultParticleEffect(tplSlug);
-    const particlePhysics = customTheme.particle_physics || 'breeze_right';
-    const particleLayer = customTheme.particle_layer || 'behind';
+    const particleEffect = customTheme.particle_effect || this.wedding?.custom_theme_json?.particle_effect || tplConfig.particle_effect || this.getDefaultParticleEffect(tplSlug);
+    const particlePhysics = customTheme.particle_physics || tplConfig.particle_physics || 'breeze_right';
+    const particleLayer = customTheme.particle_layer || tplConfig.particle_layer || 'behind';
 
     if (this.particleEngine) {
       this.particleEngine.setLayer(particleLayer);
@@ -1342,7 +1393,7 @@ class InvitationEngine {
       this.particleEngine.setEffect(particleEffect);
     }
 
-    this.applyCardAnimations(customTheme.card_animation);
+    this.applyCardAnimations(customTheme.card_animation || tplConfig.card_animation);
 
     this.renderCoverSection();
     this.renderCoupleSection();
@@ -1367,6 +1418,72 @@ class InvitationEngine {
     if (!client) {
       this.showErrorNotice('Supabase client tidak siap. Silakan refresh halaman.');
       return false;
+    }
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const isAdminTemplatePreview = urlParams.get('admin_template_preview') === 'true';
+
+    // 0. Simulasi Data Undangan Lengkap Khusus Master Template Builder Studio Admin
+    if (isAdminTemplatePreview) {
+      this.wedding = {
+        id: 'admin-preview-sim',
+        slug: 'admin-preview',
+        groom_fullname: 'Raden Yoga Pratama, S.Kom.',
+        bride_fullname: 'dr. Anindita Kirana Dewi',
+        groom_nickname: 'Yoga',
+        bride_nickname: 'Anin',
+        groom_parents: 'Putra pertama dari Bpk. Bambang Sutrisno & Ibu Sri Rahayu',
+        bride_parents: 'Putri bungsu dari Bpk. H. Ahmad Fauzi & Ibu Hj. Siti Maryam',
+        groom_ig: 'yogapratama',
+        bride_ig: 'aninditakirana',
+        groom_photo: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&auto=format&fit=crop&q=80',
+        bride_photo: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=600&auto=format&fit=crop&q=80',
+        cover_photo: 'https://images.unsplash.com/photo-1519741497674-611481863552?w=800&auto=format&fit=crop&q=80',
+        akad_date: '2027-10-24',
+        akad_time: '08:00 - 10:00 WIB',
+        akad_venue: 'Masjid Agung Al-Azhar',
+        akad_address: 'Jl. Sisingamangaraja No. 1, Kebayoran Baru, Jakarta Selatan',
+        akad_maps_url: 'https://maps.google.com',
+        resepsi_date: '2027-10-24',
+        resepsi_time: '11:00 - 14:00 WIB',
+        resepsi_venue: 'Grand Ballroom Hotel Mulia',
+        resepsi_address: 'Jl. Asia Afrika Senayan, Jakarta Pusat',
+        resepsi_maps_url: 'https://maps.google.com',
+        quote_text: 'Dan di antara tanda-tanda kebesaran-Nya ialah Dia menciptakan pasangan-pasangan untukmu dari jenismu sendiri, agar kamu cenderung dan merasa tenteram kepadanya.',
+        quote_source: 'QS. Ar-Rum: 21',
+        gallery_json: [
+          'https://images.unsplash.com/photo-1519741497674-611481863552?w=600&auto=format&fit=crop&q=80',
+          'https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=600&auto=format&fit=crop&q=80',
+          'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=600&auto=format&fit=crop&q=80',
+          'https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?w=600&auto=format&fit=crop&q=80'
+        ],
+        love_story_json: [
+          { year: '2021', title: 'Pertama Bertemu', story: 'Berawal dari pertemuan tidak sengaja di sebuah seminar nasional di Bandung.' },
+          { year: '2024', title: 'Lamaran Khidmat', story: 'Dengan restu kedua orang tua, kami mengikat janji untuk melangkah bersama ke pelaminan.' }
+        ],
+        envelopes_json: [
+          { bank: 'BCA', number: '8730192831', holder: 'Raden Yoga Pratama' },
+          { bank: 'Mandiri', number: '1370019283912', holder: 'Anindita Kirana Dewi' }
+        ],
+        custom_theme_json: {},
+        is_published: true
+      };
+      this.guestName = 'Bapak Joko Susanto & Partner';
+
+      const tplId = urlParams.get('tpl_id');
+      const tplSlug = urlParams.get('tpl_slug');
+      if (tplId || tplSlug) {
+        try {
+          let query = client.from('templates').select('*');
+          if (tplId) query = query.eq('id', tplId);
+          else query = query.eq('slug', tplSlug);
+          const { data: tpl } = await query.maybeSingle();
+          if (tpl) this.template = tpl;
+        } catch (e) {
+          console.warn('Gagal memuat template awal admin preview:', e);
+        }
+      }
+      return true;
     }
 
     if (!this.slug) {
@@ -1395,7 +1512,6 @@ class InvitationEngine {
     this.wedding = wedding;
 
     // Cek status publikasi
-    const urlParams = new URLSearchParams(window.location.search);
     const isPreview = urlParams.get('preview') === 'true';
 
     if (wedding.is_published === false && !isPreview) {
@@ -1436,8 +1552,9 @@ class InvitationEngine {
    * Terapkan palet warna dinamis ke CSS Variables & Background
    */
   applyThemeColors() {
-    const custom = this.wedding.custom_theme_json || {};
+    const custom = this.wedding?.custom_theme_json || {};
     const tplColors = this.template?.default_colors_json || {};
+    const tplConfig = this.template?.config_json || {};
 
     const bg = custom.bg || tplColors.bg || '#FCFBF9';
     const card = custom.card || tplColors.card || '#FFFFFF';
@@ -1453,9 +1570,9 @@ class InvitationEngine {
     root.style.setProperty('--accent-secondary', secondary);
 
     // Kustomisasi Typography (Google Fonts Selection)
-    const typography = custom.typography || {};
-    const fontHeading = typography.font_heading || "'Cormorant Garamond', Georgia, serif";
-    const fontBody = typography.font_body || "'Plus Jakarta Sans', system-ui, sans-serif";
+    const typography = custom.typography || tplConfig.typography || {};
+    const fontHeading = typography.font_heading || tplConfig.typography?.font_heading || "'Cormorant Garamond', Georgia, serif";
+    const fontBody = typography.font_body || tplConfig.typography?.font_body || "'Plus Jakarta Sans', system-ui, sans-serif";
     root.style.setProperty('--font-heading', fontHeading);
     root.style.setProperty('--font-body', fontBody);
 
@@ -1467,7 +1584,7 @@ class InvitationEngine {
     }
 
     // Tampilkan Custom BG Image ATAU Lava Lamp Blobs Default
-    const customBg = custom.bg_image_url;
+    const customBg = custom.bg_image_url || tplConfig.bg_image_url;
     const bgImgEl = document.getElementById('custom-bg-image');
     const lavaEl = document.getElementById('lava-lamp-container');
 
@@ -2052,6 +2169,24 @@ class InvitationEngine {
     submitBtn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i><span>Mengirim...</span>`;
     if (window.lucide) window.lucide.createIcons();
 
+    if (this.wedding?.id === 'admin-preview-sim') {
+      setTimeout(() => {
+        showToast('Simulasi RSVP & ucapan terkirim!', 'success');
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = `<i data-lucide="check-check" class="w-4 h-4 text-emerald-400"></i><span>Terkirim</span>`;
+        if (wish) {
+          this.prependWishToWall({
+            name: guestName,
+            rsvp_status: status,
+            confirmed_pax: pax,
+            wish_message: wish,
+            rsvp_submitted_at: new Date().toISOString()
+          });
+        }
+      }, 500);
+      return;
+    }
+
     try {
       const client = window.supabaseClient;
       if (!client) throw new Error('Supabase client tidak siap');
@@ -2123,6 +2258,18 @@ class InvitationEngine {
     const container = document.getElementById('wishes-list');
     const countLabel = document.getElementById('wishes-count-label');
     if (!container) return;
+
+    if (this.wedding?.id === 'admin-preview-sim') {
+      const dummyWishes = [
+        { name: 'Dimas & Nadia', wish_message: 'Barakallahu lakuma wa baraka alaikuma! Selamat menempuh hidup baru sahabatku Yoga & Anin, semoga langgeng bahagia selamanya.', rsvp_status: 'hadir', confirmed_pax: 2, rsvp_submitted_at: new Date().toISOString() },
+        { name: 'Keluarga Bpk. H. Supriyanto', wish_message: 'Selamat berbahagia untuk kedua mempelai. Semoga menjadi keluarga sakinah, mawaddah, warahmah serta dianugerahi keturunan yang shaleh dan shalehah.', rsvp_status: 'hadir', confirmed_pax: 2, rsvp_submitted_at: new Date(Date.now() - 3600000).toISOString() },
+        { name: 'Rizky Kurniawan', wish_message: 'Happy wedding brother! Lancar sampai hari H ya.', rsvp_status: 'ragu', confirmed_pax: 1, rsvp_submitted_at: new Date(Date.now() - 7200000).toISOString() }
+      ];
+      if (countLabel) countLabel.textContent = `3 doa restu dari para tamu (Mode Simulasi)`;
+      container.innerHTML = dummyWishes.map(w => this.renderWishCardHtml(w)).join('');
+      if (window.lucide) window.lucide.createIcons();
+      return;
+    }
 
     try {
       const client = window.supabaseClient;
