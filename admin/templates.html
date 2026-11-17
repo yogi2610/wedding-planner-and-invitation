@@ -404,12 +404,12 @@
             </div>
           </div>
 
-            <!-- Upload Thumbnail Preview Tema -->
-            <div class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-2xs space-y-3.5">
+          <!-- Upload Thumbnail Preview Tema -->
+          <div class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-2xs space-y-3.5">
             <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
               <h3 class="font-serif text-base font-bold text-slate-900 flex items-center gap-2">
                 <i data-lucide="image" class="w-4 h-4 text-amber-600"></i>
-                <span>Thumbnail Preview Tema (`preview_url`)</span>
+                <span>Thumbnail Preview Tema</span>
               </h3>
               <span class="text-[11px] text-slate-400">Format WebP / PNG / JPG</span>
             </div>
@@ -427,7 +427,7 @@
               <!-- Upload Controls -->
               <div class="flex-1 space-y-2.5 w-full">
                 <p class="text-xs text-slate-500 leading-relaxed">
-                  Gambar thumbnail ini akan tampil di katalog pemilihan tema pengantin pada halaman Studio Desain User (`dashboard/invitation.html`).
+                  Gambar thumbnail ini akan tampil di katalog pemilihan tema pengantin pada halaman Studio Desain User (dashboard/invitation.html).
                 </p>
 
                 <div class="flex items-center gap-2">
@@ -465,6 +465,60 @@
               </div>
             </div>
           </div>
+
+          <!-- Musik Latar Bawaan Tema (Default Audio) -->
+          <div class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-2xs space-y-3.5">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
+              <div>
+                <h3 class="font-serif text-base font-bold text-slate-900 flex items-center gap-2">
+                  <i data-lucide="music" class="w-4 h-4 text-amber-600"></i>
+                  <span>Musik Latar Bawaan Tema</span>
+                </h3>
+                <p class="text-xs text-slate-400 mt-0.5">Musik MP3 yang otomatis diputar saat tamu membuka undangan digital tema ini.</p>
+              </div>
+              <button 
+                type="button" 
+                id="btn-test-master-audio" 
+                onclick="toggleMasterTestAudio()" 
+                class="px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs flex items-center gap-1.5 transition-colors cursor-pointer shadow-xs"
+              >
+                <i data-lucide="play" class="w-3.5 h-3.5 text-amber-400" id="icon-master-audio-test"></i>
+                <span id="text-master-audio-test">Uji Putar</span>
+              </button>
+            </div>
+
+            <audio id="master-audio-player" loop preload="none"></audio>
+
+            <div class="space-y-3">
+              <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Pilihan Lagu Romantis Bawaan:</label>
+                <select id="tpl-default-audio-select" onchange="handleMasterAudioSelectChange(this.value)" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs font-semibold bg-white text-slate-800">
+                  <option value="/assets/audio/track-1.mp3">🎵 1. MenikahBersama Signature Romance (Default)</option>
+                  <option value="https://cdn.pixabay.com/download/audio/2022/05/16/audio_c8916d9e07.mp3">🎸 2. Romance Acoustic Guitar (Hangat & Syahdu)</option>
+                  <option value="https://cdn.pixabay.com/download/audio/2022/03/15/audio_c8c8a73467.mp3">🎹 3. Beautiful Wedding Piano (Klasik Romantis)</option>
+                  <option value="https://cdn.pixabay.com/download/audio/2021/08/04/audio_bb630cc098.mp3">🎻 4. Cinematic Love Strings (Mewah & Megah)</option>
+                  <option value="https://cdn.pixabay.com/download/audio/2022/11/06/audio_031ffab0c4.mp3">🎶 5. Sweet Acoustic Warmth (Lembut Bahagia)</option>
+                  <option value="https://cdn.pixabay.com/download/audio/2022/10/25/audio_24a259c228.mp3">💃 6. Elegant Romantic Waltz (Dansa Romantis)</option>
+                  <option value="https://cdn.pixabay.com/download/audio/2023/02/28/audio_550e504c55.mp3">✨ 7. Pure Love Piano Melodies (Menyentuh Hati)</option>
+                  <option value="https://cdn.pixabay.com/download/audio/2022/01/18/audio_d0a13f69d2.mp3">🌟 8. Inspiring Emotional Wedding (Hari Bahagia)</option>
+                  <option value="https://cdn.pixabay.com/download/audio/2022/08/02/audio_884fe92c21.mp3">🕊️ 9. Soft Nostalgic Strings (Haru & Khidmat)</option>
+                  <option value="custom">🔗 Unggah File MP3 / URL Kustom</option>
+                </select>
+              </div>
+
+              <div id="master-custom-audio-box" class="hidden p-3.5 rounded-xl bg-slate-50 border border-slate-200/80 space-y-2">
+                <div class="flex items-center gap-2">
+                  <input type="file" id="tpl-default-audio-file" accept="audio/mp3,audio/mpeg,audio/*" class="hidden" onchange="handleMasterAudioUpload(event)">
+                  <button type="button" onclick="document.getElementById('tpl-default-audio-file').click()" class="px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold inline-flex items-center gap-1.5 cursor-pointer">
+                    <i data-lucide="upload" class="w-3.5 h-3.5 text-amber-400"></i>
+                    <span>Unggah File MP3</span>
+                  </button>
+                  <span id="label-master-audio-upload-status" class="text-[11px] text-slate-500">Maks. 10MB</span>
+                </div>
+                <input type="url" id="tpl-default-audio-url" oninput="handleMasterAudioUrlInput(this.value)" placeholder="Tautan URL MP3: https://..." class="w-full px-3 py-1.5 rounded-xl border border-slate-200 text-xs font-mono">
+              </div>
+            </div>
+          </div>
         </div>
 
         <!-- ============================================================== -->
@@ -478,14 +532,14 @@
               <div>
                 <h3 class="font-serif text-base font-bold text-slate-900 flex items-center gap-2">
                   <i data-lucide="palette" class="w-4 h-4 text-amber-600"></i>
-                  <span>Palet Warna Bawaan (`default_colors_json`)</span>
+                  <span>Palet Warna Bawaan Tema</span>
                 </h3>
                 <p class="text-xs text-slate-400 mt-0.5">Warna bawaan yang otomatis diterapkan saat pengantin memilih tema ini.</p>
               </div>
             </div>
 
-            <!-- 5 Color Swatches Inputs -->
-            <div class="grid grid-cols-2 sm:grid-cols-5 gap-3">
+            <!-- 6 Color Swatches Inputs -->
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
               <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-200/80 space-y-1.5">
                 <label class="block text-[11px] font-bold text-slate-700">1. Background</label>
                 <div class="flex items-center gap-2">
@@ -503,15 +557,7 @@
               </div>
 
               <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-200/80 space-y-1.5">
-                <label class="block text-[11px] font-bold text-slate-700">3. Teks Utama</label>
-                <div class="flex items-center gap-2">
-                  <input type="color" id="color-text" oninput="handleColorChange()" class="w-8 h-8 rounded-lg border-0 cursor-pointer p-0 bg-transparent">
-                  <input type="text" id="color-text-hex" oninput="handleHexInput('text', this.value)" class="w-full px-2 py-1 rounded-lg border border-slate-200 text-xs font-mono text-center">
-                </div>
-              </div>
-
-              <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-200/80 space-y-1.5">
-                <label class="block text-[11px] font-bold text-slate-700">4. Aksen Utama</label>
+                <label class="block text-[11px] font-bold text-slate-700">3. Aksen & Ornamen</label>
                 <div class="flex items-center gap-2">
                   <input type="color" id="color-accent" oninput="handleColorChange()" class="w-8 h-8 rounded-lg border-0 cursor-pointer p-0 bg-transparent">
                   <input type="text" id="color-accent-hex" oninput="handleHexInput('accent', this.value)" class="w-full px-2 py-1 rounded-lg border border-slate-200 text-xs font-mono text-center">
@@ -519,10 +565,26 @@
               </div>
 
               <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-200/80 space-y-1.5">
-                <label class="block text-[11px] font-bold text-slate-700">5. Aksen Sekunder</label>
+                <label class="block text-[11px] font-bold text-slate-700">4. Teks Utama</label>
                 <div class="flex items-center gap-2">
-                  <input type="color" id="color-secondary" oninput="handleColorChange()" class="w-8 h-8 rounded-lg border-0 cursor-pointer p-0 bg-transparent">
-                  <input type="text" id="color-secondary-hex" oninput="handleHexInput('secondary', this.value)" class="w-full px-2 py-1 rounded-lg border border-slate-200 text-xs font-mono text-center">
+                  <input type="color" id="color-text" oninput="handleColorChange()" class="w-8 h-8 rounded-lg border-0 cursor-pointer p-0 bg-transparent">
+                  <input type="text" id="color-text-hex" oninput="handleHexInput('text', this.value)" class="w-full px-2 py-1 rounded-lg border border-slate-200 text-xs font-mono text-center">
+                </div>
+              </div>
+
+              <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-200/80 space-y-1.5">
+                <label class="block text-[11px] font-bold text-slate-700">5. Teks Sekunder</label>
+                <div class="flex items-center gap-2">
+                  <input type="color" id="color-text_secondary" oninput="handleColorChange()" class="w-8 h-8 rounded-lg border-0 cursor-pointer p-0 bg-transparent">
+                  <input type="text" id="color-text_secondary-hex" oninput="handleHexInput('text_secondary', this.value)" class="w-full px-2 py-1 rounded-lg border border-slate-200 text-xs font-mono text-center">
+                </div>
+              </div>
+
+              <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-200/80 space-y-1.5">
+                <label class="block text-[11px] font-bold text-slate-700">6. Teks Tersier</label>
+                <div class="flex items-center gap-2">
+                  <input type="color" id="color-text_tertiary" oninput="handleColorChange()" class="w-8 h-8 rounded-lg border-0 cursor-pointer p-0 bg-transparent">
+                  <input type="text" id="color-text_tertiary-hex" oninput="handleHexInput('text_tertiary', this.value)" class="w-full px-2 py-1 rounded-lg border border-slate-200 text-xs font-mono text-center">
                 </div>
               </div>
             </div>
@@ -567,15 +629,15 @@
             </div>
           </div>
 
-          <!-- Typography Default Template (11 Google Fonts) -->
+          <!-- Typography Default Template (Google Fonts & Windows System Fonts) -->
           <div class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-2xs space-y-4">
             <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
               <div>
                 <h3 class="font-serif text-base font-bold text-slate-900 flex items-center gap-2">
                   <i data-lucide="type" class="w-4 h-4 text-amber-600"></i>
-                  <span>Typography & Pasangan Font Default (`config_json.typography`)</span>
+                  <span>Tipografi & Pasangan Font Tema</span>
                 </h3>
-                <p class="text-xs text-slate-400 mt-0.5">Pilihan jenis font Google Fonts premium yang langsung aktif saat tema digunakan.</p>
+                <p class="text-xs text-slate-400 mt-0.5">Pilihan kombinasi font Google Fonts dan Font Bawaan Windows yang langsung aktif saat tema digunakan.</p>
               </div>
             </div>
 
@@ -583,27 +645,27 @@
             <div>
               <span class="text-xs font-bold text-slate-700 block mb-2">Preset Pasangan Font Cepat:</span>
               <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                <button type="button" onclick="applyMasterFontPreset('romantic')" class="p-2.5 rounded-xl border border-slate-200 hover:border-amber-400 text-left text-xs transition-all">
+                <button type="button" onclick="applyMasterFontPreset('romantic')" class="p-2.5 rounded-xl border border-slate-200 hover:border-amber-400 text-left text-xs transition-all cursor-pointer">
                   <span class="font-bold text-slate-900 block" style="font-family: 'Great Vibes', cursive;">Romantic Script</span>
                   <span class="text-[10px] text-slate-400">Great Vibes + Jakarta Sans</span>
                 </button>
-                <button type="button" onclick="applyMasterFontPreset('modern')" class="p-2.5 rounded-xl border border-slate-200 hover:border-amber-400 text-left text-xs transition-all">
+                <button type="button" onclick="applyMasterFontPreset('modern')" class="p-2.5 rounded-xl border border-slate-200 hover:border-amber-400 text-left text-xs transition-all cursor-pointer">
                   <span class="font-bold text-slate-900 block" style="font-family: 'Playfair Display', serif;">Modern Luxury</span>
                   <span class="text-[10px] text-slate-400">Playfair + Montserrat</span>
                 </button>
-                <button type="button" onclick="applyMasterFontPreset('royal')" class="p-2.5 rounded-xl border border-slate-200 hover:border-amber-400 text-left text-xs transition-all">
+                <button type="button" onclick="applyMasterFontPreset('royal')" class="p-2.5 rounded-xl border border-slate-200 hover:border-amber-400 text-left text-xs transition-all cursor-pointer">
                   <span class="font-bold text-slate-900 block" style="font-family: 'Cinzel', serif;">Royal Heritage</span>
                   <span class="text-[10px] text-slate-400">Cinzel + Lora</span>
                 </button>
-                <button type="button" onclick="applyMasterFontPreset('poetic')" class="p-2.5 rounded-xl border border-slate-200 hover:border-amber-400 text-left text-xs transition-all">
+                <button type="button" onclick="applyMasterFontPreset('poetic')" class="p-2.5 rounded-xl border border-slate-200 hover:border-amber-400 text-left text-xs transition-all cursor-pointer">
                   <span class="font-bold text-slate-900 block" style="font-family: 'Alex Brush', cursive;">Poetic Calligraphy</span>
                   <span class="text-[10px] text-slate-400">Alex Brush + Jakarta Sans</span>
                 </button>
-                <button type="button" onclick="applyMasterFontPreset('clean')" class="p-2.5 rounded-xl border border-slate-200 hover:border-amber-400 text-left text-xs transition-all">
+                <button type="button" onclick="applyMasterFontPreset('clean')" class="p-2.5 rounded-xl border border-slate-200 hover:border-amber-400 text-left text-xs transition-all cursor-pointer">
                   <span class="font-bold text-slate-900 block" style="font-family: 'Philosopher', sans-serif;">Clean Elegant</span>
                   <span class="text-[10px] text-slate-400">Philosopher + Nunito</span>
                 </button>
-                <button type="button" onclick="applyMasterFontPreset('classic')" class="p-2.5 rounded-xl border border-slate-200 hover:border-amber-400 text-left text-xs transition-all">
+                <button type="button" onclick="applyMasterFontPreset('classic')" class="p-2.5 rounded-xl border border-slate-200 hover:border-amber-400 text-left text-xs transition-all cursor-pointer">
                   <span class="font-bold text-slate-900 block" style="font-family: 'Cormorant Garamond', serif;">Classic Traditional</span>
                   <span class="text-[10px] text-slate-400">Cormorant + Jakarta Sans</span>
                 </button>
@@ -613,15 +675,43 @@
             <!-- Font Selectors -->
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5 pt-2 border-t border-slate-100">
               <div>
-                <label class="block text-xs font-bold text-slate-700 mb-1">Font Judul / Nama Mempelai (`font_heading`)</label>
-                <select id="select-font-heading" onchange="handleTypographyChange()" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs bg-white text-slate-800 font-semibold">
-                  <option value="'Cormorant Garamond', Georgia, serif">Cormorant Garamond (Klasik Wedding Mewah)</option>
-                  <option value="'Great Vibes', cursive">Great Vibes (Kaligrafi Romantis Menawan)</option>
-                  <option value="'Playfair Display', Georgia, serif">Playfair Display (Modern Editorial Luxury)</option>
-                  <option value="'Alex Brush', cursive">Alex Brush (Tinta Halus & Elegan)</option>
-                  <option value="'Cinzel', Georgia, serif">Cinzel (Kerajaan & Istana Abadi)</option>
-                  <option value="'Pinyon Script', cursive">Pinyon Script (Klasik Aristokrat)</option>
-                  <option value="'Philosopher', sans-serif">Philosopher (Modern Eksotis)</option>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Font Judul / Nama Mempelai</label>
+                <select id="select-font-heading" onchange="handleTypographyChange()" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs bg-white text-slate-800 font-semibold cursor-pointer">
+                  <optgroup label="Preset Google Fonts Pilihan">
+                    <option value="'Cormorant Garamond', Georgia, serif">Cormorant Garamond (Klasik Wedding Mewah)</option>
+                    <option value="'Great Vibes', cursive">Great Vibes (Kaligrafi Romantis Menawan)</option>
+                    <option value="'Playfair Display', Georgia, serif">Playfair Display (Modern Editorial Luxury)</option>
+                    <option value="'Alex Brush', cursive">Alex Brush (Tinta Halus & Elegan)</option>
+                    <option value="'Cinzel', Georgia, serif">Cinzel (Kerajaan & Istana Abadi)</option>
+                    <option value="'Pinyon Script', cursive">Pinyon Script (Klasik Aristokrat)</option>
+                    <option value="'Philosopher', sans-serif">Philosopher (Modern Eksotis)</option>
+                    <option value="'Plus Jakarta Sans', system-ui, sans-serif">Plus Jakarta Sans (Modern & Jelas)</option>
+                    <option value="'Lora', Georgia, serif">Lora (Serif Hangat & Santun)</option>
+                    <option value="'Montserrat', system-ui, sans-serif">Montserrat (Geometrik Bersih & Tegas)</option>
+                    <option value="'Nunito', system-ui, sans-serif">Nunito (Bulat Lembut & Bersahabat)</option>
+                  </optgroup>
+                  <optgroup label="Font Bawaan Windows (System Fonts)">
+                    <option value="Georgia, serif">Georgia (Klasik Berwibawa)</option>
+                    <option value="'Palatino Linotype', 'Book Antiqua', Palatino, serif">Palatino Linotype (Buku Antik Elegan)</option>
+                    <option value="'Times New Roman', Times, serif">Times New Roman (Formal Tradisional)</option>
+                    <option value="Cambria, Georgia, serif">Cambria (Tegas & Proporsional)</option>
+                    <option value="Constantia, serif">Constantia (Romantis Bernuansa Novel)</option>
+                    <option value="Garamond, Georgia, serif">Garamond (Seni Tipografi Abadi)</option>
+                    <option value="'Segoe Script', cursive">Segoe Script (Kaligrafi Tangan Segar)</option>
+                    <option value="'Lucida Handwriting', cursive">Lucida Handwriting (Tulisan Tangan Anggun)</option>
+                    <option value="'Brush Script MT', cursive">Brush Script MT (Goresan Kuas Mewah)</option>
+                    <option value="Gabriola, cursive">Gabriola (Keluasan Kaligrafi Windows)</option>
+                    <option value="'Edwardian Script ITC', cursive">Edwardian Script (Kaligrafi Bangsawan)</option>
+                    <option value="'Monotype Corsiva', cursive">Monotype Corsiva (Kaligrafi Miring Klasik)</option>
+                    <option value="'Segoe UI', sans-serif">Segoe UI (Standar Modern Windows)</option>
+                    <option value="'Trebuchet MS', sans-serif">Trebuchet MS (Dinamis & Ramah)</option>
+                    <option value="Verdana, sans-serif">Verdana (Sangat Terbaca & Rapi)</option>
+                    <option value="Tahoma, sans-serif">Tahoma (Rapat & Bersih)</option>
+                    <option value="Candara, sans-serif">Candara (Kurva Elegan Mengalir)</option>
+                    <option value="Corbel, sans-serif">Corbel (Minimalis Bersih)</option>
+                    <option value="'Century Gothic', sans-serif">Century Gothic (Geometris Kontemporer)</option>
+                    <option value="'Franklin Gothic Medium', sans-serif">Franklin Gothic (Tegas & Berani)</option>
+                  </optgroup>
                 </select>
                 <!-- Specimen Heading Preview -->
                 <div class="mt-2 p-3 rounded-xl bg-slate-50 border border-slate-200/80 text-center">
@@ -632,12 +722,34 @@
               </div>
 
               <div>
-                <label class="block text-xs font-bold text-slate-700 mb-1">Font Teks Isi / Informasi (`font_body`)</label>
-                <select id="select-font-body" onchange="handleTypographyChange()" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs bg-white text-slate-800">
-                  <option value="'Plus Jakarta Sans', system-ui, sans-serif">Plus Jakarta Sans (Sangat Mudah Dibaca di HP)</option>
-                  <option value="'Lora', Georgia, serif">Lora (Serif Hangat & Santun)</option>
-                  <option value="'Montserrat', system-ui, sans-serif">Montserrat (Geometrik Bersih & Tegas)</option>
-                  <option value="'Nunito', system-ui, sans-serif">Nunito (Bulat Lembut & Bersahabat)</option>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Font Teks Isi / Informasi</label>
+                <select id="select-font-body" onchange="handleTypographyChange()" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs bg-white text-slate-800 cursor-pointer">
+                  <optgroup label="Preset Google Fonts Pilihan">
+                    <option value="'Plus Jakarta Sans', system-ui, sans-serif">Plus Jakarta Sans (Sangat Mudah Dibaca di HP)</option>
+                    <option value="'Lora', Georgia, serif">Lora (Serif Hangat & Santun)</option>
+                    <option value="'Montserrat', system-ui, sans-serif">Montserrat (Geometrik Bersih & Tegas)</option>
+                    <option value="'Nunito', system-ui, sans-serif">Nunito (Bulat Lembut & Bersahabat)</option>
+                    <option value="'Cormorant Garamond', Georgia, serif">Cormorant Garamond (Klasik Wedding)</option>
+                    <option value="'Playfair Display', Georgia, serif">Playfair Display (Editorial)</option>
+                    <option value="'Cinzel', Georgia, serif">Cinzel (Royal)</option>
+                    <option value="'Philosopher', sans-serif">Philosopher (Modern)</option>
+                  </optgroup>
+                  <optgroup label="Font Bawaan Windows (System Fonts)">
+                    <option value="'Segoe UI', sans-serif">Segoe UI (Standar Modern Windows)</option>
+                    <option value="Georgia, serif">Georgia (Klasik Berwibawa)</option>
+                    <option value="'Palatino Linotype', 'Book Antiqua', Palatino, serif">Palatino Linotype (Buku Antik)</option>
+                    <option value="'Times New Roman', Times, serif">Times New Roman (Formal)</option>
+                    <option value="Cambria, Georgia, serif">Cambria (Proporsional)</option>
+                    <option value="Constantia, serif">Constantia (Romantis)</option>
+                    <option value="Garamond, Georgia, serif">Garamond (Tipografi Abadi)</option>
+                    <option value="'Trebuchet MS', sans-serif">Trebuchet MS (Dinamis)</option>
+                    <option value="Verdana, sans-serif">Verdana (Terbaca Jelas)</option>
+                    <option value="Tahoma, sans-serif">Tahoma (Rapat & Bersih)</option>
+                    <option value="Candara, sans-serif">Candara (Kurva Elegan)</option>
+                    <option value="Corbel, sans-serif">Corbel (Minimalis Bersih)</option>
+                    <option value="'Century Gothic', sans-serif">Century Gothic (Geometris Kontemporer)</option>
+                    <option value="'Franklin Gothic Medium', sans-serif">Franklin Gothic (Tegas)</option>
+                  </optgroup>
                 </select>
                 <!-- Specimen Body Preview -->
                 <div class="mt-2 p-3 rounded-xl bg-slate-50 border border-slate-200/80 text-center">
@@ -669,7 +781,7 @@
             <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
               <h3 class="font-serif text-base font-bold text-slate-900 flex items-center gap-2">
                 <i data-lucide="image" class="w-4 h-4 text-amber-600"></i>
-                <span>1. Latar Belakang Bawaan Template (`bg_image_url`)</span>
+                <span>1. Latar Belakang Bawaan Tema</span>
               </h3>
             </div>
 
@@ -696,6 +808,32 @@
                   <button type="button" id="btn-del-bg" onclick="removeAssetUrl('bg_image_url')" class="hidden px-2.5 py-1.5 rounded-xl border border-rose-200 bg-rose-50 text-rose-700 text-xs font-semibold cursor-pointer">Hapus</button>
                 </div>
                 <input type="url" id="asset-url-bg_image_url" oninput="handleAssetUrlInput('bg_image_url', this.value)" placeholder="Tautan URL Background: https://..." class="w-full px-3 py-1.5 rounded-xl border border-slate-200 text-xs font-mono">
+              </div>
+
+              <!-- Blur Slider -->
+              <div class="p-3 rounded-xl bg-slate-50 border border-slate-200/80 space-y-1.5">
+                <div class="flex items-center justify-between text-xs font-bold text-slate-700">
+                  <span class="flex items-center gap-1.5">
+                    <i data-lucide="eye" class="w-3.5 h-3.5 text-amber-600"></i>
+                    <span>Efek Blur / Buram Latar Belakang:</span>
+                  </span>
+                  <span id="label-master-bg-blur" class="text-amber-600 font-mono">0px</span>
+                </div>
+                <input 
+                  type="range" 
+                  id="slider-master-bg-blur" 
+                  min="0" 
+                  max="30" 
+                  step="1" 
+                  value="0" 
+                  oninput="handleMasterBgBlurChange(this.value)" 
+                  class="w-full accent-amber-600 cursor-pointer"
+                >
+                <div class="flex justify-between text-[10px] text-slate-400 font-mono">
+                  <span>0px (Jernih)</span>
+                  <span>15px (Sedang)</span>
+                  <span>30px (Sangat Buram)</span>
+                </div>
               </div>
             </div>
           </div>
@@ -797,7 +935,7 @@
               </div>
 
               <div>
-                <label class="block text-xs font-bold text-slate-700 mb-1">Kecepatan Ayunan Angin (`sway_speed`)</label>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Kecepatan Ayunan Angin</label>
                 <select id="select-sway-speed" onchange="handleSwaySpeedChange(this.value)" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs bg-white text-slate-800">
                   <option value="slow">Lambat & Tenang (8.5s)</option>
                   <option value="normal" selected>Normal & Semilir (5.5s)</option>
@@ -819,7 +957,7 @@
             <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80 space-y-2">
               <div class="flex items-center justify-between">
                 <div>
-                  <span class="text-xs font-bold text-slate-800 block">Header Sampul Depan (`cover_header_png`)</span>
+                  <span class="text-xs font-bold text-slate-800 block">Header Sampul Depan</span>
                   <p class="text-[11px] text-slate-400">Motif ornamen/logo di atas teks "The Wedding Of".</p>
                 </div>
                 <div class="flex items-center gap-1.5">
@@ -836,6 +974,31 @@
               <div>
                 <span class="text-xs font-bold text-slate-800 block">Bingkai & Ornamen Foto Sampul Depan</span>
                 <p class="text-[11px] text-slate-400">Bentuk bingkai default dan opsi upload PNG bingkai overlay kustom.</p>
+              </div>
+
+              <!-- Sampel Foto Pengantin di Bingkai Sampul -->
+              <div class="p-3.5 rounded-xl bg-white border border-slate-200 space-y-2">
+                <div class="flex items-center justify-between">
+                  <div>
+                    <span class="text-xs font-bold text-slate-800 block">Foto Sampel Pengantin di Dalam Bingkai Sampul</span>
+                    <p class="text-[11px] text-slate-400">Foto prewedding contoh yang tampil di bingkai sampul depan tema ini.</p>
+                  </div>
+                  <button type="button" id="btn-del-master-cover-photo" onclick="removeMasterCoverPhoto()" class="hidden text-[11px] font-bold text-rose-600 hover:underline cursor-pointer">Hapus Foto</button>
+                </div>
+                <div class="flex items-center gap-3">
+                  <div class="relative w-16 h-20 rounded-xl overflow-hidden bg-slate-100 border-2 border-amber-400 shrink-0 flex items-center justify-center shadow-2xs">
+                    <img id="preview-master-cover-photo-img" src="" alt="Sampel Sampul" class="w-full h-full object-cover hidden">
+                    <span id="placeholder-master-cover-photo" class="text-xl text-slate-300 font-serif">🖼️</span>
+                  </div>
+                  <div class="flex-1 space-y-1">
+                    <input type="file" id="master-cover-photo-file" accept="image/*" class="hidden" onchange="handleMasterCoverPhotoUpload(event)">
+                    <button type="button" onclick="document.getElementById('master-cover-photo-file').click()" class="px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold inline-flex items-center gap-1.5 cursor-pointer">
+                      <i data-lucide="upload" class="w-3.5 h-3.5 text-amber-400"></i>
+                      <span>Pilih & Potong Foto</span>
+                    </button>
+                    <span class="text-[10px] text-slate-400 block" id="label-master-cover-status">Didukung editor potong & zoom</span>
+                  </div>
+                </div>
               </div>
 
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -864,7 +1027,7 @@
 
               <div class="pt-1.5 border-t border-slate-200/60">
                 <div class="flex items-center justify-between mb-1">
-                  <span class="text-[11px] font-bold text-slate-600">Atau Unggah PNG Bingkai Kustom (`custom_cover_frame_png`):</span>
+                  <span class="text-[11px] font-bold text-slate-600">Atau Unggah PNG Bingkai Kustom:</span>
                   <div class="flex items-center gap-1.5">
                     <input type="file" id="file-custom_cover_frame_png" accept="image/png,image/webp" class="hidden" onchange="handleAssetUpload(event, 'custom_cover_frame_png')">
                     <button type="button" onclick="document.getElementById('file-custom_cover_frame_png').click()" class="px-2 py-0.5 rounded bg-slate-900 text-white text-[11px] font-bold cursor-pointer">Unggah PNG</button>
@@ -876,26 +1039,48 @@
             </div>
 
             <!-- Slot C: Pembatas Antar Seksi / Divider -->
-            <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80 space-y-2">
+            <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80 space-y-2.5">
               <div class="flex items-center justify-between">
                 <div>
-                  <span class="text-xs font-bold text-slate-800 block">Pembatas Antar Seksi / Divider (`section_divider_png`)</span>
+                  <span class="text-xs font-bold text-slate-800 block">Pembatas Antar Seksi (Divider)</span>
                   <p class="text-[11px] text-slate-400">Ornamen dekoratif yang tampil di atas judul setiap seksi undangan.</p>
                 </div>
-                <div class="flex items-center gap-1.5">
-                  <input type="file" id="file-section_divider_png" accept="image/png,image/webp" class="hidden" onchange="handleAssetUpload(event, 'section_divider_png')">
-                  <button type="button" onclick="document.getElementById('file-section_divider_png').click()" class="px-2.5 py-1 rounded-lg bg-slate-900 text-white text-xs font-bold cursor-pointer">Unggah</button>
-                  <button type="button" id="btn-del-section_divider_png" onclick="removeAssetUrl('section_divider_png')" class="hidden px-2 py-1 rounded-lg border border-rose-200 bg-rose-50 text-rose-700 text-xs font-semibold cursor-pointer">Hapus</button>
-                </div>
+                <button type="button" id="btn-del-section_divider_png" onclick="removeAssetUrl('section_divider_png')" class="hidden text-[11px] font-bold text-rose-600 hover:underline cursor-pointer">Hapus PNG & Kembali ke Preset</button>
               </div>
-              <input type="url" id="asset-url-section_divider_png" oninput="handleAssetUrlInput('section_divider_png', this.value)" placeholder="Tautan URL: https://..." class="w-full px-3 py-1.5 rounded-lg border border-slate-200 text-xs font-mono">
+
+              <div class="space-y-1.5">
+                <label class="block text-[11px] font-bold text-slate-600">Pilihan Ornamen Pembatas (10 Preset):</label>
+                <select id="select-divider-preset" onchange="handleDividerPresetChange(this.value)" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs bg-white text-slate-800 font-semibold cursor-pointer">
+                  <option value="floral_branch">🌸 1. Ranting Bunga Botanikal (Floral Branch)</option>
+                  <option value="royal_javanese">👑 2. Ukiran Gunungan Emas Keraton (Royal Javanese)</option>
+                  <option value="diamond_line">💎 3. Garis Belah Ketupat Mewah (Diamond Line)</option>
+                  <option value="botanical_garland">🌿 4. Untaian Daun Rindang (Botanical Garland)</option>
+                  <option value="crown_filigree">⚜️ 5. Mahkota Filigri Istana (Crown Filigree)</option>
+                  <option value="boho_wave">🌾 6. Gelombang Etnik Boho (Boho Wave)</option>
+                  <option value="heart_infinity">♾️ 7. Simpul Hati Abadi (Heart Infinity)</option>
+                  <option value="art_deco">🏛️ 8. Geometris Emas Klasik (Art Deco)</option>
+                  <option value="celestial_stars">✨ 9. Gugusan Bintang Malam (Celestial Stars)</option>
+                  <option value="none">🚫 10. Tanpa Pembatas (Garis Polos Bersih)</option>
+                </select>
+              </div>
+
+              <div class="pt-1.5 border-t border-slate-200/60">
+                <div class="flex items-center justify-between mb-1">
+                  <span class="text-[11px] font-bold text-slate-600">Atau Unggah PNG Pembatas Kustom Sendiri:</span>
+                  <div class="flex items-center gap-1.5">
+                    <input type="file" id="file-section_divider_png" accept="image/png,image/webp" class="hidden" onchange="handleAssetUpload(event, 'section_divider_png')">
+                    <button type="button" onclick="document.getElementById('file-section_divider_png').click()" class="px-2.5 py-1 rounded-lg bg-slate-900 text-white text-xs font-bold cursor-pointer">Unggah</button>
+                  </div>
+                </div>
+                <input type="url" id="asset-url-section_divider_png" oninput="handleAssetUrlInput('section_divider_png', this.value)" placeholder="Tautan URL: https://..." class="w-full px-3 py-1.5 rounded-lg border border-slate-200 text-xs font-mono">
+              </div>
             </div>
 
             <!-- Slot D: Watermark Kartu Undangan -->
             <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80 space-y-2">
               <div class="flex items-center justify-between">
                 <div>
-                  <span class="text-xs font-bold text-slate-800 block">Watermark Latar Kartu (`card_watermark_png`)</span>
+                  <span class="text-xs font-bold text-slate-800 block">Watermark Latar Kartu</span>
                   <p class="text-[11px] text-slate-400">Ilustrasi transparan di latar belakang kartu mempelai & acara.</p>
                 </div>
                 <div class="flex items-center gap-1.5">
@@ -935,7 +1120,7 @@
               </div>
 
               <div>
-                <label class="block text-xs font-bold text-slate-700 mb-1">Gerakan Fisika Partikel (`particle_physics`)</label>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Pola Gerakan Fisika Partikel</label>
                 <select id="select-particle-physics" onchange="handleEffectsChange()" class="w-full px-3 py-2.5 rounded-xl border border-slate-300 text-xs bg-white text-slate-800 font-semibold">
                   <option value="breeze_right">Breeze Right (Tertiup Angin Semilir ke Kanan)</option>
                   <option value="flutter_wide">Flutter Wide (Melayang Zig-Zag Bergoyang Lebar)</option>
@@ -945,9 +1130,35 @@
               </div>
             </div>
 
+            <!-- Particle Opacity Slider -->
+            <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80 space-y-1.5">
+              <div class="flex items-center justify-between text-xs font-bold text-slate-700">
+                <span class="flex items-center gap-1.5">
+                  <i data-lucide="sparkles" class="w-3.5 h-3.5 text-amber-600"></i>
+                  <span>Tingkat Transparansi / Opasitas Partikel:</span>
+                </span>
+                <span id="label-master-particle-opacity" class="text-amber-600 font-mono">70%</span>
+              </div>
+              <input 
+                type="range" 
+                id="slider-master-particle-opacity" 
+                min="10" 
+                max="100" 
+                step="5" 
+                value="70" 
+                oninput="handleMasterParticleOpacityChange(this.value)" 
+                class="w-full accent-amber-600 cursor-pointer"
+              >
+              <div class="flex justify-between text-[10px] text-slate-400 font-mono">
+                <span>10% (Sangat Halus)</span>
+                <span>50% (Sedang)</span>
+                <span>100% (Sangat Jelas)</span>
+              </div>
+            </div>
+
             <!-- Particle Layer: Behind vs Front -->
             <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80 space-y-2">
-              <span class="text-xs font-bold text-slate-800 block">Posisi Layer Partikel (`particle_layer`)</span>
+              <span class="text-xs font-bold text-slate-800 block">Posisi Lapisan Layer Partikel</span>
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 <label class="p-2.5 rounded-xl border border-slate-200 bg-white hover:border-amber-400 cursor-pointer flex items-start gap-2 text-xs">
                   <input type="radio" name="master_particle_layer" value="behind" checked onchange="handleEffectsChange()" class="mt-0.5 text-amber-600">
@@ -977,7 +1188,7 @@
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
               <div>
-                <label class="block text-xs font-bold text-slate-700 mb-1">Gaya & Arah Animasi Card (`card_animation`)</label>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Gaya & Arah Animasi Kartu</label>
                 <select id="select-card-animation" onchange="handleEffectsChange()" class="w-full px-3 py-2.5 rounded-xl border border-slate-300 text-xs bg-white text-slate-800 font-semibold">
                   <option value="fade-up">Fade Up (Meluncur Lembut dari Bawah)</option>
                   <option value="fade-down">Fade Down (Meluncur dari Atas)</option>
@@ -990,9 +1201,16 @@
               </div>
 
               <div>
-                <label class="block text-xs font-bold text-slate-700 mb-1">Bentuk Bingkai Foto Mempelai Pria/Wanita (`frame_shape`)</label>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Bentuk Bingkai Foto Mempelai Pria & Wanita</label>
                 <select id="select-person-frame-shape" onchange="handleEffectsChange()" class="w-full px-3 py-2.5 rounded-xl border border-slate-300 text-xs bg-white text-slate-800 font-semibold">
                   <option value="arch">Kubah Kubik (Arch Lengkung)</option>
+                  <option value="circle">Lingkaran Emas (Circle Royal)</option>
+                  <option value="oval">Oval Klasik (Oval Floral)</option>
+                  <option value="octagon">Oktagon Tradisional (Octagon Heritage)</option>
+                </select>
+              </div>
+            </div>
+          </div>
                   <option value="circle">Lingkaran Emas (Circle Royal)</option>
                   <option value="oval">Oval Klasik (Oval Floral)</option>
                   <option value="octagon">Oktagon Tradisional (Octagon Heritage)</option>
@@ -1473,15 +1691,21 @@
         default_colors_json: {
           bg: '#F4F6F3',
           card: '#FFFFFF',
-          text: '#2C352E',
           accent: '#6B8E78',
-          secondary: '#E2B170'
+          text: '#2C352E',
+          text_secondary: '#4D5850',
+          text_tertiary: '#7D8A80'
         },
         config_json: {
           typography: {
             font_heading: "'Cormorant Garamond', Georgia, serif",
             font_body: "'Plus Jakarta Sans', system-ui, sans-serif"
           },
+          default_audio_url: '/assets/audio/track-1.mp3',
+          bg_blur: 0,
+          particle_opacity: 0.7,
+          default_cover_photo: null,
+          divider_preset: 'floral_branch',
           ornaments: {
             mode: 'master',
             corner_master_png: null,
@@ -1520,6 +1744,9 @@
       currentTemplate = t;
 
       // Deep copy ke templateState
+      const defColors = t.default_colors_json || {};
+      const defCfg = t.config_json || {};
+
       templateState = {
         id: t.id,
         name: t.name || '',
@@ -1528,38 +1755,48 @@
         is_premium: Boolean(t.is_premium),
         is_active: Boolean(t.is_active),
         preview_url: t.preview_url || null,
-        default_colors_json: JSON.parse(JSON.stringify(t.default_colors_json || {
-          bg: '#F4F6F3', card: '#FFFFFF', text: '#2C352E', accent: '#6B8E78', secondary: '#E2B170'
-        })),
-        config_json: JSON.parse(JSON.stringify(t.config_json || {
+        default_colors_json: {
+          bg: defColors.bg || '#F4F6F3',
+          card: defColors.card || '#FFFFFF',
+          accent: defColors.accent || '#6B8E78',
+          text: defColors.text || '#2C352E',
+          text_secondary: defColors.text_secondary || '#4D5850',
+          text_tertiary: defColors.text_tertiary || '#7D8A80'
+        },
+        config_json: {
           typography: {
-            font_heading: "'Cormorant Garamond', Georgia, serif",
-            font_body: "'Plus Jakarta Sans', system-ui, sans-serif"
+            font_heading: defCfg.typography?.font_heading || "'Cormorant Garamond', Georgia, serif",
+            font_body: defCfg.typography?.font_body || "'Plus Jakarta Sans', system-ui, sans-serif"
           },
+          default_audio_url: defCfg.default_audio_url || '/assets/audio/track-1.mp3',
+          bg_blur: defCfg.bg_blur ?? 0,
+          particle_opacity: defCfg.particle_opacity ?? 0.7,
+          default_cover_photo: defCfg.default_cover_photo || null,
+          divider_preset: defCfg.divider_preset || 'floral_branch',
           ornaments: {
-            mode: 'master',
-            corner_master_png: null,
-            corner_tl_png: null,
-            corner_tr_png: null,
-            corner_bl_png: null,
-            corner_br_png: null,
-            corner_size: 112,
-            sway_speed: 'normal',
-            cover_header_png: null,
-            custom_cover_frame_png: null,
-            section_divider_png: null,
-            card_watermark_png: null
+            mode: defCfg.ornaments?.mode || 'master',
+            corner_master_png: defCfg.ornaments?.corner_master_png || null,
+            corner_tl_png: defCfg.ornaments?.corner_tl_png || null,
+            corner_tr_png: defCfg.ornaments?.corner_tr_png || null,
+            corner_bl_png: defCfg.ornaments?.corner_bl_png || null,
+            corner_br_png: defCfg.ornaments?.corner_br_png || null,
+            corner_size: defCfg.ornaments?.corner_size || 112,
+            sway_speed: defCfg.ornaments?.sway_speed || 'normal',
+            cover_header_png: defCfg.ornaments?.cover_header_png || null,
+            custom_cover_frame_png: defCfg.ornaments?.custom_cover_frame_png || null,
+            section_divider_png: defCfg.ornaments?.section_divider_png || null,
+            card_watermark_png: defCfg.ornaments?.card_watermark_png || null
           },
-          cover_frame_shape: 'grand_arch',
-          cover_frame_ornament: 'floral_wreath',
-          frame_shape: 'arch',
-          particle_effect: 'leaves',
-          particle_physics: 'breeze_right',
-          particle_layer: 'behind',
-          card_animation: 'fade-up',
-          bg_image_url: null,
-          bg_type: 'lava'
-        }))
+          cover_frame_shape: defCfg.cover_frame_shape || 'grand_arch',
+          cover_frame_ornament: defCfg.cover_frame_ornament || 'floral_wreath',
+          frame_shape: defCfg.frame_shape || 'arch',
+          particle_effect: defCfg.particle_effect || 'leaves',
+          particle_physics: defCfg.particle_physics || 'breeze_right',
+          particle_layer: defCfg.particle_layer || 'behind',
+          card_animation: defCfg.card_animation || 'fade-up',
+          bg_image_url: defCfg.bg_image_url || null,
+          bg_type: defCfg.bg_type || 'lava'
+        }
       };
 
       populateStudioForm();
@@ -1641,13 +1878,18 @@
       // Thumbnail
       setThumbnailPreview(templateState.preview_url);
 
-      // Panel B: Palet Warna
+      // Default Audio
+      const audioUrl = templateState.config_json?.default_audio_url || '/assets/audio/track-1.mp3';
+      setMasterAudioSelectAndUrl(audioUrl);
+
+      // Panel B: Palet Warna (6 Colors)
       const colors = templateState.default_colors_json || {};
       setColorPicker('bg', colors.bg || '#F4F6F3');
       setColorPicker('card', colors.card || '#FFFFFF');
-      setColorPicker('text', colors.text || '#2C352E');
       setColorPicker('accent', colors.accent || '#6B8E78');
-      setColorPicker('secondary', colors.secondary || '#E2B170');
+      setColorPicker('text', colors.text || '#2C352E');
+      setColorPicker('text_secondary', colors.text_secondary || '#4D5850');
+      setColorPicker('text_tertiary', colors.text_tertiary || '#7D8A80');
 
       // Typography
       const typo = templateState.config_json?.typography || {};
@@ -1673,19 +1915,30 @@
       setAssetPreview('section_divider_png', orn.section_divider_png);
       setAssetPreview('card_watermark_png', orn.card_watermark_png);
 
-      // Cover Frame shape & ornament
+      // Cover Frame shape, ornament & sample photo
       document.getElementById('cover-frame-shape-select').value = templateState.config_json?.cover_frame_shape || 'grand_arch';
       document.getElementById('cover-frame-ornament-select').value = templateState.config_json?.cover_frame_ornament || 'floral_wreath';
+      setMasterCoverPhotoPreview(templateState.config_json?.default_cover_photo);
 
-      // Background Type
+      // Section Divider Preset
+      document.getElementById('select-divider-preset').value = templateState.config_json?.divider_preset || 'floral_branch';
+
+      // Background Type & Blur
       const bgType = templateState.config_json?.bg_type || (templateState.config_json?.bg_image_url ? 'image' : 'lava');
       handleMasterBgTypeChange(bgType, false);
       setAssetPreview('bg_image_url', templateState.config_json?.bg_image_url);
+      const bgBlur = templateState.config_json?.bg_blur ?? 0;
+      document.getElementById('slider-master-bg-blur').value = bgBlur;
+      document.getElementById('label-master-bg-blur').textContent = `${bgBlur}px`;
 
       // Panel D: Animasi & Fisika
       document.getElementById('select-particle-effect').value = templateState.config_json?.particle_effect || 'leaves';
       document.getElementById('select-particle-physics').value = templateState.config_json?.particle_physics || 'breeze_right';
       
+      const pOpacity = Math.round((templateState.config_json?.particle_opacity ?? 0.7) * 100);
+      document.getElementById('slider-master-particle-opacity').value = pOpacity;
+      document.getElementById('label-master-particle-opacity').textContent = `${pOpacity}%`;
+
       const pLayer = templateState.config_json?.particle_layer || 'behind';
       const pLayerRadio = document.querySelector(`input[name="master_particle_layer"][value="${pLayer}"]`);
       if (pLayerRadio) pLayerRadio.checked = true;
@@ -1755,15 +2008,17 @@
       templateState.default_colors_json = {
         bg: document.getElementById('color-bg').value,
         card: document.getElementById('color-card').value,
-        text: document.getElementById('color-text').value,
         accent: document.getElementById('color-accent').value,
-        secondary: document.getElementById('color-secondary').value
+        text: document.getElementById('color-text').value,
+        text_secondary: document.getElementById('color-text_secondary').value,
+        text_tertiary: document.getElementById('color-text_tertiary').value
       };
       document.getElementById('color-bg-hex').value = templateState.default_colors_json.bg;
       document.getElementById('color-card-hex').value = templateState.default_colors_json.card;
-      document.getElementById('color-text-hex').value = templateState.default_colors_json.text;
       document.getElementById('color-accent-hex').value = templateState.default_colors_json.accent;
-      document.getElementById('color-secondary-hex').value = templateState.default_colors_json.secondary;
+      document.getElementById('color-text-hex').value = templateState.default_colors_json.text;
+      document.getElementById('color-text_secondary-hex').value = templateState.default_colors_json.text_secondary;
+      document.getElementById('color-text_tertiary-hex').value = templateState.default_colors_json.text_tertiary;
 
       markAsUnsaved();
       scheduleBroadcast();
@@ -1778,14 +2033,14 @@
 
     function applyPresetPalette(key) {
       const presets = {
-        sage: { bg: '#F4F6F3', card: '#FFFFFF', text: '#2C352E', accent: '#6B8E78', secondary: '#E2B170' },
-        terracotta: { bg: '#FAF5F0', card: '#FFFFFF', text: '#3D2E28', accent: '#C66B4E', secondary: '#E2B170' },
-        javanese: { bg: '#1C1613', card: '#2A221E', text: '#F5EBE1', accent: '#D4AF37', secondary: '#E2B170' },
-        blush: { bg: '#FFF9FA', card: '#FFFFFF', text: '#3E2723', accent: '#D9779B', secondary: '#E2B170' },
-        midnight: { bg: '#0F172A', card: '#1E293B', text: '#F8FAFC', accent: '#EAB308', secondary: '#F59E0B' },
-        monochrome: { bg: '#FAFAFA', card: '#FFFFFF', text: '#18181B', accent: '#27272A', secondary: '#71717A' },
-        woodland: { bg: '#F6F8F5', card: '#FFFFFF', text: '#223326', accent: '#4A6B53', secondary: '#B48342' },
-        fairy: { bg: '#FBF9FE', card: '#FFFFFF', text: '#2E2140', accent: '#8B5CF6', secondary: '#D9779B' }
+        sage: { bg: '#F4F6F3', card: '#FFFFFF', accent: '#6B8E78', text: '#2C352E', text_secondary: '#4D5850', text_tertiary: '#7D8A80' },
+        terracotta: { bg: '#FAF5F0', card: '#FFFFFF', accent: '#C66B4E', text: '#3D2E28', text_secondary: '#5A463E', text_tertiary: '#8C7368' },
+        javanese: { bg: '#1C1613', card: '#2A221E', accent: '#D4AF37', text: '#F5EBE1', text_secondary: '#D6C7B2', text_tertiary: '#A89780' },
+        blush: { bg: '#FFF9FA', card: '#FFFFFF', accent: '#D9779B', text: '#3E2723', text_secondary: '#5C3D45', text_tertiary: '#8E6872' },
+        midnight: { bg: '#0F172A', card: '#1E293B', accent: '#EAB308', text: '#F8FAFC', text_secondary: '#CBD5E1', text_tertiary: '#94A3B8' },
+        monochrome: { bg: '#FAFAFA', card: '#FFFFFF', accent: '#27272A', text: '#18181B', text_secondary: '#52525B', text_tertiary: '#A1A1AA' },
+        woodland: { bg: '#F6F8F5', card: '#FFFFFF', accent: '#4A6B53', text: '#223326', text_secondary: '#3D4F42', text_tertiary: '#6E8273' },
+        fairy: { bg: '#FBF9FE', card: '#FFFFFF', accent: '#8B5CF6', text: '#2E2140', text_secondary: '#4B3864', text_tertiary: '#7E6B99' }
       };
 
       const p = presets[key];
@@ -1793,13 +2048,226 @@
       templateState.default_colors_json = { ...p };
       setColorPicker('bg', p.bg);
       setColorPicker('card', p.card);
-      setColorPicker('text', p.text);
       setColorPicker('accent', p.accent);
-      setColorPicker('secondary', p.secondary);
+      setColorPicker('text', p.text);
+      setColorPicker('text_secondary', p.text_secondary);
+      setColorPicker('text_tertiary', p.text_tertiary);
 
       markAsUnsaved();
       scheduleBroadcast();
       showToast(`Palet ${key.toUpperCase()} diterapkan!`, 'info');
+    }
+
+    // Default Audio Handlers
+    function setMasterAudioSelectAndUrl(url) {
+      const select = document.getElementById('tpl-default-audio-select');
+      const box = document.getElementById('master-custom-audio-box');
+      const input = document.getElementById('tpl-default-audio-url');
+      if (!select) return;
+
+      const matchedOption = Array.from(select.options).find(opt => opt.value === url);
+      if (matchedOption) {
+        select.value = url;
+        if (box) box.classList.add('hidden');
+        if (input) input.value = url;
+      } else {
+        select.value = 'custom';
+        if (box) box.classList.remove('hidden');
+        if (input) input.value = url || '';
+      }
+    }
+
+    function handleMasterAudioSelectChange(val) {
+      const box = document.getElementById('master-custom-audio-box');
+      const input = document.getElementById('tpl-default-audio-url');
+
+      if (val === 'custom') {
+        if (box) box.classList.remove('hidden');
+      } else {
+        if (box) box.classList.add('hidden');
+        if (input) input.value = val;
+        if (!templateState.config_json) templateState.config_json = {};
+        templateState.config_json.default_audio_url = val;
+        markAsUnsaved();
+        scheduleBroadcast();
+      }
+      stopMasterTestAudio();
+    }
+
+    function handleMasterAudioUrlInput(val) {
+      if (!templateState.config_json) templateState.config_json = {};
+      templateState.config_json.default_audio_url = val.trim() || null;
+      stopMasterTestAudio();
+      markAsUnsaved();
+      scheduleBroadcast();
+    }
+
+    async function handleMasterAudioUpload(e) {
+      const file = e.target.files?.[0];
+      if (!file) return;
+
+      const statusEl = document.getElementById('label-master-audio-upload-status');
+      if (statusEl) {
+        statusEl.textContent = 'Mengunggah audio MP3...';
+        statusEl.className = 'text-[11px] text-amber-700 font-semibold animate-pulse';
+      }
+
+      try {
+        const slug = templateState.slug || 'theme';
+        const res = await uploadTemplateAssetDirect(file, slug, 'audio');
+        if (!templateState.config_json) templateState.config_json = {};
+        templateState.config_json.default_audio_url = res.url;
+        document.getElementById('tpl-default-audio-url').value = res.url;
+        document.getElementById('tpl-default-audio-select').value = 'custom';
+        document.getElementById('master-custom-audio-box').classList.remove('hidden');
+
+        if (statusEl) {
+          statusEl.textContent = 'Audio MP3 berhasil diunggah!';
+          statusEl.className = 'text-[11px] text-emerald-600 font-semibold';
+        }
+        markAsUnsaved();
+        scheduleBroadcast();
+        showToast('File MP3 bawaan tema berhasil diunggah!', 'success');
+      } catch (err) {
+        console.error('Audio upload error:', err);
+        if (statusEl) {
+          statusEl.textContent = 'Gagal upload: ' + err.message;
+          statusEl.className = 'text-[11px] text-rose-600 font-semibold';
+        }
+        showToast('Gagal mengunggah file MP3: ' + err.message, 'error');
+      }
+    }
+
+    let masterTestAudioPlaying = false;
+    function toggleMasterTestAudio() {
+      const player = document.getElementById('master-audio-player');
+      const text = document.getElementById('text-master-audio-test');
+      const btn = document.getElementById('btn-test-master-audio');
+      const audioUrl = templateState.config_json?.default_audio_url || document.getElementById('tpl-default-audio-url')?.value.trim() || document.getElementById('tpl-default-audio-select')?.value || '/assets/audio/track-1.mp3';
+
+      if (masterTestAudioPlaying && !player.paused) {
+        stopMasterTestAudio();
+      } else {
+        player.src = audioUrl;
+        player.play().then(() => {
+          masterTestAudioPlaying = true;
+          if (text) text.textContent = 'Hentikan';
+          if (btn) {
+            btn.classList.add('bg-rose-600', 'text-white');
+            btn.classList.remove('bg-slate-900');
+          }
+          const icon = document.getElementById('icon-master-audio-test');
+          if (icon) icon.setAttribute('data-lucide', 'square');
+          lucide.createIcons();
+        }).catch(err => {
+          showToast('Gagal memutar audio: ' + err.message, 'warning');
+        });
+      }
+    }
+
+    function stopMasterTestAudio() {
+      const player = document.getElementById('master-audio-player');
+      const text = document.getElementById('text-master-audio-test');
+      const btn = document.getElementById('btn-test-master-audio');
+      if (player) player.pause();
+      masterTestAudioPlaying = false;
+      if (text) text.textContent = 'Uji Putar';
+      if (btn) {
+        btn.classList.remove('bg-rose-600');
+        btn.classList.add('bg-slate-900');
+      }
+      const icon = document.getElementById('icon-master-audio-test');
+      if (icon) icon.setAttribute('data-lucide', 'play');
+      lucide.createIcons();
+    }
+
+    // Background Blur & Particle Opacity Handlers
+    function handleMasterBgBlurChange(val) {
+      document.getElementById('label-master-bg-blur').textContent = `${val}px`;
+      if (!templateState.config_json) templateState.config_json = {};
+      templateState.config_json.bg_blur = parseInt(val, 10);
+      markAsUnsaved();
+      scheduleBroadcast();
+    }
+
+    function handleMasterParticleOpacityChange(val) {
+      document.getElementById('label-master-particle-opacity').textContent = `${val}%`;
+      if (!templateState.config_json) templateState.config_json = {};
+      templateState.config_json.particle_opacity = parseFloat(val) / 100;
+      markAsUnsaved();
+      scheduleBroadcast();
+    }
+
+    // Section Divider Preset Handler
+    function handleDividerPresetChange(val) {
+      if (!templateState.config_json) templateState.config_json = {};
+      templateState.config_json.divider_preset = val;
+      markAsUnsaved();
+      scheduleBroadcast();
+    }
+
+    // Cover Photo Sample Handlers for Admin
+    function setMasterCoverPhotoPreview(url) {
+      const img = document.getElementById('preview-master-cover-photo-img');
+      const placeholder = document.getElementById('placeholder-master-cover-photo');
+      const delBtn = document.getElementById('btn-del-master-cover-photo');
+
+      if (url) {
+        if (img) { img.src = url; img.classList.remove('hidden'); }
+        if (placeholder) placeholder.classList.add('hidden');
+        if (delBtn) delBtn.classList.remove('hidden');
+      } else {
+        if (img) { img.src = ''; img.classList.add('hidden'); }
+        if (placeholder) placeholder.classList.remove('hidden');
+        if (delBtn) delBtn.classList.add('hidden');
+      }
+    }
+
+    function handleMasterCoverPhotoUpload(e) {
+      const file = e.target.files?.[0];
+      if (!file) return;
+
+      if (typeof window.openImageCropper === 'function') {
+        window.openImageCropper({
+          file,
+          targetType: 'cover',
+          aspectRatio: '3:4',
+          title: 'Sesuaikan Foto Sampel Sampul Tema',
+          onComplete: (res) => {
+            if (!res || !res.url) return;
+            if (!templateState.config_json) templateState.config_json = {};
+            templateState.config_json.default_cover_photo = res.url;
+            setMasterCoverPhotoPreview(res.url);
+            markAsUnsaved();
+            scheduleBroadcast();
+            showToast('Foto sampel sampul tema berhasil dipasang!', 'success');
+          }
+        });
+      } else {
+        // Fallback langsung
+        uploadTemplateAssetDirect(file, templateState.slug || 'theme', 'sample_cover').then(res => {
+          if (!templateState.config_json) templateState.config_json = {};
+          templateState.config_json.default_cover_photo = res.url;
+          setMasterCoverPhotoPreview(res.url);
+          markAsUnsaved();
+          scheduleBroadcast();
+          showToast('Foto sampel sampul tema berhasil dipasang!', 'success');
+        }).catch(err => {
+          showToast('Gagal upload: ' + err.message, 'error');
+        });
+      }
+      e.target.value = '';
+    }
+
+    function removeMasterCoverPhoto() {
+      if (!templateState.config_json) templateState.config_json = {};
+      templateState.config_json.default_cover_photo = null;
+      setMasterCoverPhotoPreview(null);
+      const input = document.getElementById('master-cover-photo-file');
+      if (input) input.value = '';
+      markAsUnsaved();
+      scheduleBroadcast();
+      showToast('Foto sampel sampul dihapus.', 'info');
     }
 
     // Typography Handlers
@@ -2070,7 +2538,10 @@
       const client = window.supabaseClient;
       const cleanSlug = (slug || 'common').replace(/[^a-z0-9_-]/gi, '');
       const timestamp = Date.now();
-      const ext = file.type === 'image/png' ? 'png' : 'webp';
+      let ext = 'webp';
+      if (file.type === 'image/png') ext = 'png';
+      else if (file.type && (file.type.startsWith('audio/') || file.type.includes('mpeg') || file.type.includes('mp3'))) ext = 'mp3';
+      else if (file.type && (file.type.includes('jpeg') || file.type.includes('jpg'))) ext = 'jpg';
       const fileName = `templates/${cleanSlug}/${assetType}_${timestamp}.${ext}`;
 
       if (!client || !client.storage) {

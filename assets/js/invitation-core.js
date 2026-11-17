@@ -1538,7 +1538,9 @@ class InvitationEngine {
       this.particleEngine.setEffect(particleEffect);
     }
 
-    const newAudio = this.wedding?.audio_url || tplConfig.default_audio_url || '/assets/audio/track-1.mp3';
+    const newAudio = (this.wedding?.audio_url && this.wedding.audio_url !== 'default') 
+      ? this.wedding.audio_url 
+      : (tplConfig.default_audio_url || '/assets/audio/track-1.mp3');
     if (this.audioElement && (!this.audioElement.src || !this.audioElement.src.endsWith(newAudio))) {
       this.audioElement.src = newAudio;
     }
@@ -1896,7 +1898,9 @@ class InvitationEngine {
     if (!this.audioElement) return;
     
     const tplConfig = this.template?.config_json || {};
-    const sourceUrl = this.wedding?.audio_url || tplConfig.default_audio_url || '/assets/audio/track-1.mp3';
+    const sourceUrl = (this.wedding?.audio_url && this.wedding.audio_url !== 'default') 
+      ? this.wedding.audio_url 
+      : (tplConfig.default_audio_url || '/assets/audio/track-1.mp3');
     if (!this.audioElement.src || !this.audioElement.src.endsWith(sourceUrl)) {
       this.audioElement.src = sourceUrl;
     }
