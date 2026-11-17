@@ -51,20 +51,44 @@
       --bg-main: #FCFBF9;
       --bg-card: #FFFFFF;
       --text-main: #2C352E;
+      --text-secondary: rgba(44, 53, 46, 0.85);
+      --text-tertiary: rgba(44, 53, 46, 0.65);
       --accent-color: #B48342;
       --accent-secondary: #E2B170;
+      --corner-size: 7rem;
+    }
+
+    /* Kunci Warna Placeholder Form Input Agar Selalu Natural Abu-Abu */
+    input::placeholder, textarea::placeholder {
+      color: #9CA3AF !important;
+      opacity: 1 !important;
+      -webkit-text-fill-color: #9CA3AF !important;
     }
 
     body, #invitation-app-container {
       font-family: var(--font-body, 'Plus Jakarta Sans', system-ui, sans-serif);
+      color: var(--text-main, #2C352E);
     }
 
-    .font-serif, h1, h2, h3, .wedding-heading, #cover-couple-name, #main-couple-name, #groom-name, #bride-name {
+    .font-serif, h1, h2, h3, .wedding-heading, #cover-couple-name, #main-couple-name, #groom-name, #bride-name, .text-main-color {
       font-family: var(--font-heading, 'Cormorant Garamond', Georgia, serif);
+      color: var(--text-main, #2C352E);
     }
 
     .font-sans {
       font-family: var(--font-body, 'Plus Jakarta Sans', system-ui, sans-serif);
+    }
+
+    .text-main-color, .wedding-title {
+      color: var(--text-main, #2C352E) !important;
+    }
+
+    .text-secondary-color, .wedding-subtitle, .wedding-parents, .wedding-datetime, .wedding-paragraph {
+      color: var(--text-secondary, rgba(44, 53, 46, 0.85)) !important;
+    }
+
+    .text-tertiary-color, .wedding-caption, .wedding-address, .wedding-note, .wedding-footnote {
+      color: var(--text-tertiary, rgba(44, 53, 46, 0.65)) !important;
     }
 
     /* Active Organic Lava Lamp Keyframe Animations */
@@ -177,6 +201,60 @@
     }
 
     /* Swaying Wind & Breathing Keyframes */
+    @keyframes swayCornerTL {
+      0%, 100% {
+        transform: rotate(0deg) scale(1) translate3d(0, 0, 0);
+      }
+      50% {
+        transform: rotate(-4deg) scale(1.02) translate3d(-3px, -2px, 0);
+      }
+    }
+    @keyframes swayCornerTR {
+      0%, 100% {
+        transform: rotate(0deg) scale(1) translate3d(0, 0, 0);
+      }
+      50% {
+        transform: rotate(5deg) scale(1.03) translate3d(4px, -3px, 0);
+      }
+    }
+    @keyframes swayCornerBL {
+      0%, 100% {
+        transform: rotate(0deg) scale(1) translate3d(0, 0, 0);
+      }
+      50% {
+        transform: rotate(3deg) scale(1.01) translate3d(3px, 4px, 0);
+      }
+    }
+    @keyframes swayCornerBR {
+      0%, 100% {
+        transform: rotate(0deg) scale(1) translate3d(0, 0, 0);
+      }
+      50% {
+        transform: rotate(-5deg) scale(1.02) translate3d(-4px, 3px, 0);
+      }
+    }
+
+    .sway-asym-tl {
+      transform-origin: top left;
+      animation: swayCornerTL 6.5s infinite ease-in-out;
+      animation-delay: 0s;
+    }
+    .sway-asym-tr {
+      transform-origin: top right;
+      animation: swayCornerTR 7.8s infinite ease-in-out;
+      animation-delay: -2.1s;
+    }
+    .sway-asym-bl {
+      transform-origin: bottom left;
+      animation: swayCornerBL 8.4s infinite ease-in-out;
+      animation-delay: -4.3s;
+    }
+    .sway-asym-br {
+      transform-origin: bottom right;
+      animation: swayCornerBR 7.1s infinite ease-in-out;
+      animation-delay: -1.5s;
+    }
+
     @keyframes swayLeft {
       0%, 100% {
         transform: rotate(0deg) translate3d(0, 0, 0);
@@ -294,9 +372,29 @@
     .particle-front {
       z-index: 35 !important;
     }
-    .wedding-card, .translucent-card, #cover-screen {
+    .wedding-card, .translucent-card {
       position: relative;
       z-index: 10;
+    }
+
+    #cover-screen {
+      position: fixed !important;
+      top: 0;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 28rem;
+      height: 100dvh;
+      min-height: 100vh;
+      z-index: 60 !important;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow-y: auto;
+      background-color: var(--bg-main, #FCFBF9);
+      color: var(--text-main, #2C352E);
+      transition: transform 0.85s cubic-bezier(0.77, 0, 0.175, 1), opacity 0.75s ease;
     }
 
     /* Cover Frame Shapes (Grand Arch, Classic Oval, Circle Royal, Octagon Heritage, Teardrop Botanical) */
@@ -331,7 +429,10 @@
       box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.45), 0 0 0 2px rgba(255, 255, 255, 0.25);
     }
     .cover-frame-none {
-      display: none !important;
+      border-radius: 1.25rem !important;
+      aspect-ratio: 3 / 4 !important;
+      border: 1.5px solid var(--accent-color, #d4af37) !important;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.35);
     }
 
     /* Photo Frame Shapes */
@@ -396,17 +497,34 @@
       height: var(--corner-size, 7rem);
       transition: width 0.3s ease, height 0.3s ease;
     }
+    .viewport-corner-slot {
+      pointer-events: none;
+      position: fixed;
+      z-index: 45;
+      width: var(--corner-size, 7rem);
+      height: var(--corner-size, 7rem);
+      transition: width 0.3s ease, height 0.3s ease;
+    }
+    #viewport-ornament-tl {
+      top: 0;
+      left: max(0px, calc(50% - 14rem));
+    }
+    #viewport-ornament-tr {
+      top: 0;
+      right: max(0px, calc(50% - 14rem));
+    }
+    #viewport-ornament-bl {
+      bottom: 0;
+      left: max(0px, calc(50% - 14rem));
+    }
+    #viewport-ornament-br {
+      bottom: 0;
+      right: max(0px, calc(50% - 14rem));
+    }
     .cover-curtain {
       pointer-events: none;
       z-index: 12;
       transition: transform 0.85s cubic-bezier(0.77, 0, 0.175, 1), opacity 0.75s ease;
-    }
-    .card-corner-slot {
-      pointer-events: none;
-      position: absolute;
-      z-index: 10;
-      width: 3.5rem;
-      height: 3.5rem;
     }
   </style>
 </head>
@@ -450,8 +568,14 @@
     <!-- PARTICLE EFFECT CANVAS OVERLAY -->
     <canvas id="particle-canvas" class="fixed inset-0 pointer-events-none z-30 max-w-md mx-auto"></canvas>
 
+    <!-- 4 VIEWPORT CORNER ORNAMENTS (FIXED TO SMARTPHONE SCREEN VIEWPORT) -->
+    <div id="viewport-ornament-tl" class="viewport-corner-slot"></div>
+    <div id="viewport-ornament-tr" class="viewport-corner-slot"></div>
+    <div id="viewport-ornament-bl" class="viewport-corner-slot"></div>
+    <div id="viewport-ornament-br" class="viewport-corner-slot"></div>
+
     <!-- 1. FULL-SCREEN COVER OVERLAY (SAMPUL DEPAN) -->
-    <div id="cover-screen" class="fixed inset-0 z-50 bg-[#161412] text-white flex flex-col items-center justify-between p-6 sm:p-8 text-center transition-all duration-700 max-w-md mx-auto overflow-hidden">
+    <div id="cover-screen" class="p-6 sm:p-8 text-center transition-all duration-700">
       
       <!-- 4 Corner Slots on Cover -->
       <div id="cover-ornament-tl" class="corner-slot absolute top-0 left-0"></div>
@@ -466,11 +590,11 @@
       <!-- Top Floral / Modern Motif -->
       <div class="pt-6 sm:pt-8 space-y-2 relative z-20">
         <div id="cover-header-ornament" class="mx-auto flex items-center justify-center pointer-events-none empty:hidden mb-1"></div>
-        <span class="text-[10px] uppercase tracking-[0.3em] text-amber-300/90 font-semibold block">The Wedding Of</span>
-        <h1 class="font-serif text-3xl sm:text-4xl font-bold tracking-tight text-white leading-tight" id="cover-couple-name">
+        <span class="text-[10px] uppercase tracking-[0.3em] text-[var(--accent-color,#b48342)] font-semibold block">The Wedding Of</span>
+        <h1 class="font-serif text-3xl sm:text-4xl font-bold tracking-tight text-[var(--text-main,#2C352E)] leading-tight" id="cover-couple-name">
           Mempelai & Mempelai
         </h1>
-        <p class="text-xs text-stone-400 font-serif italic" id="cover-wedding-date">
+        <p class="text-xs text-[var(--text-secondary)] font-serif italic" id="cover-wedding-date">
           Menuju Hari Bahagia
         </p>
       </div>
@@ -489,12 +613,12 @@
       </div>
 
       <!-- Dear Guest Box -->
-      <div class="w-full p-5 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-md shadow-xl space-y-3 relative z-20">
-        <span class="text-[11px] text-stone-400 block">Kepada Yth. Bapak/Ibu/Saudara/i:</span>
-        <h3 class="font-serif text-2xl font-bold text-amber-200 tracking-wide" id="cover-guest-name">
+      <div class="w-full p-5 rounded-3xl bg-[var(--bg-card,#ffffff)]/85 border border-stone-200/80 backdrop-blur-md shadow-xl space-y-3 relative z-20">
+        <span class="text-[11px] text-[var(--text-secondary)] block">Kepada Yth. Bapak/Ibu/Saudara/i:</span>
+        <h3 class="font-serif text-2xl font-bold text-[var(--text-main,#2C352E)] tracking-wide" id="cover-guest-name">
           Tamu Kehormatan
         </h3>
-        <p class="text-[11px] text-stone-400 leading-relaxed">
+        <p class="text-[11px] text-[var(--text-secondary)] leading-relaxed">
           Tanpa mengurangi rasa hormat, kami mengundang Anda untuk hadir dan memberikan doa restu pada hari pernikahan kami.
         </p>
         
@@ -509,7 +633,7 @@
       </div>
 
       <!-- Bottom Branding -->
-      <div class="pb-4 text-[10px] text-stone-500 tracking-wider uppercase font-mono relative z-20">
+      <div class="pb-4 text-[10px] text-[var(--text-tertiary)] tracking-wider uppercase font-mono relative z-20">
         MenikahBersama Digital Invitation
       </div>
     </div>
@@ -581,25 +705,22 @@
 
         <!-- Teks Kutipan Suci -->
         <div class="wedding-card backdrop-blur-md p-5 rounded-2xl bg-[var(--bg-card,#ffffff)]/85 border border-stone-200/70 shadow-2xs space-y-2 mt-4 relative overflow-hidden" data-animate="zoom-in">
-          <div class="card-corner-slot top-0 left-0" data-slot="tl"></div>
-          <div class="card-corner-slot top-0 right-0" data-slot="tr"></div>
-          <p class="text-xs text-slate-600 italic font-serif leading-relaxed relative z-10" id="quote-text">
+          <p class="text-xs text-[var(--text-secondary)] italic font-serif leading-relaxed relative z-10" id="quote-text">
             "Dan di antara tanda-tanda kekuasaan-Nya ialah Dia menciptakan untukmu pasangan hidup dari jenismu sendiri, supaya kamu merasa tenteram di sampingnya."
           </p>
-          <span class="block text-[10px] font-sans not-italic text-amber-800 font-bold relative z-10" id="quote-source">
+          <span class="block text-[10px] font-sans not-italic text-[var(--accent-color,#b48342)] font-bold relative z-10" id="quote-source">
             (QS. Ar-Rum: 21)
           </span>
         </div>
       </section>
+
+      <div class="section-divider-slot my-2 flex items-center justify-center text-[var(--accent-color,#b48342)]"></div>
 
       <!-- 3. PROFIL MEMPELAI PRIA & WANITA -->
       <section id="section-couple" class="space-y-6">
         
         <!-- Mempelai Pria -->
         <div class="wedding-card backdrop-blur-md p-5 rounded-3xl bg-[var(--bg-card,#ffffff)]/85 border border-stone-200/80 shadow-2xs space-y-3 relative overflow-hidden" data-animate="slide-left">
-          <div class="card-corner-slot top-0 left-0" data-slot="tl"></div>
-          <div class="card-corner-slot top-0 right-0" data-slot="tr"></div>
-          
           <div class="relative mx-auto my-1 flex items-center justify-center">
             <div id="groom-frame-outer" class="relative">
               <div id="groom-photo-frame" class="w-24 h-24 rounded-full overflow-hidden mx-auto shadow-md border-2 border-amber-300/80 flex items-center justify-center bg-stone-100 relative transition-all duration-500">
@@ -611,22 +732,19 @@
             </div>
           </div>
           <div class="relative z-10">
-            <h3 class="font-serif text-xl font-bold text-slate-900" id="groom-name">Mempelai Pria</h3>
-            <p class="text-[11px] text-slate-500 mt-1" id="groom-parents">Putra tercinta dari Keluarga</p>
-            <a id="groom-ig-link" href="#" target="_blank" class="inline-flex items-center gap-1 text-[10px] font-mono text-amber-800 hover:underline mt-2 hidden">
+            <h3 class="font-serif text-xl font-bold text-[var(--text-main,#2C352E)]" id="groom-name">Mempelai Pria</h3>
+            <p class="text-[11px] text-[var(--text-secondary)] mt-1" id="groom-parents">Putra tercinta dari Keluarga</p>
+            <a id="groom-ig-link" href="#" target="_blank" class="inline-flex items-center gap-1 text-[10px] font-mono text-[var(--accent-color,#b48342)] hover:underline mt-2 hidden">
               <i data-lucide="instagram" class="w-3 h-3"></i>
               <span id="groom-ig-text">@yogi</span>
             </a>
           </div>
         </div>
 
-        <div class="font-serif text-2xl font-bold text-amber-700 float-breathing" data-animate="zoom-in">&</div>
+        <div class="font-serif text-2xl font-bold text-[var(--accent-color,#b48342)] float-breathing" data-animate="zoom-in">&</div>
 
         <!-- Mempelai Wanita -->
         <div class="wedding-card backdrop-blur-md p-5 rounded-3xl bg-[var(--bg-card,#ffffff)]/85 border border-stone-200/80 shadow-2xs space-y-3 relative overflow-hidden" data-animate="slide-right">
-          <div class="card-corner-slot top-0 left-0" data-slot="tl"></div>
-          <div class="card-corner-slot top-0 right-0" data-slot="tr"></div>
-          
           <div class="relative mx-auto my-1 flex items-center justify-center">
             <div id="bride-frame-outer" class="relative">
               <div id="bride-photo-frame" class="w-24 h-24 rounded-full overflow-hidden mx-auto shadow-md border-2 border-amber-300/80 flex items-center justify-center bg-stone-100 relative transition-all duration-500">
@@ -638,9 +756,9 @@
             </div>
           </div>
           <div class="relative z-10">
-            <h3 class="font-serif text-xl font-bold text-slate-900" id="bride-name">Mempelai Wanita</h3>
-            <p class="text-[11px] text-slate-500 mt-1" id="bride-parents">Putri tercinta dari Keluarga</p>
-            <a id="bride-ig-link" href="#" target="_blank" class="inline-flex items-center gap-1 text-[10px] font-mono text-rose-800 hover:underline mt-2 hidden">
+            <h3 class="font-serif text-xl font-bold text-[var(--text-main,#2C352E)]" id="bride-name">Mempelai Wanita</h3>
+            <p class="text-[11px] text-[var(--text-secondary)] mt-1" id="bride-parents">Putri tercinta dari Keluarga</p>
+            <a id="bride-ig-link" href="#" target="_blank" class="inline-flex items-center gap-1 text-[10px] font-mono text-[var(--accent-color,#b48342)] hover:underline mt-2 hidden">
               <i data-lucide="instagram" class="w-3 h-3"></i>
               <span id="bride-ig-text">@rina</span>
             </a>
@@ -649,11 +767,11 @@
 
       </section>
 
+      <div class="section-divider-slot my-2 flex items-center justify-center text-[var(--accent-color,#b48342)]"></div>
+
       <!-- 4. HITUNG MUNDUR REAL-TIME DETIK DEMI DETIK -->
       <section id="section-countdown" class="wedding-card backdrop-blur-md p-6 rounded-3xl bg-[var(--bg-card,#ffffff)]/85 border border-stone-200/80 shadow-2xs space-y-4 relative overflow-hidden" data-animate="zoom-in">
-        <div class="card-corner-slot top-0 left-0" data-slot="tl"></div>
-        <div class="card-corner-slot top-0 right-0" data-slot="tr"></div>
-        <span class="text-[10px] uppercase tracking-widest text-amber-800 font-bold block relative z-10">Menuju Hari Bahagia</span>
+        <span class="text-[10px] uppercase tracking-widest text-[var(--accent-color,#b48342)] font-bold block relative z-10">Menuju Hari Bahagia</span>
         
         <div class="grid grid-cols-4 gap-2 relative z-10">
           <div class="bg-amber-50/70 p-2.5 rounded-2xl border border-amber-200/60 text-center">
@@ -685,28 +803,28 @@
         </a>
       </section>
 
+      <div class="section-divider-slot my-2 flex items-center justify-center text-[var(--accent-color,#b48342)]"></div>
+
       <!-- 5. DETAIL ACARA (AKAD & RESEPSI) -->
       <section id="section-events" class="space-y-4">
         <div data-animate="fade-up">
-          <span class="text-[10px] uppercase tracking-widest text-amber-800 font-bold block">Waktu & Tempat</span>
-          <h3 class="font-serif text-2xl font-bold text-slate-900">Rangkaian Acara</h3>
+          <span class="text-[10px] uppercase tracking-widest text-[var(--accent-color,#b48342)] font-bold block">Waktu & Tempat</span>
+          <h3 class="font-serif text-2xl font-bold text-[var(--text-main,#2C352E)]">Rangkaian Acara</h3>
         </div>
 
         <!-- Akad Nikah -->
         <div id="card-event-akad" class="wedding-card p-6 rounded-3xl bg-[var(--bg-card,#ffffff)] border border-stone-200/80 shadow-2xs text-center flex flex-col items-center justify-center space-y-3 relative overflow-hidden" data-animate="fade-up">
-          <div class="card-corner-slot top-0 left-0" data-slot="tl"></div>
-          <div class="card-corner-slot top-0 right-0" data-slot="tr"></div>
-          <div class="inline-flex items-center justify-center gap-2 text-amber-800 font-bold text-xs uppercase tracking-wider relative z-10">
+          <div class="inline-flex items-center justify-center gap-2 text-[var(--accent-color,#b48342)] font-bold text-xs uppercase tracking-wider relative z-10">
             <i data-lucide="book-open" class="w-4 h-4"></i>
             <span>Akad Nikah</span>
           </div>
           <div class="text-center relative z-10">
-            <div class="text-base font-bold text-slate-900" id="akad-date">-</div>
-            <div class="text-xs text-amber-700 font-semibold mt-0.5" id="akad-time">Pukul 08.00 WIB - Selesai</div>
+            <div class="text-base font-bold text-[var(--text-main,#2C352E)]" id="akad-date">-</div>
+            <div class="text-xs text-[var(--accent-color,#b48342)] font-semibold mt-0.5" id="akad-time">Pukul 08.00 WIB - Selesai</div>
           </div>
-          <div class="pt-2 border-t border-stone-100 text-xs text-slate-600 text-center w-full relative z-10">
-            <span class="font-bold text-slate-800 block" id="akad-venue">Lokasi Akad</span>
-            <span id="akad-address" class="text-slate-500 leading-relaxed block mt-1 max-w-xs mx-auto">Alamat lengkap akad</span>
+          <div class="pt-2 border-t border-stone-100 text-xs text-[var(--text-secondary)] text-center w-full relative z-10">
+            <span class="font-bold text-[var(--text-main,#2C352E)] block" id="akad-venue">Lokasi Akad</span>
+            <span id="akad-address" class="text-[var(--text-secondary)] leading-relaxed block mt-1 max-w-xs mx-auto">Alamat lengkap akad</span>
           </div>
           <a id="akad-maps-btn" href="#" target="_blank" class="inline-flex items-center justify-center gap-1.5 w-full py-2.5 px-4 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold transition-colors hidden cursor-pointer shadow-xs relative z-10">
             <i data-lucide="map-pin" class="w-3.5 h-3.5"></i>
@@ -716,19 +834,17 @@
 
         <!-- Resepsi Pernikahan -->
         <div id="card-event-resepsi" class="wedding-card p-6 rounded-3xl bg-[var(--bg-card,#ffffff)] border border-stone-200/80 shadow-2xs text-center flex flex-col items-center justify-center space-y-3 relative overflow-hidden" data-animate="fade-up">
-          <div class="card-corner-slot top-0 left-0" data-slot="tl"></div>
-          <div class="card-corner-slot top-0 right-0" data-slot="tr"></div>
-          <div class="inline-flex items-center justify-center gap-2 text-slate-800 font-bold text-xs uppercase tracking-wider relative z-10">
-            <i data-lucide="party-popper" class="w-4 h-4 text-amber-600"></i>
+          <div class="inline-flex items-center justify-center gap-2 text-[var(--text-main,#2C352E)] font-bold text-xs uppercase tracking-wider relative z-10">
+            <i data-lucide="party-popper" class="w-4 h-4 text-[var(--accent-color,#b48342)]"></i>
             <span>Resepsi Pernikahan</span>
           </div>
           <div class="text-center relative z-10">
-            <div class="text-base font-bold text-slate-900" id="resepsi-date">-</div>
-            <div class="text-xs text-amber-700 font-semibold mt-0.5" id="resepsi-time">Pukul 11.00 - 15.00 WIB</div>
+            <div class="text-base font-bold text-[var(--text-main,#2C352E)]" id="resepsi-date">-</div>
+            <div class="text-xs text-[var(--accent-color,#b48342)] font-semibold mt-0.5" id="resepsi-time">Pukul 11.00 - 15.00 WIB</div>
           </div>
-          <div class="pt-2 border-t border-stone-100 text-xs text-slate-600 text-center w-full relative z-10">
-            <span class="font-bold text-slate-800 block" id="resepsi-venue">Gedung / Tempat Resepsi</span>
-            <span id="resepsi-address" class="text-slate-500 leading-relaxed block mt-1 max-w-xs mx-auto">Alamat lengkap resepsi</span>
+          <div class="pt-2 border-t border-stone-100 text-xs text-[var(--text-secondary)] text-center w-full relative z-10">
+            <span class="font-bold text-[var(--text-main,#2C352E)] block" id="resepsi-venue">Gedung / Tempat Resepsi</span>
+            <span id="resepsi-address" class="text-[var(--text-secondary)] leading-relaxed block mt-1 max-w-xs mx-auto">Alamat lengkap resepsi</span>
           </div>
           <a id="resepsi-maps-btn" href="#" target="_blank" class="inline-flex items-center justify-center gap-1.5 w-full py-2.5 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition-colors hidden cursor-pointer shadow-xs relative z-10">
             <i data-lucide="map-pin" class="w-3.5 h-3.5 text-amber-400"></i>
@@ -738,34 +854,40 @@
 
       </section>
 
+      <div class="section-divider-slot my-2 flex items-center justify-center text-[var(--accent-color,#b48342)]"></div>
+
       <!-- 6. CERITA CINTA (LOVE STORY TIMELINE) -->
       <section id="section-love-story" class="space-y-4 text-left hidden" data-animate="fade-up">
         <div class="text-center">
-          <span class="text-[10px] uppercase tracking-widest text-amber-800 font-bold block">Kisah Kami</span>
-          <h3 class="font-serif text-2xl font-bold text-slate-900">Perjalanan Cinta</h3>
+          <span class="text-[10px] uppercase tracking-widest text-[var(--accent-color,#b48342)] font-bold block">Kisah Kami</span>
+          <h3 class="font-serif text-2xl font-bold text-[var(--text-main,#2C352E)]">Perjalanan Cinta</h3>
         </div>
         <div id="love-story-container" class="space-y-3">
           <!-- Injected via JavaScript -->
         </div>
       </section>
 
+      <div class="section-divider-slot my-2 flex items-center justify-center text-[var(--accent-color,#b48342)]"></div>
+
       <!-- 7. GALERI PREWEDDING -->
       <section id="section-gallery" class="space-y-4 hidden" data-animate="zoom-in">
         <div>
-          <span class="text-[10px] uppercase tracking-widest text-amber-800 font-bold block">Momen Bahagia</span>
-          <h3 class="font-serif text-2xl font-bold text-slate-900">Galeri Foto</h3>
+          <span class="text-[10px] uppercase tracking-widest text-[var(--accent-color,#b48342)] font-bold block">Momen Bahagia</span>
+          <h3 class="font-serif text-2xl font-bold text-[var(--text-main,#2C352E)]">Galeri Foto</h3>
         </div>
         <div id="gallery-container" class="grid grid-cols-2 gap-2.5">
           <!-- Injected via JavaScript -->
         </div>
       </section>
 
+      <div class="section-divider-slot my-2 flex items-center justify-center text-[var(--accent-color,#b48342)]"></div>
+
       <!-- 8. AMPLOP DIGITAL (CASHLESS GIFT) -->
       <section id="section-envelopes" class="space-y-4 hidden" data-animate="fade-up">
         <div>
-          <span class="text-[10px] uppercase tracking-widest text-amber-800 font-bold block">Tanda Kasih</span>
-          <h3 class="font-serif text-2xl font-bold text-slate-900">Amplop Digital</h3>
-          <p class="text-[11px] text-slate-500 mt-1 max-w-xs mx-auto leading-relaxed">
+          <span class="text-[10px] uppercase tracking-widest text-[var(--accent-color,#b48342)] font-bold block">Tanda Kasih</span>
+          <h3 class="font-serif text-2xl font-bold text-[var(--text-main,#2C352E)]">Amplop Digital</h3>
+          <p class="text-[11px] text-[var(--text-secondary)] mt-1 max-w-xs mx-auto leading-relaxed">
             Doa restu Anda merupakan karunia terindah bagi kami. Bagi keluarga & rekan yang ingin memberi tanda kasih secara cashless:
           </p>
         </div>
@@ -773,23 +895,21 @@
           <!-- Injected via JavaScript -->
         </div>
         <div id="physical-gift-container" class="hidden wedding-card backdrop-blur-md p-4 rounded-2xl bg-[var(--bg-card,#ffffff)]/85 border border-stone-200/80 text-left text-xs space-y-1.5 relative overflow-hidden">
-          <div class="card-corner-slot top-0 left-0" data-slot="tl"></div>
-          <div class="card-corner-slot top-0 right-0" data-slot="tr"></div>
-          <span class="font-bold text-slate-800 flex items-center gap-1.5 text-[11px] relative z-10">
+          <span class="font-bold text-[var(--text-main,#2C352E)] flex items-center gap-1.5 text-[11px] relative z-10">
             <i data-lucide="package" class="w-3.5 h-3.5 text-amber-600"></i>
             <span>Alamat Kirim Kado Fisik:</span>
           </span>
-          <p id="physical-gift-text" class="text-slate-600 leading-relaxed whitespace-pre-line text-[11px] relative z-10"></p>
+          <p id="physical-gift-text" class="text-[var(--text-secondary)] leading-relaxed whitespace-pre-line text-[11px] relative z-10"></p>
         </div>
       </section>
 
+      <div class="section-divider-slot my-2 flex items-center justify-center text-[var(--accent-color,#b48342)]"></div>
+
       <!-- 9. SMART RSVP & FORM KONFIRMASI -->
       <section id="section-rsvp" class="wedding-card backdrop-blur-md p-6 rounded-3xl bg-[var(--bg-card,#ffffff)]/85 border border-stone-200/80 shadow-2xs text-left space-y-4 relative overflow-hidden" data-animate="zoom-in">
-        <div class="card-corner-slot top-0 left-0" data-slot="tl"></div>
-        <div class="card-corner-slot top-0 right-0" data-slot="tr"></div>
         <div class="text-center relative z-10">
-          <h3 class="font-serif text-2xl font-bold text-slate-900">Konfirmasi Kehadiran</h3>
-          <p class="text-[11px] text-slate-500 mt-1">Mohon konfirmasi kehadiran untuk estimasi katering kami.</p>
+          <h3 class="font-serif text-2xl font-bold text-[var(--text-main,#2C352E)]">Konfirmasi Kehadiran</h3>
+          <p class="text-[11px] text-[var(--text-secondary)] mt-1">Mohon konfirmasi kehadiran untuk estimasi katering kami.</p>
         </div>
 
         <form id="rsvp-form" class="space-y-3.5 relative z-10">
@@ -852,14 +972,16 @@
         </form>
       </section>
 
+      <div class="section-divider-slot my-2 flex items-center justify-center text-[var(--accent-color,#b48342)]"></div>
+
       <!-- 10. REAL-TIME WISHES WALL -->
       <section id="section-wishes" class="space-y-4 text-left" data-animate="fade-up">
         <div class="text-center">
-          <h3 class="font-serif text-2xl font-bold text-slate-900 flex items-center justify-center gap-2">
+          <h3 class="font-serif text-2xl font-bold text-[var(--text-main,#2C352E)] flex items-center justify-center gap-2">
             <i data-lucide="heart" class="w-4 h-4 text-rose-500 fill-rose-500"></i>
             <span>Doa Restu Tamu</span>
           </h3>
-          <p class="text-[11px] text-slate-500 mt-0.5" id="wishes-count-label">Memuat ucapan selamat...</p>
+          <p class="text-[11px] text-[var(--text-secondary)] mt-0.5" id="wishes-count-label">Memuat ucapan selamat...</p>
         </div>
 
         <div id="wishes-list" class="space-y-3 max-h-96 overflow-y-auto custom-scrollbar pr-1">
@@ -868,14 +990,14 @@
       </section>
 
       <!-- 11. FOOTER -->
-      <footer class="pt-8 pb-4 border-t border-stone-200/60 text-center text-[11px] text-slate-400 space-y-2" data-animate="fade-up">
-        <p class="font-serif text-base font-bold text-slate-700">Terima Kasih</p>
+      <footer class="pt-8 pb-4 border-t border-stone-200/60 text-center text-[11px] text-[var(--text-tertiary)] space-y-2" data-animate="fade-up">
+        <p class="font-serif text-base font-bold text-[var(--text-main,#2C352E)]">Terima Kasih</p>
         <p class="max-w-xs mx-auto leading-relaxed">
           Merupakan suatu kehormatan dan kebahagiaan bagi kami atas kehadiran dan doa restu Anda.
         </p>
-        <div class="pt-2 flex items-center justify-center gap-1.5 text-slate-400 text-[10px]">
+        <div class="pt-2 flex items-center justify-center gap-1.5 text-[var(--text-tertiary)] text-[10px]">
           <span>Dibuat dengan penuh cinta menggunakan</span>
-          <a href="/" class="font-bold text-amber-700 hover:underline">MenikahBersama.my.id</a>
+          <a href="/" class="font-bold text-[var(--accent-color,#b48342)] hover:underline">MenikahBersama.my.id</a>
         </div>
       </footer>
 

@@ -15,6 +15,7 @@ class ParticleEngine {
     this.effect = 'none';
     this.physics = 'breeze_right'; // 'breeze_right' | 'flutter_wide' | 'float_up' | 'soft_swirl'
     this.layer = 'behind'; // 'behind' | 'front'
+    this.opacity = 0.7; // Slider Opacity (0.1 - 1.0)
     this.width = 0;
     this.height = 0;
     this.isRunning = false;
@@ -27,15 +28,18 @@ class ParticleEngine {
 
   resize() {
     if (!this.canvas) return;
-    const rect = this.canvas.getBoundingClientRect();
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
-    this.width = rect.width || Math.min(window.innerWidth, 448);
-    this.height = rect.height || window.innerHeight;
+    this.width = window.innerWidth;
+    this.height = window.innerHeight;
     this.canvas.width = this.width * dpr;
     this.canvas.height = this.height * dpr;
     if (this.ctx) {
       this.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     }
+  }
+
+  setOpacity(val) {
+    this.opacity = Math.max(0.05, Math.min(1.0, parseFloat(val) || 0.7));
   }
 
   setPhysics(physicsMode) {
@@ -264,6 +268,7 @@ class ParticleEngine {
   draw() {
     if (!this.ctx) return;
     this.ctx.clearRect(0, 0, this.width, this.height);
+    const globalMultiplier = (typeof this.opacity === 'number') ? this.opacity : 0.7;
 
     for (let i = 0; i < this.particles.length; i++) {
       const p = this.particles[i];
@@ -273,6 +278,7 @@ class ParticleEngine {
         this.ctx.translate(p.x, p.y);
         this.ctx.rotate(p.angle);
         this.ctx.scale(Math.cos(p.angle * 1.3), 1);
+        this.ctx.globalAlpha = 0.85 * globalMultiplier;
         this.ctx.beginPath();
         this.ctx.moveTo(0, -p.size);
         this.ctx.bezierCurveTo(p.size * 0.85, -p.size * 0.5, p.size * 0.85, p.size * 0.85, 0, p.size);
@@ -285,6 +291,7 @@ class ParticleEngine {
         this.ctx.translate(p.x, p.y);
         this.ctx.rotate(p.angle);
         this.ctx.scale(Math.cos(p.angle * 1.1), 1);
+        this.ctx.globalAlpha = 0.85 * globalMultiplier;
         this.ctx.beginPath();
         this.ctx.moveTo(0, -p.size * 1.3);
         this.ctx.quadraticCurveTo(p.size * 0.75, 0, 0, p.size * 1.3);
@@ -302,7 +309,7 @@ class ParticleEngine {
         this.ctx.save();
         this.ctx.translate(p.x, p.y);
         this.ctx.rotate(p.angle);
-        const alpha = Math.max(0.1, Math.min(1, p.baseAlpha + Math.sin(p.pulse) * 0.35));
+        const alpha = Math.max(0.05, Math.min(1, p.baseAlpha + Math.sin(p.pulse) * 0.35)) * globalMultiplier;
         this.ctx.globalAlpha = alpha;
         // Radial glow
         const grad = this.ctx.createRadialGradient(0, 0, 0, 0, 0, p.size * 2);
@@ -326,7 +333,7 @@ class ParticleEngine {
       } else if (p.type === 'snow') {
         this.ctx.save();
         this.ctx.translate(p.x, p.y);
-        this.ctx.globalAlpha = p.opacity;
+        this.ctx.globalAlpha = p.opacity * globalMultiplier;
         const grad = this.ctx.createRadialGradient(0, 0, 0, 0, 0, p.size);
         grad.addColorStop(0, 'rgba(255, 255, 255, 0.95)');
         grad.addColorStop(0.6, 'rgba(255, 255, 255, 0.5)');
@@ -746,6 +753,104 @@ const ORNAMENT_THEMES = {
 };
 
 // ============================================================================
+// 2B. 10 PRESET SECTION DIVIDERS (PEMBATAS SEKSI SVG ELEGAN)
+// ============================================================================
+const SECTION_DIVIDERS = {
+  'floral_branch': `<svg class="w-48 sm:w-56 h-6 mx-auto" viewBox="0 0 200 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M10 12 H90 M110 12 H190" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" opacity="0.6"/>
+    <circle cx="100" cy="12" r="3.5" fill="currentColor"/>
+    <path d="M93 12 C90 8, 84 8, 84 12 C84 16, 90 16, 93 12 Z" fill="currentColor" opacity="0.8"/>
+    <path d="M107 12 C110 8, 116 8, 116 12 C116 16, 110 16, 107 12 Z" fill="currentColor" opacity="0.8"/>
+    <circle cx="75" cy="12" r="1.5" fill="currentColor" opacity="0.7"/>
+    <circle cx="125" cy="12" r="1.5" fill="currentColor" opacity="0.7"/>
+  </svg>`,
+
+  'royal_javanese': `<svg class="w-48 sm:w-56 h-7 mx-auto" viewBox="0 0 220 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M15 14 H85 M135 14 H205" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" opacity="0.5"/>
+    <g transform="translate(110, 14)">
+      <path d="M0 -10 C6 -5, 10 -2, 12 0 C10 2, 6 5, 0 10 C-6 5, -10 2, -12 0 C-10 -2, -6 -5, 0 -10 Z" fill="currentColor"/>
+      <circle cx="0" cy="0" r="2.5" fill="#FFFFFF"/>
+      <circle cx="-18" cy="0" r="2" fill="currentColor"/>
+      <circle cx="18" cy="0" r="2" fill="currentColor"/>
+    </g>
+  </svg>`,
+
+  'diamond_line': `<svg class="w-48 sm:w-56 h-6 mx-auto" viewBox="0 0 200 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M10 12 H82 M118 12 H190" stroke="currentColor" stroke-width="1.2" stroke-dasharray="3 3" opacity="0.6"/>
+    <rect x="96" y="8" width="8" height="8" transform="rotate(45 100 12)" fill="currentColor"/>
+    <rect x="86" y="9.5" width="5" height="5" transform="rotate(45 88.5 12)" fill="currentColor" opacity="0.7"/>
+    <rect x="109" y="9.5" width="5" height="5" transform="rotate(45 111.5 12)" fill="currentColor" opacity="0.7"/>
+  </svg>`,
+
+  'botanical_garland': `<svg class="w-52 sm:w-60 h-7 mx-auto" viewBox="0 0 220 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M20 13 Q60 5, 100 13 T180 13 M180 13 H200 M20 13 H5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" opacity="0.5"/>
+    <path d="M50 10 C46 5, 54 4, 57 8 C55 11, 48 11, 50 10 Z" fill="currentColor" opacity="0.75"/>
+    <path d="M80 14 C76 19, 84 20, 87 16 C85 13, 78 13, 80 14 Z" fill="currentColor" opacity="0.75"/>
+    <path d="M110 9 C106 4, 114 3, 117 7 C115 10, 108 10, 110 9 Z" fill="currentColor" opacity="0.75"/>
+    <path d="M140 14 C136 19, 144 20, 147 16 C145 13, 138 13, 140 14 Z" fill="currentColor" opacity="0.75"/>
+    <circle cx="110" cy="13" r="3" fill="currentColor"/>
+  </svg>`,
+
+  'crown_filigree': `<svg class="w-48 sm:w-56 h-8 mx-auto" viewBox="0 0 200 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M10 20 H80 M120 20 H190" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" opacity="0.5"/>
+    <path d="M88 20 C92 12, 96 6, 100 6 C104 6, 108 12, 112 20 Z" fill="none" stroke="currentColor" stroke-width="1.5"/>
+    <circle cx="100" cy="5" r="2" fill="currentColor"/>
+    <circle cx="92" cy="11" r="1.5" fill="currentColor"/>
+    <circle cx="108" cy="11" r="1.5" fill="currentColor"/>
+    <circle cx="100" cy="16" r="2.5" fill="currentColor"/>
+  </svg>`,
+
+  'boho_wave': `<svg class="w-48 sm:w-56 h-6 mx-auto" viewBox="0 0 200 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M10 12 C30 6, 50 18, 70 12 C90 6, 110 18, 130 12 C150 6, 170 18, 190 12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" opacity="0.6"/>
+    <circle cx="100" cy="12" r="3" fill="currentColor"/>
+    <circle cx="70" cy="12" r="1.8" fill="currentColor"/>
+    <circle cx="130" cy="12" r="1.8" fill="currentColor"/>
+  </svg>`,
+
+  'heart_infinity': `<svg class="w-48 sm:w-56 h-7 mx-auto" viewBox="0 0 200 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M10 13 H80 M120 13 H190" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" opacity="0.5"/>
+    <path d="M100 19 C100 19, 92 14, 92 10 C92 7.5, 94 6, 96.5 6 C98.5 6, 99.5 7.2, 100 8 C100.5 7.2, 101.5 6, 103.5 6 C106 6, 108 7.5, 108 10 C108 14, 100 19, 100 19 Z" fill="currentColor"/>
+  </svg>`,
+
+  'art_deco': `<svg class="w-48 sm:w-56 h-7 mx-auto" viewBox="0 0 200 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M10 13 H75 M125 13 H190" stroke="currentColor" stroke-width="1.2" opacity="0.5"/>
+    <path d="M82 13 L100 4 L118 13 L100 22 Z" stroke="currentColor" stroke-width="1.4" fill="none"/>
+    <path d="M89 13 L100 8 L111 13 L100 18 Z" stroke="currentColor" stroke-width="1" fill="none" opacity="0.7"/>
+    <circle cx="100" cy="13" r="2" fill="currentColor"/>
+  </svg>`,
+
+  'celestial_stars': `<svg class="w-48 sm:w-56 h-7 mx-auto" viewBox="0 0 200 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M10 13 H80 M120 13 H190" stroke="currentColor" stroke-width="1.2" stroke-dasharray="2 3" opacity="0.5"/>
+    <path d="M100 5 L102 11 L108 13 L102 15 L100 21 L98 15 L92 13 L98 11 Z" fill="currentColor"/>
+    <circle cx="85" cy="13" r="1.5" fill="currentColor" opacity="0.75"/>
+    <circle cx="115" cy="13" r="1.5" fill="currentColor" opacity="0.75"/>
+  </svg>`,
+
+  'none': ''
+};
+
+// Helper hex to rgba
+function hexToRgba(hex, alpha = 1) {
+  if (!hex) return `rgba(44, 53, 46, ${alpha})`;
+  if (hex.startsWith('rgba')) return hex;
+  if (hex.startsWith('rgb')) {
+    return hex.replace('rgb', 'rgba').replace(')', `, ${alpha})`);
+  }
+  let clean = hex.replace('#', '').trim();
+  if (clean.length === 3) {
+    clean = clean.split('').map(c => c + c).join('');
+  }
+  if (clean.length === 6) {
+    const num = parseInt(clean, 16);
+    const r = (num >> 16) & 255;
+    const g = (num >> 8) & 255;
+    const b = num & 255;
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+  }
+  return hex;
+}
+
+// ============================================================================
 // 3. INVITATION ENGINE UTAMA (KELAS LENGKAP)
 // ============================================================================
 class InvitationEngine {
@@ -754,6 +859,7 @@ class InvitationEngine {
     this.template = null;
     this.slug = null;
     this.guestName = 'Tamu Kehormatan';
+    this.isCoverOpened = false;
     this.isPlayingAudio = false;
     this.audioElement = null;
     this.countdownInterval = null;
@@ -767,6 +873,10 @@ class InvitationEngine {
    */
   async init() {
     try {
+      // Kunci scroll body & container saat cover masih tertutup
+      document.body.classList.add('overflow-hidden');
+      document.getElementById('invitation-app-container')?.classList.add('overflow-hidden');
+
       this.extractParams();
       this.initAudioController();
       this.initLightbox();
@@ -942,13 +1052,13 @@ class InvitationEngine {
     if (!container || !frame || !img) return;
 
     const tplConfig = this.template?.config_json || {};
-    const coverPhoto = this.wedding?.cover_photo;
+    const coverPhoto = this.wedding?.cover_photo || tplConfig.default_cover_photo || this.wedding?.groom_photo;
     const custom = this.wedding?.custom_theme_json || {};
     const frameShape = custom.cover_frame_shape || tplConfig.cover_frame_shape || 'grand_arch';
     const frameOrnament = custom.cover_frame_ornament || tplConfig.cover_frame_ornament || 'floral_wreath';
     const customFramePng = custom.custom_cover_frame_png || tplConfig.ornaments?.custom_cover_frame_png;
 
-    if (coverPhoto && frameShape !== 'none') {
+    if (coverPhoto) {
       container.classList.remove('hidden');
       img.src = coverPhoto;
 
@@ -959,13 +1069,22 @@ class InvitationEngine {
         .join(' ');
       frame.classList.add(`cover-frame-${frameShape}`);
 
-      // Render Ornamen Hiasan Bingkai Sampul
+      // Atur dimensi frame sesuai rasio bentuk (circle/octagon vs arch/oval/teardrop)
+      if (frameShape === 'circle_royal' || frameShape === 'octagon_heritage') {
+        frame.style.width = '10rem';
+        frame.style.height = '10rem';
+      } else {
+        frame.style.width = '';
+        frame.style.height = '';
+      }
+
+      // Render Ornamen Hiasan Bingkai Sampul Luar (tanpa menutupi wajah pengantin)
       if (ornamentEl) {
         if (customFramePng) {
           ornamentEl.innerHTML = `<img src="${customFramePng}" alt="Bingkai Kustom" class="w-full h-full object-contain filter drop-shadow">`;
         } else if (frameOrnament === 'floral_wreath') {
           ornamentEl.innerHTML = `
-            <svg class="w-full h-full text-amber-300/80 filter drop-shadow-md pointer-events-none" viewBox="0 0 200 240" fill="none" stroke="currentColor">
+            <svg class="w-full h-full text-[var(--accent-color,#d4af37)] filter drop-shadow-md pointer-events-none" viewBox="0 0 200 240" fill="none" stroke="currentColor">
               <ellipse cx="100" cy="120" rx="94" ry="114" stroke="currentColor" stroke-width="1.5" stroke-dasharray="4 3" opacity="0.75" />
               <circle cx="100" cy="8" r="4" fill="currentColor" />
               <circle cx="100" cy="232" r="4" fill="currentColor" />
@@ -977,20 +1096,20 @@ class InvitationEngine {
           `;
         } else if (frameOrnament === 'twin_gold_lines') {
           ornamentEl.innerHTML = `
-            <div class="w-full h-full border border-amber-300/50 rounded-2xl pointer-events-none relative scale-105">
-              <span class="absolute -top-1 -left-1 w-2.5 h-2.5 rotate-45 bg-amber-400 shadow-xs"></span>
-              <span class="absolute -top-1 -right-1 w-2.5 h-2.5 rotate-45 bg-amber-400 shadow-xs"></span>
-              <span class="absolute -bottom-1 -left-1 w-2.5 h-2.5 rotate-45 bg-amber-400 shadow-xs"></span>
-              <span class="absolute -bottom-1 -right-1 w-2.5 h-2.5 rotate-45 bg-amber-400 shadow-xs"></span>
+            <div class="w-full h-full border border-[var(--accent-color,#d4af37)]/50 rounded-2xl pointer-events-none relative scale-105">
+              <span class="absolute -top-1 -left-1 w-2.5 h-2.5 rotate-45 bg-[var(--accent-color,#d4af37)] shadow-xs"></span>
+              <span class="absolute -top-1 -right-1 w-2.5 h-2.5 rotate-45 bg-[var(--accent-color,#d4af37)] shadow-xs"></span>
+              <span class="absolute -bottom-1 -left-1 w-2.5 h-2.5 rotate-45 bg-[var(--accent-color,#d4af37)] shadow-xs"></span>
+              <span class="absolute -bottom-1 -right-1 w-2.5 h-2.5 rotate-45 bg-[var(--accent-color,#d4af37)] shadow-xs"></span>
             </div>
           `;
         } else if (frameOrnament === 'javanese_carving') {
           ornamentEl.innerHTML = `
             <div class="w-full h-full flex flex-col justify-between items-center pointer-events-none py-1">
-              <svg class="w-20 h-6 text-amber-400 filter drop-shadow" viewBox="0 0 100 30" fill="currentColor">
+              <svg class="w-20 h-6 text-[var(--accent-color,#d4af37)] filter drop-shadow" viewBox="0 0 100 30" fill="currentColor">
                 <path d="M50 0 L58 14 L75 14 L62 23 L67 38 L50 28 L33 38 L38 23 L25 14 L42 14 Z" transform="scale(0.7) translate(22, -6)"/>
               </svg>
-              <svg class="w-20 h-6 text-amber-400 filter drop-shadow rotate-180" viewBox="0 0 100 30" fill="currentColor">
+              <svg class="w-20 h-6 text-[var(--accent-color,#d4af37)] filter drop-shadow rotate-180" viewBox="0 0 100 30" fill="currentColor">
                 <path d="M50 0 L58 14 L75 14 L62 23 L67 38 L50 28 L33 38 L38 23 L25 14 L42 14 Z" transform="scale(0.7) translate(22, -6)"/>
               </svg>
             </div>
@@ -1048,34 +1167,9 @@ class InvitationEngine {
       }
     }
 
-    // 1. Ornamen di Sampul Depan (Cover Screen)
-    const coverTL = document.getElementById('cover-ornament-tl');
-    const coverTR = document.getElementById('cover-ornament-tr');
-    const coverBL = document.getElementById('cover-ornament-bl');
-    const coverBR = document.getElementById('cover-ornament-br');
+    // Gunungan Kembar / Royal Curtains
     const curtainL = document.getElementById('cover-curtain-left');
     const curtainR = document.getElementById('cover-curtain-right');
-
-    if (cornerMaster) {
-      // Mode Praktis (1 PNG Master untuk 4 Sudut dengan Mirroring Otomatis)
-      if (coverTL) coverTL.innerHTML = `<img src="${cornerMaster}" alt="Ornamen" class="w-full h-full object-contain filter drop-shadow sway-top-left">`;
-      if (coverTR) coverTR.innerHTML = `<img src="${cornerMaster}" alt="Ornamen" class="w-full h-full object-contain filter drop-shadow sway-top-right" style="transform: scaleX(-1);">`;
-      if (coverBL) coverBL.innerHTML = `<img src="${cornerMaster}" alt="Ornamen" class="w-full h-full object-contain filter drop-shadow sway-left" style="transform: scaleY(-1);">`;
-      if (coverBR) coverBR.innerHTML = `<img src="${cornerMaster}" alt="Ornamen" class="w-full h-full object-contain filter drop-shadow sway-right" style="transform: scale(-1, -1);">`;
-    } else if (ornaments.corner_tl_png || ornaments.corner_tr_png || ornaments.corner_bl_png || ornaments.corner_br_png) {
-      // Mode Detail (4 Sudut Terpisah)
-      if (coverTL && ornaments.corner_tl_png) coverTL.innerHTML = `<img src="${ornaments.corner_tl_png}" alt="Ornamen" class="w-full h-full object-contain filter drop-shadow sway-top-left">`;
-      if (coverTR && ornaments.corner_tr_png) coverTR.innerHTML = `<img src="${ornaments.corner_tr_png}" alt="Ornamen" class="w-full h-full object-contain filter drop-shadow sway-top-right">`;
-      if (coverBL && ornaments.corner_bl_png) coverBL.innerHTML = `<img src="${ornaments.corner_bl_png}" alt="Ornamen" class="w-full h-full object-contain filter drop-shadow sway-left">`;
-      if (coverBR && ornaments.corner_br_png) coverBR.innerHTML = `<img src="${ornaments.corner_br_png}" alt="Ornamen" class="w-full h-full object-contain filter drop-shadow sway-right">`;
-    } else {
-      if (coverTL) coverTL.innerHTML = theme.cornerTL;
-      if (coverTR) coverTR.innerHTML = theme.cornerTR;
-      if (coverBL) coverBL.innerHTML = theme.cornerBL;
-      if (coverBR) coverBR.innerHTML = theme.cornerBR;
-    }
-
-    // Gunungan Kembar / Royal Curtains
     if (curtainL && curtainR) {
       if (tplSlug === 'javanese-royal' && theme.gununganLeft) {
         curtainL.innerHTML = theme.gununganLeft;
@@ -1090,41 +1184,85 @@ class InvitationEngine {
       }
     }
 
-    // 2. Motif Header / Section Divider di Atas Judul Seksi
-    const dividerPng = ornaments.section_divider_png;
-    const quoteHeader = document.getElementById('quote-header-ornament');
-    const sectionHeaders = document.querySelectorAll('.theme-ornament-header');
+    // 1. Ornamen di Sampul Depan (Cover Screen)
+    const coverSlots = {
+      tl: document.getElementById('cover-ornament-tl'),
+      tr: document.getElementById('cover-ornament-tr'),
+      bl: document.getElementById('cover-ornament-bl'),
+      br: document.getElementById('cover-ornament-br')
+    };
 
-    if (dividerPng) {
-      sectionHeaders.forEach(hdr => {
-        hdr.innerHTML = `<img src="${dividerPng}" alt="Pembatas Seksi" class="max-h-7 sm:max-h-8 object-contain mx-auto filter drop-shadow float-breathing my-1">`;
-      });
-    } else {
-      if (quoteHeader) quoteHeader.innerHTML = theme.headerMotif || '';
+    // 2. Ornamen 4 Sudut Viewport Smartphone (Fixed Viewport)
+    const viewportSlots = {
+      tl: document.getElementById('viewport-ornament-tl'),
+      tr: document.getElementById('viewport-ornament-tr'),
+      bl: document.getElementById('viewport-ornament-bl'),
+      br: document.getElementById('viewport-ornament-br')
+    };
+
+    const renderCornersTo = (slots) => {
+      if (cornerMaster) {
+        // Mode Praktis (1 PNG Master untuk 4 Sudut dengan Mirroring Otomatis & Asymmetric Sway)
+        if (slots.tl) slots.tl.innerHTML = `<img src="${cornerMaster}" alt="Ornamen" class="w-full h-full object-contain filter drop-shadow sway-asym-tl">`;
+        if (slots.tr) slots.tr.innerHTML = `<img src="${cornerMaster}" alt="Ornamen" class="w-full h-full object-contain filter drop-shadow sway-asym-tr" style="transform: scaleX(-1);">`;
+        if (slots.bl) slots.bl.innerHTML = `<img src="${cornerMaster}" alt="Ornamen" class="w-full h-full object-contain filter drop-shadow sway-asym-bl" style="transform: scaleY(-1);">`;
+        if (slots.br) slots.br.innerHTML = `<img src="${cornerMaster}" alt="Ornamen" class="w-full h-full object-contain filter drop-shadow sway-asym-br" style="transform: scale(-1, -1);">`;
+      } else if (ornaments.corner_tl_png || ornaments.corner_tr_png || ornaments.corner_bl_png || ornaments.corner_br_png) {
+        // Mode Detail (4 Sudut Terpisah)
+        if (slots.tl && ornaments.corner_tl_png) slots.tl.innerHTML = `<img src="${ornaments.corner_tl_png}" alt="Ornamen" class="w-full h-full object-contain filter drop-shadow sway-asym-tl">`;
+        if (slots.tr && ornaments.corner_tr_png) slots.tr.innerHTML = `<img src="${ornaments.corner_tr_png}" alt="Ornamen" class="w-full h-full object-contain filter drop-shadow sway-asym-tr">`;
+        if (slots.bl && ornaments.corner_bl_png) slots.bl.innerHTML = `<img src="${ornaments.corner_bl_png}" alt="Ornamen" class="w-full h-full object-contain filter drop-shadow sway-asym-bl">`;
+        if (slots.br && ornaments.corner_br_png) slots.br.innerHTML = `<img src="${ornaments.corner_br_png}" alt="Ornamen" class="w-full h-full object-contain filter drop-shadow sway-asym-br">`;
+      } else {
+        // SVG Preset Tema dengan Asymmetric Sway
+        if (slots.tl) slots.tl.innerHTML = `<div class="w-full h-full sway-asym-tl">${theme.cornerTL}</div>`;
+        if (slots.tr) slots.tr.innerHTML = `<div class="w-full h-full sway-asym-tr">${theme.cornerTR}</div>`;
+        if (slots.bl) slots.bl.innerHTML = `<div class="w-full h-full sway-asym-bl">${theme.cornerBL}</div>`;
+        if (slots.br) slots.br.innerHTML = `<div class="w-full h-full sway-asym-br">${theme.cornerBR}</div>`;
+      }
+    };
+
+    renderCornersTo(coverSlots);
+    renderCornersTo(viewportSlots);
+
+    // Render pembatas seksi
+    this.renderSectionDividers();
+  }
+
+  /**
+   * Render 10 Preset Pembatas Seksi (Section Dividers) atau Custom Upload PNG
+   */
+  renderSectionDividers() {
+    const custom = this.wedding?.custom_theme_json || {};
+    const tplConfig = this.template?.config_json || {};
+    const ornaments = { ...(tplConfig.ornaments || {}), ...(custom.ornaments || {}) };
+
+    const dividerPreset = custom.divider_preset || tplConfig.divider_preset || 'floral_branch';
+    const customDividerPng = custom.section_divider_png || ornaments.section_divider_png;
+
+    let content = '';
+    if (customDividerPng) {
+      content = `<img src="${customDividerPng}" alt="Pembatas Seksi" class="max-h-7 sm:max-h-8 object-contain mx-auto filter drop-shadow my-1">`;
+    } else if (dividerPreset !== 'none' && SECTION_DIVIDERS[dividerPreset]) {
+      content = SECTION_DIVIDERS[dividerPreset];
     }
 
-    // 3. Ornamen Sudut Kartu-Kartu Undangan (.card-corner-slot)
-    const cardSlots = document.querySelectorAll('.card-corner-slot');
-    cardSlots.forEach(slot => {
-      const slotType = slot.getAttribute('data-slot');
-      if (cornerMaster) {
-        if (slotType === 'tl') {
-          slot.innerHTML = `<img src="${cornerMaster}" alt="Ornamen" class="w-full h-full object-contain filter drop-shadow sway-top-left">`;
-        } else if (slotType === 'tr') {
-          slot.innerHTML = `<img src="${cornerMaster}" alt="Ornamen" class="w-full h-full object-contain filter drop-shadow sway-top-right" style="transform: scaleX(-1);">`;
-        }
-      } else if (ornaments.corner_tl_png || ornaments.corner_tr_png) {
-        if (slotType === 'tl' && ornaments.corner_tl_png) {
-          slot.innerHTML = `<img src="${ornaments.corner_tl_png}" alt="Ornamen" class="w-full h-full object-contain filter drop-shadow sway-top-left">`;
-        } else if (slotType === 'tr' && ornaments.corner_tr_png) {
-          slot.innerHTML = `<img src="${ornaments.corner_tr_png}" alt="Ornamen" class="w-full h-full object-contain filter drop-shadow sway-top-right">`;
-        }
-      } else if (slotType === 'tl') {
-        slot.innerHTML = theme.cornerTL;
-      } else if (slotType === 'tr') {
-        slot.innerHTML = theme.cornerTR;
-      }
+    const dividerSlots = document.querySelectorAll('.section-divider-slot');
+    dividerSlots.forEach(slot => {
+      slot.innerHTML = content;
     });
+
+    const quoteHeader = document.getElementById('quote-header-ornament');
+    if (quoteHeader) {
+      const theme = ORNAMENT_THEMES[this.template?.slug || 'minimalist-sage'] || ORNAMENT_THEMES['minimalist-sage'];
+      if (customDividerPng) {
+        quoteHeader.innerHTML = `<img src="${customDividerPng}" alt="Motif" class="max-h-8 sm:max-h-9 object-contain mx-auto filter drop-shadow float-breathing my-1">`;
+      } else if (dividerPreset !== 'none' && SECTION_DIVIDERS[dividerPreset]) {
+        quoteHeader.innerHTML = SECTION_DIVIDERS[dividerPreset];
+      } else {
+        quoteHeader.innerHTML = theme.headerMotif || '';
+      }
+    }
   }
 
   /**
@@ -1246,16 +1384,21 @@ class InvitationEngine {
   }
 
   resetCover() {
+    this.isCoverOpened = false;
     const cover = document.getElementById('cover-screen');
     const curtainLeft = document.getElementById('cover-curtain-left');
     const curtainRight = document.getElementById('cover-curtain-right');
     const dock = document.getElementById('bottom-dock');
 
+    // Kunci kembali scroll saat cover ditutup
+    document.body.classList.add('overflow-hidden');
+    document.getElementById('invitation-app-container')?.classList.add('overflow-hidden');
+
     if (cover) {
       cover.style.display = 'flex';
       cover.style.pointerEvents = 'auto';
       setTimeout(() => {
-        cover.style.transform = 'translateY(0)';
+        cover.style.transform = 'translateX(-50%) translateY(0)';
         cover.style.opacity = '1';
       }, 30);
     }
@@ -1386,11 +1529,18 @@ class InvitationEngine {
     const particleEffect = customTheme.particle_effect || this.wedding?.custom_theme_json?.particle_effect || tplConfig.particle_effect || this.getDefaultParticleEffect(tplSlug);
     const particlePhysics = customTheme.particle_physics || tplConfig.particle_physics || 'breeze_right';
     const particleLayer = customTheme.particle_layer || tplConfig.particle_layer || 'behind';
+    const particleOpacity = customTheme.particle_opacity ?? tplConfig.particle_opacity ?? 0.7;
 
     if (this.particleEngine) {
       this.particleEngine.setLayer(particleLayer);
       this.particleEngine.setPhysics(particlePhysics);
+      this.particleEngine.setOpacity(particleOpacity);
       this.particleEngine.setEffect(particleEffect);
+    }
+
+    const newAudio = this.wedding?.audio_url || tplConfig.default_audio_url || '/assets/audio/track-1.mp3';
+    if (this.audioElement && (!this.audioElement.src || !this.audioElement.src.endsWith(newAudio))) {
+      this.audioElement.src = newAudio;
     }
 
     this.applyCardAnimations(customTheme.card_animation || tplConfig.card_animation);
@@ -1558,18 +1708,22 @@ class InvitationEngine {
 
     const bg = custom.bg || tplColors.bg || '#FCFBF9';
     const card = custom.card || tplColors.card || '#FFFFFF';
-    const text = custom.text || tplColors.text || '#2C352E';
+    const textMain = custom.text || tplColors.text || '#2C352E';
+    const textSecondary = custom.text_secondary || tplColors.text_secondary || hexToRgba(textMain, 0.85);
+    const textTertiary = custom.text_tertiary || tplColors.text_tertiary || hexToRgba(textMain, 0.65);
     const accent = custom.accent || tplColors.accent || '#D4AF37';
     const secondary = custom.secondary || tplColors.secondary || '#E2B170';
 
     const root = document.documentElement;
     root.style.setProperty('--bg-main', bg);
     root.style.setProperty('--bg-card', card);
-    root.style.setProperty('--text-main', text);
+    root.style.setProperty('--text-main', textMain);
+    root.style.setProperty('--text-secondary', textSecondary);
+    root.style.setProperty('--text-tertiary', textTertiary);
     root.style.setProperty('--accent-color', accent);
     root.style.setProperty('--accent-secondary', secondary);
 
-    // Kustomisasi Typography (Google Fonts Selection)
+    // Kustomisasi Typography (Google Fonts & Windows Fonts Selection)
     const typography = custom.typography || tplConfig.typography || {};
     const fontHeading = typography.font_heading || tplConfig.typography?.font_heading || "'Cormorant Garamond', Georgia, serif";
     const fontBody = typography.font_body || tplConfig.typography?.font_body || "'Plus Jakarta Sans', system-ui, sans-serif";
@@ -1580,20 +1734,27 @@ class InvitationEngine {
     const app = document.getElementById('invitation-app-container');
     if (app) {
       app.style.backgroundColor = bg;
-      app.style.color = text;
+      app.style.color = textMain;
     }
 
-    // Tampilkan Custom BG Image ATAU Lava Lamp Blobs Default
+    // Tampilkan Custom BG Image ATAU Lava Lamp Blobs Default + BG Blur
     const customBg = custom.bg_image_url || tplConfig.bg_image_url;
+    const bgBlur = Number(custom.bg_blur ?? tplConfig.bg_blur ?? 0);
     const bgImgEl = document.getElementById('custom-bg-image');
     const lavaEl = document.getElementById('lava-lamp-container');
 
     if (customBg && bgImgEl) {
       bgImgEl.style.backgroundImage = `url('${customBg}')`;
+      bgImgEl.style.filter = bgBlur > 0 ? `blur(${bgBlur}px)` : 'none';
+      bgImgEl.style.transform = bgBlur > 0 ? 'scale(1.08)' : 'none';
       bgImgEl.classList.remove('hidden');
       if (lavaEl) lavaEl.classList.add('hidden');
     } else {
-      if (bgImgEl) bgImgEl.classList.add('hidden');
+      if (bgImgEl) {
+        bgImgEl.classList.add('hidden');
+        bgImgEl.style.filter = 'none';
+        bgImgEl.style.transform = 'none';
+      }
       if (lavaEl) lavaEl.classList.remove('hidden');
     }
   }
@@ -1648,6 +1809,7 @@ class InvitationEngine {
    * 2. Buka Sampul, Tirai Membuka & Putar Musik
    */
   openInvitation() {
+    this.isCoverOpened = true;
     const cover = document.getElementById('cover-screen');
     const curtainLeft = document.getElementById('cover-curtain-left');
     const curtainRight = document.getElementById('cover-curtain-right');
@@ -1665,7 +1827,7 @@ class InvitationEngine {
 
     // Angkat Sampul Depan ke Atas
     if (cover) {
-      cover.style.transform = 'translateY(-100%)';
+      cover.style.transform = 'translateX(-50%) translateY(-100%)';
       cover.style.opacity = '0';
       cover.style.pointerEvents = 'none';
       setTimeout(() => {
@@ -1733,7 +1895,8 @@ class InvitationEngine {
   playAudio() {
     if (!this.audioElement) return;
     
-    const sourceUrl = this.wedding?.audio_url || '/assets/audio/track-1.mp3';
+    const tplConfig = this.template?.config_json || {};
+    const sourceUrl = this.wedding?.audio_url || tplConfig.default_audio_url || '/assets/audio/track-1.mp3';
     if (!this.audioElement.src || !this.audioElement.src.endsWith(sourceUrl)) {
       this.audioElement.src = sourceUrl;
     }
