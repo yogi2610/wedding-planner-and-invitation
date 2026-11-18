@@ -1796,19 +1796,20 @@ class InvitationEngine {
     }
 
     // Tampilkan Background berdasarkan bg_mode: 'default' | 'lava' | 'custom'
-    const bgMode = custom.bg_mode || (custom.bg_image_url || custom.bg_gif_url ? 'custom' : 'default');
+    const bgMode = custom.bg_mode || (custom.bg_video_url || custom.bg_image_url || custom.bg_gif_url ? 'custom' : 'default');
     const bgBlur = Number(custom.bg_blur ?? tplConfig.bg_blur ?? 0);
     const bgImgEl = document.getElementById('custom-bg-image');
+    const videoBgEl = document.getElementById('video-bg-player');
     const gifImgEl = document.getElementById('gif-bg-image');
     const lavaEl = document.getElementById('lava-lamp-container');
 
-    let activeType = 'lava'; // 'lava' | 'image' | 'gif'
+    let activeType = 'lava'; // 'lava' | 'image' | 'video' | 'gif'
     let activeUrl = null;
 
     if (bgMode === 'custom') {
-      if (custom.bg_type === 'gif' && custom.bg_gif_url) {
-        activeType = 'gif';
-        activeUrl = custom.bg_gif_url;
+      if ((custom.bg_type === 'video' || custom.bg_type === 'gif') && (custom.bg_video_url || custom.bg_gif_url)) {
+        activeType = custom.bg_video_url ? 'video' : 'gif';
+        activeUrl = custom.bg_video_url || custom.bg_gif_url;
       } else if (custom.bg_image_url) {
         activeType = 'image';
         activeUrl = custom.bg_image_url;
@@ -1819,10 +1820,10 @@ class InvitationEngine {
       activeType = 'lava';
     } else {
       // 'default' bawaan template master
-      const tplBgType = tplConfig.bg_type || (tplConfig.bg_gif_url ? 'gif' : (tplConfig.bg_image_url ? 'image' : 'lava'));
-      if (tplBgType === 'gif' && tplConfig.bg_gif_url) {
-        activeType = 'gif';
-        activeUrl = tplConfig.bg_gif_url;
+      const tplBgType = tplConfig.bg_type || (tplConfig.bg_video_url ? 'video' : (tplConfig.bg_gif_url ? 'gif' : (tplConfig.bg_image_url ? 'image' : 'lava')));
+      if ((tplBgType === 'video' || tplBgType === 'gif') && (tplConfig.bg_video_url || tplConfig.bg_gif_url)) {
+        activeType = tplConfig.bg_video_url ? 'video' : 'gif';
+        activeUrl = tplConfig.bg_video_url || tplConfig.bg_gif_url;
       } else if (tplBgType === 'image' && tplConfig.bg_image_url) {
         activeType = 'image';
         activeUrl = tplConfig.bg_image_url;
@@ -1831,7 +1832,32 @@ class InvitationEngine {
       }
     }
 
-    // 1. Render GIF Background
+    // 1. Render Video Background (MP4 / WebM)
+    if (videoBgEl) {
+      if (activeType === 'video' && activeUrl) {
+        if (videoBgEl.src !== activeUrl) {
+          videoBgEl.src = activeUrl;
+          videoBgEl.load();
+        }
+        videoBgEl.style.filter = bgBlur > 0 ? `blur(${bgBlur}px)` : 'none';
+        videoBgEl.style.transform = bgBlur > 0 ? 'scale(1.08)' : 'none';
+        videoBgEl.classList.remove('hidden');
+        try {
+          const playPromise = videoBgEl.play();
+          if (playPromise !== undefined) {
+            playPromise.catch(() => {});
+          }
+        } catch (e) {}
+      } else {
+        videoBgEl.pause();
+        videoBgEl.src = '';
+        videoBgEl.classList.add('hidden');
+        videoBgEl.style.filter = 'none';
+        videoBgEl.style.transform = 'none';
+      }
+    }
+
+    // 2. Render GIF Background (Legacy Fallback)
     if (gifImgEl) {
       if (activeType === 'gif' && activeUrl) {
         gifImgEl.src = activeUrl;
@@ -1846,7 +1872,7 @@ class InvitationEngine {
       }
     }
 
-    // 2. Render Image Background
+    // 3. Render Image Background
     if (bgImgEl) {
       if (activeType === 'image' && activeUrl) {
         bgImgEl.style.backgroundImage = `url('${activeUrl}')`;
@@ -1860,7 +1886,7 @@ class InvitationEngine {
       }
     }
 
-    // 3. Render Lava Lamp Blobs
+    // 4. Render Lava Lamp Blobs
     if (lavaEl) {
       if (activeType === 'lava') lavaEl.classList.remove('hidden');
       else lavaEl.classList.add('hidden');

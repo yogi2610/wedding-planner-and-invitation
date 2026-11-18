@@ -585,13 +585,16 @@
   <!-- MOBILE-FIRST CENTERED APP CONTAINER -->
   <div id="invitation-app-container" class="w-full max-w-md min-h-screen h-auto bg-[var(--bg-main,#FCFBF9)] text-[var(--text-main,#2C352E)] shadow-2xl relative flex flex-col overflow-visible mx-auto">
 
-    <!-- Dynamic Ambient Background: Lava Lamp Blobs / Custom Background Image / GIF Animation -->
+    <!-- Dynamic Ambient Background: Lava Lamp Blobs / Custom Background Image / Video Animation (MP4 & WebM) -->
     <div id="invitation-bg-container" class="fixed inset-0 pointer-events-none z-0 overflow-hidden max-w-md mx-auto">
-      <!-- Animated GIF Looping Background -->
-      <img id="gif-bg-image" src="" alt="Background Animasi" class="absolute inset-0 w-full h-full object-cover hidden pointer-events-none">
+      <!-- Animated Video Looping Background (MP4 / WebM) -->
+      <video id="video-bg-player" autoplay loop muted playsinline preload="auto" class="absolute inset-0 w-full h-full object-cover hidden pointer-events-none transition-all duration-700"></video>
+
+      <!-- Animated GIF Looping Background (Legacy Fallback) -->
+      <img id="gif-bg-image" src="" alt="Background Animasi" class="absolute inset-0 w-full h-full object-cover hidden pointer-events-none transition-all duration-700">
 
       <!-- Custom Uploaded Background Image (with overlay) -->
-      <div id="custom-bg-image" class="absolute inset-0 bg-cover bg-center hidden">
+      <div id="custom-bg-image" class="absolute inset-0 bg-cover bg-center hidden transition-all duration-700">
         <div class="absolute inset-0 bg-black/40 backdrop-blur-[0.5px]"></div>
       </div>
 

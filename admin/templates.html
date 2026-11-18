@@ -793,8 +793,8 @@
                   <span>Gambar Background Kustom</span>
                 </label>
                 <label class="flex items-center gap-2 cursor-pointer text-xs font-semibold text-slate-700">
-                  <input type="radio" name="master_bg_type" value="gif" onchange="handleMasterBgTypeChange('gif')" class="text-amber-600">
-                  <span>Animasi GIF Background</span>
+                  <input type="radio" name="master_bg_type" value="video" onchange="handleMasterBgTypeChange('video')" class="text-amber-600">
+                  <span>Video Animasi Background (MP4 / WebM)</span>
                 </label>
               </div>
 
@@ -811,18 +811,18 @@
                 <input type="url" id="asset-url-bg_image_url" oninput="handleAssetUrlInput('bg_image_url', this.value)" placeholder="Tautan URL Background: https://..." class="w-full px-3 py-1.5 rounded-xl border border-slate-200 text-xs font-mono">
               </div>
 
-              <!-- Upload Background GIF Box (Animasi GIF Asli) -->
-              <div id="master-bg-gif-box" class="hidden p-3.5 rounded-xl bg-slate-50 border border-slate-200/80 space-y-2">
+              <!-- Upload Background Video Box (MP4 / WebM) -->
+              <div id="master-bg-video-box" class="hidden p-3.5 rounded-xl bg-slate-50 border border-slate-200/80 space-y-2">
                 <div class="flex items-center gap-2">
-                  <input type="file" id="file-bg_gif" accept="image/gif" class="hidden" onchange="handleMasterGifUpload(event)">
-                  <button type="button" onclick="document.getElementById('file-bg_gif').click()" class="px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold inline-flex items-center gap-1.5 cursor-pointer">
-                    <i data-lucide="film" class="w-3.5 h-3.5 text-amber-400"></i>
-                    <span>Unggah Animasi GIF</span>
+                  <input type="file" id="file-bg_video" accept="video/mp4,video/webm,.mp4,.webm" class="hidden" onchange="handleMasterVideoUpload(event)">
+                  <button type="button" onclick="document.getElementById('file-bg_video').click()" class="px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold inline-flex items-center gap-1.5 cursor-pointer">
+                    <i data-lucide="video" class="w-3.5 h-3.5 text-amber-400"></i>
+                    <span>Unggah Video (MP4 / WebM)</span>
                   </button>
-                  <button type="button" id="btn-del-bg-gif" onclick="removeMasterGif()" class="hidden px-2.5 py-1.5 rounded-xl border border-rose-200 bg-rose-50 text-rose-700 text-xs font-semibold cursor-pointer">Hapus</button>
+                  <button type="button" id="btn-del-bg-video" onclick="removeMasterVideo()" class="hidden px-2.5 py-1.5 rounded-xl border border-rose-200 bg-rose-50 text-rose-700 text-xs font-semibold cursor-pointer">Hapus</button>
                 </div>
-                <input type="url" id="asset-url-bg_gif" oninput="handleMasterGifUrlInput(this.value)" placeholder="Tautan URL GIF: https://.../animasi.gif" class="w-full px-3 py-1.5 rounded-xl border border-slate-200 text-xs font-mono">
-                <p class="text-[10px] text-slate-400">File GIF diunggah murni tanpa kompresi WebP agar gerakan animasi tetap hidup & berulang (looping).</p>
+                <input type="url" id="asset-url-bg_video" oninput="handleMasterVideoUrlInput(this.value)" placeholder="Tautan URL Video: https://.../animasi.mp4 atau .webm" class="w-full px-3 py-1.5 rounded-xl border border-slate-200 text-xs font-mono">
+                <p class="text-[10px] text-slate-400">Format yang didukung: <strong>.mp4</strong> dan <strong>.webm</strong>. Video otomatis berputar berulang (looping), hening (muted), dan hemat daya untuk tampilan latar belakang beresolusi tinggi tanpa membebani browser.</p>
               </div>
 
               <!-- Blur Slider -->
@@ -1953,17 +1953,17 @@
       document.getElementById('select-divider-preset').value = templateState.config_json?.divider_preset || 'floral_branch';
 
       // Background Type & Blur
-      const bgType = templateState.config_json?.bg_type || (templateState.config_json?.bg_gif_url ? 'gif' : (templateState.config_json?.bg_image_url ? 'image' : 'lava'));
+      const bgType = templateState.config_json?.bg_type || (templateState.config_json?.bg_video_url ? 'video' : (templateState.config_json?.bg_gif_url ? 'video' : (templateState.config_json?.bg_image_url ? 'image' : 'lava')));
       handleMasterBgTypeChange(bgType, false);
       setAssetPreview('bg_image_url', templateState.config_json?.bg_image_url);
 
-      const gifUrl = templateState.config_json?.bg_gif_url || '';
-      const gifInput = document.getElementById('asset-url-bg_gif');
-      if (gifInput) gifInput.value = gifUrl;
-      const delGifBtn = document.getElementById('btn-del-bg-gif');
-      if (delGifBtn) {
-        if (gifUrl) delGifBtn.classList.remove('hidden');
-        else delGifBtn.classList.add('hidden');
+      const videoUrl = templateState.config_json?.bg_video_url || templateState.config_json?.bg_gif_url || '';
+      const videoInput = document.getElementById('asset-url-bg_video');
+      if (videoInput) videoInput.value = videoUrl;
+      const delVideoBtn = document.getElementById('btn-del-bg-video');
+      if (delVideoBtn) {
+        if (videoUrl) delVideoBtn.classList.remove('hidden');
+        else delVideoBtn.classList.add('hidden');
       }
 
       const bgBlur = templateState.config_json?.bg_blur ?? 0;
@@ -2424,19 +2424,19 @@
       templateState.config_json.bg_type = type;
 
       const imgBox = document.getElementById('master-bg-image-box');
-      const gifBox = document.getElementById('master-bg-gif-box');
+      const videoBox = document.getElementById('master-bg-video-box');
       const radio = document.querySelector(`input[name="master_bg_type"][value="${type}"]`);
       if (radio) radio.checked = true;
 
       if (type === 'image') {
         if (imgBox) imgBox.classList.remove('hidden');
-        if (gifBox) gifBox.classList.add('hidden');
-      } else if (type === 'gif') {
+        if (videoBox) videoBox.classList.add('hidden');
+      } else if (type === 'video' || type === 'gif') {
         if (imgBox) imgBox.classList.add('hidden');
-        if (gifBox) gifBox.classList.remove('hidden');
+        if (videoBox) videoBox.classList.remove('hidden');
       } else {
         if (imgBox) imgBox.classList.add('hidden');
-        if (gifBox) gifBox.classList.add('hidden');
+        if (videoBox) videoBox.classList.add('hidden');
         templateState.config_json.bg_image_url = null;
         setAssetPreview('bg_image_url', null);
       }
@@ -2447,69 +2447,76 @@
       }
     }
 
-    async function handleMasterGifUpload(event) {
+    async function handleMasterVideoUpload(event) {
       const file = event.target.files?.[0];
       if (!file) return;
 
-      if (file.type !== 'image/gif' && !file.name.toLowerCase().endsWith('.gif')) {
-        alert('File yang dipilih harus berformat .gif animasi.');
+      const fileNameLower = file.name.toLowerCase();
+      const isMp4 = file.type === 'video/mp4' || fileNameLower.endsWith('.mp4');
+      const isWebm = file.type === 'video/webm' || fileNameLower.endsWith('.webm');
+
+      if (!isMp4 && !isWebm) {
+        alert('File yang dipilih harus berformat video .mp4 atau .webm.');
         event.target.value = '';
         return;
       }
 
-      showToast('Mengunggah animasi GIF asli (tanpa kompresi)...', 'info');
+      const ext = isWebm ? 'webm' : 'mp4';
+      const mimeType = isWebm ? 'video/webm' : 'video/mp4';
+
+      showToast(`Mengunggah video animasi background (${ext.toUpperCase()})...`, 'info');
       try {
         const client = window.supabaseClient;
         if (!client || !client.storage) throw new Error('Supabase Storage tidak siap');
 
-        const fileName = `admin/bg_gif_${Date.now()}_${Math.floor(Math.random() * 1000)}.gif`;
+        const storageFileName = `admin/bg_video_${Date.now()}_${Math.floor(Math.random() * 1000)}.${ext}`;
         const { data, error } = await client.storage
           .from('wedding-media')
-          .upload(fileName, file, {
-            contentType: 'image/gif',
+          .upload(storageFileName, file, {
+            contentType: mimeType,
             upsert: true
           });
 
-        let gifUrl = '';
+        let videoUrl = '';
         if (error) {
           console.warn('Storage upload error, reading as base64 dataUrl:', error);
-          gifUrl = await new Promise((resolve, reject) => {
+          videoUrl = await new Promise((resolve, reject) => {
             const reader = new FileReader();
             reader.onload = e => resolve(e.target.result);
             reader.onerror = reject;
             reader.readAsDataURL(file);
           });
         } else {
-          const { data: pubData } = client.storage.from('wedding-media').getPublicUrl(fileName);
-          gifUrl = pubData?.publicUrl || '';
+          const { data: pubData } = client.storage.from('wedding-media').getPublicUrl(storageFileName);
+          videoUrl = pubData?.publicUrl || '';
         }
 
         if (!templateState.config_json) templateState.config_json = {};
-        templateState.config_json.bg_gif_url = gifUrl;
-        templateState.config_json.bg_type = 'gif';
+        templateState.config_json.bg_video_url = videoUrl;
+        templateState.config_json.bg_type = 'video';
 
-        const urlInput = document.getElementById('asset-url-bg_gif');
-        if (urlInput) urlInput.value = gifUrl;
+        const urlInput = document.getElementById('asset-url-bg_video');
+        if (urlInput) urlInput.value = videoUrl;
 
-        const delBtn = document.getElementById('btn-del-bg-gif');
+        const delBtn = document.getElementById('btn-del-bg-video');
         if (delBtn) delBtn.classList.remove('hidden');
 
         markAsUnsaved();
         scheduleBroadcast();
-        showToast('✓ Animasi GIF berhasil diunggah!', 'success');
+        showToast(`✓ Video animasi background (${ext.toUpperCase()}) berhasil diunggah!`, 'success');
       } catch (err) {
-        console.error('Upload GIF error:', err);
-        alert('Gagal mengunggah GIF: ' + err.message);
+        console.error('Upload Video error:', err);
+        alert('Gagal mengunggah video: ' + err.message);
       } finally {
         event.target.value = '';
       }
     }
 
-    function handleMasterGifUrlInput(val) {
+    function handleMasterVideoUrlInput(val) {
       if (!templateState.config_json) templateState.config_json = {};
-      templateState.config_json.bg_gif_url = val ? val.trim() : null;
-      templateState.config_json.bg_type = 'gif';
-      const delBtn = document.getElementById('btn-del-bg-gif');
+      templateState.config_json.bg_video_url = val ? val.trim() : null;
+      templateState.config_json.bg_type = 'video';
+      const delBtn = document.getElementById('btn-del-bg-video');
       if (delBtn) {
         if (val) delBtn.classList.remove('hidden');
         else delBtn.classList.add('hidden');
@@ -2518,12 +2525,13 @@
       scheduleBroadcast();
     }
 
-    function removeMasterGif() {
+    function removeMasterVideo() {
       if (!templateState.config_json) templateState.config_json = {};
+      templateState.config_json.bg_video_url = null;
       templateState.config_json.bg_gif_url = null;
-      const urlInput = document.getElementById('asset-url-bg_gif');
+      const urlInput = document.getElementById('asset-url-bg_video');
       if (urlInput) urlInput.value = '';
-      const delBtn = document.getElementById('btn-del-bg-gif');
+      const delBtn = document.getElementById('btn-del-bg-video');
       if (delBtn) delBtn.classList.add('hidden');
       markAsUnsaved();
       scheduleBroadcast();
