@@ -1275,13 +1275,32 @@ class InvitationEngine {
     const custom = this.wedding?.custom_theme_json || {};
     const animStyle = overrideAnim || custom.card_animation || 'fade-up';
 
-    const cards = document.querySelectorAll('.wedding-card, #card-event-akad, #card-event-resepsi');
+    const cards = document.querySelectorAll('#invitation-content .wedding-card, #card-event-akad, #card-event-resepsi');
     cards.forEach((card, idx) => {
       if (animStyle === 'alternate-lr') {
-        const altType = idx % 2 === 0 ? 'alt-left' : 'alt-right';
-        card.setAttribute('data-animate', altType);
+        // Khusus kartu mempelai pria di kiri & wanita di kanan agar harmonis
+        if (card.closest('#section-couple')) {
+          const isGroom = card.querySelector('#groom-frame-outer') || card.querySelector('#groom-name');
+          card.setAttribute('data-animate', isGroom ? 'alt-left' : 'alt-right');
+        } else {
+          const altType = idx % 2 === 0 ? 'alt-left' : 'alt-right';
+          card.setAttribute('data-animate', altType);
+        }
       } else {
         card.setAttribute('data-animate', animStyle);
+      }
+
+      // Jika cover sudah dibuka (misal saat live preview di studio), trigger ulang preview animasi pada kartu yang tampak
+      if (this.isCoverOpened) {
+        const rect = card.getBoundingClientRect();
+        const isInViewport = rect.top < window.innerHeight && rect.bottom > 0;
+        if (isInViewport) {
+          card.classList.remove('is-revealed');
+          void card.offsetWidth; // Force reflow
+          card.classList.add('is-revealed');
+        } else {
+          card.classList.remove('is-revealed');
+        }
       }
     });
 
@@ -1581,8 +1600,6 @@ class InvitationEngine {
       this.audioElement.src = newAudio;
     }
 
-    this.applyCardAnimations(customTheme.card_animation || tplConfig.card_animation);
-
     this.renderCoverSection();
     this.renderCoupleSection();
     this.renderQuotesSection();
@@ -1592,6 +1609,8 @@ class InvitationEngine {
     this.renderGallerySection();
     this.renderEnvelopesSection();
     this.applySectionVisibility();
+
+    this.applyCardAnimations(customTheme.card_animation || tplConfig.card_animation);
 
     if (window.lucide) {
       window.lucide.createIcons();
@@ -1956,9 +1975,9 @@ class InvitationEngine {
       dock.classList.add('opacity-100', 'translate-y-0', 'pointer-events-auto');
     }
 
-    // Pemicu reveal animasi seksi pertama
+    // Pemicu reveal animasi seksi quote pertama
     setTimeout(() => {
-      document.querySelectorAll('#section-quote [data-animate], #section-couple [data-animate]').forEach(el => {
+      document.querySelectorAll('#section-quote [data-animate]').forEach(el => {
         el.classList.add('is-revealed');
       });
     }, 150);

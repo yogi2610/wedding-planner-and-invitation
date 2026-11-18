@@ -519,19 +519,21 @@
 
         // Setup Link Undangan Publik
         const slug = currentWedding?.slug || currentUser.slug || 'wedding-demo';
-        const invitationUrl = `${window.location.origin}/u?slug=${slug}&preview=true`;
+        const origin = typeof window.getAppOrigin === 'function' ? window.getAppOrigin() : 'https://menikahbersama.my.id';
+        const invitationPreviewUrl = `${origin}/u?slug=${slug}&preview=true`;
+        const invitationPublicUrl = `${origin}/u?slug=${slug}`;
         
-        document.getElementById('display-invitation-url').textContent = invitationUrl;
-        document.getElementById('link-preview-invitation').href = invitationUrl;
-        document.getElementById('btn-open-invitation').href = invitationUrl;
+        document.getElementById('display-invitation-url').textContent = invitationPublicUrl;
+        document.getElementById('link-preview-invitation').href = invitationPreviewUrl;
+        document.getElementById('btn-open-invitation').href = invitationPublicUrl;
         
         // Share WA Link
-        const waText = encodeURIComponent(`Halo! Kami mengundang Anda ke pernikahan kami (${coupleText}). Silakan buka tautan undangan digital kami: ${invitationUrl}`);
+        const waText = encodeURIComponent(`Halo! Kami mengundang Anda ke pernikahan kami (${coupleText}). Silakan buka tautan undangan digital kami: ${invitationPublicUrl}`);
         document.getElementById('btn-share-whatsapp').href = `https://api.whatsapp.com/send?text=${waText}`;
 
         // Copy Invitation Link Handler
         document.getElementById('btn-copy-invitation').addEventListener('click', () => {
-          navigator.clipboard.writeText(invitationUrl).then(() => {
+          navigator.clipboard.writeText(invitationPublicUrl).then(() => {
             showToast('Tautan undangan digital berhasil disalin ke clipboard!', 'success');
           });
         });

@@ -1440,7 +1440,7 @@ Wassalamu'alaikum Warahmatullahi Wabarakatuh.`
     // ==========================================
     function getGuestInvitationUrl(guestName) {
       const slug = currentWedding?.slug || 'preview';
-      const origin = window.location.origin;
+      const origin = typeof window.getAppOrigin === 'function' ? window.getAppOrigin() : 'https://menikahbersama.my.id';
       return `${origin}/u?slug=${slug}&to=${encodeURIComponent(guestName || '')}`;
     }
 

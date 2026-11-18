@@ -3,9 +3,20 @@
  * Platform Nikah - All-in-One Wedding Planner & Digital Invitation
  */
 
-// 1. Kredensial Supabase
+// 1. Kredensial Supabase & Domain Resmi
 const SUPABASE_URL = 'https://zjrqjneeyiymazyizlyw.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_95FRogiLuqPP_K0kTuKtew_NBH8l6ZM';
+const PRIMARY_DOMAIN = 'https://menikahbersama.my.id';
+
+function getAppOrigin() {
+  if (typeof window !== 'undefined' && window.location) {
+    const host = window.location.hostname;
+    if (host === 'localhost' || host === '127.0.0.1') {
+      return window.location.origin;
+    }
+  }
+  return PRIMARY_DOMAIN;
+}
 
 // Inisialisasi client Supabase v2
 let supabaseClient = null;
@@ -277,4 +288,6 @@ window.getDaysUntil = getDaysUntil;
 window.getCountdownDetailed = getCountdownDetailed;
 window.startLiveCountdown = startLiveCountdown;
 window.checkRlsError = checkRlsError;
+window.PRIMARY_DOMAIN = PRIMARY_DOMAIN;
+window.getAppOrigin = getAppOrigin;
 
