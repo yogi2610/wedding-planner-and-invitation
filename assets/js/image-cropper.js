@@ -46,7 +46,7 @@
     }
 
     const modalHtml = `
-      <div id="mb-image-cropper-modal" class="fixed inset-0 z-[9999] hidden flex items-center justify-center p-3 sm:p-5 bg-slate-950/80 backdrop-blur-sm animate-fadeIn">
+      <div id="mb-image-cropper-modal" style="z-index: 99999;" class="fixed inset-0 z-[99999] hidden items-center justify-center p-3 sm:p-5 bg-slate-950/80 backdrop-blur-sm animate-fadeIn">
         <div class="bg-white w-full max-w-lg rounded-3xl shadow-2xl border border-stone-200 overflow-hidden flex flex-col max-h-[95vh]">
           
           <!-- Modal Header -->
@@ -639,17 +639,29 @@
 
       // Upload ke Supabase Storage via modul webp-compressor.js
       let uploadResult = null;
-      if (typeof window.uploadWeddingImage === 'function') {
-        uploadResult = await window.uploadWeddingImage(croppedFile, state.targetType, 1000, 0.82);
-      } else {
-        // Fallback data URL jika webp-compressor belum siap
+      try {
+        if (typeof window.uploadWeddingImage === 'function') {
+          uploadResult = await window.uploadWeddingImage(croppedFile, state.targetType, 1000, 0.82);
+        } else {
+          // Fallback data URL jika webp-compressor belum siap
+          const dataUrl = outputCanvas.toDataURL('image/webp', 0.82);
+          uploadResult = {
+            success: true,
+            url: dataUrl,
+            publicUrl: dataUrl,
+            dataUrl: dataUrl,
+            infoText: 'WebP Local Data'
+          };
+        }
+      } catch (uploadErr) {
+        console.warn('Cropper upload failed, using DataURL fallback:', uploadErr);
         const dataUrl = outputCanvas.toDataURL('image/webp', 0.82);
         uploadResult = {
           success: true,
           url: dataUrl,
           publicUrl: dataUrl,
           dataUrl: dataUrl,
-          infoText: 'WebP Local Data'
+          infoText: 'WebP Fallback'
         };
       }
 
@@ -678,6 +690,7 @@
   function closeModal() {
     if (state.modalEl) {
       state.modalEl.classList.add('hidden');
+      state.modalEl.classList.remove('flex');
     }
     state.img = null;
     state.originalFile = null;
@@ -728,14 +741,25 @@
 
     const loadImg = (srcUrl) => {
       const img = new Image();
-      img.crossOrigin = 'anonymous';
+      if (!srcUrl.startsWith('data:')) {
+        img.crossOrigin = 'anonymous';
+      }
       img.onload = () => {
         state.img = img;
-        state.modalEl.classList.remove('hidden');
+        if (state.modalEl) {
+          state.modalEl.classList.remove('hidden');
+          state.modalEl.classList.add('flex');
+        }
         renderCanvas();
       };
-      img.onerror = () => {
-        alert('Gagal memuat gambar untuk proses crop.');
+      img.onerror = (e) => {
+        console.warn('Gagal memuat gambar untuk proses crop:', e);
+        closeModal();
+        if (typeof options.onError === 'function') {
+          options.onError(e);
+        } else {
+          alert('Gagal memuat gambar untuk proses crop.');
+        }
       };
       img.src = srcUrl;
     };

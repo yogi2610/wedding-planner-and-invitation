@@ -1366,6 +1366,13 @@ class InvitationEngine {
         this.resetCover();
         return;
       }
+      if (msg.type === 'RESET_AND_UPDATE_PREVIEW' || msg.action === 'RESET_AND_UPDATE_PREVIEW') {
+        this.resetCover();
+        if (msg.payload) {
+          this.handleLivePreviewUpdate(msg.payload);
+        }
+        return;
+      }
 
       // Live Updates data kustomisasi
       if (msg.type === 'LIVE_PREVIEW_UPDATE' || msg.type === 'MB_PREVIEW_UPDATE' || msg.type === 'PREVIEW_DATA') {
@@ -1408,7 +1415,7 @@ class InvitationEngine {
       cover.style.display = 'flex';
       cover.style.pointerEvents = 'auto';
       setTimeout(() => {
-        cover.style.transform = 'translateX(-50%) translateY(0)';
+        cover.style.transform = 'translateY(0)';
         cover.style.opacity = '1';
       }, 30);
     }
@@ -1427,9 +1434,25 @@ class InvitationEngine {
       dock.classList.remove('opacity-100', 'translate-y-0', 'pointer-events-auto');
     }
 
+    // Reset scroll reveal animation state
+    document.querySelectorAll('[data-animate]').forEach(el => {
+      el.classList.remove('is-revealed');
+    });
+
+    // Pause audio if playing
+    if (this.audioElement) {
+      try {
+        this.audioElement.pause();
+        this.isPlayingAudio = false;
+        this.updateAudioButtonState();
+      } catch (e) {}
+    }
+
     const app = document.getElementById('invitation-app-container');
     if (app) app.scrollTop = 0;
     window.scrollTo(0, 0);
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
   }
 
   applySectionVisibility() {
@@ -1861,7 +1884,7 @@ class InvitationEngine {
 
     // Angkat Sampul Depan ke Atas
     if (cover) {
-      cover.style.transform = 'translateX(-50%) translateY(-100%)';
+      cover.style.transform = 'translateY(-100%)';
       cover.style.opacity = '0';
       cover.style.pointerEvents = 'none';
       setTimeout(() => {

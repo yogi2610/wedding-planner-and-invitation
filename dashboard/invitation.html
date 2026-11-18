@@ -584,31 +584,23 @@
               </p>
             </div>
 
-            <!-- 3 Tombol Mode Background -->
-            <div class="grid grid-cols-3 gap-2 p-1 bg-stone-100 rounded-2xl">
+            <!-- 2 Tombol Mode Background -->
+            <div class="grid grid-cols-2 gap-2 p-1 bg-stone-100 rounded-2xl">
               <button 
                 type="button" 
                 id="btn-bgmode-default" 
                 onclick="setBgMode('default')" 
-                class="py-2 px-2 rounded-xl text-[11px] font-bold text-center transition-all cursor-pointer bg-white text-amber-800 shadow-xs border border-stone-200/60"
+                class="py-2.5 px-3 rounded-xl text-xs font-bold text-center transition-all cursor-pointer bg-white text-amber-800 shadow-xs border border-stone-200/60"
               >
-                🏛️ Bawaan Tema
+                🏛️ Background Default Tema
               </button>
               <button 
                 type="button" 
                 id="btn-bgmode-lava" 
                 onclick="setBgMode('lava')" 
-                class="py-2 px-2 rounded-xl text-[11px] font-bold text-center text-slate-600 hover:text-slate-900 transition-all cursor-pointer"
+                class="py-2.5 px-3 rounded-xl text-xs font-bold text-center text-slate-600 hover:text-slate-900 transition-all cursor-pointer"
               >
-                🔮 Lava Lamp
-              </button>
-              <button 
-                type="button" 
-                id="btn-bgmode-custom" 
-                onclick="setBgMode('custom')" 
-                class="py-2 px-2 rounded-xl text-[11px] font-bold text-center text-slate-600 hover:text-slate-900 transition-all cursor-pointer"
-              >
-                🖼️ Upload Sendiri
+                🔮 Animasi Lava Lamp
               </button>
             </div>
 
@@ -619,62 +611,7 @@
 
             <!-- Deskripsi Mode Lava Lamp -->
             <div id="desc-bgmode-lava" class="text-[11px] text-slate-600 bg-stone-50 p-3 rounded-xl border border-stone-200/70 leading-relaxed hidden">
-              🔮 <strong>Animasi Lava Lamp:</strong> Efek visual modern bola-bola cahaya abstrak yang bergerak melayang pelan secara dinamis mengikuti palet warna tema.
-            </div>
-
-            <!-- Area Upload Foto Background Sendiri (Khusus Mode 'custom') -->
-            <div id="wrapper-custom-bg" class="space-y-3 pt-1 border-t border-stone-100 hidden">
-              <div class="flex items-center justify-between">
-                <span class="text-xs font-bold text-slate-800">Foto Latar Belakang Kustom:</span>
-                <button 
-                  type="button" 
-                  id="btn-remove-custom-bg" 
-                  onclick="removeCustomBackground()" 
-                  class="text-[11px] font-bold text-rose-600 hover:underline cursor-pointer"
-                >
-                  Hapus & Reset
-                </button>
-              </div>
-
-              <div class="flex items-center gap-3">
-                <div id="custom-bg-preview-box" class="w-16 h-16 rounded-xl border-2 border-dashed border-stone-300 bg-stone-50 flex items-center justify-center overflow-hidden shrink-0 relative">
-                  <img id="custom-bg-preview-img" src="" alt="Custom BG" class="w-full h-full object-cover hidden">
-                  <span id="custom-bg-placeholder" class="text-[9px] text-slate-400 text-center font-semibold px-1">Foto Latar</span>
-                </div>
-                <div class="flex-1 space-y-1">
-                  <input 
-                    type="file" 
-                    id="custom-bg-file-input" 
-                    accept="image/*" 
-                    onchange="handleCustomBgUpload(event)" 
-                    class="block w-full text-xs text-slate-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-amber-50 file:text-amber-800 hover:file:bg-amber-100 cursor-pointer"
-                  >
-                  <span class="text-[10px] text-slate-400 block" id="custom-bg-upload-status">Otomatis dikompresi WebP &lt; 150KB.</span>
-                </div>
-              </div>
-
-              <!-- Blur Slider -->
-              <div class="space-y-1.5 pt-2 border-t border-stone-100">
-                <div class="flex items-center justify-between text-[11px] font-bold text-slate-700">
-                  <span>Efek Blur / Buram Background:</span>
-                  <span id="label-user-bg-blur" class="text-amber-700 font-mono">0px</span>
-                </div>
-                <input 
-                  type="range" 
-                  id="slider-user-bg-blur" 
-                  min="0" 
-                  max="30" 
-                  step="1" 
-                  value="0" 
-                  oninput="handleUserBgBlurChange(this.value)" 
-                  class="w-full accent-amber-600 cursor-pointer"
-                >
-                <div class="flex justify-between text-[9px] text-slate-400 font-mono">
-                  <span>0px (Jernih)</span>
-                  <span>15px (Sedang)</span>
-                  <span>30px (Sangat Buram)</span>
-                </div>
-              </div>
+              🔮 <strong>Animasi Lava Lamp:</strong> Efek visual modern bola-bola cahaya abstrak dinamis yang bergerak melayang pelan mengikuti palet warna tema.
             </div>
           </div>
 
@@ -1801,17 +1738,9 @@
         customTheme.secondary = activeTpl.default_colors_json.secondary || customTheme.secondary;
       }
 
-      // Background Mode (default, lava, custom)
-      const bgMode = customTheme.bg_mode || (customTheme.bg_image_url ? 'custom' : 'default');
+      // Background Mode (default or lava)
+      const bgMode = customTheme.bg_mode === 'lava' ? 'lava' : 'default';
       setBgMode(bgMode, false);
-      setCustomBgPreview(customTheme.bg_image_url || null);
-
-      // Background Blur
-      const userBgBlur = customTheme.bg_blur !== undefined ? customTheme.bg_blur : 0;
-      const userBgBlurSlider = document.getElementById('slider-user-bg-blur');
-      const userBgBlurLabel = document.getElementById('label-user-bg-blur');
-      if (userBgBlurSlider) userBgBlurSlider.value = userBgBlur;
-      if (userBgBlurLabel) userBgBlurLabel.textContent = `${userBgBlur}px`;
 
       // Particle Settings
       const partEffectEl = document.getElementById('select-particle-effect');
@@ -1997,7 +1926,7 @@
       });
     }
 
-    function broadcastToIframe() {
+    function broadcastToIframe(actionType = 'LIVE_PREVIEW_UPDATE') {
       markAsUnsaved();
 
       const frame = document.getElementById('live-preview-frame');
@@ -2040,13 +1969,13 @@
 
       if (frame && frame.contentWindow) {
         try {
-          frame.contentWindow.postMessage({ type: 'LIVE_PREVIEW_UPDATE', payload }, '*');
+          frame.contentWindow.postMessage({ type: actionType, payload }, '*');
         } catch (e) {}
       }
 
       if (livePreviewWindow && !livePreviewWindow.closed) {
         try {
-          livePreviewWindow.postMessage({ type: 'LIVE_PREVIEW_UPDATE', payload }, '*');
+          livePreviewWindow.postMessage({ type: actionType, payload }, '*');
         } catch (e) {}
       }
     }
@@ -2194,13 +2123,6 @@
 
         if (tpl.config_json) {
           const cfg = tpl.config_json;
-          if (cfg.bg_blur !== undefined) {
-            customTheme.bg_blur = cfg.bg_blur;
-            const slider = document.getElementById('slider-user-bg-blur');
-            const lbl = document.getElementById('label-user-bg-blur');
-            if (slider) slider.value = cfg.bg_blur;
-            if (lbl) lbl.textContent = `${cfg.bg_blur}px`;
-          }
           if (cfg.particle_opacity !== undefined) {
             customTheme.particle_opacity = cfg.particle_opacity;
             const opVal = Math.round(cfg.particle_opacity * 100);
@@ -2246,7 +2168,7 @@
           }
         }
       }
-      broadcastToIframe();
+      broadcastToIframe('RESET_AND_UPDATE_PREVIEW');
       showToast('Tema dipilih! Palet warna dan gaya tema diterapkan.', 'info');
     }
 
@@ -2254,106 +2176,50 @@
     // TAB 2: BACKGROUND, EFFECTS & FRAMES
     // ==========================================
     function setBgMode(mode, doBroadcast = true) {
-      customTheme.bg_mode = mode;
+      const activeMode = mode === 'lava' ? 'lava' : 'default';
+      customTheme.bg_mode = activeMode;
 
       const btnDef = document.getElementById('btn-bgmode-default');
       const btnLava = document.getElementById('btn-bgmode-lava');
-      const btnCust = document.getElementById('btn-bgmode-custom');
-
       const descDef = document.getElementById('desc-bgmode-default');
       const descLava = document.getElementById('desc-bgmode-lava');
-      const wrapCust = document.getElementById('wrapper-custom-bg');
 
       const activeClasses = ['bg-white', 'text-amber-800', 'shadow-xs', 'border', 'border-stone-200/60'];
       const inactiveClasses = ['text-slate-600', 'hover:text-slate-900'];
 
-      [
-        { key: 'default', btn: btnDef, desc: descDef },
-        { key: 'lava', btn: btnLava, desc: descLava },
-        { key: 'custom', btn: btnCust, desc: wrapCust }
-      ].forEach(item => {
-        if (item.btn) {
-          if (item.key === mode) {
-            item.btn.classList.add(...activeClasses);
-            item.btn.classList.remove(...inactiveClasses);
-          } else {
-            item.btn.classList.remove(...activeClasses);
-            item.btn.classList.add(...inactiveClasses);
-          }
+      if (btnDef) {
+        if (activeMode === 'default') {
+          btnDef.classList.add(...activeClasses);
+          btnDef.classList.remove(...inactiveClasses);
+        } else {
+          btnDef.classList.remove(...activeClasses);
+          btnDef.classList.add(...inactiveClasses);
         }
-        if (item.desc) {
-          if (item.key === mode) item.desc.classList.remove('hidden');
-          else item.desc.classList.add('hidden');
+      }
+
+      if (btnLava) {
+        if (activeMode === 'lava') {
+          btnLava.classList.add(...activeClasses);
+          btnLava.classList.remove(...inactiveClasses);
+        } else {
+          btnLava.classList.remove(...activeClasses);
+          btnLava.classList.add(...inactiveClasses);
         }
-      });
+      }
+
+      if (descDef) {
+        if (activeMode === 'default') descDef.classList.remove('hidden');
+        else descDef.classList.add('hidden');
+      }
+
+      if (descLava) {
+        if (activeMode === 'lava') descLava.classList.remove('hidden');
+        else descLava.classList.add('hidden');
+      }
 
       if (doBroadcast !== false) {
         broadcastToIframe();
       }
-    }
-
-    function handleUserBgBlurChange(val) {
-      const num = parseInt(val, 10) || 0;
-      const label = document.getElementById('label-user-bg-blur');
-      if (label) label.textContent = `${num}px`;
-      customTheme.bg_blur = num;
-      broadcastToIframe();
-    }
-
-    function setCustomBgPreview(url) {
-      const img = document.getElementById('custom-bg-preview-img');
-      const placeholder = document.getElementById('custom-bg-placeholder');
-      const btnRemove = document.getElementById('btn-remove-custom-bg');
-      if (url) {
-        if (img) { img.src = url; img.classList.remove('hidden'); }
-        if (placeholder) placeholder.classList.add('hidden');
-        if (btnRemove) btnRemove.classList.remove('hidden');
-      } else {
-        if (img) { img.src = ''; img.classList.add('hidden'); }
-        if (placeholder) placeholder.classList.remove('hidden');
-        if (btnRemove) btnRemove.classList.add('hidden');
-      }
-    }
-
-    async function handleCustomBgUpload(e) {
-      const file = e.target.files[0];
-      if (!file) return;
-
-      const statusEl = document.getElementById('custom-bg-upload-status');
-      if (statusEl) {
-        statusEl.textContent = 'Mengompresi & mengunggah background...';
-        statusEl.className = 'text-[10px] text-amber-700 font-semibold block animate-pulse';
-      }
-
-      try {
-        const result = await uploadWeddingImage(file, 'backgrounds', 1200, 0.78);
-        customTheme.bg_image_url = result.url;
-        customTheme.bg_mode = 'custom';
-        setCustomBgPreview(result.url);
-        setBgMode('custom', false);
-        if (statusEl) {
-          statusEl.textContent = 'Background berhasil diunggah!';
-          statusEl.className = 'text-[10px] text-emerald-600 font-semibold block';
-        }
-        broadcastToIframe();
-        showToast('Background kustom berhasil diunggah!', 'success');
-      } catch (err) {
-        console.error('Gagal upload background:', err);
-        if (statusEl) {
-          statusEl.textContent = 'Gagal upload: ' + err.message;
-          statusEl.className = 'text-[10px] text-rose-500 font-semibold block';
-        }
-        showToast('Gagal mengunggah background: ' + err.message, 'error');
-      }
-    }
-
-    function removeCustomBackground() {
-      customTheme.bg_image_url = null;
-      setCustomBgPreview(null);
-      const input = document.getElementById('custom-bg-file-input');
-      if (input) input.value = '';
-      setBgMode('default');
-      showToast('Background kustom dihapus (kembali ke default tema).', 'info');
     }
 
     function handleUserParticleOpacityChange(val) {
@@ -2445,19 +2311,31 @@
       if (type === 'groom') title = 'Sesuaikan Foto Mempelai Pria (CPP)';
       else if (type === 'bride') title = 'Sesuaikan Foto Mempelai Wanita (CPW)';
 
-      // Buka Interactive Canvas Cropper (Zoom/Rotate/Crop)
-      if (typeof window.openImageCropper === 'function') {
-        window.openImageCropper({
-          file,
-          targetType: type,
-          aspectRatio,
-          title,
-          onComplete: async (res) => {
-            if (!res || !res.url) return;
-            await savePhotoToDatabase(type, res.url, res.infoText);
-          }
-        });
-      } else {
+      // Buka Interactive Canvas Cropper dengan fallback otomatis direct upload
+      let cropperOpened = false;
+      try {
+        if (typeof window.openImageCropper === 'function') {
+          window.openImageCropper({
+            file,
+            targetType: type,
+            aspectRatio,
+            title,
+            onComplete: async (res) => {
+              if (!res || !res.url) return;
+              await savePhotoToDatabase(type, res.url, res.infoText);
+            },
+            onError: () => {
+              directUploadPhoto(file, type);
+            }
+          });
+          cropperOpened = true;
+        }
+      } catch (cropErr) {
+        console.warn('Gagal membuka cropper, fallback ke direct upload:', cropErr);
+        cropperOpened = false;
+      }
+
+      if (!cropperOpened) {
         directUploadPhoto(file, type);
       }
 
@@ -2658,6 +2536,20 @@
       statusEl.className = 'text-[10px] text-emerald-600 font-semibold block';
       renderGallery();
       broadcastToIframe();
+
+      // Auto-save gallery_json ke Supabase
+      if (currentWedding && currentUser && window.supabaseClient) {
+        try {
+          await window.supabaseClient
+            .from('weddings')
+            .update({ gallery_json: galleryPhotos })
+            .eq('id', currentWedding.id)
+            .eq('user_id', currentUser.id);
+          currentWedding.gallery_json = galleryPhotos;
+        } catch (err) {
+          console.warn('Auto-save gallery to DB error:', err);
+        }
+      }
     }
 
     function renderGallery() {
@@ -2693,10 +2585,23 @@
       lucide.createIcons();
     }
 
-    function removeGalleryPhoto(idx) {
+    async function removeGalleryPhoto(idx) {
       galleryPhotos.splice(idx, 1);
       renderGallery();
       broadcastToIframe();
+
+      if (currentWedding && currentUser && window.supabaseClient) {
+        try {
+          await window.supabaseClient
+            .from('weddings')
+            .update({ gallery_json: galleryPhotos })
+            .eq('id', currentWedding.id)
+            .eq('user_id', currentUser.id);
+          currentWedding.gallery_json = galleryPhotos;
+        } catch (err) {
+          console.warn('Auto-save gallery remove error:', err);
+        }
+      }
     }
 
     function renderLoveStory() {
@@ -3199,7 +3104,7 @@
       }
     }
 
-    // Helper Upload Image WebP
+    // Helper Upload Image WebP (With Supabase Storage & DataURL Fallback)
     async function uploadWeddingImage(file, folder, maxWidth = 1000, quality = 0.8) {
       if (!window.compressImageToWebP) throw new Error('Kompresor WebP belum dimuat');
       const compressed = await window.compressImageToWebP(file, maxWidth, quality);
@@ -3207,28 +3112,41 @@
       const client = window.supabaseClient;
       if (!client) throw new Error('Supabase client tidak siap');
 
-      const fileName = `${currentUser.id}_${folder}_${Date.now()}.webp`;
-      const filePath = `${currentUser.id}/${fileName}`;
-
-      const { data, error } = await client.storage
-        .from('wedding-media')
-        .upload(filePath, compressed.blob, {
-          contentType: 'image/webp',
-          upsert: true
-        });
-
-      if (error) checkRlsError(error);
-
-      const { data: publicData } = client.storage
-        .from('wedding-media')
-        .getPublicUrl(filePath);
-
       const origKb = Math.round(compressed.originalSize / 1024);
       const compKb = Math.round(compressed.compressedSize / 1024);
+      const percentDiff = Math.round((1 - compKb / Math.max(origKb, 1)) * 100);
+      const infoText = `WebP: ${origKb}KB → ${compKb}KB (-${percentDiff}%)`;
+
+      const userId = currentUser?.id || 'guest';
+      const fileName = `${userId}_${folder}_${Date.now()}.webp`;
+      const filePath = `${userId}/${fileName}`;
+
+      let finalUrl = null;
+      try {
+        const { data, error } = await client.storage
+          .from('wedding-media')
+          .upload(filePath, compressed.blob, {
+            contentType: 'image/webp',
+            upsert: true
+          });
+
+        if (error) throw error;
+
+        const { data: publicData } = client.storage
+          .from('wedding-media')
+          .getPublicUrl(filePath);
+
+        finalUrl = publicData.publicUrl;
+      } catch (storageErr) {
+        console.warn('Supabase storage upload failed, using DataURL WebP fallback:', storageErr);
+        finalUrl = compressed.dataUrl;
+      }
 
       return {
-        url: publicData.publicUrl,
-        infoText: `WebP: ${origKb}KB → ${compKb}KB (-${Math.round((1 - compKb/origKb)*100)}%)`
+        url: finalUrl,
+        publicUrl: finalUrl,
+        dataUrl: compressed.dataUrl,
+        infoText: infoText
       };
     }
 

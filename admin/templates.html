@@ -278,10 +278,10 @@
     </div>
 
     <!-- Studio Main Workspace: Split-Screen Desktop (Kiri-Kanan) -->
-    <div class="flex-1 w-full max-w-[1600px] mx-auto px-4 sm:px-6 py-4 lg:grid lg:grid-cols-12 gap-6 min-h-0 lg:overflow-hidden">
+    <div class="flex-1 w-full max-w-[1600px] mx-auto px-4 sm:px-6 py-4 lg:grid lg:grid-cols-12 gap-6 min-h-0 lg:overflow-hidden items-start">
       
       <!-- SISI KIRI: PANEL MASTER EDITOR TABS (7 COLUMNS / ~58% OVERFLOW-Y-AUTO) -->
-      <div class="lg:col-span-7 flex flex-col space-y-4 lg:h-full lg:overflow-y-auto custom-scrollbar pr-0 lg:pr-3 pb-20 lg:pb-8 min-h-0">
+      <div id="admin-studio-tabs-column" class="lg:col-span-7 flex flex-col space-y-4 lg:h-[calc(100vh-120px)] lg:overflow-y-auto custom-scrollbar pr-0 lg:pr-3 pb-20 lg:pb-8 min-h-0">
         
         <!-- Tab Navigation Bar -->
         <div class="bg-white p-1.5 rounded-2xl border border-slate-200/90 shadow-2xs flex items-center justify-between gap-1 overflow-x-auto custom-scrollbar">
@@ -1213,10 +1213,10 @@
 
       </div>
 
-      <!-- SISI KANAN: LIVE MOBILE PREVIEW HP SIMULATOR (5 COLUMNS / ~42% STICKY / CENTERED) -->
-      <div class="lg:col-span-5 flex flex-col items-center justify-start lg:justify-center lg:h-full lg:overflow-y-auto custom-scrollbar py-2">
+      <!-- SISI KANAN: LIVE MOBILE PREVIEW HP SIMULATOR (5 COLUMNS / ~42% STICKY / TOP-ALIGNED) -->
+      <div class="lg:col-span-5 flex flex-col items-center justify-start sticky top-6 self-start w-full z-20 py-1">
         
-        <div class="sticky top-0 w-full max-w-[360px] sm:max-w-[380px] space-y-3">
+        <div class="w-full max-w-[360px] sm:max-w-[380px] space-y-3">
           
           <!-- Device Simulator Toolbar -->
           <div class="bg-white px-4 py-2 rounded-2xl border border-slate-200/90 shadow-2xs flex items-center justify-between text-xs">
@@ -1856,6 +1856,10 @@
         activeBtn.classList.remove('text-slate-600', 'hover:text-slate-900', 'hover:bg-slate-100');
         activeBtn.classList.add('bg-slate-900', 'text-white', 'shadow-xs');
       }
+
+      // Reset scroll posisi panel kiri ke paling atas saat pindah tab
+      const leftCol = document.getElementById('admin-studio-tabs-column');
+      if (leftCol) leftCol.scrollTop = 0;
 
       lucide.createIcons();
     }
