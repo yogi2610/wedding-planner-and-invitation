@@ -1718,13 +1718,14 @@ class InvitationEngine {
     const tplColors = this.template?.default_colors_json || {};
     const tplConfig = this.template?.config_json || {};
 
-    const bg = custom.bg || tplColors.bg || '#FCFBF9';
-    const card = custom.card || tplColors.card || '#FFFFFF';
-    const textMain = custom.text || tplColors.text || '#2C352E';
-    const textSecondary = custom.text_secondary || tplColors.text_secondary || hexToRgba(textMain, 0.85);
-    const textTertiary = custom.text_tertiary || tplColors.text_tertiary || hexToRgba(textMain, 0.65);
-    const accent = custom.accent || tplColors.accent || '#D4AF37';
-    const secondary = custom.secondary || tplColors.secondary || '#E2B170';
+    // Warna 100% dikunci mengikuti palet template Admin
+    const bg = tplColors.bg || custom.bg || '#FCFBF9';
+    const card = tplColors.card || custom.card || '#FFFFFF';
+    const textMain = tplColors.text || custom.text || '#2C352E';
+    const textSecondary = tplColors.text_secondary || custom.text_secondary || hexToRgba(textMain, 0.85);
+    const textTertiary = tplColors.text_tertiary || custom.text_tertiary || hexToRgba(textMain, 0.65);
+    const accent = tplColors.accent || custom.accent || '#D4AF37';
+    const secondary = tplColors.secondary || custom.secondary || '#E2B170';
 
     const root = document.documentElement;
     root.style.setProperty('--bg-main', bg);
@@ -1749,25 +1750,46 @@ class InvitationEngine {
       app.style.color = textMain;
     }
 
-    // Tampilkan Custom BG Image ATAU Lava Lamp Blobs Default + BG Blur
-    const customBg = custom.bg_image_url || tplConfig.bg_image_url;
+    // Tampilkan Background berdasarkan bg_mode: 'default' | 'lava' | 'custom'
+    const bgMode = custom.bg_mode || (custom.bg_image_url ? 'custom' : 'default');
     const bgBlur = Number(custom.bg_blur ?? tplConfig.bg_blur ?? 0);
     const bgImgEl = document.getElementById('custom-bg-image');
     const lavaEl = document.getElementById('lava-lamp-container');
 
-    if (customBg && bgImgEl) {
-      bgImgEl.style.backgroundImage = `url('${customBg}')`;
+    let activeBgUrl = null;
+    let showLava = false;
+
+    if (bgMode === 'custom' && custom.bg_image_url) {
+      activeBgUrl = custom.bg_image_url;
+      showLava = false;
+    } else if (bgMode === 'lava') {
+      activeBgUrl = null;
+      showLava = true;
+    } else {
+      // 'default' bawaan tema
+      if (tplConfig.bg_image_url) {
+        activeBgUrl = tplConfig.bg_image_url;
+        showLava = false;
+      } else {
+        activeBgUrl = null;
+        showLava = true;
+      }
+    }
+
+    if (activeBgUrl && bgImgEl) {
+      bgImgEl.style.backgroundImage = `url('${activeBgUrl}')`;
       bgImgEl.style.filter = bgBlur > 0 ? `blur(${bgBlur}px)` : 'none';
       bgImgEl.style.transform = bgBlur > 0 ? 'scale(1.08)' : 'none';
       bgImgEl.classList.remove('hidden');
-      if (lavaEl) lavaEl.classList.add('hidden');
-    } else {
-      if (bgImgEl) {
-        bgImgEl.classList.add('hidden');
-        bgImgEl.style.filter = 'none';
-        bgImgEl.style.transform = 'none';
-      }
-      if (lavaEl) lavaEl.classList.remove('hidden');
+    } else if (bgImgEl) {
+      bgImgEl.classList.add('hidden');
+      bgImgEl.style.filter = 'none';
+      bgImgEl.style.transform = 'none';
+    }
+
+    if (lavaEl) {
+      if (showLava) lavaEl.classList.remove('hidden');
+      else lavaEl.classList.add('hidden');
     }
   }
 
