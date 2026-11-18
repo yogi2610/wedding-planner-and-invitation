@@ -865,14 +865,49 @@
               </div>
             </div>
 
-            <!-- Mode Selector: Mode Praktis (1 PNG Master) vs Mode Detail (4 Sudut Terpisah) -->
-            <div class="flex items-center gap-2 p-1 bg-slate-100 rounded-xl max-w-sm">
-              <button type="button" onclick="setCornerMode('master')" id="corner-mode-btn-master" class="flex-1 py-1.5 px-3 rounded-lg text-xs font-bold transition-all bg-white text-slate-900 shadow-2xs cursor-pointer">
-                Mode Praktis (1 PNG Master)
+            <!-- Mode Selector: Mode Bawaan Preset (Default Shape) vs Mode Praktis (1 PNG Master) vs Mode Detail (4 Sudut Terpisah) -->
+            <div class="flex items-center gap-1.5 p-1 bg-slate-100 rounded-xl">
+              <button type="button" onclick="setCornerMode('preset')" id="corner-mode-btn-preset" class="flex-1 py-1.5 px-2.5 rounded-lg text-xs font-bold transition-all bg-white text-slate-900 shadow-2xs cursor-pointer text-center">
+                🌿 Default Preset Tema
               </button>
-              <button type="button" onclick="setCornerMode('detail')" id="corner-mode-btn-detail" class="flex-1 py-1.5 px-3 rounded-lg text-xs font-semibold transition-all text-slate-600 hover:text-slate-900 cursor-pointer">
-                Mode Detail (4 Sudut)
+              <button type="button" onclick="setCornerMode('master')" id="corner-mode-btn-master" class="flex-1 py-1.5 px-2.5 rounded-lg text-xs font-semibold transition-all text-slate-600 hover:text-slate-900 cursor-pointer text-center">
+                🖼️ 1 PNG Master
               </button>
+              <button type="button" onclick="setCornerMode('detail')" id="corner-mode-btn-detail" class="flex-1 py-1.5 px-2.5 rounded-lg text-xs font-semibold transition-all text-slate-600 hover:text-slate-900 cursor-pointer text-center">
+                🔲 4 Sudut Terpisah
+              </button>
+            </div>
+
+            <!-- Mode Preset: Bunga & Ornamen Default Bawaan Tema -->
+            <div id="corner-box-preset" class="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-3">
+              <div class="flex items-center justify-between">
+                <div>
+                  <span class="text-xs font-bold text-slate-800 block">Katalog Ornamen & Bunga Bawaan:</span>
+                  <p class="text-[11px] text-slate-500">Pilih salah satu dari koleksi ornamen ilustrasi SVG bergerak orisinal bawaan tema tanpa perlu unggah PNG manual.</p>
+                </div>
+              </div>
+              <div class="space-y-1">
+                <select 
+                  id="select-corner-preset" 
+                  onchange="handleCornerPresetChange(this.value)"
+                  class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs font-semibold focus:ring-2 focus:ring-amber-500/40 focus:outline-none bg-white cursor-pointer"
+                >
+                  <option value="auto">🌟 Otomatis Sesuai Tema Aktif (Default)</option>
+                  <option value="minimalist-sage">🌿 1. Minimalist Sage (Daun Eukaliptus & Melati Putih)</option>
+                  <option value="cozy-terracotta">🌾 2. Cozy Terracotta (Pampas Kering & Daun Palem Boho)</option>
+                  <option value="javanese-royal">👑 3. Javanese Royal (Gunungan Wayang & Janur Emas Keraton)</option>
+                  <option value="romantic-blush">🌸 4. Romantic Blush (Bunga Mawar & Peoni Romantis)</option>
+                  <option value="luxury-midnight">✨ 5. Luxury Midnight (Daun Kristal & Geometris Emas Art Deco)</option>
+                  <option value="modern-monochrome">🖤 6. Modern Monochrome (Garis Lengkung & Bunga Calla Lily)</option>
+                  <option value="rustic-woodland">🌲 7. Rustic Woodland (Daun Pakis, Bunga Liar & Pinus)</option>
+                  <option value="whimsical-fairy">🦋 8. Whimsical Fairy (Ranting Peri Fantasi & Kupu-Kupu Ungu)</option>
+                  <option value="none">🚫 9. Tanpa Ornamen Sudut (Polos Bersih)</option>
+                </select>
+              </div>
+              <div id="preset-corner-info" class="text-[11px] text-amber-800 bg-amber-50/80 p-2.5 rounded-xl border border-amber-200/60 flex items-center gap-2">
+                <i data-lucide="sparkles" class="w-4 h-4 text-amber-600 shrink-0"></i>
+                <span id="preset-corner-desc">Ornamen ilustrasi vektor SVG berlapis dengan efek ayunan angin hidup (swaying 60fps) siap pakai secara instan.</span>
+              </div>
             </div>
 
             <!-- Mode Praktis: 1 Master PNG -->
@@ -1782,7 +1817,8 @@
           default_cover_photo: defCfg.default_cover_photo || null,
           divider_preset: defCfg.divider_preset || 'floral_branch',
           ornaments: {
-            mode: defCfg.ornaments?.mode || 'master',
+            mode: defCfg.ornaments?.mode || (defCfg.ornaments?.corner_master_png ? 'master' : (defCfg.ornaments?.corner_tl_png ? 'detail' : 'preset')),
+            preset: defCfg.ornaments?.preset || 'auto',
             corner_master_png: defCfg.ornaments?.corner_master_png || null,
             corner_tl_png: defCfg.ornaments?.corner_tl_png || null,
             corner_tr_png: defCfg.ornaments?.corner_tr_png || null,
@@ -1928,7 +1964,13 @@
 
       // Panel C: Studio Ilustrasi Aset
       const orn = templateState.config_json?.ornaments || {};
-      setCornerMode(orn.mode || 'master');
+      const cornerMode = orn.mode || (orn.corner_master_png ? 'master' : (orn.corner_tl_png ? 'detail' : 'preset'));
+      setCornerMode(cornerMode);
+
+      const cornerPreset = orn.preset || 'auto';
+      const presetSelect = document.getElementById('select-corner-preset');
+      if (presetSelect) presetSelect.value = cornerPreset;
+      updateCornerPresetInfo(cornerPreset);
       setAssetPreview('corner_master_png', orn.corner_master_png);
       setAssetPreview('corner_tl_png', orn.corner_tl_png);
       setAssetPreview('corner_tr_png', orn.corner_tr_png);
@@ -2543,22 +2585,74 @@
       if (!templateState.config_json.ornaments) templateState.config_json.ornaments = {};
       templateState.config_json.ornaments.mode = mode;
 
+      const btnPreset = document.getElementById('corner-mode-btn-preset');
       const btnMaster = document.getElementById('corner-mode-btn-master');
       const btnDetail = document.getElementById('corner-mode-btn-detail');
+      const boxPreset = document.getElementById('corner-box-preset');
       const boxMaster = document.getElementById('corner-box-master');
       const boxDetail = document.getElementById('corner-box-detail');
 
-      if (mode === 'master') {
-        if (btnMaster) { btnMaster.classList.add('bg-white', 'text-slate-900', 'shadow-2xs'); btnMaster.classList.remove('text-slate-600'); }
-        if (btnDetail) { btnDetail.classList.remove('bg-white', 'text-slate-900', 'shadow-2xs'); btnDetail.classList.add('text-slate-600'); }
+      [btnPreset, btnMaster, btnDetail].forEach(btn => {
+        if (btn) {
+          btn.classList.remove('bg-white', 'text-slate-900', 'shadow-2xs', 'font-bold');
+          btn.classList.add('text-slate-600', 'font-semibold');
+        }
+      });
+
+      if (boxPreset) boxPreset.classList.add('hidden');
+      if (boxMaster) boxMaster.classList.add('hidden');
+      if (boxDetail) boxDetail.classList.add('hidden');
+
+      if (mode === 'preset') {
+        if (btnPreset) {
+          btnPreset.classList.add('bg-white', 'text-slate-900', 'shadow-2xs', 'font-bold');
+          btnPreset.classList.remove('text-slate-600', 'font-semibold');
+        }
+        if (boxPreset) boxPreset.classList.remove('hidden');
+      } else if (mode === 'master') {
+        if (btnMaster) {
+          btnMaster.classList.add('bg-white', 'text-slate-900', 'shadow-2xs', 'font-bold');
+          btnMaster.classList.remove('text-slate-600', 'font-semibold');
+        }
         if (boxMaster) boxMaster.classList.remove('hidden');
-        if (boxDetail) boxDetail.classList.add('hidden');
       } else {
-        if (btnDetail) { btnDetail.classList.add('bg-white', 'text-slate-900', 'shadow-2xs'); btnDetail.classList.remove('text-slate-600'); }
-        if (btnMaster) { btnMaster.classList.remove('bg-white', 'text-slate-900', 'shadow-2xs'); btnMaster.classList.add('text-slate-600'); }
-        if (boxMaster) boxMaster.classList.add('hidden');
+        if (btnDetail) {
+          btnDetail.classList.add('bg-white', 'text-slate-900', 'shadow-2xs', 'font-bold');
+          btnDetail.classList.remove('text-slate-600', 'font-semibold');
+        }
         if (boxDetail) boxDetail.classList.remove('hidden');
       }
+
+      markAsUnsaved();
+      scheduleBroadcast();
+    }
+
+    function handleCornerPresetChange(val) {
+      if (!templateState.config_json) templateState.config_json = {};
+      if (!templateState.config_json.ornaments) templateState.config_json.ornaments = {};
+      templateState.config_json.ornaments.preset = val;
+      templateState.config_json.ornaments.mode = 'preset';
+      updateCornerPresetInfo(val);
+      markAsUnsaved();
+      scheduleBroadcast();
+    }
+
+    function updateCornerPresetInfo(val) {
+      const descEl = document.getElementById('preset-corner-desc');
+      if (!descEl) return;
+      const descs = {
+        'auto': 'Mengikuti tema template aktif secara otomatis (daun/bunga/ornamen bawaan tema).',
+        'minimalist-sage': 'Daun Eukaliptus & Bunga Melati Putih dengan ayunan angin botani alami.',
+        'cozy-terracotta': 'Pampas grass kering, daun palem boho & bunga matahari hangat.',
+        'javanese-royal': 'Ukiran Gunungan Wayang & Janur Emas Keraton Jawa mewah klasik.',
+        'romantic-blush': 'Rangkaian kelopak mawar mekar & bunga peoni merah muda lembut.',
+        'luxury-midnight': 'Daun kristal emas Art Deco dengan sudut geometris elegan nan berkilau.',
+        'modern-monochrome': 'Garis lengkung kontur arsitektural minimalis & bunga Calla Lily.',
+        'rustic-woodland': 'Daun pakis hutan, buah pinus kayu & bunga liar rustic earthy.',
+        'whimsical-fairy': 'Ranting peri bercahaya lembut dengan siluet kupu-kupu fantasi ungu.',
+        'none': 'Tanpa ornamen bunga di sudut (tampilan minimalis polos tanpa dekorasi sudut).'
+      };
+      descEl.textContent = descs[val] || descs['auto'];
     }
 
     function handleCornerSizeChange(val) {

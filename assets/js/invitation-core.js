@@ -1138,12 +1138,16 @@ class InvitationEngine {
     const tplOrnaments = tplConfig.ornaments || {};
     const custom = this.wedding?.custom_theme_json || {};
     const ornaments = { ...tplOrnaments, ...(custom.ornaments || {}) };
+    const cornerMode = ornaments.mode || (ornaments.corner_master_png ? 'master' : (ornaments.corner_tl_png ? 'detail' : 'preset'));
+    const cornerPreset = ornaments.preset || 'auto';
+    const targetThemeSlug = (cornerPreset && cornerPreset !== 'auto') ? cornerPreset : tplSlug;
+    const theme = ORNAMENT_THEMES[targetThemeSlug] || ORNAMENT_THEMES[tplSlug] || ORNAMENT_THEMES['minimalist-sage'];
+
     const cornerMaster = ornaments.corner_master_png || custom.custom_ornament_url || tplOrnaments.corner_master_png;
     const cornerSize = ornaments.corner_size || tplOrnaments.corner_size || 112;
     const swaySpeed = ornaments.sway_speed || tplOrnaments.sway_speed || 'normal';
     const coverHeaderPng = ornaments.cover_header_png || tplOrnaments.cover_header_png;
     const cardWatermark = ornaments.card_watermark_png || tplOrnaments.card_watermark_png;
-    const theme = ORNAMENT_THEMES[tplSlug] || ORNAMENT_THEMES['minimalist-sage'];
 
     // Update CSS Variables untuk ukuran sudut, kecepatan ayunan angin & watermark kartu
     const app = document.getElementById('invitation-app-container');
@@ -1204,20 +1208,39 @@ class InvitationEngine {
     };
 
     const renderCornersTo = (slots) => {
-      if (cornerMaster) {
+      if (cornerMode === 'preset') {
+        if (cornerPreset === 'none') {
+          if (slots.tl) slots.tl.innerHTML = '';
+          if (slots.tr) slots.tr.innerHTML = '';
+          if (slots.bl) slots.bl.innerHTML = '';
+          if (slots.br) slots.br.innerHTML = '';
+          return;
+        }
+        // SVG Preset Tema dengan Asymmetric Sway
+        if (slots.tl) slots.tl.innerHTML = `<div class="w-full h-full sway-asym-tl">${theme.cornerTL}</div>`;
+        if (slots.tr) slots.tr.innerHTML = `<div class="w-full h-full sway-asym-tr">${theme.cornerTR}</div>`;
+        if (slots.bl) slots.bl.innerHTML = `<div class="w-full h-full sway-asym-bl">${theme.cornerBL}</div>`;
+        if (slots.br) slots.br.innerHTML = `<div class="w-full h-full sway-asym-br">${theme.cornerBR}</div>`;
+      } else if (cornerMode === 'master' && cornerMaster) {
         // Mode Praktis (1 PNG Master untuk 4 Sudut dengan Mirroring Otomatis & Asymmetric Sway)
         if (slots.tl) slots.tl.innerHTML = `<img src="${cornerMaster}" alt="Ornamen" class="w-full h-full object-contain filter drop-shadow sway-asym-tl">`;
         if (slots.tr) slots.tr.innerHTML = `<img src="${cornerMaster}" alt="Ornamen" class="w-full h-full object-contain filter drop-shadow sway-asym-tr" style="transform: scaleX(-1);">`;
         if (slots.bl) slots.bl.innerHTML = `<img src="${cornerMaster}" alt="Ornamen" class="w-full h-full object-contain filter drop-shadow sway-asym-bl" style="transform: scaleY(-1);">`;
         if (slots.br) slots.br.innerHTML = `<img src="${cornerMaster}" alt="Ornamen" class="w-full h-full object-contain filter drop-shadow sway-asym-br" style="transform: scale(-1, -1);">`;
-      } else if (ornaments.corner_tl_png || ornaments.corner_tr_png || ornaments.corner_bl_png || ornaments.corner_br_png) {
+      } else if (cornerMode === 'detail' && (ornaments.corner_tl_png || ornaments.corner_tr_png || ornaments.corner_bl_png || ornaments.corner_br_png)) {
         // Mode Detail (4 Sudut Terpisah)
         if (slots.tl && ornaments.corner_tl_png) slots.tl.innerHTML = `<img src="${ornaments.corner_tl_png}" alt="Ornamen" class="w-full h-full object-contain filter drop-shadow sway-asym-tl">`;
         if (slots.tr && ornaments.corner_tr_png) slots.tr.innerHTML = `<img src="${ornaments.corner_tr_png}" alt="Ornamen" class="w-full h-full object-contain filter drop-shadow sway-asym-tr">`;
         if (slots.bl && ornaments.corner_bl_png) slots.bl.innerHTML = `<img src="${ornaments.corner_bl_png}" alt="Ornamen" class="w-full h-full object-contain filter drop-shadow sway-asym-bl">`;
         if (slots.br && ornaments.corner_br_png) slots.br.innerHTML = `<img src="${ornaments.corner_br_png}" alt="Ornamen" class="w-full h-full object-contain filter drop-shadow sway-asym-br">`;
+      } else if (cornerMaster) {
+        // Fallback jika mode tidak diset tapi ada cornerMaster
+        if (slots.tl) slots.tl.innerHTML = `<img src="${cornerMaster}" alt="Ornamen" class="w-full h-full object-contain filter drop-shadow sway-asym-tl">`;
+        if (slots.tr) slots.tr.innerHTML = `<img src="${cornerMaster}" alt="Ornamen" class="w-full h-full object-contain filter drop-shadow sway-asym-tr" style="transform: scaleX(-1);">`;
+        if (slots.bl) slots.bl.innerHTML = `<img src="${cornerMaster}" alt="Ornamen" class="w-full h-full object-contain filter drop-shadow sway-asym-bl" style="transform: scaleY(-1);">`;
+        if (slots.br) slots.br.innerHTML = `<img src="${cornerMaster}" alt="Ornamen" class="w-full h-full object-contain filter drop-shadow sway-asym-br" style="transform: scale(-1, -1);">`;
       } else {
-        // SVG Preset Tema dengan Asymmetric Sway
+        // Fallback SVG Preset Tema
         if (slots.tl) slots.tl.innerHTML = `<div class="w-full h-full sway-asym-tl">${theme.cornerTL}</div>`;
         if (slots.tr) slots.tr.innerHTML = `<div class="w-full h-full sway-asym-tr">${theme.cornerTR}</div>`;
         if (slots.bl) slots.bl.innerHTML = `<div class="w-full h-full sway-asym-bl">${theme.cornerBL}</div>`;
