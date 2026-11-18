@@ -25,7 +25,10 @@ function formatBytes(bytes) {
  */
 function compressImageToWebP(file, maxWidth = 1000, quality = 0.78) {
   return new Promise((resolve, reject) => {
-    if (!file || !file.type.startsWith('image/')) {
+    const isImage = (file && file.type && file.type.startsWith('image/')) || 
+      (file && file.name && /\.(jpe?g|png|webp|gif|bmp|heic|heif|svg)$/i.test(file.name));
+
+    if (!file || !isImage) {
       return reject(new Error('File yang dipilih bukan gambar valid.'));
     }
 
@@ -135,7 +138,7 @@ async function uploadWeddingImage(file, folderPath = 'gallery', maxWidth = 1000,
     const cleanFolder = (folderPath || 'media').replace(/[^a-z0-9_-]/gi, '');
     const timestamp = Date.now();
     const randomSuffix = Math.floor(100 + Math.random() * 900);
-    const fileName = `${userId}/${cleanFolder}_${timestamp}_${randomSuffix}.webp`;
+    const fileName = `users/${userId}/${cleanFolder}_${timestamp}_${randomSuffix}.webp`;
 
     // 2. Upload blob ke Supabase Storage bucket 'wedding-media'
     const client = window.supabaseClient;

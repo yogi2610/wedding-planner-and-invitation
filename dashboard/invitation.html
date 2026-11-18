@@ -2311,43 +2311,12 @@
       }
     }
 
-    function handlePhotoUpload(event, type) {
+    async function handlePhotoUpload(event, type) {
       const file = event.target.files?.[0];
       if (!file) return;
 
-      const aspectRatio = type === 'cover' ? '3:4' : '1:1';
-      let title = 'Sesuaikan Foto Sampul Depan';
-      if (type === 'groom') title = 'Sesuaikan Foto Mempelai Pria (CPP)';
-      else if (type === 'bride') title = 'Sesuaikan Foto Mempelai Wanita (CPW)';
-
-      // Buka Interactive Canvas Cropper dengan fallback otomatis direct upload
-      let cropperOpened = false;
-      try {
-        if (typeof window.openImageCropper === 'function') {
-          window.openImageCropper({
-            file,
-            targetType: type,
-            aspectRatio,
-            title,
-            onComplete: async (res) => {
-              if (!res || !res.url) return;
-              await savePhotoToDatabase(type, res.url, res.infoText);
-            },
-            onError: () => {
-              directUploadPhoto(file, type);
-            }
-          });
-          cropperOpened = true;
-        }
-      } catch (cropErr) {
-        console.warn('Gagal membuka cropper, fallback ke direct upload:', cropErr);
-        cropperOpened = false;
-      }
-
-      if (!cropperOpened) {
-        directUploadPhoto(file, type);
-      }
-
+      // Unggah langsung file foto dengan kompresi WebP & auto-save ke Supabase
+      await directUploadPhoto(file, type);
       event.target.value = '';
     }
 
@@ -2356,17 +2325,24 @@
       const badgeEl = document.getElementById(`badge-${type}-compress`);
 
       if (loadingEl) { loadingEl.classList.remove('hidden'); loadingEl.classList.add('flex'); }
-      if (badgeEl) badgeEl.textContent = 'Mengompresi & mengunggah...';
+      if (badgeEl) {
+        badgeEl.textContent = 'Mengompresi & mengunggah...';
+        badgeEl.className = 'text-[10px] text-amber-600 font-semibold block animate-pulse';
+      }
 
       try {
         const result = await uploadWeddingImage(file, `${type}_photo`, type === 'cover' ? 1000 : 500, 0.8);
+        if (!result || !result.url) {
+          throw new Error('Gagal mendapatkan URL foto dari server.');
+        }
         await savePhotoToDatabase(type, result.url, result.infoText);
       } catch (err) {
+        console.error(`Upload ${type} photo error:`, err);
         if (badgeEl) {
-          badgeEl.textContent = 'Gagal: ' + err.message;
+          badgeEl.textContent = 'Gagal: ' + (err.message || 'Error');
           badgeEl.className = 'text-[10px] text-rose-600 font-semibold block';
         }
-        showToast('Gagal mengunggah foto: ' + err.message, 'error');
+        showToast('Gagal mengunggah foto: ' + (err.message || 'Terjadi kesalahan sistem'), 'error');
       } finally {
         if (loadingEl) { loadingEl.classList.add('hidden'); loadingEl.classList.remove('flex'); }
       }
@@ -2381,26 +2357,37 @@
       if (type === 'cover') {
         currentWedding.custom_theme_json = currentWedding.custom_theme_json || {};
         currentWedding.custom_theme_json.cover_photo = url;
+        if (typeof customTheme === 'object' && customTheme !== null) {
+          customTheme.cover_photo = url;
+        }
         updatePayload.custom_theme_json = currentWedding.custom_theme_json;
       }
 
       setPhotoPreview(type, url, infoText);
+
+      try {
+        localStorage.setItem(STORAGE_KEYS.WEDDING, JSON.stringify(currentWedding));
+      } catch (e) {
+        console.warn('LocalStorage save error:', e);
+      }
+
       broadcastToIframe();
 
       try {
         const client = window.supabaseClient;
-        if (client && currentUser) {
-          const { error } = await client
-            .from('weddings')
-            .update(updatePayload)
-            .eq('id', currentWedding.id)
-            .eq('user_id', currentUser.id);
+        if (client && currentWedding.id) {
+          let query = client.from('weddings').update(updatePayload).eq('id', currentWedding.id);
+          if (currentUser?.id) {
+            query = query.eq('user_id', currentUser.id);
+          }
+          const { error } = await query;
 
           if (error) {
             console.error('Auto-save photo error:', error);
             showToast('Foto terunggah, gagal simpan ke DB: ' + error.message, 'warning');
           } else {
-            showToast(`✓ Foto ${type === 'cover' ? 'Sampul' : (type === 'groom' ? 'Pria' : 'Wanita')} tersimpan otomatis ke database!`, 'success');
+            const photoLabel = type === 'cover' ? 'Sampul Depan' : (type === 'groom' ? 'Mempelai Pria' : 'Mempelai Wanita');
+            showToast(`✓ Foto ${photoLabel} berhasil diunggah dan disimpan!`, 'success');
           }
         }
       } catch (err) {
@@ -2422,17 +2409,21 @@
       const aspectRatio = type === 'cover' ? '3:4' : '1:1';
       let title = type === 'cover' ? 'Sesuaikan Foto Sampul Depan' : (type === 'groom' ? 'Sesuaikan Foto Mempelai Pria' : 'Sesuaikan Foto Mempelai Wanita');
 
-      window.openImageCropper({
-        source: currentUrl,
-        imageUrl: currentUrl,
-        targetType: type,
-        aspectRatio,
-        title,
-        onComplete: async (res) => {
-          if (!res || !res.url) return;
-          await savePhotoToDatabase(type, res.url, res.infoText);
-        }
-      });
+      if (typeof window.openImageCropper === 'function') {
+        window.openImageCropper({
+          source: currentUrl,
+          imageUrl: currentUrl,
+          targetType: type,
+          aspectRatio,
+          title,
+          onComplete: async (res) => {
+            if (!res || !res.url) return;
+            await savePhotoToDatabase(type, res.url, res.infoText);
+          }
+        });
+      } else {
+        showToast('Modul crop belum tersedia, silakan ganti foto secara langsung.', 'info');
+      }
     }
 
     async function removePhoto(type) {
@@ -2443,6 +2434,9 @@
       const updatePayload = { [colName]: null };
       if (type === 'cover') {
         if (currentWedding.custom_theme_json) currentWedding.custom_theme_json.cover_photo = null;
+        if (typeof customTheme === 'object' && customTheme !== null) {
+          customTheme.cover_photo = null;
+        }
         updatePayload.custom_theme_json = currentWedding.custom_theme_json;
       }
 
@@ -2450,18 +2444,23 @@
       const input = document.getElementById(`file-input-${type}`) || document.getElementById(`${type}-photo-file-input`);
       if (input) input.value = '';
 
+      try {
+        localStorage.setItem(STORAGE_KEYS.WEDDING, JSON.stringify(currentWedding));
+      } catch (e) {}
+
       broadcastToIframe();
 
       try {
         const client = window.supabaseClient;
-        if (client && currentUser) {
-          await client
-            .from('weddings')
-            .update(updatePayload)
-            .eq('id', currentWedding.id)
-            .eq('user_id', currentUser.id);
+        if (client && currentWedding.id) {
+          let query = client.from('weddings').update(updatePayload).eq('id', currentWedding.id);
+          if (currentUser?.id) {
+            query = query.eq('user_id', currentUser.id);
+          }
+          await query;
         }
-        showToast(`Foto ${type === 'cover' ? 'Sampul' : (type === 'groom' ? 'Pria' : 'Wanita')} berhasil dihapus dari database.`, 'info');
+        const photoLabel = type === 'cover' ? 'Sampul' : (type === 'groom' ? 'Pria' : 'Wanita');
+        showToast(`Foto ${photoLabel} berhasil dihapus.`, 'info');
       } catch (err) {
         console.error('Error removing photo:', err);
       }
@@ -2492,6 +2491,7 @@
         if (uploadedEl) uploadedEl.classList.remove('hidden');
         if (badgeCompress && infoText) {
           badgeCompress.textContent = infoText;
+          badgeCompress.className = 'text-[10px] text-emerald-600 font-semibold block';
         }
       } else {
         if (imgEl) {
@@ -2501,7 +2501,13 @@
         if (placeholderEl) placeholderEl.classList.remove('hidden');
         if (emptyEl) emptyEl.classList.remove('hidden');
         if (uploadedEl) uploadedEl.classList.add('hidden');
-        if (badgeCompress) badgeCompress.textContent = '';
+        if (badgeCompress) {
+          badgeCompress.textContent = '';
+        }
+      }
+
+      if (window.lucide && typeof window.lucide.createIcons === 'function') {
+        window.lucide.createIcons();
       }
     }
 
@@ -3142,8 +3148,10 @@
       const infoText = `WebP: ${origKb}KB → ${compKb}KB (-${percentDiff}%)`;
 
       const userId = currentUser?.id || 'guest';
-      const fileName = `${userId}_${folder}_${Date.now()}.webp`;
-      const filePath = `${userId}/${fileName}`;
+      const cleanFolder = (folder || 'photo').replace(/[^a-z0-9_-]/gi, '');
+      const timestamp = Date.now();
+      const randomSuffix = Math.floor(100 + Math.random() * 900);
+      const filePath = `users/${userId}/${cleanFolder}_${timestamp}_${randomSuffix}.webp`;
 
       let finalUrl = null;
       try {

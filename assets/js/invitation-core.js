@@ -1061,6 +1061,9 @@ class InvitationEngine {
     if (coverPhoto && frameShape !== 'none') {
       container.classList.remove('hidden');
       img.src = coverPhoto;
+      img.onerror = () => {
+        container.classList.add('hidden');
+      };
 
       // Bersihkan class cover-frame sebelumnya
       frame.className = frame.className
@@ -2116,8 +2119,19 @@ class InvitationEngine {
       groomImg.src = w.groom_photo;
       groomImg.classList.remove('hidden');
       groomAvatar.classList.add('hidden');
-    } else if (groomAvatar) {
-      groomAvatar.textContent = groom.charAt(0);
+      groomImg.onerror = () => {
+        groomImg.classList.add('hidden');
+        if (groomAvatar) groomAvatar.classList.remove('hidden');
+      };
+    } else {
+      if (groomImg) {
+        groomImg.src = '';
+        groomImg.classList.add('hidden');
+      }
+      if (groomAvatar) {
+        groomAvatar.textContent = groom.charAt(0) || 'P';
+        groomAvatar.classList.remove('hidden');
+      }
     }
 
     if (w.groom_ig && groomIgLink && groomIgText) {
@@ -2142,8 +2156,19 @@ class InvitationEngine {
       brideImg.src = w.bride_photo;
       brideImg.classList.remove('hidden');
       brideAvatar.classList.add('hidden');
-    } else if (brideAvatar) {
-      brideAvatar.textContent = bride.charAt(0);
+      brideImg.onerror = () => {
+        brideImg.classList.add('hidden');
+        if (brideAvatar) brideAvatar.classList.remove('hidden');
+      };
+    } else {
+      if (brideImg) {
+        brideImg.src = '';
+        brideImg.classList.add('hidden');
+      }
+      if (brideAvatar) {
+        brideAvatar.textContent = bride.charAt(0) || 'W';
+        brideAvatar.classList.remove('hidden');
+      }
     }
 
     if (w.bride_ig && brideIgLink && brideIgText) {
