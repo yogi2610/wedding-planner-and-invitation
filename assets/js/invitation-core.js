@@ -1052,13 +1052,13 @@ class InvitationEngine {
     if (!container || !frame || !img) return;
 
     const tplConfig = this.template?.config_json || {};
-    const coverPhoto = this.wedding?.cover_photo || tplConfig.default_cover_photo || this.wedding?.groom_photo;
     const custom = this.wedding?.custom_theme_json || {};
+    const coverPhoto = this.wedding?.cover_photo || custom.cover_photo || tplConfig.default_cover_photo || null;
     const frameShape = custom.cover_frame_shape || tplConfig.cover_frame_shape || 'grand_arch';
     const frameOrnament = custom.cover_frame_ornament || tplConfig.cover_frame_ornament || 'floral_wreath';
     const customFramePng = custom.custom_cover_frame_png || tplConfig.ornaments?.custom_cover_frame_png;
 
-    if (coverPhoto) {
+    if (coverPhoto && frameShape !== 'none') {
       container.classList.remove('hidden');
       img.src = coverPhoto;
 
@@ -1774,44 +1774,73 @@ class InvitationEngine {
     }
 
     // Tampilkan Background berdasarkan bg_mode: 'default' | 'lava' | 'custom'
-    const bgMode = custom.bg_mode || (custom.bg_image_url ? 'custom' : 'default');
+    const bgMode = custom.bg_mode || (custom.bg_image_url || custom.bg_gif_url ? 'custom' : 'default');
     const bgBlur = Number(custom.bg_blur ?? tplConfig.bg_blur ?? 0);
     const bgImgEl = document.getElementById('custom-bg-image');
+    const gifImgEl = document.getElementById('gif-bg-image');
     const lavaEl = document.getElementById('lava-lamp-container');
 
-    let activeBgUrl = null;
-    let showLava = false;
+    let activeType = 'lava'; // 'lava' | 'image' | 'gif'
+    let activeUrl = null;
 
-    if (bgMode === 'custom' && custom.bg_image_url) {
-      activeBgUrl = custom.bg_image_url;
-      showLava = false;
+    if (bgMode === 'custom') {
+      if (custom.bg_type === 'gif' && custom.bg_gif_url) {
+        activeType = 'gif';
+        activeUrl = custom.bg_gif_url;
+      } else if (custom.bg_image_url) {
+        activeType = 'image';
+        activeUrl = custom.bg_image_url;
+      } else if (custom.bg_mode === 'lava') {
+        activeType = 'lava';
+      }
     } else if (bgMode === 'lava') {
-      activeBgUrl = null;
-      showLava = true;
+      activeType = 'lava';
     } else {
-      // 'default' bawaan tema
-      if (tplConfig.bg_image_url) {
-        activeBgUrl = tplConfig.bg_image_url;
-        showLava = false;
+      // 'default' bawaan template master
+      const tplBgType = tplConfig.bg_type || (tplConfig.bg_gif_url ? 'gif' : (tplConfig.bg_image_url ? 'image' : 'lava'));
+      if (tplBgType === 'gif' && tplConfig.bg_gif_url) {
+        activeType = 'gif';
+        activeUrl = tplConfig.bg_gif_url;
+      } else if (tplBgType === 'image' && tplConfig.bg_image_url) {
+        activeType = 'image';
+        activeUrl = tplConfig.bg_image_url;
       } else {
-        activeBgUrl = null;
-        showLava = true;
+        activeType = 'lava';
       }
     }
 
-    if (activeBgUrl && bgImgEl) {
-      bgImgEl.style.backgroundImage = `url('${activeBgUrl}')`;
-      bgImgEl.style.filter = bgBlur > 0 ? `blur(${bgBlur}px)` : 'none';
-      bgImgEl.style.transform = bgBlur > 0 ? 'scale(1.08)' : 'none';
-      bgImgEl.classList.remove('hidden');
-    } else if (bgImgEl) {
-      bgImgEl.classList.add('hidden');
-      bgImgEl.style.filter = 'none';
-      bgImgEl.style.transform = 'none';
+    // 1. Render GIF Background
+    if (gifImgEl) {
+      if (activeType === 'gif' && activeUrl) {
+        gifImgEl.src = activeUrl;
+        gifImgEl.style.filter = bgBlur > 0 ? `blur(${bgBlur}px)` : 'none';
+        gifImgEl.style.transform = bgBlur > 0 ? 'scale(1.08)' : 'none';
+        gifImgEl.classList.remove('hidden');
+      } else {
+        gifImgEl.src = '';
+        gifImgEl.classList.add('hidden');
+        gifImgEl.style.filter = 'none';
+        gifImgEl.style.transform = 'none';
+      }
     }
 
+    // 2. Render Image Background
+    if (bgImgEl) {
+      if (activeType === 'image' && activeUrl) {
+        bgImgEl.style.backgroundImage = `url('${activeUrl}')`;
+        bgImgEl.style.filter = bgBlur > 0 ? `blur(${bgBlur}px)` : 'none';
+        bgImgEl.style.transform = bgBlur > 0 ? 'scale(1.08)' : 'none';
+        bgImgEl.classList.remove('hidden');
+      } else {
+        bgImgEl.classList.add('hidden');
+        bgImgEl.style.filter = 'none';
+        bgImgEl.style.transform = 'none';
+      }
+    }
+
+    // 3. Render Lava Lamp Blobs
     if (lavaEl) {
-      if (showLava) lavaEl.classList.remove('hidden');
+      if (activeType === 'lava') lavaEl.classList.remove('hidden');
       else lavaEl.classList.add('hidden');
     }
   }
@@ -1872,28 +1901,12 @@ class InvitationEngine {
     const curtainRight = document.getElementById('cover-curtain-right');
     const dock = document.getElementById('bottom-dock');
 
-    // Efek Membuka Tirai Gunungan Wayang Kembar ke Kiri & Kanan
-    if (curtainLeft) {
-      curtainLeft.style.transform = 'translateX(-125%) scale(0.95)';
-      curtainLeft.style.opacity = '0';
-    }
-    if (curtainRight) {
-      curtainRight.style.transform = 'translateX(125%) scale(0.95)';
-      curtainRight.style.opacity = '0';
-    }
+    // 1. Scroll window ke posisi 0 paling atas seketika
+    window.scrollTo(0, 0);
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
 
-    // Angkat Sampul Depan ke Atas
-    if (cover) {
-      cover.style.transform = 'translateY(-100%)';
-      cover.style.opacity = '0';
-      cover.style.pointerEvents = 'none';
-      setTimeout(() => {
-        cover.style.setProperty('display', 'none', 'important');
-        cover.style.setProperty('pointer-events', 'none', 'important');
-      }, 850);
-    }
-
-    // Buka lock scroll html, body & container sepenuhnya sesuai instruksi
+    // 2. Buka lock scroll html, body & container sepenuhnya secara instan (zero delay)
     document.documentElement.style.overflow = 'auto';
     document.documentElement.style.height = 'auto';
     document.body.style.overflow = 'auto';
@@ -1913,6 +1926,27 @@ class InvitationEngine {
       content.style.height = 'auto';
     }
 
+    // 3. Efek Membuka Tirai Gunungan Wayang Kembar ke Kiri & Kanan
+    if (curtainLeft) {
+      curtainLeft.style.transform = 'translateX(-125%) scale(0.95)';
+      curtainLeft.style.opacity = '0';
+    }
+    if (curtainRight) {
+      curtainRight.style.transform = 'translateX(125%) scale(0.95)';
+      curtainRight.style.opacity = '0';
+    }
+
+    // 4. Angkat Sampul Depan ke Atas (transisi 450ms instan tanpa jeda macet)
+    if (cover) {
+      cover.style.transform = 'translateY(-100%)';
+      cover.style.opacity = '0';
+      cover.style.pointerEvents = 'none';
+      setTimeout(() => {
+        cover.style.setProperty('display', 'none', 'important');
+        cover.style.setProperty('pointer-events', 'none', 'important');
+      }, 450);
+    }
+
     // Tampilkan Floating Bottom Dock Navigasi
     if (dock) {
       dock.classList.remove('opacity-0', 'translate-y-10', 'pointer-events-none');
@@ -1924,7 +1958,7 @@ class InvitationEngine {
       document.querySelectorAll('#section-quote [data-animate], #section-couple [data-animate]').forEach(el => {
         el.classList.add('is-revealed');
       });
-    }, 250);
+    }, 150);
 
     // Putar musik latar
     this.playAudio();

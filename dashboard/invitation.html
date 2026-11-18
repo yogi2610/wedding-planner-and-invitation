@@ -673,7 +673,7 @@
             <div class="flex items-center gap-4">
               <!-- Thumbnail Box -->
               <div class="relative w-20 h-28 rounded-2xl overflow-hidden bg-stone-100 border-2 border-amber-400 shrink-0 flex items-center justify-center shadow-xs">
-                <img id="preview-cover-photo" src="" alt="Foto Sampul" class="w-full h-full object-cover hidden">
+                <img id="preview-img-cover" src="" alt="Foto Sampul" class="w-full h-full object-cover hidden">
                 <span id="placeholder-cover-photo" class="text-2xl text-stone-300 font-serif font-bold">🖼️</span>
                 <div id="loading-cover-photo" class="absolute inset-0 bg-slate-900/60 hidden items-center justify-center text-white">
                   <i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i>
@@ -684,7 +684,7 @@
               <div class="space-y-2 flex-1">
                 <input 
                   type="file" 
-                  id="cover-photo-file-input"
+                  id="file-input-cover"
                   accept="image/*" 
                   onchange="handlePhotoUpload(event, 'cover')" 
                   class="hidden"
@@ -694,7 +694,7 @@
                 <div id="actions-empty-cover" class="space-y-1">
                   <button 
                     type="button" 
-                    onclick="document.getElementById('cover-photo-file-input').click()" 
+                    onclick="triggerPhotoUpload('cover')" 
                     class="px-4 py-2 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 font-bold text-xs inline-flex items-center gap-1.5 transition-colors cursor-pointer"
                   >
                     <i data-lucide="upload" class="w-3.5 h-3.5"></i>
@@ -715,7 +715,7 @@
                   <div class="flex flex-wrap items-center gap-2">
                     <button 
                       type="button" 
-                      onclick="document.getElementById('cover-photo-file-input').click()" 
+                      onclick="triggerPhotoUpload('cover')" 
                       class="px-2.5 py-1 rounded-lg bg-stone-100 hover:bg-stone-200 text-slate-700 text-[11px] font-bold border border-stone-300 transition-colors cursor-pointer"
                     >
                       Ganti Foto
@@ -792,7 +792,7 @@
             <div class="flex items-center gap-4">
               <!-- Thumbnail Box -->
               <div class="relative w-20 h-20 rounded-full overflow-hidden bg-stone-100 border-2 border-amber-300 shrink-0 flex items-center justify-center shadow-xs">
-                <img id="preview-groom-photo" src="" alt="Foto Pria" class="w-full h-full object-cover hidden">
+                <img id="preview-img-groom" src="" alt="Foto Pria" class="w-full h-full object-cover hidden">
                 <span id="placeholder-groom-photo" class="text-2xl text-stone-300 font-serif font-bold">👦</span>
                 <div id="loading-groom-photo" class="absolute inset-0 bg-slate-900/60 hidden items-center justify-center text-white">
                   <i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i>
@@ -803,7 +803,7 @@
               <div class="space-y-2 flex-1">
                 <input 
                   type="file" 
-                  id="groom-photo-file-input"
+                  id="file-input-groom"
                   accept="image/*" 
                   onchange="handlePhotoUpload(event, 'groom')" 
                   class="hidden"
@@ -813,7 +813,7 @@
                 <div id="actions-empty-groom" class="space-y-1">
                   <button 
                     type="button" 
-                    onclick="document.getElementById('groom-photo-file-input').click()" 
+                    onclick="triggerPhotoUpload('groom')" 
                     class="px-4 py-2 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 font-bold text-xs inline-flex items-center gap-1.5 transition-colors cursor-pointer"
                   >
                     <i data-lucide="upload" class="w-3.5 h-3.5"></i>
@@ -834,7 +834,7 @@
                   <div class="flex flex-wrap items-center gap-2">
                     <button 
                       type="button" 
-                      onclick="document.getElementById('groom-photo-file-input').click()" 
+                      onclick="triggerPhotoUpload('groom')" 
                       class="px-2.5 py-1 rounded-lg bg-stone-100 hover:bg-stone-200 text-slate-700 text-[11px] font-bold border border-stone-300 transition-colors cursor-pointer"
                     >
                       Ganti Foto
@@ -894,7 +894,7 @@
             <div class="flex items-center gap-4">
               <!-- Thumbnail Box -->
               <div class="relative w-20 h-20 rounded-full overflow-hidden bg-stone-100 border-2 border-rose-300 shrink-0 flex items-center justify-center shadow-xs">
-                <img id="preview-bride-photo" src="" alt="Foto Wanita" class="w-full h-full object-cover hidden">
+                <img id="preview-img-bride" src="" alt="Foto Wanita" class="w-full h-full object-cover hidden">
                 <span id="placeholder-bride-photo" class="text-2xl text-stone-300 font-serif font-bold">👧</span>
                 <div id="loading-bride-photo" class="absolute inset-0 bg-slate-900/60 hidden items-center justify-center text-white">
                   <i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i>
@@ -905,7 +905,7 @@
               <div class="space-y-2 flex-1">
                 <input 
                   type="file" 
-                  id="bride-photo-file-input"
+                  id="file-input-bride"
                   accept="image/*" 
                   onchange="handlePhotoUpload(event, 'bride')" 
                   class="hidden"
@@ -915,7 +915,7 @@
                 <div id="actions-empty-bride" class="space-y-1">
                   <button 
                     type="button" 
-                    onclick="document.getElementById('bride-photo-file-input').click()" 
+                    onclick="triggerPhotoUpload('bride')" 
                     class="px-4 py-2 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-900 border border-rose-300 font-bold text-xs inline-flex items-center gap-1.5 transition-colors cursor-pointer"
                   >
                     <i data-lucide="upload" class="w-3.5 h-3.5"></i>
@@ -936,7 +936,7 @@
                   <div class="flex flex-wrap items-center gap-2">
                     <button 
                       type="button" 
-                      onclick="document.getElementById('bride-photo-file-input').click()" 
+                      onclick="triggerPhotoUpload('bride')" 
                       class="px-2.5 py-1 rounded-lg bg-stone-100 hover:bg-stone-200 text-slate-700 text-[11px] font-bold border border-stone-300 transition-colors cursor-pointer"
                     >
                       Ganti Foto
@@ -1786,7 +1786,8 @@
       if (coverFrameOrnEl) coverFrameOrnEl.value = customTheme.cover_frame_ornament || 'floral_wreath';
 
       // 4. Photos (Cover, Groom, Bride)
-      setPhotoPreview('cover', w.cover_photo);
+      const coverPhotoUrl = w.cover_photo || w.custom_theme_json?.cover_photo || null;
+      setPhotoPreview('cover', coverPhotoUrl);
       setPhotoPreview('groom', w.groom_photo);
       setPhotoPreview('bride', w.bride_photo);
 
@@ -1934,7 +1935,7 @@
       const payload = {
         wedding: {
           slug: getValSafe('wedding-slug'),
-          cover_photo: currentWedding?.cover_photo || null,
+          cover_photo: currentWedding?.cover_photo || currentWedding?.custom_theme_json?.cover_photo || null,
           groom_nickname: getValSafe('groom-nickname'),
           groom_fullname: getValSafe('groom-fullname'),
           groom_parents: getValSafe('groom-parents'),
@@ -2302,6 +2303,14 @@
     // ==========================================
     // TAB 3: PROFIL MEMPELAI & FOTO (INSTANT PERSISTENCE)
     // ==========================================
+    function triggerPhotoUpload(type) {
+      const input = document.getElementById(`file-input-${type}`) || document.getElementById(`${type}-photo-file-input`);
+      if (input) {
+        input.value = '';
+        input.click();
+      }
+    }
+
     function handlePhotoUpload(event, type) {
       const file = event.target.files?.[0];
       if (!file) return;
@@ -2368,6 +2377,13 @@
       const colName = type === 'cover' ? 'cover_photo' : (type === 'groom' ? 'groom_photo' : 'bride_photo');
       currentWedding[colName] = url;
 
+      const updatePayload = { [colName]: url };
+      if (type === 'cover') {
+        currentWedding.custom_theme_json = currentWedding.custom_theme_json || {};
+        currentWedding.custom_theme_json.cover_photo = url;
+        updatePayload.custom_theme_json = currentWedding.custom_theme_json;
+      }
+
       setPhotoPreview(type, url, infoText);
       broadcastToIframe();
 
@@ -2376,7 +2392,7 @@
         if (client && currentUser) {
           const { error } = await client
             .from('weddings')
-            .update({ [colName]: url })
+            .update(updatePayload)
             .eq('id', currentWedding.id)
             .eq('user_id', currentUser.id);
 
@@ -2394,7 +2410,7 @@
 
     function openReCrop(type) {
       let currentUrl = null;
-      if (type === 'cover') currentUrl = currentWedding?.cover_photo;
+      if (type === 'cover') currentUrl = currentWedding?.cover_photo || currentWedding?.custom_theme_json?.cover_photo;
       else if (type === 'groom') currentUrl = currentWedding?.groom_photo;
       else if (type === 'bride') currentUrl = currentWedding?.bride_photo;
 
@@ -2424,9 +2440,14 @@
       const colName = type === 'cover' ? 'cover_photo' : (type === 'groom' ? 'groom_photo' : 'bride_photo');
       currentWedding[colName] = null;
 
+      const updatePayload = { [colName]: null };
+      if (type === 'cover') {
+        if (currentWedding.custom_theme_json) currentWedding.custom_theme_json.cover_photo = null;
+        updatePayload.custom_theme_json = currentWedding.custom_theme_json;
+      }
+
       setPhotoPreview(type, null);
-      const inputId = type === 'cover' ? 'cover-photo-file-input' : `${type}-photo-file-input`;
-      const input = document.getElementById(inputId);
+      const input = document.getElementById(`file-input-${type}`) || document.getElementById(`${type}-photo-file-input`);
       if (input) input.value = '';
 
       broadcastToIframe();
@@ -2436,7 +2457,7 @@
         if (client && currentUser) {
           await client
             .from('weddings')
-            .update({ [colName]: null })
+            .update(updatePayload)
             .eq('id', currentWedding.id)
             .eq('user_id', currentUser.id);
         }
@@ -2457,7 +2478,7 @@
     function setPhotoPreview(type, url, infoText = '') {
       const emptyEl = document.getElementById(`actions-empty-${type}`);
       const uploadedEl = document.getElementById(`actions-uploaded-${type}`);
-      const imgEl = document.getElementById(`preview-${type}-photo`);
+      const imgEl = document.getElementById(`preview-img-${type}`) || document.getElementById(`preview-${type}-photo`);
       const placeholderEl = document.getElementById(`placeholder-${type}-photo`);
       const badgeCompress = document.getElementById(`badge-${type}-compress`);
 
@@ -3029,6 +3050,9 @@
         }
 
         const pubEl = document.getElementById('wedding-is-published');
+        const coverUrl = currentWedding?.cover_photo || currentWedding?.custom_theme_json?.cover_photo || null;
+        customTheme.cover_photo = coverUrl;
+
         const payload = {
           slug: slug,
           template_id: selectedTemplateId,
@@ -3036,7 +3060,7 @@
           custom_theme_json: customTheme,
 
           // Foto Sampul Utama & Profil
-          cover_photo: currentWedding?.cover_photo || null,
+          cover_photo: coverUrl,
           groom_photo: currentWedding?.groom_photo || null,
           bride_photo: currentWedding?.bride_photo || null,
 

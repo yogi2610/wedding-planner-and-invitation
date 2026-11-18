@@ -284,14 +284,14 @@
       <div id="admin-studio-tabs-column" class="lg:col-span-7 flex flex-col space-y-4 lg:h-[calc(100vh-120px)] lg:overflow-y-auto custom-scrollbar pr-0 lg:pr-3 pb-20 lg:pb-8 min-h-0">
         
         <!-- Tab Navigation Bar -->
-        <div class="bg-white p-1.5 rounded-2xl border border-slate-200/90 shadow-2xs flex items-center justify-between gap-1 overflow-x-auto custom-scrollbar">
+        <div class="bg-white p-1.5 rounded-2xl border border-slate-200/90 shadow-2xs flex items-center justify-between gap-1 overflow-x-auto custom-scrollbar flex-shrink-0 shrink-0 min-h-[54px]">
           <button 
             type="button" 
             onclick="switchStudioTab('identity')" 
             id="tab-btn-identity" 
-            class="studio-tab-btn flex-1 min-w-[120px] py-2 px-3 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all bg-slate-900 text-white shadow-xs cursor-pointer"
+            class="studio-tab-btn flex-1 min-w-[120px] py-2.5 px-4 min-h-[42px] flex-shrink-0 inline-flex items-center justify-center gap-2 text-sm font-semibold rounded-xl transition-all bg-slate-900 text-white shadow-xs cursor-pointer"
           >
-            <i data-lucide="info" class="w-3.5 h-3.5"></i>
+            <i data-lucide="info" class="w-4 h-4"></i>
             <span>A. Identitas</span>
           </button>
           
@@ -299,9 +299,9 @@
             type="button" 
             onclick="switchStudioTab('palette')" 
             id="tab-btn-palette" 
-            class="studio-tab-btn flex-1 min-w-[120px] py-2 px-3 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all text-slate-600 hover:text-slate-900 hover:bg-slate-100 cursor-pointer"
+            class="studio-tab-btn flex-1 min-w-[120px] py-2.5 px-4 min-h-[42px] flex-shrink-0 inline-flex items-center justify-center gap-2 text-sm font-semibold rounded-xl transition-all text-slate-600 hover:text-slate-900 hover:bg-slate-100 cursor-pointer"
           >
-            <i data-lucide="palette" class="w-3.5 h-3.5"></i>
+            <i data-lucide="palette" class="w-4 h-4"></i>
             <span>B. Warna & Font</span>
           </button>
           
@@ -309,9 +309,9 @@
             type="button" 
             onclick="switchStudioTab('assets')" 
             id="tab-btn-assets" 
-            class="studio-tab-btn flex-1 min-w-[120px] py-2 px-3 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all text-slate-600 hover:text-slate-900 hover:bg-slate-100 cursor-pointer"
+            class="studio-tab-btn flex-1 min-w-[120px] py-2.5 px-4 min-h-[42px] flex-shrink-0 inline-flex items-center justify-center gap-2 text-sm font-semibold rounded-xl transition-all text-slate-600 hover:text-slate-900 hover:bg-slate-100 cursor-pointer"
           >
-            <i data-lucide="image" class="w-3.5 h-3.5"></i>
+            <i data-lucide="image" class="w-4 h-4"></i>
             <span>C. Aset PNG Seksi</span>
           </button>
           
@@ -319,9 +319,9 @@
             type="button" 
             onclick="switchStudioTab('effects')" 
             id="tab-btn-effects" 
-            class="studio-tab-btn flex-1 min-w-[120px] py-2 px-3 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all text-slate-600 hover:text-slate-900 hover:bg-slate-100 cursor-pointer"
+            class="studio-tab-btn flex-1 min-w-[120px] py-2.5 px-4 min-h-[42px] flex-shrink-0 inline-flex items-center justify-center gap-2 text-sm font-semibold rounded-xl transition-all text-slate-600 hover:text-slate-900 hover:bg-slate-100 cursor-pointer"
           >
-            <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
+            <i data-lucide="sparkles" class="w-4 h-4"></i>
             <span>D. Animasi & Fisika</span>
           </button>
         </div>
@@ -783,28 +783,46 @@
             </div>
 
             <div class="space-y-3">
-              <div class="flex items-center gap-4">
+              <div class="flex flex-wrap items-center gap-4">
                 <label class="flex items-center gap-2 cursor-pointer text-xs font-semibold text-slate-700">
                   <input type="radio" name="master_bg_type" value="lava" checked onchange="handleMasterBgTypeChange('lava')" class="text-amber-600">
-                  <span>Animasi Lava Lamp Bergerak Aktif</span>
+                  <span>Animasi Lava Lamp Bergerak</span>
                 </label>
                 <label class="flex items-center gap-2 cursor-pointer text-xs font-semibold text-slate-700">
                   <input type="radio" name="master_bg_type" value="image" onchange="handleMasterBgTypeChange('image')" class="text-amber-600">
-                  <span>Gambar Tekstur / Background Kustom</span>
+                  <span>Gambar Background Kustom</span>
+                </label>
+                <label class="flex items-center gap-2 cursor-pointer text-xs font-semibold text-slate-700">
+                  <input type="radio" name="master_bg_type" value="gif" onchange="handleMasterBgTypeChange('gif')" class="text-amber-600">
+                  <span>Animasi GIF Background</span>
                 </label>
               </div>
 
-              <!-- Upload Background Box -->
+              <!-- Upload Background Image Box -->
               <div id="master-bg-image-box" class="hidden p-3.5 rounded-xl bg-slate-50 border border-slate-200/80 space-y-2">
                 <div class="flex items-center gap-2">
                   <input type="file" id="master-bg-file" accept="image/*" class="hidden" onchange="handleAssetUpload(event, 'bg_image_url')">
                   <button type="button" onclick="document.getElementById('master-bg-file').click()" class="px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold inline-flex items-center gap-1.5 cursor-pointer">
                     <i data-lucide="upload" class="w-3.5 h-3.5 text-amber-400"></i>
-                    <span>Unggah Background</span>
+                    <span>Unggah Gambar Background</span>
                   </button>
                   <button type="button" id="btn-del-bg" onclick="removeAssetUrl('bg_image_url')" class="hidden px-2.5 py-1.5 rounded-xl border border-rose-200 bg-rose-50 text-rose-700 text-xs font-semibold cursor-pointer">Hapus</button>
                 </div>
                 <input type="url" id="asset-url-bg_image_url" oninput="handleAssetUrlInput('bg_image_url', this.value)" placeholder="Tautan URL Background: https://..." class="w-full px-3 py-1.5 rounded-xl border border-slate-200 text-xs font-mono">
+              </div>
+
+              <!-- Upload Background GIF Box (Animasi GIF Asli) -->
+              <div id="master-bg-gif-box" class="hidden p-3.5 rounded-xl bg-slate-50 border border-slate-200/80 space-y-2">
+                <div class="flex items-center gap-2">
+                  <input type="file" id="file-bg_gif" accept="image/gif" class="hidden" onchange="handleMasterGifUpload(event)">
+                  <button type="button" onclick="document.getElementById('file-bg_gif').click()" class="px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold inline-flex items-center gap-1.5 cursor-pointer">
+                    <i data-lucide="film" class="w-3.5 h-3.5 text-amber-400"></i>
+                    <span>Unggah Animasi GIF</span>
+                  </button>
+                  <button type="button" id="btn-del-bg-gif" onclick="removeMasterGif()" class="hidden px-2.5 py-1.5 rounded-xl border border-rose-200 bg-rose-50 text-rose-700 text-xs font-semibold cursor-pointer">Hapus</button>
+                </div>
+                <input type="url" id="asset-url-bg_gif" oninput="handleMasterGifUrlInput(this.value)" placeholder="Tautan URL GIF: https://.../animasi.gif" class="w-full px-3 py-1.5 rounded-xl border border-slate-200 text-xs font-mono">
+                <p class="text-[10px] text-slate-400">File GIF diunggah murni tanpa kompresi WebP agar gerakan animasi tetap hidup & berulang (looping).</p>
               </div>
 
               <!-- Blur Slider -->
@@ -1935,9 +1953,19 @@
       document.getElementById('select-divider-preset').value = templateState.config_json?.divider_preset || 'floral_branch';
 
       // Background Type & Blur
-      const bgType = templateState.config_json?.bg_type || (templateState.config_json?.bg_image_url ? 'image' : 'lava');
+      const bgType = templateState.config_json?.bg_type || (templateState.config_json?.bg_gif_url ? 'gif' : (templateState.config_json?.bg_image_url ? 'image' : 'lava'));
       handleMasterBgTypeChange(bgType, false);
       setAssetPreview('bg_image_url', templateState.config_json?.bg_image_url);
+
+      const gifUrl = templateState.config_json?.bg_gif_url || '';
+      const gifInput = document.getElementById('asset-url-bg_gif');
+      if (gifInput) gifInput.value = gifUrl;
+      const delGifBtn = document.getElementById('btn-del-bg-gif');
+      if (delGifBtn) {
+        if (gifUrl) delGifBtn.classList.remove('hidden');
+        else delGifBtn.classList.add('hidden');
+      }
+
       const bgBlur = templateState.config_json?.bg_blur ?? 0;
       document.getElementById('slider-master-bg-blur').value = bgBlur;
       document.getElementById('label-master-bg-blur').textContent = `${bgBlur}px`;
@@ -2396,13 +2424,19 @@
       templateState.config_json.bg_type = type;
 
       const imgBox = document.getElementById('master-bg-image-box');
+      const gifBox = document.getElementById('master-bg-gif-box');
       const radio = document.querySelector(`input[name="master_bg_type"][value="${type}"]`);
       if (radio) radio.checked = true;
 
       if (type === 'image') {
         if (imgBox) imgBox.classList.remove('hidden');
+        if (gifBox) gifBox.classList.add('hidden');
+      } else if (type === 'gif') {
+        if (imgBox) imgBox.classList.add('hidden');
+        if (gifBox) gifBox.classList.remove('hidden');
       } else {
         if (imgBox) imgBox.classList.add('hidden');
+        if (gifBox) gifBox.classList.add('hidden');
         templateState.config_json.bg_image_url = null;
         setAssetPreview('bg_image_url', null);
       }
@@ -2411,6 +2445,88 @@
         markAsUnsaved();
         scheduleBroadcast();
       }
+    }
+
+    async function handleMasterGifUpload(event) {
+      const file = event.target.files?.[0];
+      if (!file) return;
+
+      if (file.type !== 'image/gif' && !file.name.toLowerCase().endsWith('.gif')) {
+        alert('File yang dipilih harus berformat .gif animasi.');
+        event.target.value = '';
+        return;
+      }
+
+      showToast('Mengunggah animasi GIF asli (tanpa kompresi)...', 'info');
+      try {
+        const client = window.supabaseClient;
+        if (!client || !client.storage) throw new Error('Supabase Storage tidak siap');
+
+        const fileName = `admin/bg_gif_${Date.now()}_${Math.floor(Math.random() * 1000)}.gif`;
+        const { data, error } = await client.storage
+          .from('wedding-media')
+          .upload(fileName, file, {
+            contentType: 'image/gif',
+            upsert: true
+          });
+
+        let gifUrl = '';
+        if (error) {
+          console.warn('Storage upload error, reading as base64 dataUrl:', error);
+          gifUrl = await new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = e => resolve(e.target.result);
+            reader.onerror = reject;
+            reader.readAsDataURL(file);
+          });
+        } else {
+          const { data: pubData } = client.storage.from('wedding-media').getPublicUrl(fileName);
+          gifUrl = pubData?.publicUrl || '';
+        }
+
+        if (!templateState.config_json) templateState.config_json = {};
+        templateState.config_json.bg_gif_url = gifUrl;
+        templateState.config_json.bg_type = 'gif';
+
+        const urlInput = document.getElementById('asset-url-bg_gif');
+        if (urlInput) urlInput.value = gifUrl;
+
+        const delBtn = document.getElementById('btn-del-bg-gif');
+        if (delBtn) delBtn.classList.remove('hidden');
+
+        markAsUnsaved();
+        scheduleBroadcast();
+        showToast('✓ Animasi GIF berhasil diunggah!', 'success');
+      } catch (err) {
+        console.error('Upload GIF error:', err);
+        alert('Gagal mengunggah GIF: ' + err.message);
+      } finally {
+        event.target.value = '';
+      }
+    }
+
+    function handleMasterGifUrlInput(val) {
+      if (!templateState.config_json) templateState.config_json = {};
+      templateState.config_json.bg_gif_url = val ? val.trim() : null;
+      templateState.config_json.bg_type = 'gif';
+      const delBtn = document.getElementById('btn-del-bg-gif');
+      if (delBtn) {
+        if (val) delBtn.classList.remove('hidden');
+        else delBtn.classList.add('hidden');
+      }
+      markAsUnsaved();
+      scheduleBroadcast();
+    }
+
+    function removeMasterGif() {
+      if (!templateState.config_json) templateState.config_json = {};
+      templateState.config_json.bg_gif_url = null;
+      const urlInput = document.getElementById('asset-url-bg_gif');
+      if (urlInput) urlInput.value = '';
+      const delBtn = document.getElementById('btn-del-bg-gif');
+      if (delBtn) delBtn.classList.add('hidden');
+      markAsUnsaved();
+      scheduleBroadcast();
     }
 
     // Corner Ornaments Mode & Settings Handlers

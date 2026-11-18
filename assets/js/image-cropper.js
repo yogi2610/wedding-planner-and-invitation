@@ -189,7 +189,7 @@
           </div>
 
           <!-- Modal Footer Actions -->
-          <div class="px-5 py-3.5 border-t border-stone-100 bg-stone-50 flex items-center justify-between gap-3">
+          <div class="px-5 py-3.5 border-t border-stone-100 bg-stone-50 flex flex-wrap items-center justify-between gap-2.5">
             <button 
               type="button" 
               id="mb-cropper-btn-cancel" 
@@ -198,14 +198,24 @@
               Batal
             </button>
 
-            <button 
-              type="button" 
-              id="mb-cropper-btn-apply" 
-              class="py-2.5 px-5 rounded-xl bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 text-white text-xs font-bold shadow-md hover:shadow-lg transition-all flex items-center gap-2 cursor-pointer"
-            >
-              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
-              <span id="mb-cropper-apply-text">Terapkan & Unggah WebP</span>
-            </button>
+            <div class="flex items-center gap-2">
+              <button 
+                type="button" 
+                id="mb-cropper-btn-direct" 
+                class="py-2.5 px-3.5 rounded-xl border border-stone-300 bg-stone-100 hover:bg-stone-200 text-slate-700 text-xs font-bold transition-colors cursor-pointer"
+              >
+                Unggah Langsung Tanpa Crop
+              </button>
+
+              <button 
+                type="button" 
+                id="mb-cropper-btn-apply" 
+                class="py-2.5 px-5 rounded-xl bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 text-white text-xs font-bold shadow-md hover:shadow-lg transition-all flex items-center gap-2 cursor-pointer"
+              >
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                <span id="mb-cropper-apply-text">Terapkan & Unggah WebP</span>
+              </button>
+            </div>
           </div>
 
         </div>
@@ -349,6 +359,12 @@
     // Close & Cancel
     document.getElementById('mb-cropper-btn-close').addEventListener('click', closeModal);
     document.getElementById('mb-cropper-btn-cancel').addEventListener('click', closeModal);
+
+    // Direct Upload Without Crop
+    const directBtn = document.getElementById('mb-cropper-btn-direct');
+    if (directBtn) {
+      directBtn.addEventListener('click', handleDirectUploadFromModal);
+    }
 
     // Apply & Upload
     document.getElementById('mb-cropper-btn-apply').addEventListener('click', handleApplyAndUpload);
@@ -684,6 +700,74 @@
       state.isProcessing = false;
       applyBtn.disabled = false;
       applyText.textContent = originalText;
+    }
+  }
+
+  /**
+   * Unggah langsung file foto asli tanpa potong / crop
+   */
+  async function handleDirectUploadFromModal() {
+    if (state.isProcessing) return;
+    const directBtn = document.getElementById('mb-cropper-btn-direct');
+    const originalText = directBtn ? directBtn.textContent : '';
+    if (directBtn) {
+      directBtn.disabled = true;
+      directBtn.textContent = 'Mengunggah...';
+    }
+    state.isProcessing = true;
+
+    try {
+      let uploadResult = null;
+      if (state.originalFile && typeof window.uploadWeddingImage === 'function') {
+        uploadResult = await window.uploadWeddingImage(
+          state.originalFile, 
+          state.targetType, 
+          state.targetType === 'cover' ? 1000 : 600, 
+          0.82
+        );
+      } else if (state.img) {
+        const simpleCanvas = document.createElement('canvas');
+        simpleCanvas.width = Math.min(1000, state.img.width || 800);
+        simpleCanvas.height = Math.round((state.img.height || 800) * (simpleCanvas.width / (state.img.width || 800)));
+        const sCtx = simpleCanvas.getContext('2d');
+        sCtx.drawImage(state.img, 0, 0, simpleCanvas.width, simpleCanvas.height);
+
+        const blob = await new Promise(r => simpleCanvas.toBlob(r, 'image/webp', 0.82));
+        if (blob && typeof window.uploadWeddingImage === 'function') {
+          const directFile = new File([blob], `${state.targetType}_${Date.now()}.webp`, { type: 'image/webp' });
+          uploadResult = await window.uploadWeddingImage(directFile, state.targetType, 1000, 0.82);
+        } else {
+          const dataUrl = simpleCanvas.toDataURL('image/webp', 0.82);
+          uploadResult = {
+            success: true,
+            url: dataUrl,
+            publicUrl: dataUrl,
+            dataUrl: dataUrl,
+            infoText: 'WebP Langsung'
+          };
+        }
+      }
+
+      closeModal();
+
+      if (uploadResult && typeof state.onComplete === 'function') {
+        state.onComplete({
+          success: true,
+          url: uploadResult.publicUrl || uploadResult.url || uploadResult.dataUrl,
+          dataUrl: uploadResult.dataUrl,
+          infoText: uploadResult.infoText,
+          targetType: state.targetType
+        });
+      }
+    } catch (err) {
+      console.error('Direct upload error:', err);
+      alert('Gagal mengunggah foto langsung: ' + (err.message || 'Terjadi kesalahan sistem.'));
+    } finally {
+      state.isProcessing = false;
+      if (directBtn) {
+        directBtn.disabled = false;
+        directBtn.textContent = originalText;
+      }
     }
   }
 

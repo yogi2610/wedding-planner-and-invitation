@@ -405,7 +405,7 @@
       overflow-y: auto;
       background-color: var(--bg-main, #FCFBF9);
       color: var(--text-main, #2C352E);
-      transition: transform 0.85s cubic-bezier(0.77, 0, 0.175, 1), opacity 0.75s ease;
+      transition: transform 0.45s cubic-bezier(0.77, 0, 0.175, 1), opacity 0.45s ease;
     }
 
     /* Cover Frame Shapes (Grand Arch, Classic Oval, Circle Royal, Octagon Heritage, Teardrop Botanical) */
@@ -585,8 +585,11 @@
   <!-- MOBILE-FIRST CENTERED APP CONTAINER -->
   <div id="invitation-app-container" class="w-full max-w-md min-h-screen h-auto bg-[var(--bg-main,#FCFBF9)] text-[var(--text-main,#2C352E)] shadow-2xl relative flex flex-col overflow-visible mx-auto">
 
-    <!-- Dynamic Ambient Background: Lava Lamp Blobs / Custom Background Image -->
+    <!-- Dynamic Ambient Background: Lava Lamp Blobs / Custom Background Image / GIF Animation -->
     <div id="invitation-bg-container" class="fixed inset-0 pointer-events-none z-0 overflow-hidden max-w-md mx-auto">
+      <!-- Animated GIF Looping Background -->
+      <img id="gif-bg-image" src="" alt="Background Animasi" class="absolute inset-0 w-full h-full object-cover hidden pointer-events-none">
+
       <!-- Custom Uploaded Background Image (with overlay) -->
       <div id="custom-bg-image" class="absolute inset-0 bg-cover bg-center hidden">
         <div class="absolute inset-0 bg-black/40 backdrop-blur-[0.5px]"></div>
@@ -727,28 +730,33 @@
     <!-- MAIN INVITATION CONTENT (MOBILE APP VIEW) -->
     <main id="invitation-content" class="w-full max-w-md mx-auto px-5 py-10 space-y-12 text-center relative z-10 min-h-screen h-auto overflow-visible box-border">
       
-      <!-- 2. HERO HEADER & AYAT KUTIPAN -->
-      <section id="section-quote" class="space-y-4 pt-6" data-animate="fade-up">
+      <!-- 2. HERO HEADER & AYAT KUTIPAN (FULL 100DVH OPENING SCREEN) -->
+      <section id="section-quote" class="min-h-[100dvh] flex flex-col items-center justify-center px-6 py-16 text-center relative space-y-4" data-animate="fade-up">
         
         <!-- Ornamen Header Tema -->
         <div class="theme-ornament-header text-amber-700/60 flex justify-center mb-1 float-breathing" id="quote-header-ornament">
           <!-- Injected via JavaScript -->
         </div>
 
-        <span class="text-[10px] uppercase tracking-[0.25em] text-[var(--accent-color,#b48342)] font-bold block">Momen Bahagia Pernikahan Kami</span>
+        <span class="text-[10px] uppercase tracking-[0.25em] text-[var(--accent-color,#b48342)] font-bold block">The Wedding Of</span>
         
         <h2 class="font-serif text-4xl sm:text-5xl font-bold tracking-tight text-[var(--text-main,#2C352E)]" id="main-couple-name">
-          Yogi & Rina
+          Mempelai & Mempelai
         </h2>
 
         <!-- Teks Kutipan Suci -->
-        <div class="wedding-card theme-card backdrop-blur-md p-5 rounded-2xl border border-stone-200/70 shadow-2xs space-y-2 mt-4 relative overflow-hidden" style="background-color: var(--bg-card); color: var(--text-main);" data-animate="zoom-in">
+        <div class="wedding-card theme-card backdrop-blur-md p-5 rounded-2xl border border-stone-200/70 shadow-2xs space-y-2 mt-4 relative overflow-hidden w-full max-w-sm mx-auto" style="background-color: var(--bg-card); color: var(--text-main);" data-animate="zoom-in">
           <p class="text-xs text-[var(--text-secondary)] italic font-serif leading-relaxed relative z-10" id="quote-text">
             "Dan di antara tanda-tanda kekuasaan-Nya ialah Dia menciptakan untukmu pasangan hidup dari jenismu sendiri, supaya kamu merasa tenteram di sampingnya."
           </p>
           <span class="block text-[10px] font-sans not-italic text-[var(--accent-color,#b48342)] font-bold relative z-10" id="quote-source">
             (QS. Ar-Rum: 21)
           </span>
+        </div>
+
+        <!-- Indikator halus petunjuk scroll ke bawah -->
+        <div class="mt-8 animate-bounce text-xs opacity-60 text-[var(--text-secondary)] flex flex-col items-center gap-1 pointer-events-none select-none">
+          <span>↓ Scroll ke bawah</span>
         </div>
       </section>
 
