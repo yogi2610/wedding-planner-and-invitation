@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Identitas Calon Pengantin — MenikahBersama | All-in-One Wedding Platform</title>
+  <meta name="description" content="Lengkapi data identitas calon mempelai pria (CPP) dan wanita (CPW) untuk dicantumkan secara otomatis pada seluruh modul wedding planner dan undangan digital Anda.">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#fffbf5',
+              100: '#f7eee1',
+              500: '#b48342',
+              600: '#996515',
+              gold: '#d4af37'
+            }
+          },
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+            serif: ['"Cormorant Garamond"', 'Georgia', 'serif']
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Supabase JS SDK v2 CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body class="bg-[#F8F9FA] text-slate-800 antialiased min-h-screen flex font-sans">
+
+  <!-- Mobile Sidebar Backdrop Overlay -->
+  <div id="sidebar-backdrop" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-40 hidden lg:hidden"></div>
+
+  <!-- Sidebar Navigasi Responsif -->
+  <aside id="sidebar" class="fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-stone-200/80 flex flex-col justify-between transform -translate-x-full lg:translate-x-0 transition-transform duration-200 ease-in-out">
+    
+    <div>
+      <!-- Brand Header -->
+      <div class="h-20 flex items-center justify-between px-6 border-b border-stone-200/60">
+        <a href="/" class="flex items-center space-x-2.5">
+          <div class="w-9 h-9 rounded-full gold-gradient-bg flex items-center justify-center text-white shadow-sm">
+            <i data-lucide="gem" class="w-4 h-4"></i>
+          </div>
+          <div>
+            <span class="font-serif text-xl font-bold tracking-tight text-slate-900 block leading-none">Menikah<span class="text-amber-600">Bersama</span></span>
+            <span class="text-[9px] uppercase tracking-widest text-amber-700 font-semibold">menikahbersama.my.id</span>
+          </div>
+        </a>
+
+        <!-- Close button mobile -->
+        <button id="btn-close-sidebar" class="lg:hidden text-slate-400 hover:text-slate-600 cursor-pointer">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <!-- Pasangan Info Card Ringkas -->
+      <div class="p-4 mx-4 mt-4 rounded-2xl bg-amber-50/60 border border-amber-200/60">
+        <div class="flex items-center space-x-3">
+          <div class="w-10 h-10 rounded-full bg-amber-500/20 text-amber-900 font-serif font-bold text-base flex items-center justify-center" id="couple-initials">
+            💍
+          </div>
+          <div class="overflow-hidden">
+            <span class="text-xs font-bold text-slate-900 block truncate" id="sidebar-couple-name">Mempelai Pengantin</span>
+            <span class="text-[11px] text-amber-800 block truncate font-mono" id="sidebar-countdown-pill">Menghitung hari...</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Menu List -->
+      <nav class="px-4 py-4 space-y-1 text-xs font-semibold">
+        <!-- 1. Ringkasan -->
+        <a href="/dashboard/index.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 hover:bg-stone-100 hover:text-slate-900 transition-all group">
+          <i data-lucide="layout-dashboard" class="w-4 h-4 text-slate-400 group-hover:text-amber-600"></i>
+          <span>Ringkasan Dashboard</span>
+        </a>
+
+        <!-- 2. Identitas Calon Pengantin (ACTIVE) -->
+        <a href="/dashboard/couple.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl bg-slate-900 text-white shadow-sm transition-all">
+          <i data-lucide="heart" class="w-4 h-4 text-amber-400"></i>
+          <span>Identitas Calon Pengantin</span>
+        </a>
+
+        <!-- 3. Smart Budget & Katering -->
+        <a href="/dashboard/budget.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 hover:bg-stone-100 hover:text-slate-900 transition-all group">
+          <i data-lucide="pie-chart" class="w-4 h-4 text-slate-400 group-hover:text-amber-600"></i>
+          <span>Smart Budget & Katering</span>
+        </a>
+
+        <!-- 4. Checklist Timeline -->
+        <a href="/dashboard/checklist.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 hover:bg-stone-100 hover:text-slate-900 transition-all group">
+          <i data-lucide="check-square" class="w-4 h-4 text-slate-400 group-hover:text-amber-600"></i>
+          <span>Checklist Timeline (16)</span>
+        </a>
+
+        <!-- 5. Seserahan & Rundown -->
+        <a href="/dashboard/extras.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 hover:bg-stone-100 hover:text-slate-900 transition-all group">
+          <i data-lucide="gift" class="w-4 h-4 text-slate-400 group-hover:text-amber-600"></i>
+          <span>Seserahan & Rundown</span>
+        </a>
+
+        <!-- 6. Master Tamu & WA -->
+        <a href="/dashboard/guests.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 hover:bg-stone-100 hover:text-slate-900 transition-all group">
+          <i data-lucide="users" class="w-4 h-4 text-slate-400 group-hover:text-amber-600"></i>
+          <span>Master Tamu & WA RSVP</span>
+        </a>
+
+        <!-- 7. Undangan Digital -->
+        <a href="/dashboard/invitation.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 hover:bg-stone-100 hover:text-slate-900 transition-all group">
+          <i data-lucide="sparkles" class="w-4 h-4 text-slate-400 group-hover:text-amber-600"></i>
+          <span>Edit Undangan Digital</span>
+        </a>
+
+        <!-- 8. Pengaturan Akun -->
+        <a href="/dashboard/settings.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-slate-600 hover:bg-stone-100 hover:text-slate-900 transition-all group">
+          <i data-lucide="settings" class="w-4 h-4 text-slate-400 group-hover:text-amber-600"></i>
+          <span>Pengaturan Akun</span>
+        </a>
+      </nav>
+    </div>
+
+    <!-- Bottom Action & Logout -->
+    <div class="p-4 border-t border-stone-200/60">
+      <button 
+        onclick="logout()" 
+        class="w-full flex items-center justify-center gap-2 py-2 px-3 rounded-xl border border-rose-200 bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-semibold transition-colors cursor-pointer"
+      >
+        <i data-lucide="log-out" class="w-4 h-4"></i>
+        <span>Keluar dari Akun</span>
+      </button>
+    </div>
+
+  </aside>
+
+  <!-- Main Content Wrapper (Shifted right for desktop) -->
+  <div class="flex-1 lg:pl-64 flex flex-col min-h-screen">
+    
+    <!-- Topbar Header -->
+    <header class="h-20 bg-white/80 backdrop-blur-md border-b border-stone-200/70 sticky top-0 z-30 px-4 sm:px-8 flex items-center justify-between">
+      <div class="flex items-center gap-4">
+        <button id="btn-open-sidebar" class="lg:hidden p-2 rounded-xl border border-stone-200 text-slate-600 hover:bg-stone-50 cursor-pointer">
+          <i data-lucide="menu" class="w-5 h-5"></i>
+        </button>
+        <div>
+          <h1 class="font-serif text-2xl font-bold text-slate-900 leading-tight">Identitas Calon Pengantin</h1>
+          <p class="text-xs text-slate-500 hidden sm:block">Profil lengkap Mempelai Pria (CPP) & Mempelai Wanita (CPW)</p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <a 
+          id="btn-preview-invitation" 
+          href="#" 
+          target="_blank" 
+          class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-stone-200 hover:bg-stone-50 text-slate-700 text-xs font-semibold transition-colors"
+          title="Buka Website Undangan Digital"
+        >
+          <i data-lucide="external-link" class="w-3.5 h-3.5 text-amber-600"></i>
+          <span class="hidden sm:inline">Lihat Undangan</span>
+        </a>
+
+        <button 
+          type="button" 
+          onclick="saveCoupleIdentity()" 
+          id="btn-top-save" 
+          class="inline-flex items-center gap-2 px-4 sm:px-5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold shadow-md hover:shadow-lg transition-all cursor-pointer"
+        >
+          <i data-lucide="save" class="w-3.5 h-3.5 text-amber-400"></i>
+          <span>Simpan Identitas</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Workspace Container -->
+    <main class="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+
+      <!-- Breadcrumbs & Status Banner -->
+      <div class="bg-amber-50/80 border border-amber-200/80 p-4 sm:p-5 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-amber-500/20 text-amber-900 flex items-center justify-center shrink-0">
+            <i data-lucide="heart-handshake" class="w-5 h-5 text-amber-700"></i>
+          </div>
+          <div>
+            <h3 class="font-bold text-slate-900">Sinkronisasi Data Otomatis</h3>
+            <p class="text-slate-600 mt-0.5">Identitas yang Anda simpan di sini akan langsung terhubung ke sampul undangan, seksi mempelai, buku tamu, katering, dan seluruh modul planner.</p>
+          </div>
+        </div>
+        <div class="text-[11px] text-amber-800 font-mono font-semibold shrink-0" id="last-updated-pill">
+          Data tersinkronisasi
+        </div>
+      </div>
+
+      <!-- FORM DUA KOLOM: CPP (KIRI) & CPW (KANAN) -->
+      <form id="couple-form" onsubmit="event.preventDefault(); saveCoupleIdentity();" class="space-y-6">
+        
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+          <!-- ============================================================== -->
+          <!-- KOLOM MEMPELAI PRIA (CPP)                                      -->
+          <!-- ============================================================== -->
+          <div class="bg-white rounded-3xl border border-stone-200/90 shadow-xs overflow-hidden flex flex-col">
+            
+            <!-- Card Header -->
+            <div class="p-5 sm:p-6 bg-gradient-to-r from-slate-900 to-slate-800 text-white flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-2xl bg-amber-400/20 border border-amber-400/40 text-amber-300 flex items-center justify-center font-serif text-lg font-bold">
+                  👨
+                </div>
+                <div>
+                  <span class="text-[10px] uppercase font-bold tracking-widest text-amber-400 block">Profil Calon Pengantin Pria (CPP)</span>
+                  <h2 class="font-serif text-xl font-bold text-white leading-tight">Mempelai Pria</h2>
+                </div>
+              </div>
+              <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-white/10 text-slate-200 border border-white/20">
+                CPP
+              </span>
+            </div>
+
+            <!-- Card Inputs -->
+            <div class="p-6 space-y-4 flex-1">
+              
+              <!-- 1. Nama Panggilan -->
+              <div>
+                <label for="groom-nickname" class="block text-xs font-bold text-slate-700 mb-1">
+                  Nama Panggilan <span class="text-rose-500">*</span>
+                </label>
+                <div class="relative">
+                  <i data-lucide="user" class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+                  <input 
+                    type="text" 
+                    id="groom-nickname" 
+                    required 
+                    oninput="handleInputLiveUpdate()"
+                    placeholder="Contoh: Yoga atau Yogi" 
+                    class="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-stone-300 text-xs font-semibold focus:ring-2 focus:ring-amber-500/40 focus:border-amber-600 focus:outline-none"
+                  >
+                </div>
+                <p class="text-[11px] text-slate-400 mt-1">Ditampilkan di judul utama, countdown, dan teks sambutan singkat.</p>
+              </div>
+
+              <!-- 2. Nama Lengkap & Gelar -->
+              <div>
+                <label for="groom-fullname" class="block text-xs font-bold text-slate-700 mb-1">
+                  Nama Lengkap & Gelar <span class="text-rose-500">*</span>
+                </label>
+                <div class="relative">
+                  <i data-lucide="award" class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+                  <input 
+                    type="text" 
+                    id="groom-fullname" 
+                    required 
+                    oninput="handleInputLiveUpdate()"
+                    placeholder="Contoh: Yoga Pratama, S.Kom., M.T." 
+                    class="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-stone-300 text-xs font-semibold focus:ring-2 focus:ring-amber-500/40 focus:border-amber-600 focus:outline-none"
+                  >
+                </div>
+                <p class="text-[11px] text-slate-400 mt-1">Nama lengkap resmi yang akan tertera pada kartu profil undangan.</p>
+              </div>
+
+              <!-- 3. Putra dari Bapak & Ibu -->
+              <div>
+                <label for="groom-parents" class="block text-xs font-bold text-slate-700 mb-1">
+                  Putra dari Bapak & Ibu <span class="text-rose-500">*</span>
+                </label>
+                <div class="relative">
+                  <i data-lucide="users" class="w-4 h-4 text-slate-400 absolute left-3.5 top-3"></i>
+                  <textarea 
+                    id="groom-parents" 
+                    rows="2" 
+                    required
+                    oninput="handleInputLiveUpdate()"
+                    placeholder="Contoh: Putra Pertama dari Bpk. Hendra Pratama & Ibu Siti Aminah" 
+                    class="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-stone-300 text-xs focus:ring-2 focus:ring-amber-500/40 focus:border-amber-600 focus:outline-none resize-none leading-relaxed"
+                  ></textarea>
+                </div>
+                <p class="text-[11px] text-slate-400 mt-1">Silsilah / sebutan anak keberapa beserta nama kedua orang tua mempelai pria.</p>
+              </div>
+
+              <!-- 4. Akun Instagram (Opsional) -->
+              <div>
+                <label for="groom-ig" class="block text-xs font-bold text-slate-700 mb-1">
+                  Akun Instagram <span class="text-slate-400 font-normal">(Opsional)</span>
+                </label>
+                <div class="relative">
+                  <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 font-mono text-xs">@</span>
+                  <input 
+                    type="text" 
+                    id="groom-ig" 
+                    oninput="handleInputLiveUpdate()"
+                    placeholder="yogapratama" 
+                    class="w-full pl-8 pr-3.5 py-2.5 rounded-xl border border-stone-300 text-xs font-mono focus:ring-2 focus:ring-amber-500/40 focus:border-amber-600 focus:outline-none"
+                  >
+                </div>
+                <p class="text-[11px] text-slate-400 mt-1">Tautan tombol media sosial Instagram pada kartu mempelai pria.</p>
+              </div>
+
+            </div>
+
+          </div>
+
+
+          <!-- ============================================================== -->
+          <!-- KOLOM MEMPELAI WANITA (CPW)                                    -->
+          <!-- ============================================================== -->
+          <div class="bg-white rounded-3xl border border-stone-200/90 shadow-xs overflow-hidden flex flex-col">
+            
+            <!-- Card Header -->
+            <div class="p-5 sm:p-6 bg-gradient-to-r from-amber-950 via-rose-950 to-stone-900 text-white flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-2xl bg-rose-400/20 border border-rose-400/40 text-rose-300 flex items-center justify-center font-serif text-lg font-bold">
+                  👰
+                </div>
+                <div>
+                  <span class="text-[10px] uppercase font-bold tracking-widest text-rose-300 block">Profil Calon Pengantin Wanita (CPW)</span>
+                  <h2 class="font-serif text-xl font-bold text-white leading-tight">Mempelai Wanita</h2>
+                </div>
+              </div>
+              <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-white/10 text-slate-200 border border-white/20">
+                CPW
+              </span>
+            </div>
+
+            <!-- Card Inputs -->
+            <div class="p-6 space-y-4 flex-1">
+              
+              <!-- 1. Nama Panggilan -->
+              <div>
+                <label for="bride-nickname" class="block text-xs font-bold text-slate-700 mb-1">
+                  Nama Panggilan <span class="text-rose-500">*</span>
+                </label>
+                <div class="relative">
+                  <i data-lucide="user" class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+                  <input 
+                    type="text" 
+                    id="bride-nickname" 
+                    required 
+                    oninput="handleInputLiveUpdate()"
+                    placeholder="Contoh: Anin atau Rina" 
+                    class="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-stone-300 text-xs font-semibold focus:ring-2 focus:ring-rose-500/40 focus:border-rose-600 focus:outline-none"
+                  >
+                </div>
+                <p class="text-[11px] text-slate-400 mt-1">Ditampilkan di judul utama, countdown, dan teks sambutan singkat.</p>
+              </div>
+
+              <!-- 2. Nama Lengkap & Gelar -->
+              <div>
+                <label for="bride-fullname" class="block text-xs font-bold text-slate-700 mb-1">
+                  Nama Lengkap & Gelar <span class="text-rose-500">*</span>
+                </label>
+                <div class="relative">
+                  <i data-lucide="award" class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+                  <input 
+                    type="text" 
+                    id="bride-fullname" 
+                    required 
+                    oninput="handleInputLiveUpdate()"
+                    placeholder="Contoh: Anindita Putri, S.E." 
+                    class="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-stone-300 text-xs font-semibold focus:ring-2 focus:ring-rose-500/40 focus:border-rose-600 focus:outline-none"
+                  >
+                </div>
+                <p class="text-[11px] text-slate-400 mt-1">Nama lengkap resmi yang tertera pada kartu profil undangan.</p>
+              </div>
+
+              <!-- 3. Putri dari Bapak & Ibu -->
+              <div>
+                <label for="bride-parents" class="block text-xs font-bold text-slate-700 mb-1">
+                  Putri dari Bapak & Ibu <span class="text-rose-500">*</span>
+                </label>
+                <div class="relative">
+                  <i data-lucide="users" class="w-4 h-4 text-slate-400 absolute left-3.5 top-3"></i>
+                  <textarea 
+                    id="bride-parents" 
+                    rows="2" 
+                    required
+                    oninput="handleInputLiveUpdate()"
+                    placeholder="Contoh: Putri Kedua dari Bpk. Rahmat Hidayat & Ibu Dewi Sartika" 
+                    class="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-stone-300 text-xs focus:ring-2 focus:ring-rose-500/40 focus:border-rose-600 focus:outline-none resize-none leading-relaxed"
+                  ></textarea>
+                </div>
+                <p class="text-[11px] text-slate-400 mt-1">Silsilah / sebutan anak keberapa beserta nama kedua orang tua mempelai wanita.</p>
+              </div>
+
+              <!-- 4. Akun Instagram (Opsional) -->
+              <div>
+                <label for="bride-ig" class="block text-xs font-bold text-slate-700 mb-1">
+                  Akun Instagram <span class="text-slate-400 font-normal">(Opsional)</span>
+                </label>
+                <div class="relative">
+                  <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 font-mono text-xs">@</span>
+                  <input 
+                    type="text" 
+                    id="bride-ig" 
+                    oninput="handleInputLiveUpdate()"
+                    placeholder="aninditaputri" 
+                    class="w-full pl-8 pr-3.5 py-2.5 rounded-xl border border-stone-300 text-xs font-mono focus:ring-2 focus:ring-rose-500/40 focus:border-rose-600 focus:outline-none"
+                  >
+                </div>
+                <p class="text-[11px] text-slate-400 mt-1">Tautan tombol media sosial Instagram pada kartu mempelai wanita.</p>
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- Live Visual Summary Card -->
+        <div class="bg-white p-6 rounded-3xl border border-stone-200/90 shadow-xs space-y-4">
+          <div class="flex items-center justify-between border-b border-stone-100 pb-3">
+            <h3 class="font-serif text-lg font-bold text-slate-900 flex items-center gap-2">
+              <i data-lucide="eye" class="w-4 h-4 text-amber-600"></i>
+              <span>Pratinjau Ringkas Tampilan Mempelai</span>
+            </h3>
+            <span class="text-[11px] text-slate-400">Tersinkronisasi Real-Time</span>
+          </div>
+
+          <div class="p-6 rounded-2xl bg-stone-50 border border-stone-200/70 text-center space-y-3">
+            <span class="text-[10px] uppercase font-mono tracking-widest text-amber-700 font-semibold">The Wedding Celebration</span>
+            <h4 class="font-serif text-3xl font-bold text-slate-900" id="preview-couple-title">
+              Yoga & Anin
+            </h4>
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-6 text-xs text-slate-600 pt-1">
+              <span id="preview-groom-full" class="font-semibold text-slate-800">Yoga Pratama, S.Kom.</span>
+              <span class="text-amber-500 font-bold hidden sm:inline">&bull;</span>
+              <span id="preview-bride-full" class="font-semibold text-slate-800">Anindita Putri, S.E.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Save Button Footer -->
+        <div class="flex items-center justify-end gap-3 pt-2">
+          <button 
+            type="submit" 
+            id="btn-bottom-save" 
+            class="px-8 py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold shadow-md hover:shadow-lg transition-all inline-flex items-center gap-2 cursor-pointer"
+          >
+            <i data-lucide="save" class="w-4 h-4 text-amber-400"></i>
+            <span>Simpan Perubahan Identitas</span>
+          </button>
+        </div>
+
+      </form>
+
+    </main>
+
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+  <!-- Scripts -->
+  <script src="/assets/js/config.js"></script>
+  <script>
+    let currentUser = null;
+    let currentWedding = null;
+
+    // Toast Utility
+    function showToast(message, type = 'info') {
+      const container = document.getElementById('toast-container');
+      if (!container) return;
+      const toast = document.createElement('div');
+      toast.className = `px-4 py-3 rounded-2xl shadow-xl text-xs font-semibold text-white transition-all transform duration-300 flex items-center gap-2.5 pointer-events-auto ${
+        type === 'success' ? 'bg-emerald-600' :
+        type === 'warning' ? 'bg-amber-600' :
+        type === 'error' ? 'bg-rose-600' : 'bg-slate-900'
+      }`;
+      const icon = type === 'success' ? 'check-circle' : type === 'warning' ? 'alert-triangle' : type === 'error' ? 'alert-circle' : 'info';
+      toast.innerHTML = `<i data-lucide="${icon}" class="w-4 h-4 shrink-0"></i><span>${message}</span>`;
+      container.appendChild(toast);
+      lucide.createIcons();
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(10px)';
+        setTimeout(() => toast.remove(), 300);
+      }, 3500);
+    }
+
+    // Helper Functions
+    function formatDateIndo(dateStr) {
+      if (!dateStr) return '';
+      const parts = dateStr.split('-');
+      if (parts.length < 3) return dateStr;
+      const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+      return `${parseInt(parts[2], 10)} ${months[parseInt(parts[1], 10) - 1]} ${parts[0]}`;
+    }
+
+    function calculateDaysToGo(dateStr) {
+      if (!dateStr) return 'Menuju Hari Bahagia';
+      const target = new Date(dateStr);
+      const now = new Date();
+      target.setHours(0,0,0,0);
+      now.setHours(0,0,0,0);
+      const diff = Math.ceil((target - now) / (1000 * 60 * 60 * 24));
+      if (diff > 0) return `H-${diff} Hari Bahagia`;
+      if (diff === 0) return 'Hari Ini Hari H!';
+      return 'Telah Berlangsung';
+    }
+
+    function handleInputLiveUpdate() {
+      const gNick = document.getElementById('groom-nickname').value.trim() || 'Mempelai Pria';
+      const bNick = document.getElementById('bride-nickname').value.trim() || 'Mempelai Wanita';
+      const gFull = document.getElementById('groom-fullname').value.trim() || 'Nama Lengkap Pria';
+      const bFull = document.getElementById('bride-fullname').value.trim() || 'Nama Lengkap Wanita';
+
+      document.getElementById('preview-couple-title').textContent = `${gNick} & ${bNick}`;
+      document.getElementById('preview-groom-full').textContent = gFull;
+      document.getElementById('preview-bride-full').textContent = bFull;
+    }
+
+    function populateCoupleForm(w) {
+      document.getElementById('groom-nickname').value = w.groom_nickname || '';
+      document.getElementById('groom-fullname').value = w.groom_fullname || '';
+      document.getElementById('groom-parents').value = w.groom_parents || '';
+      document.getElementById('groom-ig').value = (w.groom_ig || '').replace(/^@/, '');
+
+      document.getElementById('bride-nickname').value = w.bride_nickname || '';
+      document.getElementById('bride-fullname').value = w.bride_fullname || '';
+      document.getElementById('bride-parents').value = w.bride_parents || '';
+      document.getElementById('bride-ig').value = (w.bride_ig || '').replace(/^@/, '');
+
+      handleInputLiveUpdate();
+
+      // Set link pratinjau undangan
+      const previewBtn = document.getElementById('btn-preview-invitation');
+      if (previewBtn && w.slug) {
+        previewBtn.href = `/u.html?slug=${encodeURIComponent(w.slug)}`;
+      }
+    }
+
+    function updateSidebarWidget() {
+      if (!currentWedding) return;
+      const gNick = currentWedding.groom_nickname || 'Mempelai';
+      const bNick = currentWedding.bride_nickname || 'Pengantin';
+      document.getElementById('sidebar-couple-name').textContent = `${gNick} & ${bNick}`;
+      
+      const weddingDate = currentWedding.akad_date || currentWedding.resepsi_date || currentUser.wedding_date;
+      document.getElementById('sidebar-countdown-pill').textContent = calculateDaysToGo(weddingDate);
+
+      const initials = `${(gNick[0] || 'M')}&${(bNick[0] || 'P')}`;
+      const initialsEl = document.getElementById('couple-initials');
+      if (initialsEl) initialsEl.textContent = initials;
+    }
+
+    async function loadWeddingCoupleData() {
+      try {
+        const client = window.supabaseClient;
+        if (!client) throw new Error('Supabase client tidak siap');
+
+        let { data: wedding, error } = await client
+          .from('weddings')
+          .select('*')
+          .eq('user_id', currentUser.id)
+          .maybeSingle();
+
+        if (error && error.code !== 'PGRST116') {
+          console.warn('Query wedding error:', error);
+        }
+
+        if (!wedding) {
+          // Buat entri default jika belum ada
+          const cleanName = (currentUser.name || 'mempelai').toLowerCase().replace(/[^a-z0-9]/g, '');
+          const rand = Math.floor(100 + Math.random() * 900);
+          const slug = `${cleanName}-${rand}`;
+          const newRow = {
+            user_id: currentUser.id,
+            slug: slug,
+            groom_nickname: currentUser.name?.split(' ')[0] || 'Mempelai Pria',
+            bride_nickname: 'Mempelai Wanita'
+          };
+          const { data: created, error: createErr } = await client
+            .from('weddings')
+            .insert([newRow])
+            .select()
+            .single();
+
+          if (createErr) throw createErr;
+          wedding = created;
+        }
+
+        currentWedding = wedding;
+        populateCoupleForm(wedding);
+        updateSidebarWidget();
+
+      } catch (err) {
+        console.error('Error loadWeddingCoupleData:', err);
+        showToast('Gagal memuat data pengantin: ' + err.message, 'error');
+      }
+    }
+
+    async function saveCoupleIdentity() {
+      const btnTop = document.getElementById('btn-top-save');
+      const btnBottom = document.getElementById('btn-bottom-save');
+
+      const gNick = document.getElementById('groom-nickname').value.trim();
+      const gFull = document.getElementById('groom-fullname').value.trim();
+      const gParents = document.getElementById('groom-parents').value.trim();
+      const gIg = document.getElementById('groom-ig').value.trim().replace(/^@/, '');
+
+      const bNick = document.getElementById('bride-nickname').value.trim();
+      const bFull = document.getElementById('bride-fullname').value.trim();
+      const bParents = document.getElementById('bride-parents').value.trim();
+      const bIg = document.getElementById('bride-ig').value.trim().replace(/^@/, '');
+
+      if (!gNick || !bNick) {
+        showToast('Nama panggilan Mempelai Pria dan Wanita wajib diisi.', 'warning');
+        return;
+      }
+      if (!gFull || !bFull) {
+        showToast('Nama lengkap Mempelai Pria dan Wanita wajib diisi.', 'warning');
+        return;
+      }
+
+      const payload = {
+        groom_nickname: gNick,
+        groom_fullname: gFull,
+        groom_parents: gParents,
+        groom_ig: gIg || null,
+        bride_nickname: bNick,
+        bride_fullname: bFull,
+        bride_parents: bParents,
+        bride_ig: bIg || null
+      };
+
+      try {
+        if (btnTop) btnTop.disabled = true;
+        if (btnBottom) btnBottom.disabled = true;
+
+        const client = window.supabaseClient;
+        if (!client) throw new Error('Supabase client tidak siap');
+
+        if (!currentWedding || !currentWedding.id) {
+          throw new Error('Data wedding belum terinisialisasi. Muat ulang halaman.');
+        }
+
+        const { data, error } = await client
+          .from('weddings')
+          .update(payload)
+          .eq('id', currentWedding.id)
+          .select()
+          .single();
+
+        if (error) throw error;
+
+        currentWedding = data;
+        updateSidebarWidget();
+        handleInputLiveUpdate();
+
+        const now = new Date();
+        const timeStr = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+        document.getElementById('last-updated-pill').textContent = `Tersimpan pukul ${timeStr} WIB`;
+
+        showToast('Identitas calon pengantin berhasil disimpan ke database!', 'success');
+
+      } catch (err) {
+        console.error('Error saveCoupleIdentity:', err);
+        showToast('Gagal menyimpan identitas: ' + err.message, 'error');
+      } finally {
+        if (btnTop) btnTop.disabled = false;
+        if (btnBottom) btnBottom.disabled = false;
+      }
+    }
+
+    // Sidebar Mobile Toggle
+    document.addEventListener('DOMContentLoaded', async () => {
+      currentUser = getCurrentUser();
+      if (!currentUser) {
+        window.location.href = '/login.html';
+        return;
+      }
+
+      const sidebar = document.getElementById('sidebar');
+      const backdrop = document.getElementById('sidebar-backdrop');
+      const btnOpen = document.getElementById('btn-open-sidebar');
+      const btnClose = document.getElementById('btn-close-sidebar');
+
+      if (btnOpen) {
+        btnOpen.onclick = () => {
+          sidebar.classList.remove('-translate-x-full');
+          backdrop.classList.remove('hidden');
+        };
+      }
+      if (btnClose) {
+        btnClose.onclick = () => {
+          sidebar.classList.add('-translate-x-full');
+          backdrop.classList.add('hidden');
+        };
+      }
+      if (backdrop) {
+        backdrop.onclick = () => {
+          sidebar.classList.add('-translate-x-full');
+          backdrop.classList.add('hidden');
+        };
+      }
+
+      await loadWeddingCoupleData();
+      lucide.createIcons();
+    });
+  </script>
+</body>
+</html>

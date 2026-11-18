@@ -98,10 +98,6 @@
               <i data-lucide="tag" class="w-3.5 h-3.5 inline mr-1 text-slate-400"></i>
               <span>Pengaturan Harga</span>
             </a>
-            <a href="/dashboard/index.html" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors">
-              <i data-lucide="layout-dashboard" class="w-3.5 h-3.5 inline mr-1 text-slate-400"></i>
-              <span>Dashboard Pengantin</span>
-            </a>
           </nav>
         </div>
 
@@ -215,10 +211,10 @@
   <!-- ========================================================================= -->
   <!-- 2. VIEW MODE: MASTER TEMPLATE BUILDER STUDIO (SPLIT-SCREEN)              -->
   <!-- ========================================================================= -->
-  <div id="view-studio" class="hidden flex-1 flex flex-col min-h-0 bg-slate-100">
+  <div id="view-studio" class="hidden flex-1 flex flex-col min-h-0 bg-slate-100 lg:h-[calc(100vh-64px)] lg:overflow-hidden">
     
     <!-- Top Studio Header Toolbar -->
-    <div class="bg-white border-b border-slate-200 px-4 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-3 sticky top-16 z-30 shadow-2xs">
+    <div class="bg-white border-b border-slate-200 px-4 sm:px-6 py-2.5 flex flex-wrap items-center justify-between gap-3 z-30 shadow-2xs flex-shrink-0">
       
       <div class="flex items-center gap-3">
         <button 
@@ -281,11 +277,11 @@
 
     </div>
 
-    <!-- Studio Main Workspace: Left Controls (54%) + Right Mobile Live Preview (46%) -->
-    <div class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 grid grid-cols-1 lg:grid-cols-12 gap-6 min-h-0">
+    <!-- Studio Main Workspace: Split-Screen Desktop (Kiri-Kanan) -->
+    <div class="flex-1 w-full max-w-[1600px] mx-auto px-4 sm:px-6 py-4 lg:grid lg:grid-cols-12 gap-6 min-h-0 lg:overflow-hidden">
       
-      <!-- SISI KIRI: PANEL MASTER EDITOR TABS (7 COLUMNS / ~58%) -->
-      <div class="lg:col-span-7 flex flex-col space-y-4">
+      <!-- SISI KIRI: PANEL MASTER EDITOR TABS (7 COLUMNS / ~58% OVERFLOW-Y-AUTO) -->
+      <div class="lg:col-span-7 flex flex-col space-y-4 lg:h-full lg:overflow-y-auto custom-scrollbar pr-0 lg:pr-3 pb-20 lg:pb-8 min-h-0">
         
         <!-- Tab Navigation Bar -->
         <div class="bg-white p-1.5 rounded-2xl border border-slate-200/90 shadow-2xs flex items-center justify-between gap-1 overflow-x-auto custom-scrollbar">
@@ -494,14 +490,15 @@
                 <label class="block text-xs font-bold text-slate-700 mb-1">Pilihan Lagu Romantis Bawaan:</label>
                 <select id="tpl-default-audio-select" onchange="handleMasterAudioSelectChange(this.value)" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs font-semibold bg-white text-slate-800">
                   <option value="/assets/audio/track-1.mp3">🎵 1. MenikahBersama Signature Romance (Default)</option>
-                  <option value="https://cdn.pixabay.com/download/audio/2022/05/16/audio_c8916d9e07.mp3">🎸 2. Romance Acoustic Guitar (Hangat & Syahdu)</option>
-                  <option value="https://cdn.pixabay.com/download/audio/2022/03/15/audio_c8c8a73467.mp3">🎹 3. Beautiful Wedding Piano (Klasik Romantis)</option>
-                  <option value="https://cdn.pixabay.com/download/audio/2021/08/04/audio_bb630cc098.mp3">🎻 4. Cinematic Love Strings (Mewah & Megah)</option>
-                  <option value="https://cdn.pixabay.com/download/audio/2022/11/06/audio_031ffab0c4.mp3">🎶 5. Sweet Acoustic Warmth (Lembut Bahagia)</option>
-                  <option value="https://cdn.pixabay.com/download/audio/2022/10/25/audio_24a259c228.mp3">💃 6. Elegant Romantic Waltz (Dansa Romantis)</option>
-                  <option value="https://cdn.pixabay.com/download/audio/2023/02/28/audio_550e504c55.mp3">✨ 7. Pure Love Piano Melodies (Menyentuh Hati)</option>
-                  <option value="https://cdn.pixabay.com/download/audio/2022/01/18/audio_d0a13f69d2.mp3">🌟 8. Inspiring Emotional Wedding (Hari Bahagia)</option>
-                  <option value="https://cdn.pixabay.com/download/audio/2022/08/02/audio_884fe92c21.mp3">🕊️ 9. Soft Nostalgic Strings (Haru & Khidmat)</option>
+                  <option value="/assets/audio/track-2.mp3">🎸 2. Romance Acoustic Guitar (Hangat & Syahdu)</option>
+                  <option value="/assets/audio/track-3.mp3">🎹 3. Beautiful Wedding Piano (Klasik Romantis)</option>
+                  <option value="/assets/audio/track-4.mp3">🎻 4. Cinematic Love Strings (Mewah & Megah)</option>
+                  <option value="/assets/audio/track-5.mp3">🎶 5. Sweet Acoustic Warmth (Lembut Bahagia)</option>
+                  <option value="/assets/audio/track-6.mp3">💃 6. Elegant Romantic Waltz (Dansa Romantis)</option>
+                  <option value="/assets/audio/track-7.mp3">✨ 7. Pure Love Piano Melodies (Menyentuh Hati)</option>
+                  <option value="/assets/audio/track-8.mp3">🌟 8. Inspiring Emotional Wedding (Hari Bahagia)</option>
+                  <option value="/assets/audio/track-9.mp3">🕊️ 9. Soft Nostalgic Strings (Haru & Khidmat)</option>
+                  <option value="/assets/audio/track-10.mp3">🌸 10. Endless Harmony & Grace (Mewah & Anggun)</option>
                   <option value="custom">🔗 Unggah File MP3 / URL Kustom</option>
                 </select>
               </div>
@@ -1223,10 +1220,10 @@
 
       </div>
 
-      <!-- SISI KANAN: LIVE MOBILE PREVIEW HP SIMULATOR (5 COLUMNS / ~42% STICKY) -->
-      <div class="lg:col-span-5 flex flex-col items-center">
+      <!-- SISI KANAN: LIVE MOBILE PREVIEW HP SIMULATOR (5 COLUMNS / ~42% STICKY / CENTERED) -->
+      <div class="lg:col-span-5 flex flex-col items-center justify-start lg:justify-center lg:h-full lg:overflow-y-auto custom-scrollbar py-2">
         
-        <div class="sticky top-32 w-full max-w-[380px] space-y-3">
+        <div class="sticky top-0 w-full max-w-[360px] sm:max-w-[380px] space-y-3">
           
           <!-- Device Simulator Toolbar -->
           <div class="bg-white px-4 py-2 rounded-2xl border border-slate-200/90 shadow-2xs flex items-center justify-between text-xs">
@@ -1272,10 +1269,10 @@
             </div>
 
             <!-- Iframe Window Container -->
-            <div class="w-full h-[660px] rounded-[32px] overflow-hidden bg-stone-900 relative">
+            <div class="w-full h-[600px] lg:h-[calc(100vh-210px)] max-h-[660px] min-h-[480px] rounded-[32px] overflow-hidden bg-stone-900 relative">
               <iframe 
                 id="admin-preview-frame" 
-                src="/u.html?preview=true&admin_template_preview=true" 
+                src="about:blank" 
                 class="w-full h-full border-0"
               ></iframe>
             </div>
@@ -1809,13 +1806,19 @@
       isUnsaved = false;
       updateUnsavedIndicator();
 
+      // Pastikan iframe preview dimuat saat masuk ke studio
+      const iframe = document.getElementById('admin-preview-frame');
+      if (iframe && (!iframe.src || iframe.src === 'about:blank' || iframe.src.endsWith('about:blank'))) {
+        iframe.src = '/u.html?preview=true&admin_template_preview=true';
+      }
+
       // Set default tab ke Identitas
       switchStudioTab('identity');
       
       // Kirim initial state ke iframe Live Preview
       setTimeout(() => {
         broadcastToLivePreview();
-      }, 400);
+      }, 500);
 
       window.scrollTo(0, 0);
       lucide.createIcons();
@@ -1827,6 +1830,7 @@
           return;
         }
       }
+      stopMasterTestAudio();
       document.getElementById('view-studio').classList.add('hidden');
       document.getElementById('view-catalog').classList.remove('hidden');
       window.scrollTo(0, 0);
@@ -2143,25 +2147,38 @@
       const player = document.getElementById('master-audio-player');
       const text = document.getElementById('text-master-audio-test');
       const btn = document.getElementById('btn-test-master-audio');
-      const audioUrl = templateState.config_json?.default_audio_url || document.getElementById('tpl-default-audio-url')?.value.trim() || document.getElementById('tpl-default-audio-select')?.value || '/assets/audio/track-1.mp3';
+      let audioUrl = templateState.config_json?.default_audio_url || document.getElementById('tpl-default-audio-url')?.value.trim() || document.getElementById('tpl-default-audio-select')?.value || '/assets/audio/track-1.mp3';
+      if (audioUrl.startsWith('assets/')) audioUrl = '/' + audioUrl;
 
       if (masterTestAudioPlaying && !player.paused) {
         stopMasterTestAudio();
       } else {
-        player.src = audioUrl;
-        player.play().then(() => {
-          masterTestAudioPlaying = true;
-          if (text) text.textContent = 'Hentikan';
-          if (btn) {
-            btn.classList.add('bg-rose-600', 'text-white');
-            btn.classList.remove('bg-slate-900');
+        player.onerror = () => {
+          console.warn('Gagal memuat musik master, fallback ke /assets/audio/track-1.mp3');
+          if (player.src && !player.src.includes('/assets/audio/track-1.mp3')) {
+            player.src = '/assets/audio/track-1.mp3';
+            player.load();
+            player.play().catch(() => {});
           }
-          const icon = document.getElementById('icon-master-audio-test');
-          if (icon) icon.setAttribute('data-lucide', 'square');
-          lucide.createIcons();
-        }).catch(err => {
-          showToast('Gagal memutar audio: ' + err.message, 'warning');
-        });
+        };
+        player.src = audioUrl;
+        player.load();
+        const playPromise = player.play();
+        if (playPromise !== undefined) {
+          playPromise.then(() => {
+            masterTestAudioPlaying = true;
+            if (text) text.textContent = 'Hentikan';
+            if (btn) {
+              btn.classList.add('bg-rose-600', 'text-white');
+              btn.classList.remove('bg-slate-900');
+            }
+            const icon = document.getElementById('icon-master-audio-test');
+            if (icon) icon.setAttribute('data-lucide', 'square');
+            lucide.createIcons();
+          }).catch(err => {
+            showToast('Gagal memutar audio: ' + err.message, 'warning');
+          });
+        }
       }
     }
 

@@ -1373,14 +1373,15 @@
               >
                 <option value="default">🎵 Gunakan Musik Bawaan Tema</option>
                 <option value="/assets/audio/track-1.mp3">🎵 1. MenikahBersama Signature Romance (Default)</option>
-                <option value="https://cdn.pixabay.com/download/audio/2022/05/16/audio_c8916d9e07.mp3">🎸 2. Romance Acoustic Guitar (Hangat & Syahdu)</option>
-                <option value="https://cdn.pixabay.com/download/audio/2022/03/15/audio_c8c8a73467.mp3">🎹 3. Beautiful Wedding Piano (Klasik Romantis)</option>
-                <option value="https://cdn.pixabay.com/download/audio/2021/08/04/audio_bb630cc098.mp3">🎻 4. Cinematic Love Strings (Mewah & Megah)</option>
-                <option value="https://cdn.pixabay.com/download/audio/2022/11/06/audio_031ffab0c4.mp3">🎶 5. Sweet Acoustic Warmth (Lembut Bahagia)</option>
-                <option value="https://cdn.pixabay.com/download/audio/2022/10/25/audio_24a259c228.mp3">💃 6. Elegant Romantic Waltz (Dansa Romantis)</option>
-                <option value="https://cdn.pixabay.com/download/audio/2023/02/28/audio_550e504c55.mp3">✨ 7. Pure Love Piano Melodies (Menyentuh Hati)</option>
-                <option value="https://cdn.pixabay.com/download/audio/2022/01/18/audio_d0a13f69d2.mp3">🌟 8. Inspiring Emotional Wedding (Hari Bahagia)</option>
-                <option value="https://cdn.pixabay.com/download/audio/2022/08/02/audio_884fe92c21.mp3">🕊️ 9. Soft Nostalgic Strings (Haru & Khidmat)</option>
+                <option value="/assets/audio/track-2.mp3">🎸 2. Romance Acoustic Guitar (Hangat & Syahdu)</option>
+                <option value="/assets/audio/track-3.mp3">🎹 3. Beautiful Wedding Piano (Klasik Romantis)</option>
+                <option value="/assets/audio/track-4.mp3">🎻 4. Cinematic Love Strings (Mewah & Megah)</option>
+                <option value="/assets/audio/track-5.mp3">🎶 5. Sweet Acoustic Warmth (Lembut Bahagia)</option>
+                <option value="/assets/audio/track-6.mp3">💃 6. Elegant Romantic Waltz (Dansa Romantis)</option>
+                <option value="/assets/audio/track-7.mp3">✨ 7. Pure Love Piano Melodies (Menyentuh Hati)</option>
+                <option value="/assets/audio/track-8.mp3">🌟 8. Inspiring Emotional Wedding (Hari Bahagia)</option>
+                <option value="/assets/audio/track-9.mp3">🕊️ 9. Soft Nostalgic Strings (Haru & Khidmat)</option>
+                <option value="/assets/audio/track-10.mp3">🌸 10. Endless Harmony & Grace (Mewah & Anggun)</option>
                 <option value="custom">🔗 Unggah File MP3 / URL Kustom</option>
               </select>
             </div>
@@ -3154,19 +3155,35 @@
         url = tpl?.config_json?.default_audio_url || '/assets/audio/track-1.mp3';
       }
 
+      if (url.startsWith('assets/')) {
+        url = '/' + url;
+      }
+
       if (currentTestAudio && !player.paused) {
         stopTestAudio();
       } else {
+        player.onerror = () => {
+          console.warn('Gagal memutar audio pengantin, fallback ke /assets/audio/track-1.mp3');
+          if (player.src && !player.src.includes('/assets/audio/track-1.mp3')) {
+            player.src = '/assets/audio/track-1.mp3';
+            player.load();
+            player.play().catch(() => {});
+          }
+        };
         player.src = url;
-        player.play().then(() => {
-          currentTestAudio = true;
-          text.textContent = 'Hentikan';
-          btn.classList.add('bg-rose-600', 'text-white');
-          btn.firstElementChild.setAttribute('data-lucide', 'square');
-          lucide.createIcons();
-        }).catch(err => {
-          showToast('Gagal memutar audio: ' + err.message, 'warning');
-        });
+        player.load();
+        const playPromise = player.play();
+        if (playPromise !== undefined) {
+          playPromise.then(() => {
+            currentTestAudio = true;
+            text.textContent = 'Hentikan';
+            btn.classList.add('bg-rose-600', 'text-white');
+            btn.firstElementChild.setAttribute('data-lucide', 'square');
+            lucide.createIcons();
+          }).catch(err => {
+            showToast('Gagal memutar audio: ' + err.message, 'warning');
+          });
+        }
       }
     }
 

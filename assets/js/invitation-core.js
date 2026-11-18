@@ -1385,16 +1385,26 @@ class InvitationEngine {
 
   resetCover() {
     this.isCoverOpened = false;
-    const cover = document.getElementById('cover-screen');
+    const cover = document.getElementById('cover-screen') || document.getElementById('invitation-cover');
     const curtainLeft = document.getElementById('cover-curtain-left');
     const curtainRight = document.getElementById('cover-curtain-right');
     const dock = document.getElementById('bottom-dock');
 
     // Kunci kembali scroll saat cover ditutup
-    document.body.classList.add('overflow-hidden');
-    document.getElementById('invitation-app-container')?.classList.add('overflow-hidden');
+    document.documentElement.style.overflow = 'hidden';
+    document.documentElement.style.height = '100%';
+    document.body.style.overflow = 'hidden';
+    document.body.style.height = '100%';
+    document.body.classList.add('overflow-hidden', 'h-screen');
+
+    const appContainer = document.getElementById('invitation-app-container');
+    if (appContainer) {
+      appContainer.classList.add('overflow-hidden');
+    }
 
     if (cover) {
+      cover.style.removeProperty('display');
+      cover.style.removeProperty('pointer-events');
       cover.style.display = 'flex';
       cover.style.pointerEvents = 'auto';
       setTimeout(() => {
@@ -1812,7 +1822,7 @@ class InvitationEngine {
    */
   openInvitation() {
     this.isCoverOpened = true;
-    const cover = document.getElementById('cover-screen');
+    const cover = document.getElementById('cover-screen') || document.getElementById('invitation-cover');
     const curtainLeft = document.getElementById('cover-curtain-left');
     const curtainRight = document.getElementById('cover-curtain-right');
     const dock = document.getElementById('bottom-dock');
@@ -1833,13 +1843,30 @@ class InvitationEngine {
       cover.style.opacity = '0';
       cover.style.pointerEvents = 'none';
       setTimeout(() => {
-        cover.style.display = 'none';
+        cover.style.setProperty('display', 'none', 'important');
+        cover.style.setProperty('pointer-events', 'none', 'important');
       }, 850);
     }
 
-    // Buka lock scroll body & container
-    document.body.classList.remove('overflow-hidden');
-    document.getElementById('invitation-app-container')?.classList.remove('overflow-hidden');
+    // Buka lock scroll html, body & container sepenuhnya sesuai instruksi
+    document.documentElement.style.overflow = 'auto';
+    document.documentElement.style.height = 'auto';
+    document.body.style.overflow = 'auto';
+    document.body.style.height = 'auto';
+    document.body.classList.remove('overflow-hidden', 'h-screen');
+
+    const appContainer = document.getElementById('invitation-app-container');
+    if (appContainer) {
+      appContainer.classList.remove('overflow-hidden', 'h-screen');
+      appContainer.style.overflow = 'visible';
+      appContainer.style.height = 'auto';
+    }
+    const content = document.getElementById('invitation-content');
+    if (content) {
+      content.classList.remove('overflow-hidden', 'h-screen');
+      content.style.overflow = 'visible';
+      content.style.height = 'auto';
+    }
 
     // Tampilkan Floating Bottom Dock Navigasi
     if (dock) {
@@ -1881,14 +1908,17 @@ class InvitationEngine {
         }
       });
       this.audioElement.addEventListener('error', (e) => {
-        console.warn('Audio failed to load, falling back to local track-1.mp3', e);
+        console.warn('Audio failed to load, falling back to local /assets/audio/track-1.mp3', e);
         if (this.audioElement.src && !this.audioElement.src.includes('/assets/audio/track-1.mp3')) {
           this.audioElement.src = '/assets/audio/track-1.mp3';
           this.audioElement.load();
-          this.audioElement.play().then(() => {
-            this.isPlayingAudio = true;
-            this.updateAudioButtonState();
-          }).catch(() => {});
+          const p = this.audioElement.play();
+          if (p !== undefined) {
+            p.then(() => {
+              this.isPlayingAudio = true;
+              this.updateAudioButtonState();
+            }).catch(() => {});
+          }
         }
       });
     }
@@ -1898,21 +1928,30 @@ class InvitationEngine {
     if (!this.audioElement) return;
     
     const tplConfig = this.template?.config_json || {};
-    const sourceUrl = (this.wedding?.audio_url && this.wedding.audio_url !== 'default') 
+    let sourceUrl = (this.wedding?.audio_url && this.wedding.audio_url !== 'default') 
       ? this.wedding.audio_url 
       : (tplConfig.default_audio_url || '/assets/audio/track-1.mp3');
-    if (!this.audioElement.src || !this.audioElement.src.endsWith(sourceUrl)) {
-      this.audioElement.src = sourceUrl;
+
+    if (sourceUrl.startsWith('assets/')) {
+      sourceUrl = '/' + sourceUrl;
     }
 
-    this.audioElement.play().then(() => {
-      this.isPlayingAudio = true;
-      this.updateAudioButtonState();
-    }).catch(e => {
-      console.warn('Autoplay audio blocked by browser policy:', e);
-      this.isPlayingAudio = false;
-      this.updateAudioButtonState();
-    });
+    if (!this.audioElement.src || !this.audioElement.src.endsWith(sourceUrl)) {
+      this.audioElement.src = sourceUrl;
+      this.audioElement.load();
+    }
+
+    const playPromise = this.audioElement.play();
+    if (playPromise !== undefined) {
+      playPromise.then(() => {
+        this.isPlayingAudio = true;
+        this.updateAudioButtonState();
+      }).catch(e => {
+        console.warn('Autoplay audio blocked by browser policy:', e);
+        this.isPlayingAudio = false;
+        this.updateAudioButtonState();
+      });
+    }
   }
 
   toggleAudio() {
@@ -1922,9 +1961,22 @@ class InvitationEngine {
       this.audioElement.pause();
       this.isPlayingAudio = false;
     } else {
-      this.audioElement.play().then(() => {
-        this.isPlayingAudio = true;
-      }).catch(e => console.warn('Play audio failed:', e));
+      if (!this.audioElement.src || this.audioElement.src === 'about:blank') {
+        const tplConfig = this.template?.config_json || {};
+        let sourceUrl = (this.wedding?.audio_url && this.wedding.audio_url !== 'default') 
+          ? this.wedding.audio_url 
+          : (tplConfig.default_audio_url || '/assets/audio/track-1.mp3');
+        if (sourceUrl.startsWith('assets/')) sourceUrl = '/' + sourceUrl;
+        this.audioElement.src = sourceUrl;
+        this.audioElement.load();
+      }
+      const p = this.audioElement.play();
+      if (p !== undefined) {
+        p.then(() => {
+          this.isPlayingAudio = true;
+          this.updateAudioButtonState();
+        }).catch(e => console.warn('Play audio failed:', e));
+      }
     }
     this.updateAudioButtonState();
   }
@@ -2163,10 +2215,10 @@ class InvitationEngine {
 
     section.classList.remove('hidden');
     container.innerHTML = stories.map(s => `
-      <div class="wedding-card backdrop-blur-md p-4 rounded-2xl bg-[var(--bg-card,#ffffff)]/85 border border-stone-200/80 shadow-2xs space-y-1 relative pl-5 border-l-4 border-l-[var(--accent-color,#b48342)]" data-animate="fade-up">
+      <div class="wedding-card theme-card backdrop-blur-md p-4 rounded-2xl border border-stone-200/80 shadow-2xs space-y-1 relative pl-5 border-l-4 border-l-[var(--accent-color,#b48342)]" style="background-color: var(--bg-card); color: var(--text-main);" data-animate="fade-up">
         <span class="text-[10px] font-bold font-mono text-[var(--accent-color,#b48342)] uppercase tracking-wider">${escapeHtml(s.year || '')}</span>
-        <h4 class="font-serif text-base font-bold text-slate-900">${escapeHtml(s.title || '')}</h4>
-        <p class="text-xs text-slate-600 leading-relaxed">${escapeHtml(s.story || '')}</p>
+        <h4 class="font-serif text-base font-bold text-[var(--text-main)]">${escapeHtml(s.title || '')}</h4>
+        <p class="text-xs text-[var(--text-secondary)] leading-relaxed">${escapeHtml(s.story || '')}</p>
       </div>
     `).join('');
   }
@@ -2253,20 +2305,21 @@ class InvitationEngine {
 
     if (hasEnvelopes) {
       container.innerHTML = envelopes.map(env => `
-        <div class="wedding-card backdrop-blur-md p-4 rounded-2xl bg-[var(--bg-card,#ffffff)]/85 border border-stone-200/80 shadow-2xs flex items-center justify-between gap-3 relative overflow-hidden" data-animate="fade-up">
+        <div class="wedding-card theme-card backdrop-blur-md p-4 rounded-2xl border border-stone-200/80 shadow-2xs flex items-center justify-between gap-3 relative overflow-hidden" style="background-color: var(--bg-card); color: var(--text-main);" data-animate="fade-up">
           <div class="card-corner-slot top-0 left-0" data-slot="tl"></div>
           <div class="card-corner-slot top-0 right-0" data-slot="tr"></div>
           <div class="relative z-10">
-            <span class="text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded bg-amber-50 text-amber-900 border border-amber-200/70">
+            <span class="text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded text-white" style="background-color: var(--accent-color, #b48342);">
               ${escapeHtml(env.bank || 'Bank')}
             </span>
-            <div class="font-mono font-bold text-sm text-slate-900 mt-1">${escapeHtml(env.number || '')}</div>
-            <div class="text-[11px] text-slate-500">a.n ${escapeHtml(env.holder || '')}</div>
+            <div class="font-mono font-bold text-sm text-[var(--text-main)] mt-1">${escapeHtml(env.number || '')}</div>
+            <div class="text-[11px] text-[var(--text-secondary)]">a.n ${escapeHtml(env.holder || '')}</div>
           </div>
           <button 
             type="button" 
             onclick="window.invitationEngine.copyAccountNumber('${escapeHtml(env.number)}', this)" 
-            class="px-3 py-1.5 rounded-xl border border-stone-200 bg-stone-50 hover:bg-stone-100 text-slate-700 text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer shrink-0 relative z-10"
+            class="px-3 py-1.5 rounded-xl border border-[var(--accent-color,#b48342)]/40 hover:opacity-90 text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer shrink-0 relative z-10 shadow-xs"
+            style="background-color: var(--bg-main); color: var(--text-main);"
           >
             <i data-lucide="copy" class="w-3.5 h-3.5"></i>
             <span>Salin</span>
@@ -2453,7 +2506,7 @@ class InvitationEngine {
       if (error || !wishes || !wishes.length) {
         if (countLabel) countLabel.textContent = 'Jadilah yang pertama memberikan doa restu!';
         container.innerHTML = `
-          <div class="p-6 bg-[var(--bg-card,#ffffff)] rounded-2xl border border-stone-200 text-center text-xs text-stone-400">
+          <div class="wedding-card theme-card p-6 rounded-2xl border border-stone-200/80 text-center text-xs text-[var(--text-secondary)]" style="background-color: var(--bg-card); color: var(--text-secondary);">
             Belum ada ucapan doa. Tuliskan ucapan dan doa restu terbaik Anda di formulir atas.
           </div>
         `;
@@ -2487,21 +2540,21 @@ class InvitationEngine {
   renderWishCardHtml(w) {
     const initials = (w.name || 'Tamu').split(' ').map(n => n[0]).slice(0, 2).join('').toUpperCase() || '✨';
     const hadirBadge = w.rsvp_status === 'hadir'
-      ? `<span class="text-[9px] px-2 py-0.5 rounded-full font-bold bg-emerald-100 text-emerald-800">Hadir (${w.confirmed_pax || 2} Pax)</span>`
-      : `<span class="text-[9px] px-2 py-0.5 rounded-full font-bold bg-stone-100 text-stone-600">Berhalangan</span>`;
+      ? `<span class="text-[9px] px-2 py-0.5 rounded-full font-bold bg-emerald-500/20 text-emerald-700 border border-emerald-500/30">Hadir (${w.confirmed_pax || 2} Pax)</span>`
+      : `<span class="text-[9px] px-2 py-0.5 rounded-full font-bold bg-stone-500/20 text-[var(--text-secondary)] border border-stone-400/30">Berhalangan</span>`;
 
     return `
-      <div class="wedding-card backdrop-blur-md bg-[var(--bg-card,#ffffff)]/85 p-4 rounded-2xl border border-stone-200/90 shadow-2xs space-y-2 animate-in fade-in duration-300">
+      <div class="wedding-card theme-card backdrop-blur-md p-4 rounded-2xl border border-stone-200/90 shadow-2xs space-y-2 animate-in fade-in duration-300" style="background-color: var(--bg-card); color: var(--text-main);">
         <div class="flex items-center justify-between gap-2">
           <div class="flex items-center gap-2">
-            <div class="w-7 h-7 rounded-full bg-amber-100 text-amber-900 font-bold text-[10px] flex items-center justify-center font-serif">
+            <div class="w-7 h-7 rounded-full text-white font-bold text-[10px] flex items-center justify-center font-serif" style="background-color: var(--accent-color, #b48342);">
               ${initials}
             </div>
-            <span class="font-bold text-xs text-slate-800">${escapeHtml(w.name)}</span>
+            <span class="font-bold text-xs text-[var(--text-main)]">${escapeHtml(w.name)}</span>
           </div>
           ${hadirBadge}
         </div>
-        <p class="text-xs text-slate-600 italic leading-relaxed pl-1">
+        <p class="text-xs text-[var(--text-secondary)] italic leading-relaxed pl-1">
           "${escapeHtml(w.wish_message)}"
         </p>
       </div>
