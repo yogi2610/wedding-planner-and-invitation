@@ -2409,20 +2409,18 @@ class InvitationEngine {
 
     if (hasEnvelopes) {
       container.innerHTML = envelopes.map(env => `
-        <div class="wedding-card theme-card backdrop-blur-md p-4 rounded-2xl border border-stone-200/80 shadow-2xs flex items-center justify-between gap-3 relative overflow-hidden" style="background-color: var(--bg-card); color: var(--text-main);" data-animate="fade-up">
-          <div class="card-corner-slot top-0 left-0" data-slot="tl"></div>
-          <div class="card-corner-slot top-0 right-0" data-slot="tr"></div>
-          <div class="relative z-10">
-            <span class="text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded text-white" style="background-color: var(--accent-color, #b48342);">
+        <div class="wedding-card theme-card backdrop-blur-md p-4 rounded-2xl border border-stone-200/80 shadow-2xs flex items-center justify-between gap-3 relative overflow-hidden text-left" style="background-color: var(--bg-card); color: var(--text-main);" data-animate="fade-up">
+          <div class="flex-1 min-w-0 text-left space-y-1 relative z-10">
+            <span class="inline-block text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded text-white text-left" style="background-color: var(--accent-color, #b48342);">
               ${escapeHtml(env.bank || 'Bank')}
             </span>
-            <div class="font-mono font-bold text-sm text-[var(--text-main)] mt-1">${escapeHtml(env.number || '')}</div>
-            <div class="text-[11px] text-[var(--text-secondary)]">a.n ${escapeHtml(env.holder || '')}</div>
+            <div class="font-mono font-bold text-sm sm:text-base text-[var(--text-main)] text-left select-all tracking-wider">${escapeHtml(env.number || '')}</div>
+            <div class="text-[11px] text-[var(--text-secondary)] text-left truncate">a.n ${escapeHtml(env.holder || '')}</div>
           </div>
           <button 
             type="button" 
             onclick="window.invitationEngine.copyAccountNumber('${escapeHtml(env.number)}', this)" 
-            class="px-3 py-1.5 rounded-xl border border-[var(--accent-color,#b48342)]/40 hover:opacity-90 text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer shrink-0 relative z-10 shadow-xs"
+            class="px-3.5 py-2 rounded-xl border border-[var(--accent-color,#b48342)]/40 hover:opacity-90 text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer shrink-0 relative z-10 shadow-xs"
             style="background-color: var(--bg-main); color: var(--text-main);"
           >
             <i data-lucide="copy" class="w-3.5 h-3.5"></i>
@@ -2644,8 +2642,10 @@ class InvitationEngine {
   renderWishCardHtml(w) {
     const initials = (w.name || 'Tamu').split(' ').map(n => n[0]).slice(0, 2).join('').toUpperCase() || '✨';
     const hadirBadge = w.rsvp_status === 'hadir'
-      ? `<span class="text-[9px] px-2 py-0.5 rounded-full font-bold bg-emerald-500/20 text-emerald-700 border border-emerald-500/30">Hadir (${w.confirmed_pax || 2} Pax)</span>`
-      : `<span class="text-[9px] px-2 py-0.5 rounded-full font-bold bg-stone-500/20 text-[var(--text-secondary)] border border-stone-400/30">Berhalangan</span>`;
+      ? `<span class="text-[9px] px-2.5 py-0.5 rounded-full font-bold bg-emerald-500/20 text-emerald-700 border border-emerald-500/30">Hadir</span>`
+      : (w.rsvp_status === 'ragu'
+          ? `<span class="text-[9px] px-2.5 py-0.5 rounded-full font-bold bg-amber-500/20 text-amber-700 border border-amber-500/30">Ragu-ragu</span>`
+          : `<span class="text-[9px] px-2.5 py-0.5 rounded-full font-bold bg-stone-500/20 text-[var(--text-secondary)] border border-stone-400/30">Berhalangan</span>`);
 
     return `
       <div class="wedding-card theme-card backdrop-blur-md p-4 rounded-2xl border border-stone-200/90 shadow-2xs space-y-2 animate-in fade-in duration-300" style="background-color: var(--bg-card); color: var(--text-main);">

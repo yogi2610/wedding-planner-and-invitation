@@ -213,7 +213,7 @@
                 class="py-2.5 px-5 rounded-xl bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 text-white text-xs font-bold shadow-md hover:shadow-lg transition-all flex items-center gap-2 cursor-pointer"
               >
                 <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                <span id="mb-cropper-apply-text">Terapkan & Unggah WebP</span>
+                <span id="mb-cropper-apply-text">Simpan Hasil Crop</span>
               </button>
             </div>
           </div>
@@ -634,61 +634,93 @@
       outCtx.drawImage(state.img, -drawW / 2, -drawH / 2, drawW, drawH);
       outCtx.restore();
 
-      // Ekspor canvas ke WebP Blob
-      const blob = await new Promise((resolve) => {
-        outputCanvas.toBlob((b) => {
-          if (b) resolve(b);
-          else {
-            outputCanvas.toBlob(resolve, 'image/jpeg', 0.85);
-          }
-        }, 'image/webp', 0.82);
-      });
-
-      if (!blob) throw new Error('Gagal menghasilkan file gambar dari kanvas.');
-
-      // Buat file objek dengan nama deskriptif
-      const cleanTarget = state.targetType.replace(/[^a-z0-9_-]/gi, '');
-      const fileName = `${cleanTarget}_${Date.now()}.webp`;
-      const croppedFile = new File([blob], fileName, { type: blob.type || 'image/webp' });
-
-      applyText.textContent = 'Mengunggah ke Storage...';
-
-      // Upload ke Supabase Storage via modul webp-compressor.js
-      let uploadResult = null;
+      // Ekspor canvas ke WebP Blob (dengan fallback JPEG & DataURL)
+      let blob = null;
       try {
-        if (typeof window.uploadWeddingImage === 'function') {
-          uploadResult = await window.uploadWeddingImage(croppedFile, state.targetType, 1000, 0.82);
-        } else {
-          // Fallback data URL jika webp-compressor belum siap
-          const dataUrl = outputCanvas.toDataURL('image/webp', 0.82);
-          uploadResult = {
-            success: true,
-            url: dataUrl,
-            publicUrl: dataUrl,
-            dataUrl: dataUrl,
-            infoText: 'WebP Local Data'
-          };
-        }
-      } catch (uploadErr) {
-        console.warn('Cropper upload failed, using DataURL fallback:', uploadErr);
-        const dataUrl = outputCanvas.toDataURL('image/webp', 0.82);
-        uploadResult = {
-          success: true,
-          url: dataUrl,
-          publicUrl: dataUrl,
-          dataUrl: dataUrl,
-          infoText: 'WebP Fallback'
-        };
+        blob = await new Promise((resolve) => {
+          outputCanvas.toBlob((b) => {
+            if (b) resolve(b);
+            else {
+              outputCanvas.toBlob(resolve, 'image/jpeg', 0.85);
+            }
+          }, 'image/webp', 0.82);
+        });
+      } catch (blobErr) {
+        console.warn('outputCanvas toBlob error:', blobErr);
       }
 
+      let dataUrl = null;
+      try {
+        dataUrl = outputCanvas.toDataURL('image/webp', 0.82);
+      } catch (dataErr) {
+        console.warn('outputCanvas toDataURL error:', dataErr);
+      }
+
+      if (!blob && !dataUrl) {
+        throw new Error('Gagal menghasilkan file gambar dari kanvas.');
+      }
+
+      applyText.textContent = 'Menyimpan ke Storage...';
+
+      // Upload langsung WebP blob ke Supabase Storage bucket 'wedding-media'
+      let finalUrl = null;
+      let infoText = 'WebP Cropped (Tersimpan)';
+      const client = window.supabaseClient;
+
+      let userId = 'guest';
+      try {
+        if (typeof window.getCurrentUser === 'function') {
+          const u = window.getCurrentUser();
+          if (u?.id) userId = u.id;
+        }
+      } catch (e) {}
+
+      const cleanTarget = (state.targetType || 'crop').replace(/[^a-z0-9_-]/gi, '');
+      const timestamp = Date.now();
+      const randomSuffix = Math.floor(100 + Math.random() * 900);
+      const filePath = `users/${userId}/${cleanTarget}_${timestamp}_${randomSuffix}.webp`;
+
+      if (blob && client && client.storage) {
+        try {
+          const { data, error } = await client.storage
+            .from('wedding-media')
+            .upload(filePath, blob, {
+              contentType: 'image/webp',
+              upsert: true
+            });
+
+          if (!error) {
+            const { data: publicData } = client.storage
+              .from('wedding-media')
+              .getPublicUrl(filePath);
+
+            if (publicData?.publicUrl) {
+              finalUrl = publicData.publicUrl;
+              infoText = `WebP Cropped: ${Math.round(blob.size / 1024)}KB`;
+            }
+          } else {
+            console.warn('Supabase storage upload error in cropper:', error);
+          }
+        } catch (uploadErr) {
+          console.warn('Cropper storage upload failed, using DataURL fallback:', uploadErr);
+        }
+      }
+
+      if (!finalUrl) {
+        finalUrl = dataUrl;
+      }
+
+      // Simpan referensi callback sebelum closeModal membersihkan state
+      const callback = state.onComplete;
       closeModal();
 
-      if (typeof state.onComplete === 'function') {
-        state.onComplete({
+      if (typeof callback === 'function') {
+        callback({
           success: true,
-          url: uploadResult.publicUrl || uploadResult.url || uploadResult.dataUrl,
-          dataUrl: uploadResult.dataUrl,
-          infoText: uploadResult.infoText,
+          url: finalUrl,
+          publicUrl: finalUrl,
+          dataUrl: dataUrl || finalUrl,
+          infoText: infoText,
           targetType: state.targetType
         });
       }
@@ -748,10 +780,12 @@
         }
       }
 
+      // Simpan referensi callback sebelum closeModal membersihkan state
+      const callback = state.onComplete;
       closeModal();
 
-      if (uploadResult && typeof state.onComplete === 'function') {
-        state.onComplete({
+      if (uploadResult && typeof callback === 'function') {
+        callback({
           success: true,
           url: uploadResult.publicUrl || uploadResult.url || uploadResult.dataUrl,
           dataUrl: uploadResult.dataUrl,
@@ -825,7 +859,7 @@
 
     const loadImg = (srcUrl) => {
       const img = new Image();
-      if (!srcUrl.startsWith('data:')) {
+      if (!srcUrl.startsWith('data:') && !srcUrl.startsWith('blob:')) {
         img.crossOrigin = 'anonymous';
       }
       img.onload = () => {
@@ -854,7 +888,25 @@
       reader.onload = (e) => loadImg(e.target.result);
       reader.readAsDataURL(source);
     } else if (typeof source === 'string') {
-      loadImg(source);
+      if (source.startsWith('http://') || source.startsWith('https://')) {
+        // Fetch as blob untuk menjamin canvas tidak tainted dan aman dari cache CORS
+        const fetchUrl = source + (source.includes('?') ? '&' : '?') + 'cb=' + Date.now();
+        fetch(fetchUrl, { mode: 'cors' })
+          .then(res => {
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+            return res.blob();
+          })
+          .then(blob => {
+            const blobUrl = URL.createObjectURL(blob);
+            loadImg(blobUrl);
+          })
+          .catch(err => {
+            console.warn('Fetch image as blob failed, using direct url:', err);
+            loadImg(source);
+          });
+      } else {
+        loadImg(source);
+      }
     }
   }
 
