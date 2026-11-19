@@ -1051,6 +1051,31 @@
                 </div>
               </div>
 
+              <!-- Toggle Tampilkan Bingkai & Jadikan Foto sebagai Background Penuh Cover -->
+              <div class="space-y-2 pt-1">
+                <div class="flex items-center justify-between p-2.5 rounded-xl bg-white border border-slate-200">
+                  <div>
+                    <span class="text-xs font-bold text-slate-800 block">Aktifkan Bingkai Foto di Cover (Default)</span>
+                    <span class="text-[10px] text-slate-500 block">Tampilkan foto sampel pengantin di dalam bingkai sampul depan</span>
+                  </div>
+                  <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" id="master-toggle-cover-show-frame" onchange="handleCoverFrameChange()" checked class="sr-only peer">
+                    <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-amber-600"></div>
+                  </label>
+                </div>
+
+                <div class="flex items-center justify-between p-2.5 rounded-xl bg-white border border-slate-200">
+                  <div>
+                    <span class="text-xs font-bold text-slate-800 block">Jadikan Foto Sampul sebagai Background Cover</span>
+                    <span class="text-[10px] text-slate-500 block">Tampilkan foto sampel memenuhi seluruh layar latar sampul depan</span>
+                  </div>
+                  <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" id="master-toggle-cover-photo-as-bg" onchange="handleCoverFrameChange()" class="sr-only peer">
+                    <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-amber-600"></div>
+                  </label>
+                </div>
+              </div>
+
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label class="block text-[11px] font-bold text-slate-600 mb-1">Bentuk Bingkai Default:</label>
@@ -1060,7 +1085,9 @@
                     <option value="circle_royal">Lingkaran Kerajaan (Circle Royal)</option>
                     <option value="octagon_heritage">Oktagon Warisan (Octagon)</option>
                     <option value="teardrop_botanical">Tetesan Embun (Teardrop)</option>
-                    <option value="none">Tanpa Bingkai (Persegi Polos)</option>
+                    <option value="rounded_rect">Persegi Panjang Modern (Editorial)</option>
+                    <option value="polaroid">Polaroid Klasik</option>
+                    <option value="none">Tanpa Bingkai</option>
                   </select>
                 </div>
 
@@ -1254,10 +1281,60 @@
                 <label class="block text-xs font-bold text-slate-700 mb-1">Bentuk Bingkai Foto Mempelai Pria & Wanita</label>
                 <select id="select-person-frame-shape" onchange="handleEffectsChange()" class="w-full px-3 py-2.5 rounded-xl border border-slate-300 text-xs bg-white text-slate-800 font-semibold">
                   <option value="arch">Kubah Kubik (Arch Lengkung)</option>
-                  <option value="circle">Lingkaran Emas (Circle Royal)</option>
                   <option value="oval">Oval Klasik (Oval Floral)</option>
+                  <option value="circle">Lingkaran Emas (Circle Royal)</option>
                   <option value="octagon">Oktagon Tradisional (Octagon Heritage)</option>
+                  <option value="rounded_rect">Persegi Panjang Modern (Editorial)</option>
+                  <option value="teardrop">Kubah Daun Asimetris (Teardrop)</option>
+                  <option value="window_pane">Jendela Kubah Ganda (Window Arch)</option>
+                  <option value="polaroid">Bingkai Polaroid Klasik</option>
+                  <option value="hexagon">Heksagon Geometris Modern</option>
                 </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Placeholder Default: Pembuka Mempelai & Dresscode Tema -->
+          <div class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-2xs space-y-4">
+            <h3 class="font-serif text-base font-bold text-slate-900 flex items-center gap-2 border-b border-slate-100 pb-2.5">
+              <i data-lucide="shirt" class="w-4 h-4 text-amber-600"></i>
+              <span>Placeholder Konten: Pembuka Mempelai & Dresscode</span>
+            </h3>
+
+            <!-- Pembuka Mempelai -->
+            <div class="space-y-2.5 p-3.5 rounded-xl bg-slate-50 border border-slate-200/80">
+              <span class="text-xs font-bold text-slate-800 block">Pembuka Sebelum Identitas Mempelai</span>
+              <div class="grid grid-cols-1 gap-2">
+                <input type="text" id="master-couple-intro-title" oninput="handleMasterCoupleIntroChange()" placeholder="Judul Pembuka (contoh: Bride & Groom)" class="w-full px-3 py-1.5 rounded-lg border border-slate-300 text-xs font-semibold bg-white">
+                <textarea id="master-couple-intro-text" oninput="handleMasterCoupleIntroChange()" rows="2" placeholder="Kalimat pengantar menuju identitas mempelai..." class="w-full px-3 py-1.5 rounded-lg border border-slate-300 text-xs bg-white leading-relaxed"></textarea>
+              </div>
+            </div>
+
+            <!-- Dresscode Default Tema -->
+            <div class="space-y-2.5 p-3.5 rounded-xl bg-slate-50 border border-slate-200/80">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-slate-800 block">Panduan Dresscode Bawaan Tema</span>
+                <span id="master-dresscode-color-count" class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-900 font-mono">0 / 5 Warna</span>
+              </div>
+              <input type="text" id="master-dresscode-title" oninput="handleMasterDresscodeTextChange()" placeholder="Judul Kartu (Dresscode)" class="w-full px-3 py-1.5 rounded-lg border border-slate-300 text-xs font-semibold bg-white">
+              <textarea id="master-dresscode-note" oninput="handleMasterDresscodeTextChange()" rows="2" placeholder="Teks panduan busana tamu..." class="w-full px-3 py-1.5 rounded-lg border border-slate-300 text-xs bg-white leading-relaxed"></textarea>
+
+              <div class="space-y-2 pt-1">
+                <div class="flex items-center justify-between">
+                  <span class="text-[11px] font-bold text-slate-700">Palet Warna Dresscode (Maks. 5 Warna):</span>
+                  <button 
+                    type="button" 
+                    id="btn-add-master-dresscode-color"
+                    onclick="addMasterDresscodeColor()" 
+                    class="px-2.5 py-1 rounded-xl bg-slate-900 text-white hover:bg-slate-800 font-bold text-[11px] inline-flex items-center gap-1 cursor-pointer transition-colors"
+                  >
+                    <i data-lucide="plus" class="w-3.5 h-3.5 text-amber-400"></i>
+                    <span>Tambah Warna</span>
+                  </button>
+                </div>
+                <div id="master-dresscode-colors-list" class="flex flex-wrap gap-2">
+                  <!-- Injected via JS -->
+                </div>
               </div>
             </div>
           </div>
@@ -1833,6 +1910,11 @@
           },
           cover_frame_shape: defCfg.cover_frame_shape || 'grand_arch',
           cover_frame_ornament: defCfg.cover_frame_ornament || 'floral_wreath',
+          cover_show_frame: defCfg.cover_show_frame !== undefined ? Boolean(defCfg.cover_show_frame) : (defCfg.cover_frame_shape !== 'none'),
+          cover_photo_as_bg: Boolean(defCfg.cover_photo_as_bg),
+          couple_intro_title: defCfg.couple_intro_title || 'Bride & Groom',
+          couple_intro_text: defCfg.couple_intro_text || 'Dengan memohon rahmat dan ridho Allah SWT, perkenankanlah kami mengundang Bapak/Ibu/Saudara/i untuk menghadiri pernikahan putra-putri kami:',
+          dresscode: defCfg.dresscode ? JSON.parse(JSON.stringify(defCfg.dresscode)) : { title: 'Dresscode', note: '', colors: [] },
           frame_shape: defCfg.frame_shape || 'arch',
           particle_effect: defCfg.particle_effect || 'leaves',
           particle_physics: defCfg.particle_physics || 'breeze_right',
@@ -1986,7 +2068,16 @@
       setAssetPreview('section_divider_png', orn.section_divider_png);
       setAssetPreview('card_watermark_png', orn.card_watermark_png);
 
-      // Cover Frame shape, ornament & sample photo
+      // Cover Frame shape, ornament, display toggles & sample photo
+      const showFrame = templateState.config_json?.cover_show_frame !== undefined
+        ? Boolean(templateState.config_json.cover_show_frame)
+        : (templateState.config_json?.cover_frame_shape !== 'none');
+      const photoAsBg = Boolean(templateState.config_json?.cover_photo_as_bg);
+      const toggleShowFrame = document.getElementById('master-toggle-cover-show-frame');
+      if (toggleShowFrame) toggleShowFrame.checked = showFrame;
+      const togglePhotoAsBg = document.getElementById('master-toggle-cover-photo-as-bg');
+      if (togglePhotoAsBg) togglePhotoAsBg.checked = photoAsBg;
+
       document.getElementById('cover-frame-shape-select').value = templateState.config_json?.cover_frame_shape || 'grand_arch';
       document.getElementById('cover-frame-ornament-select').value = templateState.config_json?.cover_frame_ornament || 'floral_wreath';
       setMasterCoverPhotoPreview(templateState.config_json?.default_cover_photo);
@@ -2026,6 +2117,19 @@
 
       document.getElementById('select-card-animation').value = templateState.config_json?.card_animation || 'fade-up';
       document.getElementById('select-person-frame-shape').value = templateState.config_json?.frame_shape || 'arch';
+
+      // Couple Intro & Dresscode Default
+      const introTitleEl = document.getElementById('master-couple-intro-title');
+      const introTextEl = document.getElementById('master-couple-intro-text');
+      if (introTitleEl) introTitleEl.value = templateState.config_json?.couple_intro_title || 'Bride & Groom';
+      if (introTextEl) introTextEl.value = templateState.config_json?.couple_intro_text || 'Dengan memohon rahmat dan ridho Allah SWT, perkenankanlah kami mengundang Bapak/Ibu/Saudara/i untuk menghadiri pernikahan putra-putri kami:';
+
+      const dc = templateState.config_json?.dresscode || { title: 'Dresscode', note: '', colors: [] };
+      const dcTitleEl = document.getElementById('master-dresscode-title');
+      const dcNoteEl = document.getElementById('master-dresscode-note');
+      if (dcTitleEl) dcTitleEl.value = dc.title || 'Dresscode';
+      if (dcNoteEl) dcNoteEl.value = dc.note || '';
+      renderMasterDresscodeColors();
     }
 
     function setColorPicker(key, hex) {
@@ -2675,10 +2779,14 @@
     function handleCoverFrameChange() {
       const shape = document.getElementById('cover-frame-shape-select').value;
       const ornament = document.getElementById('cover-frame-ornament-select').value;
+      const showFrameEl = document.getElementById('master-toggle-cover-show-frame');
+      const photoAsBgEl = document.getElementById('master-toggle-cover-photo-as-bg');
 
       if (!templateState.config_json) templateState.config_json = {};
       templateState.config_json.cover_frame_shape = shape;
       templateState.config_json.cover_frame_ornament = ornament;
+      templateState.config_json.cover_show_frame = showFrameEl ? Boolean(showFrameEl.checked) : (shape !== 'none');
+      templateState.config_json.cover_photo_as_bg = photoAsBgEl ? Boolean(photoAsBgEl.checked) : false;
 
       markAsUnsaved();
       scheduleBroadcast();
@@ -2698,6 +2806,123 @@
       templateState.config_json.card_animation = anim;
       templateState.config_json.frame_shape = frameShape;
 
+      markAsUnsaved();
+      scheduleBroadcast();
+    }
+
+    function handleMasterCoupleIntroChange() {
+      if (!templateState.config_json) templateState.config_json = {};
+      templateState.config_json.couple_intro_title = document.getElementById('master-couple-intro-title')?.value.trim() || 'Bride & Groom';
+      templateState.config_json.couple_intro_text = document.getElementById('master-couple-intro-text')?.value.trim() || '';
+      markAsUnsaved();
+      scheduleBroadcast();
+    }
+
+    function handleMasterDresscodeTextChange() {
+      if (!templateState.config_json) templateState.config_json = {};
+      if (!templateState.config_json.dresscode) templateState.config_json.dresscode = { title: 'Dresscode', note: '', colors: [] };
+      templateState.config_json.dresscode.title = document.getElementById('master-dresscode-title')?.value.trim() || 'Dresscode';
+      templateState.config_json.dresscode.note = document.getElementById('master-dresscode-note')?.value.trim() || '';
+      markAsUnsaved();
+      scheduleBroadcast();
+    }
+
+    function renderMasterDresscodeColors() {
+      const listEl = document.getElementById('master-dresscode-colors-list');
+      const countEl = document.getElementById('master-dresscode-color-count');
+      const addBtn = document.getElementById('btn-add-master-dresscode-color');
+      if (!listEl) return;
+
+      const colors = Array.isArray(templateState.config_json?.dresscode?.colors) ? templateState.config_json.dresscode.colors : [];
+      if (countEl) countEl.textContent = `${colors.length} / 5 Warna`;
+      if (addBtn) {
+        if (colors.length >= 5) {
+          addBtn.disabled = true;
+          addBtn.classList.add('opacity-50', 'cursor-not-allowed');
+        } else {
+          addBtn.disabled = false;
+          addBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+        }
+      }
+
+      if (colors.length === 0) {
+        listEl.innerHTML = `<span class="text-[11px] text-slate-400 italic">Belum ada warna dresscode default. Klik "+ Tambah Warna" untuk menambahkan hingga 5 warna.</span>`;
+        return;
+      }
+
+      listEl.innerHTML = colors.map((hex, idx) => `
+        <div class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-slate-200 bg-white shadow-2xs">
+          <input 
+            type="color" 
+            value="${escapeHtml(hex)}" 
+            oninput="updateMasterDresscodeColor(${idx}, this.value, true)" 
+            class="w-6 h-6 rounded-full border-0 p-0 bg-transparent cursor-pointer"
+            title="Pilih Warna"
+          >
+          <input 
+            type="text" 
+            value="${escapeHtml(hex)}" 
+            maxlength="7"
+            oninput="updateMasterDresscodeColor(${idx}, this.value, false)" 
+            class="w-16 text-[11px] font-mono font-bold text-slate-700 bg-slate-50 px-1.5 py-0.5 rounded border border-slate-200 focus:outline-none focus:ring-1 focus:ring-amber-500 uppercase"
+            placeholder="#B48342"
+          >
+          <button 
+            type="button" 
+            onclick="removeMasterDresscodeColor(${idx})" 
+            class="p-1 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer"
+            title="Hapus Warna"
+          >
+            <i data-lucide="x" class="w-3.5 h-3.5"></i>
+          </button>
+        </div>
+      `).join('');
+
+      if (window.lucide) lucide.createIcons();
+    }
+
+    function addMasterDresscodeColor() {
+      if (!templateState.config_json) templateState.config_json = {};
+      if (!templateState.config_json.dresscode) templateState.config_json.dresscode = { title: 'Dresscode', note: '', colors: [] };
+      if (!Array.isArray(templateState.config_json.dresscode.colors)) templateState.config_json.dresscode.colors = [];
+      if (templateState.config_json.dresscode.colors.length >= 5) {
+        showToast('Maksimal 5 warna dresscode.', 'warning');
+        return;
+      }
+      const defaults = ['#6B8E78', '#E2B170', '#FCFBF9', '#8B5E3C', '#2C352E'];
+      const nextHex = defaults[templateState.config_json.dresscode.colors.length] || '#B48342';
+      templateState.config_json.dresscode.colors.push(nextHex);
+      renderMasterDresscodeColors();
+      markAsUnsaved();
+      scheduleBroadcast();
+    }
+
+    function updateMasterDresscodeColor(idx, val, fromPicker) {
+      if (!templateState.config_json?.dresscode?.colors) return;
+      let clean = (val || '').trim();
+      if (!clean.startsWith('#') && /^[0-9a-fA-F]{6}$/.test(clean)) {
+        clean = '#' + clean;
+      }
+      if (fromPicker || /^#[0-9a-fA-F]{6}$/.test(clean)) {
+        templateState.config_json.dresscode.colors[idx] = clean.toUpperCase();
+        const container = document.getElementById('master-dresscode-colors-list');
+        const row = container?.children?.[idx];
+        if (fromPicker) {
+          const textInput = row?.querySelector('input[type="text"]');
+          if (textInput) textInput.value = clean.toUpperCase();
+        } else {
+          const colorInput = row?.querySelector('input[type="color"]');
+          if (colorInput) colorInput.value = clean;
+        }
+        markAsUnsaved();
+        scheduleBroadcast();
+      }
+    }
+
+    function removeMasterDresscodeColor(idx) {
+      if (!templateState.config_json?.dresscode?.colors) return;
+      templateState.config_json.dresscode.colors.splice(idx, 1);
+      renderMasterDresscodeColors();
       markAsUnsaved();
       scheduleBroadcast();
     }

@@ -861,6 +861,8 @@ class InvitationEngine {
     this.guestName = 'Tamu Kehormatan';
     this.isCoverOpened = false;
     this.isPlayingAudio = false;
+    this.userPausedAudio = false;
+    this.loveStoryScrollBound = false;
     this.audioElement = null;
     this.countdownInterval = null;
     this.particleEngine = null;
@@ -898,6 +900,7 @@ class InvitationEngine {
       this.renderQuotesSection();
       this.renderCountdownSection();
       this.renderEventsSection();
+      this.renderDresscodeSection();
       this.renderLoveStorySection();
       this.renderGallerySection();
       this.renderEnvelopesSection();
@@ -908,6 +911,8 @@ class InvitationEngine {
       this.applyCardAnimations();
       this.initScrollAnimations();
       this.initScrollSpy();
+      this.initLoveStoryScrollProgress();
+      this.initAutoplayMusicOnCover();
 
       // Inisialisasi Lucide Icons
       if (window.lucide) {
@@ -992,13 +997,20 @@ class InvitationEngine {
   }
 
   /**
-   * Terapkan Bentuk Bingkai Foto Mempelai (Arch, Oval Floral, Circle, Octagon)
+   * Terapkan Bentuk Bingkai Foto Mempelai (9 Pilihan Bentuk Besar)
    */
   applyPhotoFrameShape(overrideShape) {
     const tplSlug = this.template?.slug || 'minimalist-sage';
     const tplConfig = this.template?.config_json || {};
     const custom = this.wedding?.custom_theme_json || {};
-    const shape = overrideShape || custom.frame_shape || tplConfig.frame_shape || this.getDefaultFrameShape(tplSlug);
+    const rawShape = overrideShape || custom.frame_shape || 'auto';
+    const shape = (rawShape === 'auto') ? (tplConfig.frame_shape || this.getDefaultFrameShape(tplSlug)) : rawShape;
+
+    const allShapes = [
+      'frame-shape-arch', 'frame-shape-oval', 'frame-shape-circle',
+      'frame-shape-octagon', 'frame-shape-rounded_rect', 'frame-shape-teardrop',
+      'frame-shape-window_pane', 'frame-shape-polaroid', 'frame-shape-hexagon'
+    ];
 
     const groomFrame = document.getElementById('groom-photo-frame');
     const brideFrame = document.getElementById('bride-photo-frame');
@@ -1007,7 +1019,7 @@ class InvitationEngine {
 
     [groomFrame, brideFrame].forEach(frame => {
       if (!frame) return;
-      frame.classList.remove('frame-shape-arch', 'frame-shape-oval', 'frame-shape-circle', 'frame-shape-octagon');
+      frame.classList.remove(...allShapes);
       frame.classList.add(`frame-shape-${shape}`);
     });
 
@@ -1018,7 +1030,7 @@ class InvitationEngine {
       if (shape === 'circle') {
         if (!existingRing) {
           const ring = document.createElement('div');
-          ring.className = 'frame-decorative-ring absolute -inset-2.5 rounded-full border border-dashed border-amber-400/70 pointer-events-none animate-spin-slow';
+          ring.className = 'frame-decorative-ring absolute -inset-3 rounded-full border border-dashed border-amber-400/70 pointer-events-none animate-spin-slow';
           outer.appendChild(ring);
         }
       } else {
@@ -1042,9 +1054,12 @@ class InvitationEngine {
   }
 
   /**
-   * Terapkan Bingkai Foto Pengantin Besar di Sampul Depan (Cover Photo)
+   * Terapkan Bingkai Foto Pengantin Besar & Background Foto di Sampul Depan (Cover Photo)
    */
   applyCoverPhotoAndFrame() {
+    const coverScreen = document.getElementById('cover-screen') || document.getElementById('invitation-cover');
+    const bgPhotoWrap = document.getElementById('cover-bg-photo-wrap');
+    const bgPhotoImg = document.getElementById('cover-bg-photo-img');
     const container = document.getElementById('cover-photo-container');
     const frame = document.getElementById('cover-photo-frame');
     const img = document.getElementById('cover-photo-img');
@@ -1058,7 +1073,29 @@ class InvitationEngine {
     const frameOrnament = custom.cover_frame_ornament || tplConfig.cover_frame_ornament || 'floral_wreath';
     const customFramePng = custom.custom_cover_frame_png || tplConfig.ornaments?.custom_cover_frame_png;
 
-    if (coverPhoto && frameShape !== 'none') {
+    const rawShowFrame = custom.cover_show_frame !== undefined ? custom.cover_show_frame : tplConfig.cover_show_frame;
+    const coverShowFrame = (rawShowFrame !== undefined ? rawShowFrame : (frameShape !== 'none')) && frameShape !== 'none';
+    const coverPhotoAsBg = custom.cover_photo_as_bg !== undefined ? Boolean(custom.cover_photo_as_bg) : Boolean(tplConfig.cover_photo_as_bg);
+
+    // 1. Foto Sampul Sebagai Background Penuh Cover
+    if (bgPhotoWrap && bgPhotoImg && coverScreen) {
+      if (coverPhoto && coverPhotoAsBg) {
+        bgPhotoImg.src = coverPhoto;
+        bgPhotoWrap.classList.remove('hidden');
+        coverScreen.classList.add('cover-has-bg-photo');
+        bgPhotoImg.onerror = () => {
+          bgPhotoWrap.classList.add('hidden');
+          coverScreen.classList.remove('cover-has-bg-photo');
+        };
+      } else {
+        bgPhotoImg.src = '';
+        bgPhotoWrap.classList.add('hidden');
+        coverScreen.classList.remove('cover-has-bg-photo');
+      }
+    }
+
+    // 2. Foto Sampul di Dalam Bingkai Cover (Toggleable & Diperbesar)
+    if (coverPhoto && coverShowFrame) {
       container.classList.remove('hidden');
       img.src = coverPhoto;
       img.onerror = () => {
@@ -1072,10 +1109,10 @@ class InvitationEngine {
         .join(' ');
       frame.classList.add(`cover-frame-${frameShape}`);
 
-      // Atur dimensi frame sesuai rasio bentuk (circle/octagon vs arch/oval/teardrop)
+      // Atur dimensi frame lebih besar sesuai rasio bentuk
       if (frameShape === 'circle_royal' || frameShape === 'octagon_heritage') {
-        frame.style.width = '10rem';
-        frame.style.height = '10rem';
+        frame.style.width = '14.5rem';
+        frame.style.height = '14.5rem';
       } else {
         frame.style.width = '';
         frame.style.height = '';
@@ -1333,7 +1370,7 @@ class InvitationEngine {
   }
 
   /**
-   * Animasi Interaktif Scroll-Reveal (IntersectionObserver)
+   * Animasi Interaktif Scroll-Reveal (IntersectionObserver - Mulai Saat Mendekati Tengah Layar)
    */
   initScrollAnimations() {
     const animatedElements = document.querySelectorAll('[data-animate]');
@@ -1345,13 +1382,13 @@ class InvitationEngine {
 
     this.scrollObserver = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
-        if (entry.isIntersecting) {
+        if (entry.isIntersecting && this.isCoverOpened) {
           entry.target.classList.add('is-revealed');
         }
       });
     }, {
-      threshold: 0.10,
-      rootMargin: '0px 0px -25px 0px'
+      threshold: 0.05,
+      rootMargin: '0px 0px -28% 0px'
     });
 
     animatedElements.forEach(el => this.scrollObserver.observe(el));
@@ -1525,6 +1562,24 @@ class InvitationEngine {
       else resepsiEl.classList.remove('hidden');
     }
 
+    // 3B. Dresscode
+    const dresscodeEl = document.getElementById('section-dresscode');
+    const dresscodeDivider = document.getElementById('divider-after-dresscode');
+    if (dresscodeEl) {
+      const tplCfg = this.template?.config_json || {};
+      const dc = custom.dresscode || tplCfg.dresscode || {};
+      const hasNote = Boolean(dc.note && dc.note.trim() !== '');
+      const hasColors = Array.isArray(dc.colors) && dc.colors.length > 0;
+      const isVisible = sec.show_dresscode !== false && (hasNote || hasColors);
+      if (!isVisible) {
+        dresscodeEl.classList.add('hidden');
+        if (dresscodeDivider) dresscodeDivider.classList.add('hidden');
+      } else {
+        dresscodeEl.classList.remove('hidden');
+        if (dresscodeDivider) dresscodeDivider.classList.remove('hidden');
+      }
+    }
+
     // 4. Kisah Cinta
     const storyEl = document.getElementById('section-love-story');
     if (storyEl) {
@@ -1628,12 +1683,14 @@ class InvitationEngine {
     this.renderQuotesSection();
     this.renderCountdownSection();
     this.renderEventsSection();
+    this.renderDresscodeSection();
     this.renderLoveStorySection();
     this.renderGallerySection();
     this.renderEnvelopesSection();
     this.applySectionVisibility();
 
     this.applyCardAnimations(customTheme.card_animation || tplConfig.card_animation);
+    this.updateLoveStoryScrollProgress();
 
     if (window.lucide) {
       window.lucide.createIcons();
@@ -1977,23 +2034,27 @@ class InvitationEngine {
     document.documentElement.scrollTop = 0;
     document.body.scrollTop = 0;
 
-    // 2. Buka lock scroll html, body & container sepenuhnya secara instan (zero delay)
-    document.documentElement.style.overflow = 'auto';
+    // 2. Buka lock scroll vertikal, kunci rapat geser kanan-kiri (horizontal)
+    document.documentElement.style.overflowX = 'hidden';
+    document.documentElement.style.overflowY = 'auto';
     document.documentElement.style.height = 'auto';
-    document.body.style.overflow = 'auto';
+    document.body.style.overflowX = 'hidden';
+    document.body.style.overflowY = 'auto';
     document.body.style.height = 'auto';
     document.body.classList.remove('overflow-hidden', 'h-screen');
 
     const appContainer = document.getElementById('invitation-app-container');
     if (appContainer) {
       appContainer.classList.remove('overflow-hidden', 'h-screen');
-      appContainer.style.overflow = 'visible';
+      appContainer.style.overflowX = 'clip';
+      appContainer.style.overflowY = 'visible';
       appContainer.style.height = 'auto';
     }
     const content = document.getElementById('invitation-content');
     if (content) {
       content.classList.remove('overflow-hidden', 'h-screen');
-      content.style.overflow = 'visible';
+      content.style.overflowX = 'clip';
+      content.style.overflowY = 'visible';
       content.style.height = 'auto';
     }
 
@@ -2007,7 +2068,7 @@ class InvitationEngine {
       curtainRight.style.opacity = '0';
     }
 
-    // 4. Angkat Sampul Depan ke Atas (transisi 450ms instan tanpa jeda macet)
+    // 4. Angkat Sampul Depan ke Atas
     if (cover) {
       cover.style.transform = 'translateY(-100%)';
       cover.style.opacity = '0';
@@ -2015,7 +2076,7 @@ class InvitationEngine {
       setTimeout(() => {
         cover.style.setProperty('display', 'none', 'important');
         cover.style.setProperty('pointer-events', 'none', 'important');
-      }, 450);
+      }, 650);
     }
 
     // Tampilkan Floating Bottom Dock Navigasi
@@ -2024,15 +2085,54 @@ class InvitationEngine {
       dock.classList.add('opacity-100', 'translate-y-0', 'pointer-events-auto');
     }
 
+    // Aktifkan scroll observer dan hitung progress bar awal
+    this.initScrollAnimations();
+    this.updateLoveStoryScrollProgress();
+
     // Pemicu reveal animasi seksi quote pertama
     setTimeout(() => {
       document.querySelectorAll('#section-quote [data-animate]').forEach(el => {
         el.classList.add('is-revealed');
       });
-    }, 150);
+    }, 180);
 
-    // Putar musik latar
+    // Putar musik latar jika belum diputar dan tidak dimute manual
+    const sec = this.wedding?.custom_theme_json?.sections || {};
+    if (sec.show_music !== false && !this.userPausedAudio && !this.isPlayingAudio) {
+      this.playAudio();
+    }
+  }
+
+  /**
+   * Putar Musik Otomatis Sejak Tamu Masih di Layar Sampul (Cover)
+   */
+  initAutoplayMusicOnCover() {
+    const sec = this.wedding?.custom_theme_json?.sections || {};
+    if (sec.show_music === false) return;
+
+    // Coba langsung memutar audio
     this.playAudio();
+
+    // Backup gesture unlock pada sentuhan/klik pertama di layar cover
+    const unlockAudio = () => {
+      if (this.userPausedAudio || this.isPlayingAudio) {
+        cleanup();
+        return;
+      }
+      const curSec = this.wedding?.custom_theme_json?.sections || {};
+      if (curSec.show_music !== false) {
+        this.playAudio();
+      }
+      cleanup();
+    };
+    const cleanup = () => {
+      document.removeEventListener('pointerdown', unlockAudio);
+      document.removeEventListener('touchstart', unlockAudio);
+      document.removeEventListener('click', unlockAudio);
+    };
+    document.addEventListener('pointerdown', unlockAudio, { passive: true });
+    document.addEventListener('touchstart', unlockAudio, { passive: true });
+    document.addEventListener('click', unlockAudio, { passive: true });
   }
 
   /**
@@ -2110,7 +2210,9 @@ class InvitationEngine {
     if (this.isPlayingAudio) {
       this.audioElement.pause();
       this.isPlayingAudio = false;
+      this.userPausedAudio = true;
     } else {
+      this.userPausedAudio = false;
       if (!this.audioElement.src || this.audioElement.src === 'about:blank') {
         const tplConfig = this.template?.config_json || {};
         let sourceUrl = (this.wedding?.audio_url && this.wedding.audio_url !== 'default') 
@@ -2162,15 +2264,27 @@ class InvitationEngine {
   }
 
   /**
-   * 4. Profil Mempelai Pria & Wanita
+   * 4. Profil Mempelai Pria & Wanita (Beserta Pembuka Bride & Groom)
    */
   renderCoupleSection() {
     const w = this.wedding;
+    const tplConfig = this.template?.config_json || {};
+    const custom = w.custom_theme_json || {};
     const groom = w.groom_nickname || 'Yogi';
     const bride = w.bride_nickname || 'Rina';
 
     const coupleTitle = document.getElementById('main-couple-name');
     if (coupleTitle) coupleTitle.textContent = `${groom} & ${bride}`;
+
+    // Pembuka Identitas Mempelai ("Bride & Groom" + Kalimat Pengantar)
+    const introTitleEl = document.getElementById('couple-intro-title');
+    const introTextEl = document.getElementById('couple-intro-text');
+    if (introTitleEl) {
+      introTitleEl.textContent = custom.couple_intro_title || tplConfig.couple_intro_title || 'Bride & Groom';
+    }
+    if (introTextEl) {
+      introTextEl.textContent = custom.couple_intro_text || tplConfig.couple_intro_text || 'Dengan memohon rahmat dan ridho Allah SWT, perkenankanlah kami mengundang Bapak/Ibu/Saudara/i untuk menghadiri pernikahan putra-putri kami:';
+    }
 
     // Mempelai Pria (CPP)
     const groomName = document.getElementById('groom-name');
@@ -2371,7 +2485,61 @@ class InvitationEngine {
   }
 
   /**
-   * 7. Kisah Cinta & Galeri Prewedding
+   * 6B. Dresscode (Panduan Busana & Palet Warna)
+   */
+  renderDresscodeSection() {
+    const custom = this.wedding?.custom_theme_json || {};
+    const tplConfig = this.template?.config_json || {};
+    const sec = custom.sections || {};
+    const dc = custom.dresscode || tplConfig.dresscode || {};
+
+    const section = document.getElementById('section-dresscode');
+    const divider = document.getElementById('divider-after-dresscode');
+    const titleEl = document.getElementById('dresscode-title');
+    const noteEl = document.getElementById('dresscode-note');
+    const colorsEl = document.getElementById('dresscode-colors-list');
+
+    if (!section) return;
+
+    const noteText = (dc.note || '').trim();
+    const colors = Array.isArray(dc.colors) ? dc.colors.filter(Boolean).slice(0, 5) : [];
+
+    if (sec.show_dresscode === false || (!noteText && colors.length === 0)) {
+      section.classList.add('hidden');
+      if (divider) divider.classList.add('hidden');
+      return;
+    }
+
+    section.classList.remove('hidden');
+    if (divider) divider.classList.remove('hidden');
+
+    if (titleEl) titleEl.textContent = dc.title || 'Dresscode';
+    if (noteEl) {
+      noteEl.textContent = noteText;
+      if (noteText) noteEl.classList.remove('hidden');
+      else noteEl.classList.add('hidden');
+    }
+
+    if (colorsEl) {
+      if (colors.length > 0) {
+        colorsEl.innerHTML = colors.map(col => {
+          const hex = typeof col === 'string' ? col : (col?.hex || '#B48342');
+          return `
+            <div class="flex flex-col items-center gap-1">
+              <div class="w-10 h-10 rounded-full shadow-md border-2 border-white ring-1 ring-stone-300/70 transition-transform duration-300 hover:scale-110" style="background-color: ${escapeHtml(hex)};" title="${escapeHtml(hex)}"></div>
+            </div>
+          `;
+        }).join('');
+        colorsEl.classList.remove('hidden');
+      } else {
+        colorsEl.innerHTML = '';
+        colorsEl.classList.add('hidden');
+      }
+    }
+  }
+
+  /**
+   * 7. Kisah Cinta (Dengan Foto Opsional & Vertical Progress Bar) & Galeri Prewedding
    */
   renderLoveStorySection() {
     const stories = this.wedding.love_story_json;
@@ -2387,12 +2555,69 @@ class InvitationEngine {
 
     section.classList.remove('hidden');
     container.innerHTML = stories.map(s => `
-      <div class="wedding-card theme-card backdrop-blur-md p-4 rounded-2xl border border-stone-200/80 shadow-2xs space-y-1 relative pl-5 border-l-4 border-l-[var(--accent-color,#b48342)]" style="background-color: var(--bg-card); color: var(--text-main);" data-animate="fade-up">
-        <span class="text-[10px] font-bold font-mono text-[var(--accent-color,#b48342)] uppercase tracking-wider">${escapeHtml(s.year || '')}</span>
-        <h4 class="font-serif text-base font-bold text-[var(--text-main)]">${escapeHtml(s.title || '')}</h4>
-        <p class="text-xs text-[var(--text-secondary)] leading-relaxed">${escapeHtml(s.story || '')}</p>
+      <div class="relative">
+        <!-- Titik Node Timeline Kiri -->
+        <span class="story-timeline-dot absolute -left-[22px] sm:-left-[24px] top-5 w-3.5 h-3.5 rounded-full border-2 border-white bg-stone-300 shadow-sm transition-all duration-300 z-10"></span>
+        <div class="wedding-card theme-card backdrop-blur-md p-4 rounded-2xl border border-stone-200/80 shadow-2xs space-y-2 relative" style="background-color: var(--bg-card); color: var(--text-main);" data-animate="fade-up">
+          ${s.photo_url ? `
+            <div class="rounded-xl overflow-hidden aspect-[16/10] bg-stone-100 cursor-pointer border border-stone-200/50" onclick="window.invitationEngine.openLightbox('${s.photo_url}')">
+              <img src="${s.photo_url}" alt="${escapeHtml(s.title || 'Momen')}" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500">
+            </div>
+          ` : ''}
+          <div>
+            <span class="text-[10px] font-bold font-mono text-[var(--accent-color,#b48342)] uppercase tracking-wider block">${escapeHtml(s.year || '')}</span>
+            <h4 class="font-serif text-base font-bold text-[var(--text-main)] mt-0.5">${escapeHtml(s.title || '')}</h4>
+            <p class="text-xs text-[var(--text-secondary)] leading-relaxed mt-1">${escapeHtml(s.story || '')}</p>
+          </div>
+        </div>
       </div>
     `).join('');
+
+    this.updateLoveStoryScrollProgress();
+  }
+
+  initLoveStoryScrollProgress() {
+    if (this.loveStoryScrollBound) return;
+    this.loveStoryScrollBound = true;
+
+    let ticking = false;
+    const onScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          this.updateLoveStoryScrollProgress();
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll, { passive: true });
+  }
+
+  updateLoveStoryScrollProgress() {
+    const wrap = document.getElementById('love-story-timeline-wrap');
+    const bar = document.getElementById('love-story-progress-bar');
+    if (!wrap || !bar) return;
+
+    const rect = wrap.getBoundingClientRect();
+    if (rect.height <= 0) return;
+
+    const triggerY = window.innerHeight * 0.58;
+    const rawPct = ((triggerY - rect.top) / rect.height) * 100;
+    const pct = Math.max(0, Math.min(100, rawPct));
+    bar.style.height = `${pct}%`;
+
+    const dots = wrap.querySelectorAll('.story-timeline-dot');
+    dots.forEach(dot => {
+      const dotRect = dot.getBoundingClientRect();
+      if (dotRect.top <= triggerY) {
+        dot.style.backgroundColor = 'var(--accent-color, #b48342)';
+        dot.style.transform = 'scale(1.25)';
+      } else {
+        dot.style.backgroundColor = '#d6d3d1';
+        dot.style.transform = 'scale(1)';
+      }
+    });
   }
 
   renderGallerySection() {

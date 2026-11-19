@@ -549,6 +549,11 @@
               <option value="oval">🌿 Oval Klasik Vertikal</option>
               <option value="circle">⭕ Lingkaran dengan Cincin Berputar Pelan</option>
               <option value="octagon">👑 Segi Delapan / Royal Keraton</option>
+              <option value="rounded_rect">🖼️ Persegi Panjang Sudut Halus (Editorial)</option>
+              <option value="teardrop">🍃 Kubah Daun Asimetris (Botanical Teardrop)</option>
+              <option value="window_pane">🪟 Jendela Kubah Ganda Klasik (Window Arch)</option>
+              <option value="polaroid">📷 Bingkai Polaroid Klasik</option>
+              <option value="hexagon">💎 Heksagon Geometris Modern</option>
             </select>
           </div>
 
@@ -741,7 +746,32 @@
               </div>
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1 border-t border-stone-100">
+            <!-- Opsi Tampilan Foto Sampul (Bingkai vs Background Cover Penuh) -->
+            <div class="space-y-2.5 pt-2 border-t border-stone-100">
+              <div class="flex items-center justify-between p-2.5 rounded-xl bg-stone-50 border border-stone-200/70">
+                <div>
+                  <span class="text-xs font-bold text-slate-800 block">Aktifkan Bingkai Foto di Cover</span>
+                  <span class="text-[10px] text-slate-500 block">Tampilkan foto mempelai di dalam bingkai sampul depan</span>
+                </div>
+                <label class="relative inline-flex items-center cursor-pointer">
+                  <input type="checkbox" id="toggle-cover-show-frame" onchange="handleCoverShowFrameToggle(this.checked)" checked class="sr-only peer">
+                  <div class="w-9 h-5 bg-stone-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-stone-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-amber-600"></div>
+                </label>
+              </div>
+
+              <div class="flex items-center justify-between p-2.5 rounded-xl bg-stone-50 border border-stone-200/70">
+                <div>
+                  <span class="text-xs font-bold text-slate-800 block">Jadikan Foto sebagai Background Cover</span>
+                  <span class="text-[10px] text-slate-500 block">Menampilkan foto sampul secara penuh di belakang teks cover</span>
+                </div>
+                <label class="relative inline-flex items-center cursor-pointer">
+                  <input type="checkbox" id="toggle-cover-photo-as-bg" onchange="handleCoverPhotoAsBgToggle(this.checked)" class="sr-only peer">
+                  <div class="w-9 h-5 bg-stone-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-stone-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-amber-600"></div>
+                </label>
+              </div>
+            </div>
+
+            <div id="cover-frame-style-row" class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1 border-t border-stone-100">
               <!-- Pilihan Bentuk Bingkai Sampul -->
               <div>
                 <label for="select-cover-frame-shape" class="block text-xs font-bold text-slate-700 mb-1">
@@ -757,7 +787,8 @@
                   <option value="circle_royal">⭕ Circle Royal (Lingkaran Cincin)</option>
                   <option value="octagon_heritage">👑 Octagon Heritage (Segi Delapan Keraton)</option>
                   <option value="teardrop_botanical">🍃 Teardrop Botanical (Kubah Daun Asimetris)</option>
-                  <option value="none">🚫 Sembunyikan Foto di Sampul</option>
+                  <option value="rounded_rect">🖼️ Persegi Panjang Modern (Editorial)</option>
+                  <option value="polaroid">📷 Polaroid Klasik</option>
                 </select>
               </div>
 
@@ -777,6 +808,24 @@
                   <option value="minimal_clean">🍃 Minimalis Bersih (Clean Border)</option>
                 </select>
               </div>
+            </div>
+          </div>
+
+          <!-- 1B. Pembuka Seksi Identitas Mempelai (Bride & Groom Intro) -->
+          <div class="bg-white p-5 rounded-2xl border border-stone-200/90 shadow-2xs space-y-3">
+            <div class="flex items-center justify-between border-b border-stone-100 pb-2">
+              <div class="flex items-center gap-2">
+                <span class="px-2 py-0.5 rounded-md bg-stone-100 text-stone-800 font-bold text-[10px]">PEMBUKA</span>
+                <h4 class="font-serif text-base font-bold text-slate-900">Teks Pengantar Mempelai</h4>
+              </div>
+            </div>
+            <div>
+              <label for="couple-intro-title" class="block text-xs font-bold text-slate-700 mb-1">Judul Pembuka (Sub-judul):</label>
+              <input type="text" id="couple-intro-title" oninput="handleCoupleIntroChange()" placeholder="Bride & Groom" class="w-full px-3 py-2 rounded-xl border border-stone-300 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-amber-500/40">
+            </div>
+            <div>
+              <label for="couple-intro-text" class="block text-xs font-bold text-slate-700 mb-1">Kalimat Pengantar Menuju Identitas Mempelai:</label>
+              <textarea id="couple-intro-text" oninput="handleCoupleIntroChange()" rows="2" placeholder="Dengan memohon rahmat dan ridho Allah SWT, perkenankanlah kami mengundang Bapak/Ibu/Saudara/i untuk menghadiri pernikahan putra-putri kami:" class="w-full px-3 py-2 rounded-xl border border-stone-300 text-xs leading-relaxed focus:outline-none focus:ring-2 focus:ring-amber-500/40"></textarea>
             </div>
           </div>
 
@@ -1065,6 +1114,45 @@
               <input type="url" id="resepsi-maps-url" oninput="broadcastToIframe()" placeholder="https://maps.app.goo.gl/..." class="w-full px-3 py-2 rounded-xl border border-stone-300 text-xs font-mono focus:outline-none focus:ring-2 focus:ring-amber-500/40">
             </div>
           </div>
+
+          <!-- Dresscode (Panduan Busana & Warna Tamu) -->
+          <div class="bg-white p-5 rounded-2xl border border-stone-200/90 shadow-2xs space-y-3.5">
+            <div class="flex items-center justify-between border-b border-stone-100 pb-2">
+              <h4 class="font-bold text-xs text-slate-900 flex items-center gap-1.5">
+                <i data-lucide="shirt" class="w-4 h-4 text-amber-600"></i>
+                <span>Dresscode (Panduan Busana Tamu)</span>
+              </h4>
+              <span id="user-dresscode-color-count" class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-900 font-mono">0 / 5 Warna</span>
+            </div>
+
+            <div>
+              <label for="user-dresscode-title" class="block text-[11px] font-bold text-slate-700 mb-1">Judul Kartu Dresscode</label>
+              <input type="text" id="user-dresscode-title" oninput="handleUserDresscodeTextChange()" placeholder="Dresscode" class="w-full px-3 py-2 rounded-xl border border-stone-300 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-amber-500/40">
+            </div>
+
+            <div>
+              <label for="user-dresscode-note" class="block text-[11px] font-bold text-slate-700 mb-1">Teks / Keterangan Dresscode</label>
+              <textarea id="user-dresscode-note" oninput="handleUserDresscodeTextChange()" rows="2" placeholder="Contoh: Kami sangat senang jika Anda mengenakan busana rapi bernuansa Earth Tone / Sage & Cream." class="w-full px-3 py-2 rounded-xl border border-stone-300 text-xs leading-relaxed focus:outline-none focus:ring-2 focus:ring-amber-500/40"></textarea>
+            </div>
+
+            <div class="space-y-2 pt-1 border-t border-stone-100">
+              <div class="flex items-center justify-between">
+                <span class="text-[11px] font-bold text-slate-700">Palet Warna Dresscode (Maks. 5 Warna):</span>
+                <button 
+                  type="button" 
+                  id="btn-add-user-dresscode-color"
+                  onclick="addUserDresscodeColor()" 
+                  class="px-2.5 py-1 rounded-xl bg-amber-50 text-amber-900 hover:bg-amber-100 font-bold text-[11px] inline-flex items-center gap-1 border border-amber-200 cursor-pointer transition-colors"
+                >
+                  <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+                  <span>Tambah Warna</span>
+                </button>
+              </div>
+              <div id="user-dresscode-colors-list" class="flex flex-wrap gap-2">
+                <!-- Injected via JavaScript -->
+              </div>
+            </div>
+          </div>
         </div>
 
         <!-- =============================================================== -->
@@ -1332,6 +1420,18 @@
               </label>
             </div>
 
+            <!-- 3B. Dresscode -->
+            <div class="flex items-center justify-between py-2 border-b border-stone-100">
+              <div>
+                <span class="text-xs font-bold text-slate-800 block">Tampilkan Panduan Dresscode</span>
+                <span class="text-[11px] text-slate-400 block">Kartu panduan busana dan palet warna untuk tamu</span>
+              </div>
+              <label class="relative inline-flex items-center cursor-pointer">
+                <input type="checkbox" id="toggle-section-dresscode" onchange="handleSectionToggle('show_dresscode', this.checked)" checked class="sr-only peer">
+                <div class="w-9 h-5 bg-stone-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-stone-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-emerald-600"></div>
+              </label>
+            </div>
+
             <!-- 4. Kisah Cinta -->
             <div class="flex items-center justify-between py-2 border-b border-stone-100">
               <div>
@@ -1356,10 +1456,10 @@
               </label>
             </div>
 
-            <!-- 6. Amplop Digital -->
+            <!-- 6. Wedding Gift -->
             <div class="flex items-center justify-between py-2 border-b border-stone-100">
               <div>
-                <span class="text-xs font-bold text-slate-800 block">Tampilkan Amplop Digital & Kado</span>
+                <span class="text-xs font-bold text-slate-800 block">Tampilkan Wedding Gift & Kado</span>
                 <span class="text-[11px] text-slate-400 block">Daftar nomor rekening tanda kasih & alamat kado</span>
               </div>
               <label class="relative inline-flex items-center cursor-pointer">
@@ -1517,9 +1617,19 @@
       custom_ornament_url: null,
       cover_frame_shape: 'grand_arch',
       cover_frame_ornament: 'floral_wreath',
+      cover_show_frame: true,
+      cover_photo_as_bg: false,
       custom_cover_frame_png: null,
+      couple_intro_title: 'Bride & Groom',
+      couple_intro_text: 'Dengan memohon rahmat dan ridho Allah SWT, perkenankanlah kami mengundang Bapak/Ibu/Saudara/i untuk menghadiri pernikahan putra-putri kami:',
+      dresscode: {
+        title: 'Dresscode',
+        note: '',
+        colors: []
+      },
       ornaments: {
-        mode: 'master',
+        mode: 'preset',
+        preset: 'auto',
         corner_master_png: null,
         corner_tl_png: null,
         corner_tr_png: null,
@@ -1541,6 +1651,7 @@
         show_quote: true,
         show_countdown: true,
         show_resepsi: true,
+        show_dresscode: true,
         show_story: true,
         show_gallery: true,
         show_gift: true,
@@ -1779,11 +1890,33 @@
         }
       }
 
-      // Cover Frame Shape & Ornament
+      // Cover Frame Shape, Ornament & Display Toggles
+      const tplCfg = activeTpl?.config_json || {};
+      const showFrameVal = customTheme.cover_show_frame !== undefined
+        ? customTheme.cover_show_frame
+        : (tplCfg.cover_show_frame !== undefined ? tplCfg.cover_show_frame : (customTheme.cover_frame_shape !== 'none'));
+      const photoAsBgVal = customTheme.cover_photo_as_bg !== undefined
+        ? Boolean(customTheme.cover_photo_as_bg)
+        : Boolean(tplCfg.cover_photo_as_bg);
+      customTheme.cover_show_frame = Boolean(showFrameVal);
+      customTheme.cover_photo_as_bg = Boolean(photoAsBgVal);
+
+      const toggleCoverFrameEl = document.getElementById('toggle-cover-show-frame');
+      if (toggleCoverFrameEl) toggleCoverFrameEl.checked = customTheme.cover_show_frame;
+      const toggleCoverBgEl = document.getElementById('toggle-cover-photo-as-bg');
+      if (toggleCoverBgEl) toggleCoverBgEl.checked = customTheme.cover_photo_as_bg;
+      updateCoverFrameStyleVisibility();
+
       const coverFrameShapeEl = document.getElementById('select-cover-frame-shape');
-      if (coverFrameShapeEl) coverFrameShapeEl.value = customTheme.cover_frame_shape || 'grand_arch';
+      if (coverFrameShapeEl) {
+        const shapeVal = customTheme.cover_frame_shape && customTheme.cover_frame_shape !== 'none'
+          ? customTheme.cover_frame_shape
+          : (tplCfg.cover_frame_shape && tplCfg.cover_frame_shape !== 'none' ? tplCfg.cover_frame_shape : 'grand_arch');
+        coverFrameShapeEl.value = shapeVal;
+        customTheme.cover_frame_shape = shapeVal;
+      }
       const coverFrameOrnEl = document.getElementById('select-cover-frame-ornament');
-      if (coverFrameOrnEl) coverFrameOrnEl.value = customTheme.cover_frame_ornament || 'floral_wreath';
+      if (coverFrameOrnEl) coverFrameOrnEl.value = customTheme.cover_frame_ornament || tplCfg.cover_frame_ornament || 'floral_wreath';
 
       // 4. Photos (Cover, Groom, Bride)
       const coverPhotoUrl = w.cover_photo || w.custom_theme_json?.cover_photo || null;
@@ -1791,11 +1924,14 @@
       setPhotoPreview('groom', w.groom_photo);
       setPhotoPreview('bride', w.bride_photo);
 
-      // 5. Couple Identity (CPP & CPW) - Same columns as couple.html
+      // 5. Couple Intro & Identity (CPP & CPW)
       const setValSafe = (id, val) => {
         const el = document.getElementById(id);
         if (el) el.value = val || '';
       };
+      setValSafe('couple-intro-title', customTheme.couple_intro_title || tplCfg.couple_intro_title || 'Bride & Groom');
+      setValSafe('couple-intro-text', customTheme.couple_intro_text || tplCfg.couple_intro_text || 'Dengan memohon rahmat dan ridho Allah SWT, perkenankanlah kami mengundang Bapak/Ibu/Saudara/i untuk menghadiri pernikahan putra-putri kami:');
+
       setValSafe('groom-nickname', w.groom_nickname);
       setValSafe('groom-fullname', w.groom_fullname);
       setValSafe('groom-parents', w.groom_parents);
@@ -1806,7 +1942,7 @@
       setValSafe('bride-parents', w.bride_parents);
       setValSafe('bride-ig', w.bride_ig);
 
-      // 6. Events (Akad & Resepsi)
+      // 6. Events (Akad & Resepsi) & Dresscode
       setValSafe('akad-date', w.akad_date);
       setValSafe('akad-time', w.akad_time);
       setValSafe('akad-venue', w.akad_venue);
@@ -1818,6 +1954,17 @@
       setValSafe('resepsi-venue', w.resepsi_venue);
       setValSafe('resepsi-address', w.resepsi_address);
       setValSafe('resepsi-maps-url', w.resepsi_maps_url);
+
+      if (!customTheme.dresscode || (!customTheme.dresscode.note && (!customTheme.dresscode.colors || customTheme.dresscode.colors.length === 0))) {
+        if (tplCfg.dresscode) {
+          customTheme.dresscode = JSON.parse(JSON.stringify(tplCfg.dresscode));
+        } else if (!customTheme.dresscode) {
+          customTheme.dresscode = { title: 'Dresscode', note: '', colors: [] };
+        }
+      }
+      setValSafe('user-dresscode-title', customTheme.dresscode?.title || 'Dresscode');
+      setValSafe('user-dresscode-note', customTheme.dresscode?.note || '');
+      renderUserDresscodeColors();
 
       // 7. Quotes
       setValSafe('quote-text', w.quote_text);
@@ -1872,6 +2019,7 @@
       setToggleSafe('toggle-section-quote', sec.show_quote);
       setToggleSafe('toggle-section-countdown', sec.show_countdown);
       setToggleSafe('toggle-section-resepsi', sec.show_resepsi);
+      setToggleSafe('toggle-section-dresscode', sec.show_dresscode);
       setToggleSafe('toggle-section-story', sec.show_story);
       setToggleSafe('toggle-section-gallery', sec.show_gallery);
       setToggleSafe('toggle-section-gift', sec.show_gift);
@@ -2138,14 +2286,30 @@
             if (select) select.value = cfg.divider_preset;
           }
           if (cfg.cover_frame_shape) {
-            customTheme.cover_frame_shape = cfg.cover_frame_shape;
+            customTheme.cover_frame_shape = cfg.cover_frame_shape === 'none' ? 'grand_arch' : cfg.cover_frame_shape;
             const el = document.getElementById('select-cover-frame-shape');
-            if (el) el.value = cfg.cover_frame_shape;
+            if (el) el.value = customTheme.cover_frame_shape;
+          }
+          if (cfg.cover_show_frame !== undefined) {
+            customTheme.cover_show_frame = Boolean(cfg.cover_show_frame);
+            const el = document.getElementById('toggle-cover-show-frame');
+            if (el) el.checked = customTheme.cover_show_frame;
+            updateCoverFrameStyleVisibility();
+          }
+          if (cfg.cover_photo_as_bg !== undefined) {
+            customTheme.cover_photo_as_bg = Boolean(cfg.cover_photo_as_bg);
+            const el = document.getElementById('toggle-cover-photo-as-bg');
+            if (el) el.checked = customTheme.cover_photo_as_bg;
           }
           if (cfg.cover_frame_ornament) {
             customTheme.cover_frame_ornament = cfg.cover_frame_ornament;
             const el = document.getElementById('select-cover-frame-ornament');
             if (el) el.value = cfg.cover_frame_ornament;
+          }
+          if (cfg.frame_shape) {
+            customTheme.frame_shape = cfg.frame_shape;
+            const el = document.getElementById('select-frame-shape');
+            if (el) el.value = cfg.frame_shape;
           }
           if (cfg.particle_effect) {
             customTheme.particle_effect = cfg.particle_effect;
@@ -2166,6 +2330,14 @@
             customTheme.card_animation = cfg.card_animation;
             const el = document.getElementById('select-card-animation');
             if (el) el.value = cfg.card_animation;
+          }
+          if (cfg.dresscode && (!customTheme.dresscode?.note && (!customTheme.dresscode?.colors || customTheme.dresscode.colors.length === 0))) {
+            customTheme.dresscode = JSON.parse(JSON.stringify(cfg.dresscode));
+            const tEl = document.getElementById('user-dresscode-title');
+            const nEl = document.getElementById('user-dresscode-note');
+            if (tEl) tEl.value = customTheme.dresscode.title || 'Dresscode';
+            if (nEl) nEl.value = customTheme.dresscode.note || '';
+            renderUserDresscodeColors();
           }
         }
       }
@@ -2263,6 +2435,140 @@
 
     function handleCoverFrameShapeChange(val) {
       customTheme.cover_frame_shape = val;
+      broadcastToIframe();
+    }
+
+    function handleCoverShowFrameToggle(checked) {
+      customTheme.cover_show_frame = Boolean(checked);
+      updateCoverFrameStyleVisibility();
+      broadcastToIframe();
+    }
+
+    function updateCoverFrameStyleVisibility() {
+      const row = document.getElementById('cover-frame-style-row');
+      if (!row) return;
+      if (customTheme.cover_show_frame === false) {
+        row.classList.add('opacity-50', 'pointer-events-none');
+      } else {
+        row.classList.remove('opacity-50', 'pointer-events-none');
+      }
+    }
+
+    function handleCoverPhotoAsBgToggle(checked) {
+      customTheme.cover_photo_as_bg = Boolean(checked);
+      broadcastToIframe();
+    }
+
+    function handleCoupleIntroChange() {
+      customTheme.couple_intro_title = getValSafe('couple-intro-title') || 'Bride & Groom';
+      customTheme.couple_intro_text = getValSafe('couple-intro-text');
+      broadcastToIframe();
+    }
+
+    // Dresscode Builder (Text + Maksimal 5 Warna Manual)
+    function handleUserDresscodeTextChange() {
+      if (!customTheme.dresscode) customTheme.dresscode = { title: 'Dresscode', note: '', colors: [] };
+      customTheme.dresscode.title = getValSafe('user-dresscode-title') || 'Dresscode';
+      customTheme.dresscode.note = getValSafe('user-dresscode-note');
+      broadcastToIframe();
+    }
+
+    function renderUserDresscodeColors() {
+      const listEl = document.getElementById('user-dresscode-colors-list');
+      const countEl = document.getElementById('user-dresscode-color-count');
+      const addBtn = document.getElementById('btn-add-user-dresscode-color');
+      if (!listEl) return;
+
+      const colors = Array.isArray(customTheme.dresscode?.colors) ? customTheme.dresscode.colors : [];
+      if (countEl) countEl.textContent = `${colors.length} / 5 Warna`;
+      if (addBtn) {
+        if (colors.length >= 5) {
+          addBtn.disabled = true;
+          addBtn.classList.add('opacity-50', 'cursor-not-allowed');
+        } else {
+          addBtn.disabled = false;
+          addBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+        }
+      }
+
+      if (colors.length === 0) {
+        listEl.innerHTML = `<span class="text-[11px] text-slate-400 italic">Belum ada warna dresscode. Klik "+ Tambah Warna" untuk menambahkan hingga 5 warna.</span>`;
+        return;
+      }
+
+      listEl.innerHTML = colors.map((hex, idx) => `
+        <div class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-stone-200 bg-stone-50 shadow-2xs">
+          <input 
+            type="color" 
+            value="${escapeHtml(hex)}" 
+            oninput="updateUserDresscodeColor(${idx}, this.value, true)" 
+            class="w-6 h-6 rounded-full border-0 p-0 bg-transparent cursor-pointer"
+            title="Pilih Warna"
+          >
+          <input 
+            type="text" 
+            value="${escapeHtml(hex)}" 
+            maxlength="7"
+            oninput="updateUserDresscodeColor(${idx}, this.value, false)" 
+            class="w-16 text-[11px] font-mono font-bold text-slate-700 bg-white px-1.5 py-0.5 rounded border border-stone-200 focus:outline-none focus:ring-1 focus:ring-amber-500 uppercase"
+            placeholder="#B48342"
+          >
+          <button 
+            type="button" 
+            onclick="removeUserDresscodeColor(${idx})" 
+            class="p-1 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer"
+            title="Hapus Warna"
+          >
+            <i data-lucide="x" class="w-3.5 h-3.5"></i>
+          </button>
+        </div>
+      `).join('');
+
+      if (window.lucide) lucide.createIcons();
+    }
+
+    function addUserDresscodeColor() {
+      if (!customTheme.dresscode) customTheme.dresscode = { title: 'Dresscode', note: '', colors: [] };
+      if (!Array.isArray(customTheme.dresscode.colors)) customTheme.dresscode.colors = [];
+      if (customTheme.dresscode.colors.length >= 5) {
+        showToast('Maksimal 5 warna dresscode yang dapat ditambahkan.', 'warning');
+        return;
+      }
+      const paletteDefaults = ['#6B8E78', '#E2B170', '#FCFBF9', '#8B5E3C', '#2C352E'];
+      const nextColor = paletteDefaults[customTheme.dresscode.colors.length] || '#B48342';
+      customTheme.dresscode.colors.push(nextColor);
+      renderUserDresscodeColors();
+      broadcastToIframe();
+    }
+
+    function updateUserDresscodeColor(idx, val, fromPicker) {
+      if (!customTheme.dresscode?.colors) return;
+      let clean = (val || '').trim();
+      if (!clean.startsWith('#') && /^[0-9a-fA-F]{6}$/.test(clean)) {
+        clean = '#' + clean;
+      }
+      if (fromPicker || /^#[0-9a-fA-F]{6}$/.test(clean)) {
+        customTheme.dresscode.colors[idx] = clean.toUpperCase();
+        // Sync sibling input if triggered from color picker
+        if (fromPicker) {
+          const container = document.getElementById('user-dresscode-colors-list');
+          const row = container?.children?.[idx];
+          const textInput = row?.querySelector('input[type="text"]');
+          if (textInput) textInput.value = clean.toUpperCase();
+        } else {
+          const container = document.getElementById('user-dresscode-colors-list');
+          const row = container?.children?.[idx];
+          const colorInput = row?.querySelector('input[type="color"]');
+          if (colorInput) colorInput.value = clean;
+        }
+        broadcastToIframe();
+      }
+    }
+
+    function removeUserDresscodeColor(idx) {
+      if (!customTheme.dresscode?.colors) return;
+      customTheme.dresscode.colors.splice(idx, 1);
+      renderUserDresscodeColors();
       broadcastToIframe();
     }
 
@@ -2645,7 +2951,7 @@
       }
 
       container.innerHTML = loveStories.map((item, idx) => `
-        <div class="p-3.5 rounded-xl border border-stone-200 bg-stone-50/70 space-y-2">
+        <div class="p-3.5 rounded-xl border border-stone-200 bg-stone-50/70 space-y-2.5">
           <div class="flex items-center gap-2">
             <input 
               type="text" 
@@ -2675,6 +2981,35 @@
             placeholder="Tuliskan kisah manis momen ini..." 
             class="w-full px-2.5 py-1.5 rounded-lg border border-stone-300 text-xs bg-white focus:outline-none leading-relaxed"
           >${escapeHtml(item.story || '')}</textarea>
+          <!-- Foto Opsional per Momen Cerita Cinta -->
+          <div class="flex items-center gap-2.5 pt-1 border-t border-stone-200/60">
+            <div class="w-12 h-12 rounded-lg overflow-hidden bg-stone-200/60 border border-stone-300/70 shrink-0 flex items-center justify-center">
+              ${item.photo_url 
+                ? `<img src="${escapeHtml(item.photo_url)}" alt="Foto Momen" class="w-full h-full object-cover">`
+                : `<i data-lucide="image" class="w-4 h-4 text-stone-400"></i>`
+              }
+            </div>
+            <div class="flex-1 flex flex-wrap items-center gap-1.5">
+              <input type="file" id="story-photo-input-${idx}" accept="image/*" class="hidden" onchange="handleLoveStoryPhotoUpload(event, ${idx})">
+              <button 
+                type="button" 
+                onclick="document.getElementById('story-photo-input-${idx}').click()" 
+                class="px-2.5 py-1 rounded-lg bg-white border border-stone-300 hover:bg-stone-100 text-slate-700 text-[11px] font-bold inline-flex items-center gap-1 cursor-pointer transition-colors"
+              >
+                <i data-lucide="upload" class="w-3 h-3 text-amber-600"></i>
+                <span>${item.photo_url ? 'Ganti Foto Momen' : 'Tambah Foto Momen'}</span>
+              </button>
+              ${item.photo_url ? `
+                <button 
+                  type="button" 
+                  onclick="removeLoveStoryPhoto(${idx})" 
+                  class="px-2 py-1 rounded-lg text-rose-600 hover:bg-rose-50 text-[11px] font-bold cursor-pointer transition-colors"
+                >
+                  Hapus Foto
+                </button>
+              ` : ''}
+            </div>
+          </div>
         </div>
       `).join('');
 
@@ -2682,7 +3017,33 @@
     }
 
     function addLoveStoryItem() {
-      loveStories.push({ year: '', title: '', story: '' });
+      loveStories.push({ year: '', title: '', story: '', photo_url: '' });
+      renderLoveStory();
+      broadcastToIframe();
+    }
+
+    async function handleLoveStoryPhotoUpload(event, idx) {
+      const file = event.target.files?.[0];
+      if (!file || !loveStories[idx]) return;
+
+      showToast('Mengompresi & mengunggah foto momen...', 'info');
+      try {
+        const res = await uploadWeddingImage(file, 'story', 850, 0.78);
+        loveStories[idx].photo_url = res.url;
+        renderLoveStory();
+        broadcastToIframe();
+        showToast('✓ Foto momen perjalanan cinta ditambahkan!', 'success');
+      } catch (err) {
+        console.error('Upload story photo error:', err);
+        showToast('Gagal mengunggah foto momen: ' + err.message, 'error');
+      } finally {
+        event.target.value = '';
+      }
+    }
+
+    function removeLoveStoryPhoto(idx) {
+      if (!loveStories[idx]) return;
+      loveStories[idx].photo_url = '';
       renderLoveStory();
       broadcastToIframe();
     }
