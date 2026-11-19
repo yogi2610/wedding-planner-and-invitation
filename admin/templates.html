@@ -1074,6 +1074,29 @@
                     <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-amber-600"></div>
                   </label>
                 </div>
+
+                <!-- Pengaturan Dim Level Background Cover Default -->
+                <div id="master-cover-bg-dim-control" class="hidden p-3 rounded-xl bg-amber-50/70 border border-amber-200/70 space-y-1.5">
+                  <div class="flex items-center justify-between text-[11px] font-bold text-slate-800">
+                    <span>Tingkat Kegelapan (Dim Level) Foto Background Cover:</span>
+                    <span id="label-master-cover-bg-dim" class="text-amber-700 font-mono">45%</span>
+                  </div>
+                  <input 
+                    type="range" 
+                    id="slider-master-cover-bg-dim" 
+                    min="0" 
+                    max="85" 
+                    step="5" 
+                    value="45" 
+                    oninput="handleMasterCoverBgDimChange(this.value)" 
+                    class="w-full accent-amber-600 cursor-pointer"
+                  >
+                  <div class="flex justify-between text-[9px] text-slate-500 font-mono">
+                    <span>0% (Terang Jelas)</span>
+                    <span>45% (Seimbang)</span>
+                    <span>85% (Gelap Elegan)</span>
+                  </div>
+                </div>
               </div>
 
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -1912,6 +1935,7 @@
           cover_frame_ornament: defCfg.cover_frame_ornament || 'floral_wreath',
           cover_show_frame: defCfg.cover_show_frame !== undefined ? Boolean(defCfg.cover_show_frame) : (defCfg.cover_frame_shape !== 'none'),
           cover_photo_as_bg: Boolean(defCfg.cover_photo_as_bg),
+          cover_bg_dim: defCfg.cover_bg_dim !== undefined ? Number(defCfg.cover_bg_dim) : 45,
           couple_intro_title: defCfg.couple_intro_title || 'Bride & Groom',
           couple_intro_text: defCfg.couple_intro_text || 'Dengan memohon rahmat dan ridho Allah SWT, perkenankanlah kami mengundang Bapak/Ibu/Saudara/i untuk menghadiri pernikahan putra-putri kami:',
           dresscode: defCfg.dresscode ? JSON.parse(JSON.stringify(defCfg.dresscode)) : { title: 'Dresscode', note: '', colors: [] },
@@ -2077,6 +2101,17 @@
       if (toggleShowFrame) toggleShowFrame.checked = showFrame;
       const togglePhotoAsBg = document.getElementById('master-toggle-cover-photo-as-bg');
       if (togglePhotoAsBg) togglePhotoAsBg.checked = photoAsBg;
+
+      const bgDimVal = templateState.config_json?.cover_bg_dim !== undefined ? Number(templateState.config_json.cover_bg_dim) : 45;
+      const dimSlider = document.getElementById('slider-master-cover-bg-dim');
+      const dimLabel = document.getElementById('label-master-cover-bg-dim');
+      if (dimSlider) dimSlider.value = bgDimVal;
+      if (dimLabel) dimLabel.textContent = `${bgDimVal}%`;
+      const dimCtrl = document.getElementById('master-cover-bg-dim-control');
+      if (dimCtrl) {
+        if (photoAsBg) dimCtrl.classList.remove('hidden');
+        else dimCtrl.classList.add('hidden');
+      }
 
       document.getElementById('cover-frame-shape-select').value = templateState.config_json?.cover_frame_shape || 'grand_arch';
       document.getElementById('cover-frame-ornament-select').value = templateState.config_json?.cover_frame_ornament || 'floral_wreath';
@@ -2788,6 +2823,23 @@
       templateState.config_json.cover_show_frame = showFrameEl ? Boolean(showFrameEl.checked) : (shape !== 'none');
       templateState.config_json.cover_photo_as_bg = photoAsBgEl ? Boolean(photoAsBgEl.checked) : false;
 
+      const dimCtrl = document.getElementById('master-cover-bg-dim-control');
+      if (dimCtrl) {
+        if (templateState.config_json.cover_photo_as_bg) dimCtrl.classList.remove('hidden');
+        else dimCtrl.classList.add('hidden');
+      }
+
+      markAsUnsaved();
+      scheduleBroadcast();
+    }
+
+    function handleMasterCoverBgDimChange(val) {
+      const num = parseInt(val, 10);
+      const safeVal = isNaN(num) ? 45 : Math.max(0, Math.min(85, num));
+      if (!templateState.config_json) templateState.config_json = {};
+      templateState.config_json.cover_bg_dim = safeVal;
+      const lbl = document.getElementById('label-master-cover-bg-dim');
+      if (lbl) lbl.textContent = `${safeVal}%`;
       markAsUnsaved();
       scheduleBroadcast();
     }

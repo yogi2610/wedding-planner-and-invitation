@@ -875,9 +875,9 @@ class InvitationEngine {
    */
   async init() {
     try {
-      // Kunci scroll body & container saat cover masih tertutup
-      document.body.classList.add('overflow-hidden');
-      document.getElementById('invitation-app-container')?.classList.add('overflow-hidden');
+      // Kunci scroll root saat cover masih tertutup tanpa membuat double scroll container
+      document.documentElement.classList.add('cover-locked');
+      document.body.classList.add('cover-locked');
 
       this.extractParams();
       this.initAudioController();
@@ -1076,13 +1076,27 @@ class InvitationEngine {
     const rawShowFrame = custom.cover_show_frame !== undefined ? custom.cover_show_frame : tplConfig.cover_show_frame;
     const coverShowFrame = (rawShowFrame !== undefined ? rawShowFrame : (frameShape !== 'none')) && frameShape !== 'none';
     const coverPhotoAsBg = custom.cover_photo_as_bg !== undefined ? Boolean(custom.cover_photo_as_bg) : Boolean(tplConfig.cover_photo_as_bg);
+    const rawDim = custom.cover_bg_dim !== undefined ? custom.cover_bg_dim : (tplConfig.cover_bg_dim !== undefined ? tplConfig.cover_bg_dim : 45);
+    const dimLevel = Math.max(0, Math.min(85, Number(rawDim) || 0));
+    const bgOverlayEl = document.getElementById('cover-bg-photo-overlay');
 
-    // 1. Foto Sampul Sebagai Background Penuh Cover
+    // 1. Foto Sampul Sebagai Background Penuh Cover + Dim Level (0-85%)
     if (bgPhotoWrap && bgPhotoImg && coverScreen) {
       if (coverPhoto && coverPhotoAsBg) {
         bgPhotoImg.src = coverPhoto;
         bgPhotoWrap.classList.remove('hidden');
         coverScreen.classList.add('cover-has-bg-photo');
+
+        if (bgOverlayEl) {
+          if (dimLevel <= 0) {
+            bgOverlayEl.style.background = 'rgba(0, 0, 0, 0)';
+          } else {
+            const baseAlpha = (dimLevel / 100).toFixed(2);
+            const edgeAlpha = Math.min(0.92, (dimLevel + 15) / 100).toFixed(2);
+            bgOverlayEl.style.background = `linear-gradient(to bottom, rgba(0,0,0,${edgeAlpha}), rgba(0,0,0,${baseAlpha}), rgba(0,0,0,${edgeAlpha}))`;
+          }
+        }
+
         bgPhotoImg.onerror = () => {
           bgPhotoWrap.classList.add('hidden');
           coverScreen.classList.remove('cover-has-bg-photo');
@@ -1480,15 +1494,19 @@ class InvitationEngine {
     const dock = document.getElementById('bottom-dock');
 
     // Kunci kembali scroll saat cover ditutup
-    document.documentElement.style.overflow = 'hidden';
-    document.documentElement.style.height = '100%';
-    document.body.style.overflow = 'hidden';
-    document.body.style.height = '100%';
-    document.body.classList.add('overflow-hidden', 'h-screen');
+    document.documentElement.style.overflowX = '';
+    document.documentElement.style.overflowY = '';
+    document.documentElement.style.height = '';
+    document.body.style.overflowX = '';
+    document.body.style.overflowY = '';
+    document.body.style.height = '';
+    document.documentElement.classList.add('cover-locked');
+    document.body.classList.add('cover-locked');
 
     const appContainer = document.getElementById('invitation-app-container');
     if (appContainer) {
-      appContainer.classList.add('overflow-hidden');
+      appContainer.style.overflowX = 'clip';
+      appContainer.style.overflowY = 'visible';
     }
 
     if (cover) {
@@ -1710,8 +1728,23 @@ class InvitationEngine {
     const urlParams = new URLSearchParams(window.location.search);
     const isAdminTemplatePreview = urlParams.get('admin_template_preview') === 'true';
 
-    // 0. Simulasi Data Undangan Lengkap Khusus Master Template Builder Studio Admin
+    // 0. Simulasi Data Undangan Lengkap Khusus Master Template Builder Studio Admin & Katalog Landing Page
     if (isAdminTemplatePreview) {
+      const tplId = urlParams.get('tpl_id');
+      const tplSlug = urlParams.get('tpl_slug');
+      if (tplId || tplSlug) {
+        try {
+          let query = client.from('templates').select('*');
+          if (tplId) query = query.eq('id', tplId);
+          else query = query.eq('slug', tplSlug);
+          const { data: tpl } = await query.maybeSingle();
+          if (tpl) this.template = tpl;
+        } catch (e) {
+          console.warn('Gagal memuat template awal admin preview:', e);
+        }
+      }
+
+      const tplCfg = this.template?.config_json || {};
       this.wedding = {
         id: 'admin-preview-sim',
         slug: 'admin-preview',
@@ -1725,7 +1758,7 @@ class InvitationEngine {
         bride_ig: 'aninditakirana',
         groom_photo: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&auto=format&fit=crop&q=80',
         bride_photo: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=600&auto=format&fit=crop&q=80',
-        cover_photo: 'https://images.unsplash.com/photo-1519741497674-611481863552?w=800&auto=format&fit=crop&q=80',
+        cover_photo: tplCfg.default_cover_photo || 'https://images.unsplash.com/photo-1519741497674-611481863552?w=800&auto=format&fit=crop&q=80',
         akad_date: '2027-10-24',
         akad_time: '08:00 - 10:00 WIB',
         akad_venue: 'Masjid Agung Al-Azhar',
@@ -1745,7 +1778,7 @@ class InvitationEngine {
           'https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?w=600&auto=format&fit=crop&q=80'
         ],
         love_story_json: [
-          { year: '2021', title: 'Pertama Bertemu', story: 'Berawal dari pertemuan tidak sengaja di sebuah seminar nasional di Bandung.' },
+          { year: '2021', title: 'Pertama Bertemu', story: 'Berawal dari pertemuan tidak sengaja di sebuah seminar nasional di Bandung.', photo_url: 'https://images.unsplash.com/photo-1522673607200-164d1b6ce486?w=700&auto=format&fit=crop&q=80' },
           { year: '2024', title: 'Lamaran Khidmat', story: 'Dengan restu kedua orang tua, kami mengikat janji untuk melangkah bersama ke pelaminan.' }
         ],
         envelopes_json: [
@@ -1756,20 +1789,6 @@ class InvitationEngine {
         is_published: true
       };
       this.guestName = 'Bapak Joko Susanto & Partner';
-
-      const tplId = urlParams.get('tpl_id');
-      const tplSlug = urlParams.get('tpl_slug');
-      if (tplId || tplSlug) {
-        try {
-          let query = client.from('templates').select('*');
-          if (tplId) query = query.eq('id', tplId);
-          else query = query.eq('slug', tplSlug);
-          const { data: tpl } = await query.maybeSingle();
-          if (tpl) this.template = tpl;
-        } catch (e) {
-          console.warn('Gagal memuat template awal admin preview:', e);
-        }
-      }
       return true;
     }
 
@@ -2034,14 +2053,15 @@ class InvitationEngine {
     document.documentElement.scrollTop = 0;
     document.body.scrollTop = 0;
 
-    // 2. Buka lock scroll vertikal, kunci rapat geser kanan-kiri (horizontal)
-    document.documentElement.style.overflowX = 'hidden';
-    document.documentElement.style.overflowY = 'auto';
+    // 2. Buka lock scroll root secara tunggal dan seamless (zero nested scroll container)
+    document.documentElement.classList.remove('cover-locked');
+    document.body.classList.remove('cover-locked', 'overflow-hidden', 'h-screen');
+    document.documentElement.style.overflowX = 'clip';
+    document.documentElement.style.overflowY = 'visible';
     document.documentElement.style.height = 'auto';
-    document.body.style.overflowX = 'hidden';
-    document.body.style.overflowY = 'auto';
+    document.body.style.overflowX = 'clip';
+    document.body.style.overflowY = 'visible';
     document.body.style.height = 'auto';
-    document.body.classList.remove('overflow-hidden', 'h-screen');
 
     const appContainer = document.getElementById('invitation-app-container');
     if (appContainer) {
@@ -2068,15 +2088,17 @@ class InvitationEngine {
       curtainRight.style.opacity = '0';
     }
 
-    // 4. Angkat Sampul Depan ke Atas
+    // 4. Angkat Sampul Depan ke Atas dengan Halus (1250ms smooth transition)
     if (cover) {
-      cover.style.transform = 'translateY(-100%)';
+      cover.style.transform = 'translate3d(0, -100%, 0)';
       cover.style.opacity = '0';
       cover.style.pointerEvents = 'none';
       setTimeout(() => {
-        cover.style.setProperty('display', 'none', 'important');
-        cover.style.setProperty('pointer-events', 'none', 'important');
-      }, 650);
+        if (this.isCoverOpened) {
+          cover.style.setProperty('display', 'none', 'important');
+          cover.style.setProperty('pointer-events', 'none', 'important');
+        }
+      }, 1300);
     }
 
     // Tampilkan Floating Bottom Dock Navigasi
@@ -2089,12 +2111,12 @@ class InvitationEngine {
     this.initScrollAnimations();
     this.updateLoveStoryScrollProgress();
 
-    // Pemicu reveal animasi seksi quote pertama
+    // Pemicu reveal animasi seksi quote pertama secara halus saat sampul terangkat
     setTimeout(() => {
       document.querySelectorAll('#section-quote [data-animate]').forEach(el => {
         el.classList.add('is-revealed');
       });
-    }, 180);
+    }, 450);
 
     // Putar musik latar jika belum diputar dan tidak dimute manual
     const sec = this.wedding?.custom_theme_json?.sections || {};
@@ -2110,29 +2132,40 @@ class InvitationEngine {
     const sec = this.wedding?.custom_theme_json?.sections || {};
     if (sec.show_music === false) return;
 
-    // Coba langsung memutar audio
+    // Coba langsung memutar audio (berhasil pada browser/tab yang mengizinkan autoplay)
     this.playAudio();
 
-    // Backup gesture unlock pada sentuhan/klik pertama di layar cover
-    const unlockAudio = () => {
+    const cleanup = () => {
+      document.removeEventListener('touchend', unlockAudio);
+      document.removeEventListener('click', unlockAudio);
+      document.removeEventListener('pointerup', unlockAudio);
+      document.removeEventListener('keydown', unlockAudio);
+    };
+
+    // Jika diblokir kebijakan autoplay, langsung aktifkan pada sentuhan/ketukan pertama di cover
+    const unlockAudio = async (e) => {
+      if (e && e.target && e.target.closest && e.target.closest('#audio-control')) {
+        return;
+      }
       if (this.userPausedAudio || this.isPlayingAudio) {
         cleanup();
         return;
       }
       const curSec = this.wedding?.custom_theme_json?.sections || {};
-      if (curSec.show_music !== false) {
-        this.playAudio();
+      if (curSec.show_music === false) {
+        cleanup();
+        return;
       }
-      cleanup();
+      const started = await this.playAudio();
+      if (started) {
+        cleanup();
+      }
     };
-    const cleanup = () => {
-      document.removeEventListener('pointerdown', unlockAudio);
-      document.removeEventListener('touchstart', unlockAudio);
-      document.removeEventListener('click', unlockAudio);
-    };
-    document.addEventListener('pointerdown', unlockAudio, { passive: true });
-    document.addEventListener('touchstart', unlockAudio, { passive: true });
+
+    document.addEventListener('touchend', unlockAudio, { passive: true });
     document.addEventListener('click', unlockAudio, { passive: true });
+    document.addEventListener('pointerup', unlockAudio, { passive: true });
+    document.addEventListener('keydown', unlockAudio, { passive: true });
   }
 
   /**
@@ -2174,8 +2207,8 @@ class InvitationEngine {
     }
   }
 
-  playAudio() {
-    if (!this.audioElement) return;
+  async playAudio() {
+    if (!this.audioElement) return false;
     
     const tplConfig = this.template?.config_json || {};
     let sourceUrl = (this.wedding?.audio_url && this.wedding.audio_url !== 'default') 
@@ -2191,16 +2224,19 @@ class InvitationEngine {
       this.audioElement.load();
     }
 
-    const playPromise = this.audioElement.play();
-    if (playPromise !== undefined) {
-      playPromise.then(() => {
-        this.isPlayingAudio = true;
-        this.updateAudioButtonState();
-      }).catch(e => {
-        console.warn('Autoplay audio blocked by browser policy:', e);
-        this.isPlayingAudio = false;
-        this.updateAudioButtonState();
-      });
+    try {
+      const playPromise = this.audioElement.play();
+      if (playPromise !== undefined) {
+        await playPromise;
+      }
+      this.isPlayingAudio = true;
+      this.updateAudioButtonState();
+      return true;
+    } catch (e) {
+      console.warn('Autoplay audio menunggu sentuhan user:', e);
+      this.isPlayingAudio = false;
+      this.updateAudioButtonState();
+      return false;
     }
   }
 

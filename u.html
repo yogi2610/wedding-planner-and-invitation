@@ -66,9 +66,16 @@
     }
 
     html, body {
-      overflow-x: hidden !important;
+      overflow-x: clip !important;
       max-width: 100vw !important;
       overscroll-behavior-x: none;
+      touch-action: pan-y;
+    }
+
+    html.cover-locked, body.cover-locked {
+      overflow: hidden !important;
+      height: 100dvh !important;
+      max-height: 100dvh !important;
     }
 
     body, #invitation-app-container {
@@ -80,7 +87,8 @@
       width: 100%;
       max-width: 28rem;
       overflow-x: clip !important;
-      touch-action: pan-y pinch-zoom;
+      overflow-y: visible;
+      box-sizing: border-box;
     }
 
     .font-serif, h1, h2, h3, .wedding-heading, #cover-couple-name, #main-couple-name, #groom-name, #bride-name, .text-main-color {
@@ -409,24 +417,34 @@
       margin-right: auto;
       width: 100%;
       max-width: 28rem;
-      height: 100%;
+      height: 100dvh;
       min-height: 100dvh;
+      box-sizing: border-box;
       z-index: 60 !important;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
       overflow-y: auto;
       overflow-x: hidden;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
       background-color: var(--bg-main, #FCFBF9);
       color: var(--text-main, #2C352E);
-      transition: transform 0.75s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.65s ease;
+      transition: transform 1.25s cubic-bezier(0.22, 1, 0.36, 1), opacity 1.05s cubic-bezier(0.22, 1, 0.36, 1);
+      will-change: transform, opacity;
+    }
+    #cover-screen::-webkit-scrollbar {
+      display: none;
     }
     #cover-screen.cover-has-bg-photo #cover-couple-name,
     #cover-screen.cover-has-bg-photo #cover-wedding-date,
     #cover-screen.cover-has-bg-photo .cover-top-label,
     #cover-screen.cover-has-bg-photo .cover-bottom-brand {
       color: #FFFFFF !important;
-      text-shadow: 0 2px 14px rgba(0, 0, 0, 0.55);
+      text-shadow: 0 2px 14px rgba(0, 0, 0, 0.65);
+    }
+    #cover-screen.cover-has-bg-photo #cover-bottom-group {
+      margin-top: auto;
     }
 
     /* Cover Frame Shapes */
@@ -645,11 +663,11 @@
     .cover-curtain {
       pointer-events: none;
       z-index: 12;
-      transition: transform 0.85s cubic-bezier(0.77, 0, 0.175, 1), opacity 0.75s ease;
+      transition: transform 1.15s cubic-bezier(0.22, 1, 0.36, 1), opacity 1s ease;
     }
   </style>
 </head>
-<body class="bg-[#141210] text-slate-800 antialiased min-h-screen flex justify-center selection:bg-amber-100 selection:text-amber-900 overflow-hidden h-screen">
+<body class="bg-[#141210] text-slate-800 antialiased min-h-screen selection:bg-amber-100 selection:text-amber-900 cover-locked">
 
   <!-- Desktop Ambient Background Elements -->
   <div class="fixed inset-0 pointer-events-none hidden lg:flex items-center justify-between px-16 text-stone-700/30">
@@ -668,7 +686,7 @@
   </div>
 
   <!-- MOBILE-FIRST CENTERED APP CONTAINER -->
-  <div id="invitation-app-container" class="w-full max-w-md min-h-screen h-auto bg-[var(--bg-main,#FCFBF9)] text-[var(--text-main,#2C352E)] shadow-2xl relative flex flex-col overflow-visible mx-auto">
+  <div id="invitation-app-container" class="w-full max-w-md min-h-screen h-auto bg-[var(--bg-main,#FCFBF9)] text-[var(--text-main,#2C352E)] shadow-2xl relative flex flex-col mx-auto">
 
     <!-- Dynamic Ambient Background: Lava Lamp Blobs / Custom Background Image / Video Animation (MP4 & WebM) -->
     <div id="invitation-bg-container" class="fixed inset-0 pointer-events-none z-0 overflow-hidden max-w-md mx-auto">
@@ -704,26 +722,29 @@
     </div>
 
     <!-- 1. FULL-SCREEN COVER OVERLAY (SAMPUL DEPAN) -->
-    <div id="cover-screen" data-id="invitation-cover" class="p-5 sm:p-7 text-center transition-all duration-700">
+    <div id="cover-screen" data-id="invitation-cover" class="p-5 sm:p-6 text-center">
       
       <!-- Optional Fullscreen Cover Background Photo Layer -->
-      <div id="cover-bg-photo-wrap" class="absolute inset-0 z-[5] hidden pointer-events-none">
+      <div id="cover-bg-photo-wrap" class="absolute inset-0 z-[5] hidden pointer-events-none overflow-hidden">
         <img id="cover-bg-photo-img" src="" alt="Background Sampul" class="w-full h-full object-cover">
-        <div id="cover-bg-photo-overlay" class="absolute inset-0 bg-gradient-to-b from-black/60 via-black/35 to-black/75"></div>
+        <div id="cover-bg-photo-overlay" class="absolute inset-0 transition-all duration-300" style="background: rgba(0,0,0,0.45);"></div>
       </div>
 
-      <!-- 4 Corner Slots on Cover -->
-      <div id="cover-ornament-tl" class="corner-slot absolute top-0 left-0"></div>
-      <div id="cover-ornament-tr" class="corner-slot absolute top-0 right-0"></div>
-      <div id="cover-ornament-bl" class="corner-slot absolute bottom-0 left-0"></div>
-      <div id="cover-ornament-br" class="corner-slot absolute bottom-0 right-0"></div>
+      <!-- Clipping Wrapper untuk Ornamen Sudut & Tirai Cover (Mencegah jitter tepi kanan/bawah) -->
+      <div id="cover-decor-clip" class="absolute inset-0 overflow-hidden pointer-events-none z-[15]">
+        <!-- 4 Corner Slots on Cover -->
+        <div id="cover-ornament-tl" class="corner-slot absolute top-0 left-0"></div>
+        <div id="cover-ornament-tr" class="corner-slot absolute top-0 right-0"></div>
+        <div id="cover-ornament-bl" class="corner-slot absolute bottom-0 left-0"></div>
+        <div id="cover-ornament-br" class="corner-slot absolute bottom-0 right-0"></div>
 
-      <!-- Twin Curtain Silhouettes (Gunungan Wayang / Gate Curtains) -->
-      <div id="cover-curtain-left" class="cover-curtain absolute inset-y-0 left-0 w-1/2 flex items-center justify-end pr-0.5 opacity-90"></div>
-      <div id="cover-curtain-right" class="cover-curtain absolute inset-y-0 right-0 w-1/2 flex items-center justify-start pl-0.5 opacity-90"></div>
+        <!-- Twin Curtain Silhouettes (Gunungan Wayang / Gate Curtains) -->
+        <div id="cover-curtain-left" class="cover-curtain absolute inset-y-0 left-0 w-1/2 flex items-center justify-end pr-0.5 opacity-90"></div>
+        <div id="cover-curtain-right" class="cover-curtain absolute inset-y-0 right-0 w-1/2 flex items-center justify-start pl-0.5 opacity-90"></div>
+      </div>
 
       <!-- Top Floral / Modern Motif -->
-      <div class="pt-4 sm:pt-6 space-y-1.5 relative z-20">
+      <div class="pt-3 sm:pt-5 space-y-1.5 relative z-20 shrink-0">
         <div id="cover-header-ornament" class="mx-auto flex items-center justify-center pointer-events-none empty:hidden mb-1"></div>
         <span class="cover-top-label text-[10px] uppercase tracking-[0.3em] text-[var(--accent-color,#b48342)] font-semibold block">The Wedding Of</span>
         <h1 class="font-serif text-3xl sm:text-4xl font-bold tracking-tight text-[var(--text-main,#2C352E)] leading-tight" id="cover-couple-name">
@@ -735,7 +756,7 @@
       </div>
 
       <!-- Grand Cover Photo Frame (Diperbesar agar lebih proporsional di layar HP) -->
-      <div id="cover-photo-container" class="relative my-2 sm:my-3 z-20 flex flex-col items-center justify-center w-full max-w-[270px] sm:max-w-[300px] mx-auto transition-all duration-500 hidden">
+      <div id="cover-photo-container" class="relative my-2 sm:my-3 z-20 flex flex-col items-center justify-center w-full max-w-[270px] sm:max-w-[300px] mx-auto transition-all duration-500 hidden shrink-0">
         <div id="cover-frame-outer" class="relative flex items-center justify-center">
           <!-- Frame Ornament Overlay (Custom PNG or Preset Ornament) -->
           <div id="cover-frame-ornament-el" class="pointer-events-none absolute -inset-4 z-20 flex items-center justify-center"></div>
@@ -747,29 +768,32 @@
         </div>
       </div>
 
-      <!-- Dear Guest Box -->
-      <div class="wedding-card theme-card w-full p-5 rounded-3xl border border-stone-200/80 backdrop-blur-md shadow-xl space-y-2.5 relative z-20" style="background-color: var(--bg-card); color: var(--text-main);">
-        <span class="text-[11px] text-[var(--text-secondary)] block">Kepada Yth. Bapak/Ibu/Saudara/i:</span>
-        <h3 class="font-serif text-2xl font-bold text-[var(--text-main,#2C352E)] tracking-wide" id="cover-guest-name">
-          Tamu Kehormatan
-        </h3>
-        <p class="text-[11px] text-[var(--text-secondary)] leading-relaxed">
-          Tanpa mengurangi rasa hormat, kami mengundang Anda untuk hadir dan memberikan doa restu pada hari pernikahan kami.
-        </p>
-        
-        <button 
-          id="btn-open-invitation"
-          type="button"
-          class="w-full py-3 px-6 rounded-full gold-gradient-bg text-slate-950 font-bold text-xs tracking-wide shadow-lg hover:opacity-95 transition-all flex items-center justify-center gap-2 cursor-pointer mt-2"
-        >
-          <i data-lucide="mail-open" class="w-4 h-4 text-slate-950"></i>
-          <span>Buka Undangan</span>
-        </button>
-      </div>
+      <!-- Bottom Group: Dear Guest Box + Branding (Merapat ke bawah saat background photo aktif) -->
+      <div id="cover-bottom-group" class="w-full space-y-2.5 relative z-20 shrink-0">
+        <!-- Dear Guest Box -->
+        <div class="wedding-card theme-card w-full p-4 sm:p-5 rounded-3xl border border-stone-200/80 backdrop-blur-md shadow-xl space-y-2 relative" style="background-color: var(--bg-card); color: var(--text-main);">
+          <span class="text-[11px] text-[var(--text-secondary)] block">Kepada Yth. Bapak/Ibu/Saudara/i:</span>
+          <h3 class="font-serif text-2xl font-bold text-[var(--text-main,#2C352E)] tracking-wide leading-tight" id="cover-guest-name">
+            Tamu Kehormatan
+          </h3>
+          <p class="text-[11px] text-[var(--text-secondary)] leading-relaxed">
+            Tanpa mengurangi rasa hormat, kami mengundang Anda untuk hadir dan memberikan doa restu pada hari pernikahan kami.
+          </p>
+          
+          <button 
+            id="btn-open-invitation"
+            type="button"
+            class="w-full py-3 px-6 rounded-full gold-gradient-bg text-slate-950 font-bold text-xs tracking-wide shadow-lg hover:opacity-95 transition-all flex items-center justify-center gap-2 cursor-pointer mt-1.5"
+          >
+            <i data-lucide="mail-open" class="w-4 h-4 text-slate-950"></i>
+            <span>Buka Undangan</span>
+          </button>
+        </div>
 
-      <!-- Bottom Branding -->
-      <div class="cover-bottom-brand pb-3 text-[10px] text-[var(--text-tertiary)] tracking-wider uppercase font-mono relative z-20">
-        MenikahBersama Digital Invitation
+        <!-- Bottom Branding -->
+        <div class="cover-bottom-brand pb-1 text-[10px] text-[var(--text-tertiary)] tracking-wider uppercase font-mono">
+          MenikahBersama Digital Invitation
+        </div>
       </div>
     </div>
 
