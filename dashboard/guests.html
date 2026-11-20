@@ -57,7 +57,7 @@
     }
   </style>
 </head>
-<body class="bg-[#F8F7F4] text-slate-800 antialiased min-h-screen flex">
+<body class="bg-[#F8F7F4] text-slate-800 antialiased min-h-screen flex overflow-x-hidden">
 
   <!-- Mobile Sidebar Overlay Backdrop -->
   <div id="sidebar-backdrop" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-40 hidden lg:hidden"></div>
@@ -163,20 +163,20 @@
   </aside>
 
   <!-- Main Content Wrapper -->
-  <div class="flex-1 lg:pl-64 flex flex-col min-h-screen">
+  <div class="flex-1 lg:pl-64 flex flex-col min-h-screen min-w-0">
     
     <!-- Topbar Header -->
-    <header class="h-20 bg-white/80 backdrop-blur-md border-b border-stone-200/70 sticky top-0 z-30 px-4 sm:px-8 flex items-center justify-between">
+    <header class="min-h-[68px] py-3 sm:py-0 sm:h-20 bg-white/80 backdrop-blur-md border-b border-stone-200/70 sticky top-0 z-30 px-3.5 sm:px-8 flex items-center justify-between gap-2">
       
       <!-- Hamburger toggle on mobile -->
-      <div class="flex items-center gap-3">
-        <button id="btn-open-sidebar" class="lg:hidden p-2 rounded-xl text-slate-600 hover:bg-stone-100">
+      <div class="flex items-center gap-2.5 sm:gap-3 min-w-0">
+        <button id="btn-open-sidebar" class="lg:hidden p-2 rounded-xl text-slate-600 hover:bg-stone-100 shrink-0">
           <i data-lucide="menu" class="w-5 h-5"></i>
         </button>
 
-        <div>
-          <h2 class="font-serif text-lg sm:text-2xl font-bold text-slate-900">
-            Master Tamu & WhatsApp Sender
+        <div class="min-w-0">
+          <h2 class="font-serif text-base sm:text-2xl font-bold text-slate-900 leading-tight truncate">
+            Master Tamu & RSVP
           </h2>
           <p class="text-[11px] text-slate-500 hidden sm:block">
             Database tamu terpusat, generator link undangan personal, dan pengiriman pesan WhatsApp 1-klik.
@@ -185,19 +185,19 @@
       </div>
 
       <!-- Quick Action / Status Live Indicator -->
-      <div class="flex items-center gap-2.5">
+      <div class="flex items-center gap-2 shrink-0">
         <a 
           href="/u.html" 
           id="btn-public-preview" 
           target="_blank" 
-          class="hidden sm:inline-flex items-center gap-2 px-3.5 py-2 rounded-xl border border-amber-300 bg-amber-50/70 text-amber-900 text-xs font-semibold hover:bg-amber-100/70 transition-colors"
+          class="inline-flex items-center gap-1.5 px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-xl border border-amber-300 bg-amber-50/70 text-amber-900 text-xs font-semibold hover:bg-amber-100/70 transition-colors"
           title="Buka Website Undangan"
         >
           <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
-          <span>Web Undangan</span>
+          <span class="hidden sm:inline">Web Undangan</span>
         </a>
 
-        <div class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-medium">
+        <div class="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-medium">
           <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
           <span class="hidden sm:inline">RSVP Live</span>
         </div>
@@ -205,7 +205,7 @@
     </header>
 
     <!-- Page Body -->
-    <main class="flex-1 p-4 sm:p-8 space-y-6 max-w-7xl mx-auto w-full">
+    <main class="flex-1 p-3.5 sm:p-8 space-y-5 sm:space-y-6 max-w-7xl mx-auto w-full min-w-0">
 
       <!-- TOP METRICS: 3 KARTU RINGKASAN REAL-TIME -->
       <section class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -284,73 +284,75 @@
       </section>
 
       <!-- NAVIGATION TABS -->
-      <section class="border-b border-stone-200 flex items-center justify-between">
-        <div class="flex items-center gap-2 -mb-px">
+      <section class="border-b border-stone-200 flex items-center justify-between gap-2">
+        <div class="flex items-center gap-1 sm:gap-2 -mb-px overflow-x-auto custom-scrollbar whitespace-nowrap">
           <button 
             id="tab-btn-guests" 
             onclick="switchTab('guests')" 
-            class="flex items-center gap-2 px-5 py-3 text-xs sm:text-sm font-bold border-b-2 border-slate-900 text-slate-900 transition-colors cursor-pointer"
+            class="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-5 py-3 text-xs sm:text-sm font-bold border-b-2 border-slate-900 text-slate-900 transition-colors cursor-pointer shrink-0"
           >
             <i data-lucide="list" class="w-4 h-4 text-amber-600"></i>
-            <span>Kelola Tamu & Sebar WA</span>
+            <span>Kelola Tamu & WA</span>
             <span class="px-2 py-0.5 rounded-full text-[10px] bg-slate-100 text-slate-700" id="tab-guests-badge">0</span>
           </button>
 
           <button 
             id="tab-btn-wishes" 
             onclick="switchTab('wishes')" 
-            class="flex items-center gap-2 px-5 py-3 text-xs sm:text-sm font-bold border-b-2 border-transparent text-slate-500 hover:text-slate-800 hover:border-stone-300 transition-colors cursor-pointer"
+            class="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-5 py-3 text-xs sm:text-sm font-bold border-b-2 border-transparent text-slate-500 hover:text-slate-800 hover:border-stone-300 transition-colors cursor-pointer shrink-0"
           >
             <i data-lucide="message-square-heart" class="w-4 h-4 text-slate-400"></i>
-            <span>Pantau RSVP & Ucapan Doa</span>
+            <span>RSVP & Ucapan</span>
             <span class="px-2 py-0.5 rounded-full text-[10px] bg-amber-100 text-amber-800 font-bold" id="tab-wishes-badge">0</span>
           </button>
         </div>
 
-        <div class="pb-2 hidden sm:block">
+        <div class="pb-2 shrink-0">
           <button 
             onclick="printGuestbook()" 
-            class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl border border-stone-300 bg-white hover:bg-stone-50 text-slate-700 text-xs font-semibold shadow-2xs transition-all cursor-pointer"
+            class="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl border border-stone-300 bg-white hover:bg-stone-50 text-slate-700 text-xs font-semibold shadow-2xs transition-all cursor-pointer"
+            title="Cetak Buku Tamu (PDF)"
           >
             <i data-lucide="printer" class="w-3.5 h-3.5 text-slate-500"></i>
-            <span>Cetak Buku Tamu (PDF)</span>
+            <span class="hidden sm:inline">Cetak Buku Tamu (PDF)</span>
+            <span class="sm:hidden">PDF</span>
           </button>
         </div>
       </section>
 
       <!-- TAB 1 CONTENT: KELOLA DAFTAR TAMU & SEBAR WA -->
-      <div id="tab-content-guests" class="space-y-5">
+      <div id="tab-content-guests" class="space-y-4 sm:space-y-5">
         
         <!-- Action Toolbar & Buttons -->
-        <div class="flex flex-wrap items-center justify-between gap-3 bg-white p-4 rounded-2xl border border-stone-200/80 shadow-xs">
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-2.5 sm:gap-3 bg-white p-3.5 sm:p-4 rounded-2xl border border-stone-200/80 shadow-xs">
           
           <!-- Primary Actions -->
-          <div class="flex flex-wrap items-center gap-2">
+          <div class="grid grid-cols-2 sm:flex sm:flex-wrap items-center gap-2 w-full lg:w-auto">
             <button 
               onclick="openAddGuestModal()" 
-              class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold shadow-xs transition-colors cursor-pointer"
+              class="inline-flex items-center justify-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold shadow-xs transition-colors cursor-pointer"
             >
-              <i data-lucide="user-plus" class="w-4 h-4 text-amber-400"></i>
+              <i data-lucide="user-plus" class="w-4 h-4 text-amber-400 shrink-0"></i>
               <span>Tambah Tamu</span>
             </button>
 
             <button 
               onclick="openBulkGuestModal()" 
-              class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-amber-300 bg-amber-50 hover:bg-amber-100 text-amber-900 text-xs font-bold transition-colors cursor-pointer"
+              class="inline-flex items-center justify-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2.5 rounded-xl border border-amber-300 bg-amber-50 hover:bg-amber-100 text-amber-900 text-xs font-bold transition-colors cursor-pointer"
             >
-              <i data-lucide="copy" class="w-4 h-4 text-amber-700"></i>
-              <span>Input Banyak Sekaligus (Bulk)</span>
+              <i data-lucide="copy" class="w-4 h-4 text-amber-700 shrink-0"></i>
+              <span class="truncate">Input Banyak (Bulk)</span>
             </button>
           </div>
 
           <!-- Secondary Import / Export / Template Actions -->
-          <div class="flex flex-wrap items-center gap-2">
+          <div class="flex flex-wrap items-center gap-2 w-full lg:w-auto">
             <!-- Hidden File Input for CSV -->
             <input type="file" id="csv-file-input" accept=".csv,text/csv" class="hidden" onchange="handleCsvFileSelected(event)">
             
             <button 
               onclick="document.getElementById('csv-file-input').click()" 
-              class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl border border-stone-200 bg-stone-50 hover:bg-stone-100 text-slate-700 text-xs font-medium transition-colors cursor-pointer"
+              class="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl border border-stone-200 bg-stone-50 hover:bg-stone-100 text-slate-700 text-xs font-medium transition-colors cursor-pointer"
               title="Unggah file CSV daftar tamu"
             >
               <i data-lucide="file-up" class="w-3.5 h-3.5 text-slate-500"></i>
@@ -359,7 +361,7 @@
 
             <button 
               onclick="exportGuestsToCSV()" 
-              class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl border border-stone-200 bg-stone-50 hover:bg-stone-100 text-slate-700 text-xs font-medium transition-colors cursor-pointer"
+              class="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl border border-stone-200 bg-stone-50 hover:bg-stone-100 text-slate-700 text-xs font-medium transition-colors cursor-pointer"
               title="Unduh seluruh daftar tamu dan RSVP ke file CSV"
             >
               <i data-lucide="download" class="w-3.5 h-3.5 text-slate-500"></i>
@@ -369,7 +371,7 @@
             <button 
               onclick="toggleWaTemplateAccordion()" 
               id="btn-toggle-wa-template"
-              class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl border border-emerald-300 bg-emerald-50 hover:bg-emerald-100 text-emerald-900 text-xs font-semibold transition-colors cursor-pointer"
+              class="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl border border-emerald-300 bg-emerald-50 hover:bg-emerald-100 text-emerald-900 text-xs font-semibold transition-colors cursor-pointer"
             >
               <i data-lucide="message-circle" class="w-3.5 h-3.5 text-emerald-600"></i>
               <span>Atur Teks Pengantar WA</span>
@@ -469,17 +471,17 @@
         </div>
 
         <!-- SEARCH & FILTER CONTROLS -->
-        <div class="bg-white p-4 rounded-2xl border border-stone-200/80 shadow-xs flex flex-wrap items-center justify-between gap-3">
+        <div class="bg-white p-3.5 sm:p-4 rounded-2xl border border-stone-200/80 shadow-xs flex flex-col lg:flex-row lg:items-center justify-between gap-2.5 sm:gap-3">
           
           <!-- Search Input -->
-          <div class="relative flex-1 min-w-[240px]">
+          <div class="relative w-full lg:flex-1 lg:min-w-[240px]">
             <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
             <input 
               type="text" 
               id="search-input" 
               oninput="handleSearchChange()" 
               placeholder="Cari nama tamu atau nomor WhatsApp..." 
-              class="w-full pl-9 pr-8 py-2 rounded-xl border border-stone-200 text-xs focus:ring-2 focus:ring-amber-500/40 focus:border-amber-500 focus:outline-none"
+              class="w-full pl-9 pr-8 py-2.5 sm:py-2 rounded-xl border border-stone-200 text-xs focus:ring-2 focus:ring-amber-500/40 focus:border-amber-500 focus:outline-none"
             >
             <button 
               id="btn-clear-search" 
@@ -491,13 +493,13 @@
           </div>
 
           <!-- Dropdown Filters -->
-          <div class="flex items-center gap-2 flex-wrap">
+          <div class="grid grid-cols-2 sm:flex sm:flex-wrap items-center gap-2 w-full lg:w-auto">
             
             <!-- Filter Kategori Grup -->
             <select 
               id="filter-category" 
               onchange="applyFilters()" 
-              class="px-3 py-2 rounded-xl border border-stone-200 text-xs font-medium text-slate-700 bg-white focus:outline-none focus:ring-2 focus:ring-amber-500/40"
+              class="w-full sm:w-auto px-3 py-2.5 sm:py-2 rounded-xl border border-stone-200 text-xs font-medium text-slate-700 bg-white focus:outline-none focus:ring-2 focus:ring-amber-500/40"
             >
               <option value="all">Semua Kategori</option>
               <option value="VIP">VIP</option>
@@ -511,7 +513,7 @@
             <select 
               id="filter-sent" 
               onchange="applyFilters()" 
-              class="px-3 py-2 rounded-xl border border-stone-200 text-xs font-medium text-slate-700 bg-white focus:outline-none focus:ring-2 focus:ring-amber-500/40"
+              class="w-full sm:w-auto px-3 py-2.5 sm:py-2 rounded-xl border border-stone-200 text-xs font-medium text-slate-700 bg-white focus:outline-none focus:ring-2 focus:ring-amber-500/40"
             >
               <option value="all">Status Kirim (Semua)</option>
               <option value="sent">Sudah Dikirim</option>
@@ -522,7 +524,7 @@
             <select 
               id="filter-rsvp" 
               onchange="applyFilters()" 
-              class="px-3 py-2 rounded-xl border border-stone-200 text-xs font-medium text-slate-700 bg-white focus:outline-none focus:ring-2 focus:ring-amber-500/40"
+              class="w-full sm:w-auto px-3 py-2.5 sm:py-2 rounded-xl border border-stone-200 text-xs font-medium text-slate-700 bg-white focus:outline-none focus:ring-2 focus:ring-amber-500/40"
             >
               <option value="all">Status RSVP (Semua)</option>
               <option value="hadir">Konfirmasi Hadir</option>
@@ -533,10 +535,11 @@
             <!-- Reset Filter -->
             <button 
               onclick="resetFilters()" 
-              class="p-2 rounded-xl border border-stone-200 text-slate-400 hover:text-slate-700 hover:bg-stone-50 transition-colors cursor-pointer"
+              class="w-full sm:w-auto py-2.5 sm:p-2 px-3 rounded-xl border border-stone-200 text-slate-500 hover:text-slate-700 hover:bg-stone-50 transition-colors cursor-pointer inline-flex items-center justify-center gap-1.5 text-xs font-medium"
               title="Reset semua filter"
             >
               <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
+              <span class="sm:hidden">Reset Filter</span>
             </button>
           </div>
 
@@ -546,33 +549,39 @@
         <div class="bg-white rounded-2xl border border-stone-200/80 shadow-xs overflow-hidden">
           
           <!-- Bulk Selection Toolbar (Appears when checkboxes are selected) -->
-          <div id="bulk-selection-bar" class="hidden bg-amber-50 px-4 py-2.5 border-b border-amber-200 flex items-center justify-between text-xs">
+          <div id="bulk-selection-bar" class="hidden bg-amber-50 px-4 py-2.5 border-b border-amber-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
             <div class="flex items-center gap-2 text-amber-900 font-semibold">
               <span id="selected-count-label">0 tamu dipilih</span>
             </div>
-            <div class="flex items-center gap-2">
+            <div class="flex flex-wrap items-center gap-1.5 sm:gap-2">
               <button 
                 onclick="bulkMarkSent(true)" 
-                class="px-3 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-medium shadow-2xs transition-colors cursor-pointer"
+                class="px-2.5 sm:px-3 py-1.5 sm:py-1 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-medium shadow-2xs transition-colors cursor-pointer"
               >
                 Tandai Sudah Dikirim
               </button>
               <button 
                 onclick="bulkMarkSent(false)" 
-                class="px-3 py-1 rounded-lg bg-stone-200 hover:bg-stone-300 text-stone-800 font-medium transition-colors cursor-pointer"
+                class="px-2.5 sm:px-3 py-1.5 sm:py-1 rounded-lg bg-stone-200 hover:bg-stone-300 text-stone-800 font-medium transition-colors cursor-pointer"
               >
                 Tandai Belum
               </button>
               <button 
                 onclick="bulkDeleteGuests()" 
-                class="px-3 py-1 rounded-lg bg-rose-50 border border-rose-200 text-rose-700 hover:bg-rose-100 font-medium transition-colors cursor-pointer"
+                class="px-2.5 sm:px-3 py-1.5 sm:py-1 rounded-lg bg-rose-50 border border-rose-200 text-rose-700 hover:bg-rose-100 font-medium transition-colors cursor-pointer"
               >
                 Hapus Terpilih
               </button>
             </div>
           </div>
 
-          <div class="overflow-x-auto custom-scrollbar">
+          <!-- Mobile Card View (< md) -->
+          <div id="guests-cards-mobile" class="md:hidden divide-y divide-stone-100">
+            <!-- Mobile cards injected via JavaScript -->
+          </div>
+
+          <!-- Desktop Table View (md+) -->
+          <div class="hidden md:block overflow-x-auto custom-scrollbar">
             <table class="w-full text-left text-xs text-slate-600 whitespace-nowrap">
               <thead class="bg-stone-50 border-b border-stone-200/80 text-[11px] font-bold text-slate-500 uppercase tracking-wider">
                 <tr>
@@ -692,7 +701,7 @@
 
   <!-- MODAL 1: TAMBAH / EDIT 1 TAMU -->
   <div id="modal-guest" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs hidden items-center justify-center p-4">
-    <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-stone-200 space-y-4 animate-in fade-in duration-150">
+    <div class="bg-white rounded-3xl max-w-md w-full p-5 sm:p-6 shadow-2xl border border-stone-200 space-y-4 animate-in fade-in duration-150 max-h-[90dvh] overflow-y-auto">
       
       <div class="flex items-center justify-between border-b border-stone-100 pb-3">
         <h3 class="font-serif text-lg font-bold text-slate-900" id="modal-guest-title">Tambah Tamu Undangan</h3>
@@ -835,7 +844,7 @@
 
   <!-- MODAL 2: INPUT BANYAK SEKALIGUS (BULK COPY-PASTE) -->
   <div id="modal-bulk" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs hidden items-center justify-center p-4">
-    <div class="bg-white rounded-3xl max-w-xl w-full p-6 shadow-2xl border border-stone-200 space-y-4 animate-in fade-in duration-150">
+    <div class="bg-white rounded-3xl max-w-xl w-full p-5 sm:p-6 shadow-2xl border border-stone-200 space-y-4 animate-in fade-in duration-150 max-h-[90dvh] overflow-y-auto">
       
       <div class="flex items-center justify-between border-b border-stone-100 pb-3">
         <div>
@@ -1205,13 +1214,13 @@ Wassalamu'alaikum Warahmatullahi Wabarakatuh.`
       const contentWishes = document.getElementById('tab-content-wishes');
 
       if (tab === 'guests') {
-        btnGuests.className = 'flex items-center gap-2 px-5 py-3 text-xs sm:text-sm font-bold border-b-2 border-slate-900 text-slate-900 transition-colors cursor-pointer';
-        btnWishes.className = 'flex items-center gap-2 px-5 py-3 text-xs sm:text-sm font-bold border-b-2 border-transparent text-slate-500 hover:text-slate-800 hover:border-stone-300 transition-colors cursor-pointer';
+        btnGuests.className = 'flex items-center gap-1.5 sm:gap-2 px-3 sm:px-5 py-3 text-xs sm:text-sm font-bold border-b-2 border-slate-900 text-slate-900 transition-colors cursor-pointer shrink-0';
+        btnWishes.className = 'flex items-center gap-1.5 sm:gap-2 px-3 sm:px-5 py-3 text-xs sm:text-sm font-bold border-b-2 border-transparent text-slate-500 hover:text-slate-800 hover:border-stone-300 transition-colors cursor-pointer shrink-0';
         contentGuests.classList.remove('hidden');
         contentWishes.classList.add('hidden');
       } else {
-        btnWishes.className = 'flex items-center gap-2 px-5 py-3 text-xs sm:text-sm font-bold border-b-2 border-slate-900 text-slate-900 transition-colors cursor-pointer';
-        btnGuests.className = 'flex items-center gap-2 px-5 py-3 text-xs sm:text-sm font-bold border-b-2 border-transparent text-slate-500 hover:text-slate-800 hover:border-stone-300 transition-colors cursor-pointer';
+        btnWishes.className = 'flex items-center gap-1.5 sm:gap-2 px-3 sm:px-5 py-3 text-xs sm:text-sm font-bold border-b-2 border-slate-900 text-slate-900 transition-colors cursor-pointer shrink-0';
+        btnGuests.className = 'flex items-center gap-1.5 sm:gap-2 px-3 sm:px-5 py-3 text-xs sm:text-sm font-bold border-b-2 border-transparent text-slate-500 hover:text-slate-800 hover:border-stone-300 transition-colors cursor-pointer shrink-0';
         contentGuests.classList.add('hidden');
         contentWishes.classList.remove('hidden');
         renderWishesTab();
@@ -1257,11 +1266,13 @@ Wassalamu'alaikum Warahmatullahi Wabarakatuh.`
 
     function renderGuestsTable() {
       const tbody = document.getElementById('guests-table-body');
+      const mobileContainer = document.getElementById('guests-cards-mobile');
       const emptyState = document.getElementById('guests-empty-state');
       const filtered = getFilteredGuests();
 
       if (!filtered.length) {
         tbody.innerHTML = '';
+        if (mobileContainer) mobileContainer.innerHTML = '';
         emptyState.classList.remove('hidden');
         document.getElementById('pagination-info').textContent = `Menampilkan 0 dari ${guestList.length} tamu`;
         return;
@@ -1376,6 +1387,68 @@ Wassalamu'alaikum Warahmatullahi Wabarakatuh.`
       }).join('');
 
       tbody.innerHTML = html;
+
+      if (mobileContainer) {
+        mobileContainer.innerHTML = filtered.map(g => {
+          const isChecked = selectedGuestIds.has(g.id);
+          const categoryBadge = getCategoryBadge(g.group_category);
+          const rsvpBadge = getRsvpBadge(g.rsvp_status, g.confirmed_pax);
+          const sentBadge = g.is_link_sent
+            ? `<button onclick="toggleGuestSentStatus(${g.id}, event)" class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 cursor-pointer"><i data-lucide="check-check" class="w-3 h-3 text-emerald-600"></i><span>Terkirim</span></button>`
+            : `<button onclick="toggleGuestSentStatus(${g.id}, event)" class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-[10px] font-semibold bg-stone-100 text-slate-600 cursor-pointer"><i data-lucide="send" class="w-3 h-3 text-slate-400"></i><span>Belum</span></button>`;
+          const phoneDisplay = g.phone_wa
+            ? `<span class="text-[11px] text-slate-500 font-mono flex items-center gap-1 mt-0.5"><i data-lucide="phone" class="w-3 h-3 text-emerald-600 inline"></i>${escapeHtml(g.phone_wa)}</span>`
+            : `<span class="text-[10px] text-slate-300 italic block mt-0.5">Tanpa No. WA</span>`;
+
+          return `
+            <div class="p-3.5 space-y-2.5 ${isChecked ? 'bg-amber-50/60' : 'bg-white'}">
+              <div class="flex items-start justify-between gap-2">
+                <div class="flex items-start gap-2.5 min-w-0">
+                  <input type="checkbox" value="${g.id}" ${isChecked ? 'checked' : ''} onchange="toggleSelectGuest(${g.id}, this)" class="mt-1 rounded text-amber-600 focus:ring-amber-500 cursor-pointer shrink-0">
+                  <div class="min-w-0">
+                    <div class="font-bold text-sm text-slate-900 leading-snug break-words">${escapeHtml(g.name)}</div>
+                    ${phoneDisplay}
+                    <div class="flex flex-wrap items-center gap-1.5 mt-1.5">
+                      ${categoryBadge}
+                      <span class="px-2 py-0.5 rounded-md bg-stone-100 text-slate-700 text-[10px] font-semibold">${g.estimated_pax || 2} Pax • <span class="capitalize">${g.invitation_type || 'digital'}</span></span>
+                    </div>
+                  </div>
+                </div>
+                <div class="flex flex-col items-end gap-1 shrink-0">
+                  ${sentBadge}
+                  ${rsvpBadge}
+                </div>
+              </div>
+
+              <div class="flex flex-wrap items-center justify-between gap-1.5 pt-2 border-t border-stone-100">
+                <div class="flex items-center gap-1.5">
+                  <button onclick="copyGuestLink('${escapeHtml(g.name)}', event)" class="px-2.5 py-1.5 rounded-lg border border-stone-200 bg-stone-50 text-slate-700 text-[11px] font-semibold inline-flex items-center gap-1 cursor-pointer">
+                    <i data-lucide="link" class="w-3 h-3"></i>
+                    <span>Link</span>
+                  </button>
+                  <button onclick="copyGuestWaText(${g.id}, event)" class="px-2.5 py-1.5 rounded-lg border border-stone-200 bg-stone-50 text-slate-700 text-[11px] font-semibold inline-flex items-center gap-1 cursor-pointer">
+                    <i data-lucide="clipboard-copy" class="w-3 h-3"></i>
+                    <span>Salin WA</span>
+                  </button>
+                  <button onclick="sendWhatsAppToGuest(${g.id}, event)" class="px-2.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-bold inline-flex items-center gap-1 shadow-2xs cursor-pointer">
+                    <i data-lucide="message-circle" class="w-3 h-3"></i>
+                    <span>Kirim WA</span>
+                  </button>
+                </div>
+                <div class="flex items-center gap-1">
+                  <button onclick="openEditGuestModal(${g.id})" class="p-1.5 rounded-lg bg-stone-50 border border-stone-200 text-slate-500 hover:text-amber-700 cursor-pointer" title="Edit">
+                    <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
+                  </button>
+                  <button onclick="deleteSingleGuest(${g.id})" class="p-1.5 rounded-lg bg-rose-50 border border-rose-200 text-rose-600 cursor-pointer" title="Hapus">
+                    <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+
       lucide.createIcons();
       updateBulkSelectionBar();
     }

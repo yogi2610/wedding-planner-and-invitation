@@ -1188,7 +1188,29 @@ class InvitationEngine {
     const tplConfig = this.template?.config_json || {};
     const tplOrnaments = tplConfig.ornaments || {};
     const custom = this.wedding?.custom_theme_json || {};
-    const ornaments = { ...tplOrnaments, ...(custom.ornaments || {}) };
+    const userOrn = custom.ornaments || {};
+
+    // Tentukan apakah user mengaktifkan kustomisasi sudut PNG secara eksplisit ('master' / 'detail') atau ikut tema ('auto')
+    const userMode = userOrn.mode;
+    const isUserCustomCorner = userMode === 'master' || userMode === 'detail';
+    const ornaments = {
+      ...tplOrnaments,
+      ...(userOrn.preset && userOrn.preset !== 'auto' ? { preset: userOrn.preset } : {}),
+      ...(userOrn.corner_size ? { corner_size: userOrn.corner_size } : {}),
+      ...(userOrn.sway_speed ? { sway_speed: userOrn.sway_speed } : {})
+    };
+    if (isUserCustomCorner) {
+      ornaments.mode = userMode;
+      if (userMode === 'master') {
+        ornaments.corner_master_png = userOrn.corner_master_png || custom.custom_ornament_url || tplOrnaments.corner_master_png || null;
+      } else if (userMode === 'detail') {
+        ornaments.corner_tl_png = userOrn.corner_tl_png || null;
+        ornaments.corner_tr_png = userOrn.corner_tr_png || null;
+        ornaments.corner_bl_png = userOrn.corner_bl_png || null;
+        ornaments.corner_br_png = userOrn.corner_br_png || null;
+      }
+    }
+
     const cornerMode = ornaments.mode || (ornaments.corner_master_png ? 'master' : (ornaments.corner_tl_png ? 'detail' : 'preset'));
     const cornerPreset = ornaments.preset || 'auto';
     const targetThemeSlug = (cornerPreset && cornerPreset !== 'auto') ? cornerPreset : tplSlug;
@@ -1197,8 +1219,8 @@ class InvitationEngine {
     const cornerMaster = ornaments.corner_master_png || custom.custom_ornament_url || tplOrnaments.corner_master_png;
     const cornerSize = ornaments.corner_size || tplOrnaments.corner_size || 112;
     const swaySpeed = ornaments.sway_speed || tplOrnaments.sway_speed || 'normal';
-    const coverHeaderPng = ornaments.cover_header_png || tplOrnaments.cover_header_png;
-    const cardWatermark = ornaments.card_watermark_png || tplOrnaments.card_watermark_png;
+    const coverHeaderPng = custom.hide_cover_logo ? null : (custom.cover_logo_url || userOrn.cover_header_png || tplOrnaments.cover_header_png || null);
+    const cardWatermark = userOrn.card_watermark_png || tplOrnaments.card_watermark_png;
 
     // Update CSS Variables untuk ukuran sudut, kecepatan ayunan angin & watermark kartu
     const app = document.getElementById('invitation-app-container');
@@ -1213,11 +1235,11 @@ class InvitationEngine {
       }
     }
 
-    // Cover Header Ornament (Ilustrasi di atas The Wedding Of)
+    // Cover Header Logo / Ornament (Ilustrasi / Logo di atas The Wedding Of & Nama Mempelai)
     const coverHeaderEl = document.getElementById('cover-header-ornament');
     if (coverHeaderEl) {
       if (coverHeaderPng) {
-        coverHeaderEl.innerHTML = `<img src="${coverHeaderPng}" alt="Header Motif" class="max-h-12 object-contain mx-auto filter drop-shadow float-breathing">`;
+        coverHeaderEl.innerHTML = `<img src="${coverHeaderPng}" alt="Logo Sampul" class="max-h-14 sm:max-h-16 max-w-[160px] w-auto object-contain mx-auto filter drop-shadow float-breathing">`;
         coverHeaderEl.classList.remove('hidden');
       } else {
         coverHeaderEl.innerHTML = '';
@@ -1280,10 +1302,10 @@ class InvitationEngine {
         if (slots.br) slots.br.innerHTML = `<img src="${cornerMaster}" alt="Ornamen" class="w-full h-full object-contain filter drop-shadow sway-asym-br" style="transform: scale(-1, -1);">`;
       } else if (cornerMode === 'detail' && (ornaments.corner_tl_png || ornaments.corner_tr_png || ornaments.corner_bl_png || ornaments.corner_br_png)) {
         // Mode Detail (4 Sudut Terpisah)
-        if (slots.tl && ornaments.corner_tl_png) slots.tl.innerHTML = `<img src="${ornaments.corner_tl_png}" alt="Ornamen" class="w-full h-full object-contain filter drop-shadow sway-asym-tl">`;
-        if (slots.tr && ornaments.corner_tr_png) slots.tr.innerHTML = `<img src="${ornaments.corner_tr_png}" alt="Ornamen" class="w-full h-full object-contain filter drop-shadow sway-asym-tr">`;
-        if (slots.bl && ornaments.corner_bl_png) slots.bl.innerHTML = `<img src="${ornaments.corner_bl_png}" alt="Ornamen" class="w-full h-full object-contain filter drop-shadow sway-asym-bl">`;
-        if (slots.br && ornaments.corner_br_png) slots.br.innerHTML = `<img src="${ornaments.corner_br_png}" alt="Ornamen" class="w-full h-full object-contain filter drop-shadow sway-asym-br">`;
+        if (slots.tl) slots.tl.innerHTML = ornaments.corner_tl_png ? `<img src="${ornaments.corner_tl_png}" alt="Ornamen" class="w-full h-full object-contain filter drop-shadow sway-asym-tl">` : '';
+        if (slots.tr) slots.tr.innerHTML = ornaments.corner_tr_png ? `<img src="${ornaments.corner_tr_png}" alt="Ornamen" class="w-full h-full object-contain filter drop-shadow sway-asym-tr">` : '';
+        if (slots.bl) slots.bl.innerHTML = ornaments.corner_bl_png ? `<img src="${ornaments.corner_bl_png}" alt="Ornamen" class="w-full h-full object-contain filter drop-shadow sway-asym-bl">` : '';
+        if (slots.br) slots.br.innerHTML = ornaments.corner_br_png ? `<img src="${ornaments.corner_br_png}" alt="Ornamen" class="w-full h-full object-contain filter drop-shadow sway-asym-br">` : '';
       } else if (cornerMaster) {
         // Fallback jika mode tidak diset tapi ada cornerMaster
         if (slots.tl) slots.tl.innerHTML = `<img src="${cornerMaster}" alt="Ornamen" class="w-full h-full object-contain filter drop-shadow sway-asym-tl">`;

@@ -1003,20 +1003,26 @@
               <span>3. Ilustrasi Spesifik per Seksi Acara</span>
             </h3>
 
-            <!-- Slot A: Header Sampul Depan -->
-            <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80 space-y-2">
-              <div class="flex items-center justify-between">
-                <div>
-                  <span class="text-xs font-bold text-slate-800 block">Header Sampul Depan</span>
-                  <p class="text-[11px] text-slate-400">Motif ornamen/logo di atas teks "The Wedding Of".</p>
+            <!-- Slot A: Logo / Header Sampul Depan (Placeholder Default) -->
+            <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80 space-y-2.5">
+              <div class="flex items-start sm:items-center justify-between gap-3">
+                <div class="flex items-center gap-3">
+                  <div class="w-12 h-12 rounded-xl border border-dashed border-slate-300 bg-white flex items-center justify-center overflow-hidden shrink-0">
+                    <img id="preview-cover_header_png" src="" alt="Logo Placeholder" class="w-full h-full object-contain hidden">
+                    <i data-lucide="award" id="placeholder-cover_header_png" class="w-5 h-5 text-slate-300"></i>
+                  </div>
+                  <div>
+                    <span class="text-xs font-bold text-slate-800 block">Logo / Ornamen Sampul Depan (Placeholder Default)</span>
+                    <p class="text-[11px] text-slate-400">Tampil di atas nama mempelai pada cover depan (digunakan sebagai placeholder otomatis jika user belum mengunggah logo sendiri).</p>
+                  </div>
                 </div>
-                <div class="flex items-center gap-1.5">
-                  <input type="file" id="file-cover_header_png" accept="image/png,image/webp" class="hidden" onchange="handleAssetUpload(event, 'cover_header_png')">
-                  <button type="button" onclick="document.getElementById('file-cover_header_png').click()" class="px-2.5 py-1 rounded-lg bg-slate-900 text-white text-xs font-bold cursor-pointer">Unggah</button>
-                  <button type="button" id="btn-del-cover_header_png" onclick="removeAssetUrl('cover_header_png')" class="hidden px-2 py-1 rounded-lg border border-rose-200 bg-rose-50 text-rose-700 text-xs font-semibold cursor-pointer">Hapus</button>
+                <div class="flex items-center gap-1.5 shrink-0">
+                  <input type="file" id="file-cover_header_png" accept="image/*" class="hidden" onchange="handleAssetUpload(event, 'cover_header_png')">
+                  <button type="button" onclick="document.getElementById('file-cover_header_png').click()" class="px-2.5 py-1.5 rounded-lg bg-slate-900 text-white text-xs font-bold cursor-pointer">Unggah</button>
+                  <button type="button" id="btn-del-cover_header_png" onclick="removeAssetUrl('cover_header_png')" class="hidden px-2 py-1.5 rounded-lg border border-rose-200 bg-rose-50 text-rose-700 text-xs font-semibold cursor-pointer">Hapus</button>
                 </div>
               </div>
-              <input type="url" id="asset-url-cover_header_png" oninput="handleAssetUrlInput('cover_header_png', this.value)" placeholder="Tautan URL: https://..." class="w-full px-3 py-1.5 rounded-lg border border-slate-200 text-xs font-mono">
+              <input type="url" id="asset-url-cover_header_png" oninput="handleAssetUrlInput('cover_header_png', this.value)" placeholder="Tautan URL Logo Placeholder: https://..." class="w-full px-3 py-1.5 rounded-lg border border-slate-200 text-xs font-mono">
             </div>
 
             <!-- Slot B: Bingkai PNG Foto Sampul & Bentuk Bingkai Default -->

@@ -42,7 +42,7 @@
   <!-- Custom CSS -->
   <link rel="stylesheet" href="/assets/css/style.css">
 </head>
-<body class="bg-[#F8F7F4] text-slate-800 antialiased min-h-screen flex">
+<body class="bg-[#F8F7F4] text-slate-800 antialiased min-h-screen flex overflow-x-hidden">
 
   <!-- Mobile Sidebar Overlay Backdrop -->
   <div id="sidebar-backdrop" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-40 hidden lg:hidden"></div>
@@ -148,35 +148,36 @@
   </aside>
 
   <!-- Main Content Wrapper -->
-  <div class="flex-1 lg:pl-64 flex flex-col min-h-screen">
+  <div class="flex-1 lg:pl-64 flex flex-col min-h-screen min-w-0">
     
     <!-- Topbar Header -->
-    <header class="h-20 bg-white/80 backdrop-blur-md border-b border-stone-200/70 sticky top-0 z-30 px-4 sm:px-8 flex items-center justify-between">
-      <div class="flex items-center gap-3">
-        <button id="btn-open-sidebar" class="lg:hidden p-2 rounded-xl text-slate-600 hover:bg-stone-100">
+    <header class="min-h-[68px] py-3 sm:py-0 sm:h-20 bg-white/80 backdrop-blur-md border-b border-stone-200/70 sticky top-0 z-30 px-3.5 sm:px-8 flex items-center justify-between gap-2">
+      <div class="flex items-center gap-2.5 sm:gap-3 min-w-0">
+        <button id="btn-open-sidebar" class="lg:hidden p-2 rounded-xl text-slate-600 hover:bg-stone-100 shrink-0">
           <i data-lucide="menu" class="w-5 h-5"></i>
         </button>
-        <div>
-          <h2 class="font-serif text-xl sm:text-2xl font-bold text-slate-900">
-            Smart Budget, Vendor Tracker & Donut Split
+        <div class="min-w-0">
+          <h2 class="font-serif text-base sm:text-2xl font-bold text-slate-900 leading-tight truncate">
+            Smart Budget & Katering
           </h2>
           <span class="text-xs text-slate-500 hidden sm:inline">Perencanaan dana pernikahan, pembagian biaya CPP/CPW, dan simulasi katering</span>
         </div>
       </div>
 
-      <div class="flex items-center gap-3">
+      <div class="flex items-center gap-2 shrink-0">
         <button 
           id="btn-open-add-modal"
-          class="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold flex items-center gap-2 shadow-sm transition-all cursor-pointer"
+          class="px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold flex items-center gap-1.5 sm:gap-2 shadow-sm transition-all cursor-pointer"
         >
           <i data-lucide="plus-circle" class="w-4 h-4 text-amber-400"></i>
-          <span>Tambah Pos Anggaran</span>
+          <span class="hidden sm:inline">Tambah Pos Anggaran</span>
+          <span class="sm:hidden">Tambah Pos</span>
         </button>
       </div>
     </header>
 
     <!-- Main Content Area -->
-    <main class="flex-1 p-4 sm:p-8 space-y-8 max-w-7xl mx-auto w-full">
+    <main class="flex-1 p-3.5 sm:p-8 space-y-6 sm:space-y-8 max-w-7xl mx-auto w-full min-w-0">
 
       <!-- Alert Jatuh Tempo Vendor (14 Hari Mendatang) -->
       <div id="due-alert-container" class="hidden">
@@ -272,77 +273,77 @@
       </div>
 
       <!-- Diagram Donat Split CPP vs CPW vs Bersama -->
-      <div class="bg-white rounded-3xl border border-stone-200/80 p-6 sm:p-8 shadow-sm">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-stone-100">
+      <div class="bg-white rounded-3xl border border-stone-200/80 p-4 sm:p-8 shadow-sm">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 pb-5 sm:pb-6 border-b border-stone-100">
           <div>
-            <h3 class="font-serif text-2xl font-bold text-slate-900">Pembagian Anggaran: CPP vs CPW vs Bersama</h3>
+            <h3 class="font-serif text-xl sm:text-2xl font-bold text-slate-900">Pembagian Anggaran: CPP vs CPW vs Bersama</h3>
             <p class="text-xs text-slate-500 mt-1">
               Visualisasi proporsi alokasi biaya antara Pihak Pria (CPP), Pihak Wanita (CPW), dan Tabungan Bersama berdasarkan kolom Sumber Dana.
             </p>
           </div>
-          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-900 border border-amber-200 self-start sm:self-auto">
+          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-900 border border-amber-200 self-start sm:self-auto shrink-0">
             <i data-lucide="pie-chart" class="w-3.5 h-3.5 text-amber-700"></i>
             <span>Funding Distribution</span>
           </span>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center mt-6">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 items-center mt-5 sm:mt-6">
           <!-- Left: Donut Canvas -->
           <div class="lg:col-span-5 flex items-center justify-center p-2">
-            <div class="relative w-full max-w-[240px] h-[240px]">
+            <div class="relative w-full max-w-[220px] sm:max-w-[240px] h-[220px] sm:h-[240px]">
               <canvas id="donut-split-chart"></canvas>
               <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none text-center">
                 <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Total Biaya</span>
-                <span class="text-sm font-black text-slate-900 font-mono" id="donut-center-total">Rp 0</span>
+                <span class="text-xs sm:text-sm font-black text-slate-900 font-mono" id="donut-center-total">Rp 0</span>
               </div>
             </div>
           </div>
 
           <!-- Right: Detailed Breakdown Cards -->
-          <div class="lg:col-span-7 space-y-3.5">
+          <div class="lg:col-span-7 space-y-3">
             
             <!-- CPP Card -->
-            <div class="p-3.5 rounded-2xl bg-sky-50/60 border border-sky-200 flex items-center justify-between">
-              <div class="flex items-center gap-3">
-                <div class="w-4 h-4 rounded-full bg-sky-500 flex-shrink-0"></div>
-                <div>
-                  <span class="text-xs font-bold text-sky-950 block">CPP (Calon Pengantin Pria / Keluarga Pria)</span>
+            <div class="p-3 sm:p-3.5 rounded-2xl bg-sky-50/60 border border-sky-200 flex items-center justify-between gap-2">
+              <div class="flex items-center gap-2.5 sm:gap-3 min-w-0">
+                <div class="w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full bg-sky-500 flex-shrink-0"></div>
+                <div class="min-w-0">
+                  <span class="text-xs font-bold text-sky-950 block truncate">CPP (Pihak Pria)</span>
                   <span class="text-[11px] text-sky-700" id="stat-cpp-items">0 Pos Terkait</span>
                 </div>
               </div>
-              <div class="text-right">
-                <span class="text-sm font-black text-sky-950 font-mono block" id="stat-cpp-amount">Rp 0</span>
-                <span class="text-xs font-bold text-sky-700" id="stat-cpp-pct">0%</span>
+              <div class="text-right shrink-0">
+                <span class="text-xs sm:text-sm font-black text-sky-950 font-mono block" id="stat-cpp-amount">Rp 0</span>
+                <span class="text-[11px] sm:text-xs font-bold text-sky-700" id="stat-cpp-pct">0%</span>
               </div>
             </div>
 
             <!-- CPW Card -->
-            <div class="p-3.5 rounded-2xl bg-rose-50/60 border border-rose-200 flex items-center justify-between">
-              <div class="flex items-center gap-3">
-                <div class="w-4 h-4 rounded-full bg-rose-500 flex-shrink-0"></div>
-                <div>
-                  <span class="text-xs font-bold text-rose-950 block">CPW (Calon Pengantin Wanita / Keluarga Wanita)</span>
+            <div class="p-3 sm:p-3.5 rounded-2xl bg-rose-50/60 border border-rose-200 flex items-center justify-between gap-2">
+              <div class="flex items-center gap-2.5 sm:gap-3 min-w-0">
+                <div class="w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full bg-rose-500 flex-shrink-0"></div>
+                <div class="min-w-0">
+                  <span class="text-xs font-bold text-rose-950 block truncate">CPW (Pihak Wanita)</span>
                   <span class="text-[11px] text-rose-700" id="stat-cpw-items">0 Pos Terkait</span>
                 </div>
               </div>
-              <div class="text-right">
-                <span class="text-sm font-black text-rose-950 font-mono block" id="stat-cpw-amount">Rp 0</span>
-                <span class="text-xs font-bold text-rose-700" id="stat-cpw-pct">0%</span>
+              <div class="text-right shrink-0">
+                <span class="text-xs sm:text-sm font-black text-rose-950 font-mono block" id="stat-cpw-amount">Rp 0</span>
+                <span class="text-[11px] sm:text-xs font-bold text-rose-700" id="stat-cpw-pct">0%</span>
               </div>
             </div>
 
             <!-- Bersama Card -->
-            <div class="p-3.5 rounded-2xl bg-amber-50/60 border border-amber-200 flex items-center justify-between">
-              <div class="flex items-center gap-3">
-                <div class="w-4 h-4 rounded-full bg-amber-500 flex-shrink-0"></div>
-                <div>
-                  <span class="text-xs font-bold text-amber-950 block">Bersama (Tabungan Pengantin)</span>
+            <div class="p-3 sm:p-3.5 rounded-2xl bg-amber-50/60 border border-amber-200 flex items-center justify-between gap-2">
+              <div class="flex items-center gap-2.5 sm:gap-3 min-w-0">
+                <div class="w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full bg-amber-500 flex-shrink-0"></div>
+                <div class="min-w-0">
+                  <span class="text-xs font-bold text-amber-950 block truncate">Bersama (Tabungan Pengantin)</span>
                   <span class="text-[11px] text-amber-800" id="stat-bersama-items">0 Pos Terkait</span>
                 </div>
               </div>
-              <div class="text-right">
-                <span class="text-sm font-black text-amber-950 font-mono block" id="stat-bersama-amount">Rp 0</span>
-                <span class="text-xs font-bold text-amber-800" id="stat-bersama-pct">0%</span>
+              <div class="text-right shrink-0">
+                <span class="text-xs sm:text-sm font-black text-amber-950 font-mono block" id="stat-bersama-amount">Rp 0</span>
+                <span class="text-[11px] sm:text-xs font-bold text-amber-800" id="stat-bersama-pct">0%</span>
               </div>
             </div>
 
@@ -353,7 +354,7 @@
                 <div id="bar-cpw" class="bg-rose-500 h-full transition-all duration-500" style="width: 0%"></div>
                 <div id="bar-bersama" class="bg-amber-500 h-full transition-all duration-500" style="width: 0%"></div>
               </div>
-              <div class="flex items-center justify-between text-[11px] text-slate-500 font-semibold mt-1.5 px-0.5">
+              <div class="flex items-center justify-between text-[10px] sm:text-[11px] text-slate-500 font-semibold mt-1.5 px-0.5">
                 <span class="text-sky-700">CPP: <span id="bar-label-cpp" class="font-bold">0%</span></span>
                 <span class="text-rose-700">CPW: <span id="bar-label-cpw" class="font-bold">0%</span></span>
                 <span class="text-amber-800">Bersama: <span id="bar-label-bersama" class="font-bold">0%</span></span>
@@ -365,15 +366,15 @@
       </div>
 
       <!-- Panel Interaktif Kalkulator Porsi Katering (Buffet vs Gubukan) -->
-      <div class="bg-white rounded-3xl border border-amber-200/80 p-6 sm:p-8 shadow-sm relative overflow-hidden">
-        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6 pb-6 border-b border-stone-100">
-          <div class="flex items-start gap-4">
-            <div class="w-12 h-12 rounded-2xl gold-gradient-bg flex items-center justify-center text-white flex-shrink-0 shadow-md">
-              <i data-lucide="utensils" class="w-6 h-6"></i>
+      <div class="bg-white rounded-3xl border border-amber-200/80 p-4 sm:p-8 shadow-sm relative overflow-hidden">
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 sm:gap-6 pb-5 sm:pb-6 border-b border-stone-100">
+          <div class="flex items-start gap-3 sm:gap-4">
+            <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl gold-gradient-bg flex items-center justify-center text-white flex-shrink-0 shadow-md">
+              <i data-lucide="utensils" class="w-5 h-5 sm:w-6 sm:h-6"></i>
             </div>
             <div>
-              <div class="flex items-center gap-2">
-                <h3 class="font-serif text-2xl font-bold text-slate-900">Kalkulator Porsi Katering Cerdas</h3>
+              <div class="flex flex-wrap items-center gap-2">
+                <h3 class="font-serif text-xl sm:text-2xl font-bold text-slate-900">Kalkulator Porsi Katering Cerdas</h3>
                 <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-900 border border-amber-200">
                   Formula Indonesia
                 </span>
@@ -384,7 +385,7 @@
             </div>
           </div>
 
-          <div class="flex items-center gap-3 bg-stone-50 p-3 rounded-2xl border border-stone-200/80">
+          <div class="flex flex-wrap items-center justify-between sm:justify-start gap-3 bg-stone-50 p-3 rounded-2xl border border-stone-200/80">
             <div>
               <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Estimasi Tamu Dasar</span>
               <div class="flex items-center gap-2 mt-0.5">
@@ -490,11 +491,11 @@
       <div class="bg-white rounded-3xl border border-stone-200/80 shadow-sm overflow-hidden">
         
         <!-- Filter Header Bar -->
-        <div class="p-5 border-b border-stone-200/80 flex flex-col lg:flex-row items-center justify-between gap-4">
+        <div class="p-4 sm:p-5 border-b border-stone-200/80 flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3 sm:gap-4">
           
-          <div class="flex flex-wrap items-center gap-2.5 w-full lg:w-auto">
+          <div class="grid grid-cols-1 sm:grid-cols-3 lg:flex lg:flex-wrap items-center gap-2 w-full lg:w-auto">
             <!-- Filter Kategori -->
-            <select id="filter-category" class="px-3 py-2 rounded-xl border border-stone-200 text-xs font-semibold text-slate-700 bg-stone-50 focus:outline-none focus:ring-2 focus:ring-amber-500/40">
+            <select id="filter-category" class="w-full lg:w-auto px-3 py-2.5 sm:py-2 rounded-xl border border-stone-200 text-xs font-semibold text-slate-700 bg-stone-50 focus:outline-none focus:ring-2 focus:ring-amber-500/40">
               <option value="all">Semua Kategori (7 Pos)</option>
               <option value="Katering">Katering</option>
               <option value="Venue">Venue</option>
@@ -507,7 +508,7 @@
             </select>
 
             <!-- Filter Status Pembayaran -->
-            <select id="filter-payment" class="px-3 py-2 rounded-xl border border-stone-200 text-xs font-semibold text-slate-700 bg-stone-50 focus:outline-none focus:ring-2 focus:ring-amber-500/40">
+            <select id="filter-payment" class="w-full lg:w-auto px-3 py-2.5 sm:py-2 rounded-xl border border-stone-200 text-xs font-semibold text-slate-700 bg-stone-50 focus:outline-none focus:ring-2 focus:ring-amber-500/40">
               <option value="all">Semua Status Bayar</option>
               <option value="unpaid">Belum Bayar (Unpaid)</option>
               <option value="dp_1">DP 1</option>
@@ -516,7 +517,7 @@
             </select>
 
             <!-- Filter Sumber Dana -->
-            <select id="filter-funding" class="px-3 py-2 rounded-xl border border-stone-200 text-xs font-semibold text-slate-700 bg-stone-50 focus:outline-none focus:ring-2 focus:ring-amber-500/40">
+            <select id="filter-funding" class="w-full lg:w-auto px-3 py-2.5 sm:py-2 rounded-xl border border-stone-200 text-xs font-semibold text-slate-700 bg-stone-50 focus:outline-none focus:ring-2 focus:ring-amber-500/40">
               <option value="all">Semua Sumber Dana</option>
               <option value="Bersama">Dana Bersama</option>
               <option value="Keluarga Pria">Keluarga Pria (CPP)</option>
@@ -530,7 +531,7 @@
               type="text" 
               id="search-budget" 
               placeholder="Cari item pengeluaran / vendor..." 
-              class="w-full pl-9 pr-4 py-2 rounded-xl border border-stone-200 text-xs focus:outline-none focus:ring-2 focus:ring-amber-500/40"
+              class="w-full pl-9 pr-4 py-2.5 sm:py-2 rounded-xl border border-stone-200 text-xs focus:outline-none focus:ring-2 focus:ring-amber-500/40"
             >
             <div class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
               <i data-lucide="search" class="w-4 h-4"></i>
@@ -539,8 +540,16 @@
 
         </div>
 
-        <!-- Table List -->
-        <div class="overflow-x-auto">
+        <!-- Mobile Card List (< md) -->
+        <div id="budget-cards-mobile" class="md:hidden divide-y divide-stone-100">
+          <div class="py-12 text-center text-slate-400 text-xs">
+            <i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto mb-2 text-amber-600"></i>
+            <span>Memuat data anggaran dari Supabase...</span>
+          </div>
+        </div>
+
+        <!-- Desktop Table List (md+) -->
+        <div class="hidden md:block overflow-x-auto">
           <table class="w-full text-left text-xs">
             <thead class="bg-stone-50/80 text-slate-500 font-semibold border-b border-stone-200 uppercase tracking-wider">
               <tr>
@@ -1277,6 +1286,8 @@
         );
       }
 
+      const mobileContainer = document.getElementById('budget-cards-mobile');
+
       if (filtered.length === 0) {
         tbody.innerHTML = `
           <tr>
@@ -1286,29 +1297,36 @@
             </td>
           </tr>
         `;
+        if (mobileContainer) {
+          mobileContainer.innerHTML = `
+            <div class="py-10 px-4 text-center text-slate-400 text-xs">
+              <i data-lucide="wallet" class="w-8 h-8 mx-auto mb-2 opacity-50"></i>
+              <span>Tidak ada pos pengeluaran yang cocok dengan filter.</span>
+            </div>
+          `;
+        }
         lucide.createIcons();
         return;
       }
+
+      const statusBadges = {
+        unpaid: `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-100 text-rose-800 border border-rose-200">Belum Bayar</span>`,
+        dp_1: `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-sky-100 text-sky-800 border border-sky-200">DP 1</span>`,
+        termin: `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-200">Termin</span>`,
+        paid: `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">Lunas</span>`
+      };
+
+      const fundingBadges = {
+        'Keluarga Pria': `<span class="px-2 py-0.5 rounded-lg bg-sky-50 text-sky-800 text-[10px] font-bold border border-sky-200">CPP (Pria)</span>`,
+        'Keluarga Wanita': `<span class="px-2 py-0.5 rounded-lg bg-rose-50 text-rose-800 text-[10px] font-bold border border-rose-200">CPW (Wanita)</span>`,
+        'Bersama': `<span class="px-2 py-0.5 rounded-lg bg-amber-50 text-amber-900 text-[10px] font-bold border border-amber-200">Bersama</span>`
+      };
 
       tbody.innerHTML = filtered.map(item => {
         const est = Number(item.estimated_amount || 0);
         const act = Number(item.actual_amount || 0);
         const paid = Number(item.paid_amount || 0);
         const status = item.payment_status || 'unpaid';
-
-        const statusBadges = {
-          unpaid: `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-100 text-rose-800 border border-rose-200">Belum Bayar</span>`,
-          dp_1: `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-sky-100 text-sky-800 border border-sky-200">DP 1</span>`,
-          termin: `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-200">Termin</span>`,
-          paid: `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">Lunas</span>`
-        };
-
-        const fundingBadges = {
-          'Keluarga Pria': `<span class="px-2 py-0.5 rounded-lg bg-sky-50 text-sky-800 text-[10px] font-bold border border-sky-200">CPP (Pria)</span>`,
-          'Keluarga Wanita': `<span class="px-2 py-0.5 rounded-lg bg-rose-50 text-rose-800 text-[10px] font-bold border border-rose-200">CPW (Wanita)</span>`,
-          'Bersama': `<span class="px-2 py-0.5 rounded-lg bg-amber-50 text-amber-900 text-[10px] font-bold border border-amber-200">Bersama</span>`
-        };
-
         const dueFormatted = item.due_date ? formatDateIndo(item.due_date) : '-';
 
         return `
@@ -1360,6 +1378,70 @@
           </tr>
         `;
       }).join('');
+
+      if (mobileContainer) {
+        mobileContainer.innerHTML = filtered.map(item => {
+          const est = Number(item.estimated_amount || 0);
+          const act = Number(item.actual_amount || 0);
+          const paid = Number(item.paid_amount || 0);
+          const status = item.payment_status || 'unpaid';
+          const dueFormatted = item.due_date ? formatDateIndo(item.due_date) : '-';
+
+          return `
+            <div class="p-4 space-y-3 bg-white">
+              <div class="flex items-start justify-between gap-2">
+                <div class="min-w-0">
+                  <div class="flex flex-wrap items-center gap-1.5 mb-1">
+                    <span class="text-[10px] font-bold uppercase tracking-wider text-amber-800 bg-amber-50 px-2 py-0.5 rounded-md border border-amber-200/70">${item.category}</span>
+                    ${fundingBadges[item.funding_source] || fundingBadges['Bersama']}
+                  </div>
+                  <h4 class="font-bold text-sm text-slate-900 leading-snug">${item.item_name}</h4>
+                  <p class="text-[11px] text-slate-500 mt-0.5">
+                    Vendor: <span class="font-semibold text-slate-700">${item.vendor_name || 'Belum diisi'}</span>
+                    ${item.vendor_contact ? ` • <span class="font-mono">${item.vendor_contact}</span>` : ''}
+                  </p>
+                </div>
+                <div class="shrink-0 text-right">
+                  ${statusBadges[status] || statusBadges.unpaid}
+                  <span class="text-[10px] text-slate-400 block mt-1">Tempo: ${dueFormatted}</span>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-3 gap-2 p-2.5 rounded-xl bg-stone-50 border border-stone-200/70 text-[11px]">
+                <div>
+                  <span class="text-[9px] text-slate-400 uppercase block">Estimasi</span>
+                  <span class="font-mono font-semibold text-slate-700">${formatRupiah(est)}</span>
+                </div>
+                <div>
+                  <span class="text-[9px] text-slate-400 uppercase block">Kontrak</span>
+                  <span class="font-mono font-bold text-slate-900">${formatRupiah(act)}</span>
+                </div>
+                <div>
+                  <span class="text-[9px] text-slate-400 uppercase block">Dibayar</span>
+                  <span class="font-mono font-bold text-emerald-700">${formatRupiah(paid)}</span>
+                </div>
+              </div>
+
+              <div class="flex items-center justify-end gap-2 pt-1">
+                <button 
+                  onclick="editBudgetItem('${item.id}')"
+                  class="px-3 py-1.5 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 text-xs font-bold inline-flex items-center gap-1 cursor-pointer"
+                >
+                  <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
+                  <span>Edit</span>
+                </button>
+                <button 
+                  onclick="deleteBudgetItem('${item.id}', '${item.item_name}')"
+                  class="px-3 py-1.5 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-xs font-bold inline-flex items-center gap-1 cursor-pointer"
+                >
+                  <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                  <span>Hapus</span>
+                </button>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
 
       lucide.createIcons();
     }
