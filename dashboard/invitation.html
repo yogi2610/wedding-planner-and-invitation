@@ -203,10 +203,22 @@
             onclick="switchToolTab('theme')" 
             data-tab="theme" 
             class="rail-btn active shrink-0 lg:w-full flex flex-col items-center justify-center py-2 px-3 lg:py-3 lg:px-1 gap-1 text-[10px] font-semibold rounded-lg lg:rounded-none hover:text-amber-400 transition-colors cursor-pointer whitespace-nowrap"
-            title="Pilih Tema & Palet Warna"
+            title="Pilih Tema, Tipografi & Transparansi Kartu"
           >
             <i data-lucide="palette" class="w-4 h-4 sm:w-5 sm:h-5"></i>
             <span>Tema</span>
+          </button>
+
+          <!-- 1B. Kustomisasi Cover -->
+          <button 
+            type="button" 
+            onclick="switchToolTab('cover')" 
+            data-tab="cover" 
+            class="rail-btn shrink-0 lg:w-full flex flex-col items-center justify-center py-2 px-3 lg:py-3 lg:px-1 gap-1 text-[10px] font-semibold rounded-lg lg:rounded-none hover:text-amber-400 transition-colors cursor-pointer whitespace-nowrap"
+            title="Jenis Cover, Background Cover, Kolase & Foto Sampul"
+          >
+            <i data-lucide="book-open" class="w-4 h-4 sm:w-5 sm:h-5"></i>
+            <span>Cover</span>
           </button>
 
           <!-- 2. Efek, Bunga & Bingkai -->
@@ -441,6 +453,274 @@
                     <option value="'Century Gothic', sans-serif">Century Gothic (Geometris Kontemporer)</option>
                     <option value="'Franklin Gothic Medium', sans-serif">Franklin Gothic (Tegas)</option>
                   </optgroup>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Pengaturan Opasitas / Transparansi Kartu -->
+          <div class="bg-white p-5 rounded-2xl border border-stone-200/90 shadow-2xs space-y-3">
+            <div class="flex items-center justify-between border-b border-stone-100 pb-2">
+              <div>
+                <h4 class="font-bold text-xs text-slate-800 flex items-center gap-1.5">
+                  <i data-lucide="layers" class="w-4 h-4 text-amber-600"></i>
+                  <span>Transparansi / Opasitas Kartu Undangan</span>
+                </h4>
+                <p class="text-[11px] text-slate-500 mt-0.5">Atur seberapa solid atau transparan efek kaca pada setiap kartu undangan.</p>
+              </div>
+              <span id="label-user-card-opacity" class="text-xs font-mono font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded border border-amber-200">95%</span>
+            </div>
+            <input 
+              type="range" 
+              id="slider-user-card-opacity" 
+              min="10" 
+              max="100" 
+              step="5" 
+              value="95" 
+              oninput="handleUserCardOpacityChange(this.value)" 
+              class="w-full accent-amber-600 cursor-pointer"
+            >
+            <div class="flex justify-between text-[10px] text-slate-400 font-mono">
+              <span>10% (Kaca Transparan)</span>
+              <span>55% (Semi-Transparan)</span>
+              <span>100% (Solid Penuh)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- =============================================================== -->
+        <!-- TOOL PANEL 1B: KUSTOMISASI COVER (JENIS COVER & BACKGROUND)     -->
+        <!-- =============================================================== -->
+        <div id="panel-cover" class="tool-panel hidden space-y-6">
+          <div>
+            <span class="text-[10px] uppercase tracking-widest text-amber-700 font-bold block mb-1">Sampul Pembuka</span>
+            <h3 class="font-serif text-xl font-bold text-slate-900 flex items-center gap-2">
+              <i data-lucide="book-open" class="w-5 h-5 text-amber-600"></i>
+              <span>Kustomisasi Sampul Depan (Cover)</span>
+            </h3>
+            <p class="text-xs text-slate-500 mt-1">Pilih gaya sampul undangan, latar belakang cover, logo monogram, dan foto pengantin di halaman depan.</p>
+          </div>
+
+          <!-- 1. Pilih Jenis Cover (3 Variasi) -->
+          <div class="bg-white p-5 rounded-2xl border border-stone-200/90 shadow-2xs space-y-3.5">
+            <div class="border-b border-stone-100 pb-2">
+              <label class="block text-xs font-bold text-slate-800">Jenis Sampul Depan (Cover Layout)</label>
+              <p class="text-[11px] text-slate-500 mt-0.5">Tentukan cara tamu melihat dan membuka halaman sampul undangan Anda.</p>
+            </div>
+
+            <div class="grid grid-cols-1 gap-2.5">
+              <label class="flex items-start gap-3 p-3 rounded-xl border border-stone-200 bg-stone-50/70 hover:border-amber-400 cursor-pointer transition-all">
+                <input type="radio" name="user_cover_style" value="classic" checked onchange="handleUserCoverStyleChange('classic')" class="mt-1 text-amber-600 accent-amber-600">
+                <div>
+                  <span class="text-xs font-bold text-slate-900 block">1. Cover Klasik (Card & Tombol Buka Undangan)</span>
+                  <span class="text-[11px] text-slate-500 leading-snug block mt-0.5">Menampilkan nama mempelai, bingkai foto opsional, kotak nama tamu, dan tombol "Buka Undangan".</span>
+                </div>
+              </label>
+
+              <label class="flex items-start gap-3 p-3 rounded-xl border border-stone-200 bg-stone-50/70 hover:border-amber-400 cursor-pointer transition-all">
+                <input type="radio" name="user_cover_style" value="collage_scroll" onchange="handleUserCoverStyleChange('collage_scroll')" class="mt-1 text-amber-600 accent-amber-600">
+                <div>
+                  <span class="text-xs font-bold text-slate-900 block">2. Kolase 4/6 Foto (Transisi Blur & Scroll ke Bawah)</span>
+                  <span class="text-[11px] text-slate-500 leading-snug block mt-0.5">Grid 4 atau 6 foto dengan transisi blur lembut ke solid color tempat nama tamu, lalu terbuka halus saat di-scroll ke bawah.</span>
+                </div>
+              </label>
+
+              <label class="flex items-start gap-3 p-3 rounded-xl border border-stone-200 bg-stone-50/70 hover:border-amber-400 cursor-pointer transition-all">
+                <input type="radio" name="user_cover_style" value="envelope" onchange="handleUserCoverStyleChange('envelope')" class="mt-1 text-amber-600 accent-amber-600">
+                <div>
+                  <span class="text-xs font-bold text-slate-900 block">3. Cover Amplop Surat Mewah</span>
+                  <span class="text-[11px] text-slate-500 leading-snug block mt-0.5">Menyerupai amplop undangan elegan dengan segel buka di tengah; saat dibuka bagian atas & bawah tergeser terpisah.</span>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <!-- 2. Background Cover (Lava Lamp vs Foto Upload + Dim Level) -->
+          <div id="user-cover-bg-section" class="bg-white p-5 rounded-2xl border border-stone-200/90 shadow-2xs space-y-3.5">
+            <div class="border-b border-stone-100 pb-2">
+              <label class="block text-xs font-bold text-slate-800">Background Layar Cover</label>
+              <p class="text-[11px] text-slate-500 mt-0.5">Pilih latar belakang cover menggunakan animasi cahaya Lava Lamp atau foto sampul full-screen.</p>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2 p-1 bg-stone-100 rounded-xl">
+              <button type="button" id="btn-user-coverbg-lava" onclick="handleUserCoverBgModeChange('lava_lamp')" class="py-2 px-3 rounded-lg text-xs font-bold text-center transition-all bg-white text-amber-800 shadow-2xs cursor-pointer">
+                🔮 Animasi Lava Lamp
+              </button>
+              <button type="button" id="btn-user-coverbg-photo" onclick="handleUserCoverBgModeChange('photo')" class="py-2 px-3 rounded-lg text-xs font-semibold text-center transition-all text-slate-600 hover:text-slate-900 cursor-pointer">
+                🖼️ Foto yang Diupload
+              </button>
+            </div>
+
+            <!-- Hidden Legacy Sync Checkbox -->
+            <input type="checkbox" id="toggle-cover-photo-as-bg" class="hidden" onchange="handleCoverPhotoAsBgToggle(this.checked)">
+
+            <!-- Pengaturan Dim Level Background Cover -->
+            <div id="cover-bg-dim-control" class="hidden p-3 rounded-xl bg-amber-50/60 border border-amber-200/70 space-y-1.5">
+              <div class="flex items-center justify-between text-[11px] font-bold text-slate-800">
+                <span class="flex items-center gap-1.5">
+                  <i data-lucide="sun-moon" class="w-3.5 h-3.5 text-amber-700"></i>
+                  <span>Tingkat Kegelapan (Dim Level) Foto Cover:</span>
+                </span>
+                <span id="label-cover-bg-dim" class="text-amber-700 font-mono">45%</span>
+              </div>
+              <input 
+                type="range" 
+                id="slider-cover-bg-dim" 
+                min="0" 
+                max="85" 
+                step="5" 
+                value="45" 
+                oninput="handleCoverBgDimChange(this.value)" 
+                class="w-full accent-amber-600 cursor-pointer"
+              >
+              <div class="flex justify-between text-[9px] text-slate-500 font-mono">
+                <span>0% (Terang Jelas)</span>
+                <span>45% (Seimbang)</span>
+                <span>85% (Gelap Elegan)</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 2B. Pengaturan Khusus Cover Kolase 4/6 Foto -->
+          <div id="user-cover-collage-box" class="hidden bg-white p-5 rounded-2xl border border-stone-200/90 shadow-2xs space-y-3.5">
+            <div class="flex items-center justify-between border-b border-stone-100 pb-2">
+              <div>
+                <h4 class="font-bold text-xs text-slate-900">Foto Kolase Cover (4 atau 6 Foto)</h4>
+                <p class="text-[11px] text-slate-400">Jika belum diisi, otomatis mengambil foto dari Galeri & Foto Sampul Anda.</p>
+              </div>
+              <span id="user-collage-count-badge" class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-900 font-mono">0 / 6</span>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2">
+              <button type="button" id="btn-user-collage-4" onclick="handleUserCollageCountChange(4)" class="py-2 px-3 rounded-xl border border-amber-400 bg-amber-50 text-amber-900 text-xs font-bold cursor-pointer">Grid 4 Foto (2×2)</button>
+              <button type="button" id="btn-user-collage-6" onclick="handleUserCollageCountChange(6)" class="py-2 px-3 rounded-xl border border-stone-200 bg-stone-50 text-slate-600 text-xs font-semibold cursor-pointer">Grid 6 Foto (2×3)</button>
+            </div>
+
+            <div>
+              <input type="file" id="user-collage-file-input" multiple accept="image/*" onchange="handleUserCollageUpload(event)" class="block w-full text-xs text-slate-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-amber-50 file:text-amber-800 hover:file:bg-amber-100 cursor-pointer">
+            </div>
+
+            <div id="user-collage-grid-preview" class="grid grid-cols-3 gap-2">
+              <!-- Injected via JS -->
+            </div>
+          </div>
+
+          <!-- 3. Logo / Monogram Sampul Depan -->
+          <div class="bg-white p-4 sm:p-5 rounded-2xl border border-stone-200/90 shadow-2xs space-y-3">
+            <div class="flex items-center justify-between border-b border-stone-100 pb-2">
+              <div class="flex items-center gap-2">
+                <span class="px-2 py-0.5 rounded-md bg-amber-100 text-amber-900 font-bold text-[10px]">LOGO</span>
+                <h4 class="font-serif text-base font-bold text-slate-900">Logo / Monogram Sampul</h4>
+              </div>
+              <label class="inline-flex items-center gap-1.5 text-[11px] font-semibold text-slate-600 cursor-pointer">
+                <input type="checkbox" id="toggle-show-cover-logo" checked onchange="handleCoverLogoVisibilityChange(this.checked)" class="rounded text-amber-600 focus:ring-amber-500">
+                <span>Tampilkan</span>
+              </label>
+            </div>
+            <p class="text-[11px] text-slate-500">Tampil tepat di atas tulisan "The Wedding Of" & Nama Mempelai saat sampul dibuka. Jika belum unggah, otomatis memakai placeholder bawaan tema.</p>
+
+            <div class="flex items-center gap-3.5">
+              <div class="relative w-16 h-16 rounded-2xl overflow-hidden bg-stone-50 border-2 border-dashed border-amber-300 shrink-0 flex items-center justify-center p-1.5">
+                <img id="preview-img-cover-logo" src="" alt="Logo Sampul" class="w-full h-full object-contain hidden">
+                <i data-lucide="award" id="placeholder-cover-logo" class="w-6 h-6 text-stone-300"></i>
+              </div>
+
+              <div class="space-y-2 flex-1 min-w-0">
+                <input type="file" id="file-input-cover-logo" accept="image/*" onchange="handleCoverLogoUpload(event)" class="hidden">
+                <div class="flex flex-wrap items-center gap-2">
+                  <button type="button" onclick="triggerCoverLogoUpload()" class="px-3.5 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 font-bold text-xs inline-flex items-center gap-1.5 transition-colors cursor-pointer">
+                    <i data-lucide="upload" class="w-3.5 h-3.5"></i>
+                    <span>Pilih Logo PNG/JPG</span>
+                  </button>
+                  <button type="button" id="btn-remove-cover-logo" onclick="removeCoverLogo()" class="hidden px-2.5 py-1.5 rounded-xl text-rose-600 hover:bg-rose-50 text-[11px] font-bold border border-rose-200 transition-colors cursor-pointer">
+                    Reset ke Placeholder
+                  </button>
+                </div>
+                <span id="badge-cover-logo-status" class="text-[10px] text-slate-400 block">Menggunakan placeholder default tema (jika tersedia)</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 4. Foto Utama Sampul Depan & Pengaturan Bingkai -->
+          <div class="bg-white p-4 sm:p-5 rounded-2xl border border-stone-200/90 shadow-2xs space-y-4">
+            <div class="flex items-center justify-between border-b border-stone-100 pb-2">
+              <div class="flex items-center gap-2">
+                <span class="px-2 py-0.5 rounded-md bg-amber-100 text-amber-900 font-bold text-[10px]">SAMPUL</span>
+                <h4 class="font-serif text-base font-bold text-slate-900">Foto Utama Sampul & Bingkai</h4>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-4">
+              <div class="relative w-20 h-28 rounded-2xl overflow-hidden bg-stone-100 border-2 border-amber-400 shrink-0 flex items-center justify-center shadow-xs">
+                <img id="preview-img-cover" src="" alt="Foto Sampul" class="w-full h-full object-cover hidden">
+                <span id="placeholder-cover-photo" class="text-2xl text-stone-300 font-serif font-bold">🖼️</span>
+                <div id="loading-cover-photo" class="absolute inset-0 bg-slate-900/60 hidden items-center justify-center text-white">
+                  <i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i>
+                </div>
+              </div>
+
+              <div class="space-y-2 flex-1">
+                <input type="file" id="file-input-cover" accept="image/*" onchange="handlePhotoUpload(event, 'cover')" class="hidden">
+
+                <div id="actions-empty-cover" class="space-y-1">
+                  <button type="button" onclick="triggerPhotoUpload('cover')" class="px-4 py-2 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 font-bold text-xs inline-flex items-center gap-1.5 transition-colors cursor-pointer">
+                    <i data-lucide="upload" class="w-3.5 h-3.5"></i>
+                    <span>Pilih Foto Sampul</span>
+                  </button>
+                  <p class="text-[10px] text-slate-400">Dipakai untuk bingkai sampul atau background penuh cover.</p>
+                </div>
+
+                <div id="actions-uploaded-cover" class="hidden space-y-2">
+                  <div class="flex items-center gap-2">
+                    <span id="badge-saved-cover" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-bold">
+                      <i data-lucide="check" class="w-3 h-3 text-emerald-600"></i>
+                      <span>✓ Foto Tersimpan</span>
+                    </span>
+                    <span id="badge-cover-compress" class="text-[10px] text-slate-400"></span>
+                  </div>
+                  <div class="flex flex-wrap items-center gap-2">
+                    <button type="button" onclick="triggerPhotoUpload('cover')" class="px-2.5 py-1 rounded-lg bg-stone-100 hover:bg-stone-200 text-slate-700 text-[11px] font-bold border border-stone-300 transition-colors cursor-pointer">Ganti Foto</button>
+                    <button type="button" id="btn-recrop-cover" onclick="openReCrop('cover')" class="px-2.5 py-1 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-800 text-[11px] font-bold border border-amber-200 transition-colors cursor-pointer">✂️ Sesuaikan / Crop</button>
+                    <button type="button" id="btn-remove-cover-photo" onclick="removePhoto('cover')" class="px-2.5 py-1 rounded-lg text-rose-600 hover:bg-rose-50 text-[11px] font-bold transition-colors cursor-pointer">Hapus Foto</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="space-y-2.5 pt-2 border-t border-stone-100">
+              <div class="flex items-center justify-between p-2.5 rounded-xl bg-stone-50 border border-stone-200/70">
+                <div>
+                  <span class="text-xs font-bold text-slate-800 block">Aktifkan Bingkai Foto di Cover (Mode Klasik)</span>
+                  <span class="text-[10px] text-slate-500 block">Tampilkan foto mempelai di dalam bingkai sampul depan</span>
+                </div>
+                <label class="relative inline-flex items-center cursor-pointer">
+                  <input type="checkbox" id="toggle-cover-show-frame" onchange="handleCoverShowFrameToggle(this.checked)" checked class="sr-only peer">
+                  <div class="w-9 h-5 bg-stone-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-stone-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-amber-600"></div>
+                </label>
+              </div>
+            </div>
+
+            <div id="cover-frame-style-row" class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1 border-t border-stone-100">
+              <div>
+                <label for="select-cover-frame-shape" class="block text-xs font-bold text-slate-700 mb-1">Bentuk Bingkai Foto Sampul:</label>
+                <select id="select-cover-frame-shape" onchange="handleCoverFrameShapeChange(this.value)" class="w-full px-3 py-2 rounded-xl border border-stone-300 text-xs font-semibold focus:ring-2 focus:ring-amber-500/40 focus:outline-none bg-white cursor-pointer">
+                  <option value="grand_arch">🏛️ Grand Arch (Kubah Lengkung Tinggi)</option>
+                  <option value="classic_oval">🌿 Classic Oval (Oval Portret Mewah)</option>
+                  <option value="circle_royal">⭕ Circle Royal (Lingkaran Cincin)</option>
+                  <option value="octagon_heritage">👑 Octagon Heritage (Segi Delapan Keraton)</option>
+                  <option value="teardrop_botanical">🍃 Teardrop Botanical (Kubah Daun Asimetris)</option>
+                  <option value="rounded_rect">🖼️ Persegi Panjang Modern (Editorial)</option>
+                  <option value="polaroid">📷 Polaroid Klasik</option>
+                </select>
+              </div>
+
+              <div>
+                <label for="select-cover-frame-ornament" class="block text-xs font-bold text-slate-700 mb-1">Hiasan di Sekeliling Bingkai Sampul:</label>
+                <select id="select-cover-frame-ornament" onchange="handleCoverFrameOrnamentChange(this.value)" class="w-full px-3 py-2 rounded-xl border border-stone-300 text-xs font-semibold focus:ring-2 focus:ring-amber-500/40 focus:outline-none bg-white cursor-pointer">
+                  <option value="floral_wreath">🌸 Karangan Bunga Melingkar (Wreath)</option>
+                  <option value="twin_gold_lines">✨ Garis Kembar Emas Berlian</option>
+                  <option value="javanese_carving">👑 Ukiran Jawa Keraton Klasik</option>
+                  <option value="minimal_clean">🍃 Minimalis Bersih (Clean Border)</option>
                 </select>
               </div>
             </div>
@@ -806,16 +1086,16 @@
         </div>
 
         <!-- =============================================================== -->
-        <!-- TOOL PANEL 3: SAMPUL & MEMPELAI -->
+        <!-- TOOL PANEL 3: DATA & PROFIL MEMPELAI -->
         <!-- =============================================================== -->
         <div id="panel-couple" class="tool-panel hidden space-y-6">
           <div>
             <span class="text-[10px] uppercase tracking-widest text-amber-700 font-bold block mb-1">Profil Pengantin</span>
             <h3 class="font-serif text-xl font-bold text-slate-900 flex items-center gap-2">
               <i data-lucide="heart" class="w-5 h-5 text-amber-600"></i>
-              <span>Sampul & Data Mempelai</span>
+              <span>Data & Foto Mempelai</span>
             </h3>
-            <p class="text-xs text-slate-500 mt-1">Lengkapi logo, foto sampul, nama, keluarga, dan foto profil calon pengantin.</p>
+            <p class="text-xs text-slate-500 mt-1">Lengkapi nama, orang tua, Instagram, dan foto profil calon pengantin pria & wanita. (Pengaturan sampul ada di tab Cover).</p>
           </div>
 
           <!-- Mobile Only: Slug URL Link Editor -->
@@ -826,213 +1106,6 @@
               <input type="text" id="wedding-slug-mobile" oninput="handleSlugInput(this.value)" placeholder="yogi-rina" class="bg-transparent text-amber-800 font-bold font-mono focus:outline-none flex-1 min-w-0 text-xs">
             </div>
             <span id="slug-validation-msg-mobile" class="text-[10px] text-emerald-600 font-semibold block">✅ Tersedia</span>
-          </div>
-
-          <!-- 0. Logo / Monogram Sampul Depan (Tampil di Atas Nama Mempelai) -->
-          <div class="bg-white p-4 sm:p-5 rounded-2xl border border-stone-200/90 shadow-2xs space-y-3">
-            <div class="flex items-center justify-between border-b border-stone-100 pb-2">
-              <div class="flex items-center gap-2">
-                <span class="px-2 py-0.5 rounded-md bg-amber-100 text-amber-900 font-bold text-[10px]">LOGO</span>
-                <h4 class="font-serif text-base font-bold text-slate-900">Logo / Monogram Sampul</h4>
-              </div>
-              <label class="inline-flex items-center gap-1.5 text-[11px] font-semibold text-slate-600 cursor-pointer">
-                <input type="checkbox" id="toggle-show-cover-logo" checked onchange="handleCoverLogoVisibilityChange(this.checked)" class="rounded text-amber-600 focus:ring-amber-500">
-                <span>Tampilkan</span>
-              </label>
-            </div>
-            <p class="text-[11px] text-slate-500">Tampil tepat di atas tulisan "The Wedding Of" & Nama Mempelai saat sampul dibuka. Jika belum unggah, otomatis memakai placeholder bawaan tema.</p>
-
-            <div class="flex items-center gap-3.5">
-              <div class="relative w-16 h-16 rounded-2xl overflow-hidden bg-stone-50 border-2 border-dashed border-amber-300 shrink-0 flex items-center justify-center p-1.5">
-                <img id="preview-img-cover-logo" src="" alt="Logo Sampul" class="w-full h-full object-contain hidden">
-                <i data-lucide="award" id="placeholder-cover-logo" class="w-6 h-6 text-stone-300"></i>
-              </div>
-
-              <div class="space-y-2 flex-1 min-w-0">
-                <input type="file" id="file-input-cover-logo" accept="image/*" onchange="handleCoverLogoUpload(event)" class="hidden">
-                <div class="flex flex-wrap items-center gap-2">
-                  <button type="button" onclick="triggerCoverLogoUpload()" class="px-3.5 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 font-bold text-xs inline-flex items-center gap-1.5 transition-colors cursor-pointer">
-                    <i data-lucide="upload" class="w-3.5 h-3.5"></i>
-                    <span>Pilih Logo PNG/JPG</span>
-                  </button>
-                  <button type="button" id="btn-remove-cover-logo" onclick="removeCoverLogo()" class="hidden px-2.5 py-1.5 rounded-xl text-rose-600 hover:bg-rose-50 text-[11px] font-bold border border-rose-200 transition-colors cursor-pointer">
-                    Reset ke Placeholder
-                  </button>
-                </div>
-                <span id="badge-cover-logo-status" class="text-[10px] text-slate-400 block">Menggunakan placeholder default tema (jika tersedia)</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- 1. Foto Sampul Depan Utama (Cover Photo) -->
-          <div class="bg-white p-4 sm:p-5 rounded-2xl border border-stone-200/90 shadow-2xs space-y-4">
-            <div class="flex items-center justify-between border-b border-stone-100 pb-2">
-              <div class="flex items-center gap-2">
-                <span class="px-2 py-0.5 rounded-md bg-amber-100 text-amber-900 font-bold text-[10px]">SAMPUL</span>
-                <h4 class="font-serif text-base font-bold text-slate-900">Foto Utama Sampul Depan</h4>
-              </div>
-            </div>
-
-            <div class="flex items-center gap-4">
-              <!-- Thumbnail Box -->
-              <div class="relative w-20 h-28 rounded-2xl overflow-hidden bg-stone-100 border-2 border-amber-400 shrink-0 flex items-center justify-center shadow-xs">
-                <img id="preview-img-cover" src="" alt="Foto Sampul" class="w-full h-full object-cover hidden">
-                <span id="placeholder-cover-photo" class="text-2xl text-stone-300 font-serif font-bold">🖼️</span>
-                <div id="loading-cover-photo" class="absolute inset-0 bg-slate-900/60 hidden items-center justify-center text-white">
-                  <i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i>
-                </div>
-              </div>
-
-              <!-- Controls Container -->
-              <div class="space-y-2 flex-1">
-                <input 
-                  type="file" 
-                  id="file-input-cover"
-                  accept="image/*" 
-                  onchange="handlePhotoUpload(event, 'cover')" 
-                  class="hidden"
-                >
-
-                <!-- Empty State Actions -->
-                <div id="actions-empty-cover" class="space-y-1">
-                  <button 
-                    type="button" 
-                    onclick="triggerPhotoUpload('cover')" 
-                    class="px-4 py-2 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 font-bold text-xs inline-flex items-center gap-1.5 transition-colors cursor-pointer"
-                  >
-                    <i data-lucide="upload" class="w-3.5 h-3.5"></i>
-                    <span>Pilih Foto Sampul</span>
-                  </button>
-                  <p class="text-[10px] text-slate-400">Rasio 3:4 (Portret), otomatis dikompresi WebP &lt; 150KB.</p>
-                </div>
-
-                <!-- Uploaded State Actions -->
-                <div id="actions-uploaded-cover" class="hidden space-y-2">
-                  <div class="flex items-center gap-2">
-                    <span id="badge-saved-cover" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-bold">
-                      <i data-lucide="check" class="w-3 h-3 text-emerald-600"></i>
-                      <span>✓ Foto Tersimpan</span>
-                    </span>
-                    <span id="badge-cover-compress" class="text-[10px] text-slate-400"></span>
-                  </div>
-                  <div class="flex flex-wrap items-center gap-2">
-                    <button 
-                      type="button" 
-                      onclick="triggerPhotoUpload('cover')" 
-                      class="px-2.5 py-1 rounded-lg bg-stone-100 hover:bg-stone-200 text-slate-700 text-[11px] font-bold border border-stone-300 transition-colors cursor-pointer"
-                    >
-                      Ganti Foto
-                    </button>
-                    <button 
-                      type="button" 
-                      id="btn-recrop-cover" 
-                      onclick="openReCrop('cover')" 
-                      class="px-2.5 py-1 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-800 text-[11px] font-bold border border-amber-200 transition-colors cursor-pointer"
-                    >
-                      ✂️ Sesuaikan / Crop
-                    </button>
-                    <button 
-                      type="button" 
-                      id="btn-remove-cover-photo" 
-                      onclick="removePhoto('cover')" 
-                      class="px-2.5 py-1 rounded-lg text-rose-600 hover:bg-rose-50 text-[11px] font-bold transition-colors cursor-pointer"
-                    >
-                      Hapus Foto
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Opsi Tampilan Foto Sampul (Bingkai vs Background Cover Penuh) -->
-            <div class="space-y-2.5 pt-2 border-t border-stone-100">
-              <div class="flex items-center justify-between p-2.5 rounded-xl bg-stone-50 border border-stone-200/70">
-                <div>
-                  <span class="text-xs font-bold text-slate-800 block">Aktifkan Bingkai Foto di Cover</span>
-                  <span class="text-[10px] text-slate-500 block">Tampilkan foto mempelai di dalam bingkai sampul depan</span>
-                </div>
-                <label class="relative inline-flex items-center cursor-pointer">
-                  <input type="checkbox" id="toggle-cover-show-frame" onchange="handleCoverShowFrameToggle(this.checked)" checked class="sr-only peer">
-                  <div class="w-9 h-5 bg-stone-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-stone-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-amber-600"></div>
-                </label>
-              </div>
-
-              <div class="flex items-center justify-between p-2.5 rounded-xl bg-stone-50 border border-stone-200/70">
-                <div>
-                  <span class="text-xs font-bold text-slate-800 block">Jadikan Foto sebagai Background Cover</span>
-                  <span class="text-[10px] text-slate-500 block">Menampilkan foto sampul secara penuh di belakang teks cover</span>
-                </div>
-                <label class="relative inline-flex items-center cursor-pointer">
-                  <input type="checkbox" id="toggle-cover-photo-as-bg" onchange="handleCoverPhotoAsBgToggle(this.checked)" class="sr-only peer">
-                  <div class="w-9 h-5 bg-stone-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-stone-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-amber-600"></div>
-                </label>
-              </div>
-
-              <!-- Pengaturan Dim Level Background Cover -->
-              <div id="cover-bg-dim-control" class="hidden p-3 rounded-xl bg-amber-50/60 border border-amber-200/70 space-y-1.5">
-                <div class="flex items-center justify-between text-[11px] font-bold text-slate-800">
-                  <span class="flex items-center gap-1.5">
-                    <i data-lucide="sun-moon" class="w-3.5 h-3.5 text-amber-700"></i>
-                    <span>Tingkat Kegelapan (Dim Level) Foto Cover:</span>
-                  </span>
-                  <span id="label-cover-bg-dim" class="text-amber-700 font-mono">45%</span>
-                </div>
-                <input 
-                  type="range" 
-                  id="slider-cover-bg-dim" 
-                  min="0" 
-                  max="85" 
-                  step="5" 
-                  value="45" 
-                  oninput="handleCoverBgDimChange(this.value)" 
-                  class="w-full accent-amber-600 cursor-pointer"
-                >
-                <div class="flex justify-between text-[9px] text-slate-500 font-mono">
-                  <span>0% (Terang Jelas)</span>
-                  <span>45% (Seimbang)</span>
-                  <span>85% (Gelap Elegan)</span>
-                </div>
-              </div>
-            </div>
-
-            <div id="cover-frame-style-row" class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1 border-t border-stone-100">
-              <!-- Pilihan Bentuk Bingkai Sampul -->
-              <div>
-                <label for="select-cover-frame-shape" class="block text-xs font-bold text-slate-700 mb-1">
-                  Bentuk Bingkai Foto Sampul:
-                </label>
-                <select 
-                  id="select-cover-frame-shape" 
-                  onchange="handleCoverFrameShapeChange(this.value)" 
-                  class="w-full px-3 py-2 rounded-xl border border-stone-300 text-xs font-semibold focus:ring-2 focus:ring-amber-500/40 focus:outline-none bg-white cursor-pointer"
-                >
-                  <option value="grand_arch">🏛️ Grand Arch (Kubah Lengkung Tinggi)</option>
-                  <option value="classic_oval">🌿 Classic Oval (Oval Portret Mewah)</option>
-                  <option value="circle_royal">⭕ Circle Royal (Lingkaran Cincin)</option>
-                  <option value="octagon_heritage">👑 Octagon Heritage (Segi Delapan Keraton)</option>
-                  <option value="teardrop_botanical">🍃 Teardrop Botanical (Kubah Daun Asimetris)</option>
-                  <option value="rounded_rect">🖼️ Persegi Panjang Modern (Editorial)</option>
-                  <option value="polaroid">📷 Polaroid Klasik</option>
-                </select>
-              </div>
-
-              <!-- Pilihan Ornamen Hiasan Bingkai Sampul -->
-              <div>
-                <label for="select-cover-frame-ornament" class="block text-xs font-bold text-slate-700 mb-1">
-                  Hiasan di Sekeliling Bingkai Sampul:
-                </label>
-                <select 
-                  id="select-cover-frame-ornament" 
-                  onchange="handleCoverFrameOrnamentChange(this.value)" 
-                  class="w-full px-3 py-2 rounded-xl border border-stone-300 text-xs font-semibold focus:ring-2 focus:ring-amber-500/40 focus:outline-none bg-white cursor-pointer"
-                >
-                  <option value="floral_wreath">🌸 Karangan Bunga Melingkar (Wreath)</option>
-                  <option value="twin_gold_lines">✨ Garis Kembar Emas Berlian</option>
-                  <option value="javanese_carving">👑 Ukiran Jawa Keraton Klasik</option>
-                  <option value="minimal_clean">🍃 Minimalis Bersih (Clean Border)</option>
-                </select>
-              </div>
-            </div>
           </div>
 
           <!-- 1B. Pembuka Seksi Identitas Mempelai (Bride & Groom Intro) -->
@@ -1844,9 +1917,14 @@
       hide_cover_logo: false,
       cover_frame_shape: 'grand_arch',
       cover_frame_ornament: 'floral_wreath',
+      cover_style: 'classic',
+      cover_bg_mode: 'lava_lamp',
       cover_show_frame: true,
       cover_photo_as_bg: false,
       cover_bg_dim: 45,
+      cover_collage_count: 4,
+      cover_collage_photos: [],
+      card_opacity: 95,
       custom_cover_frame_png: null,
       couple_intro_title: 'Bride & Groom',
       couple_intro_text: 'Dengan memohon rahmat dan ridho Allah SWT, perkenankanlah kami mengundang Bapak/Ibu/Saudara/i untuk menghadiri pernikahan putra-putri kami:',
@@ -2122,7 +2200,7 @@
         }
       }
 
-      // Cover Frame Shape, Ornament & Display Toggles
+      // Cover Frame Shape, Style, Background, Collage & Display Toggles
       const tplCfg = activeTpl?.config_json || {};
       const showFrameVal = customTheme.cover_show_frame !== undefined
         ? customTheme.cover_show_frame
@@ -2135,6 +2213,32 @@
       customTheme.cover_bg_dim = customTheme.cover_bg_dim !== undefined
         ? Number(customTheme.cover_bg_dim)
         : (tplCfg.cover_bg_dim !== undefined ? Number(tplCfg.cover_bg_dim) : 45);
+      customTheme.cover_style = customTheme.cover_style || tplCfg.cover_style || 'classic';
+      customTheme.cover_bg_mode = customTheme.cover_bg_mode || tplCfg.cover_bg_mode || (customTheme.cover_photo_as_bg ? 'photo' : 'lava_lamp');
+      customTheme.cover_photo_as_bg = (customTheme.cover_bg_mode === 'photo');
+      customTheme.cover_collage_count = Number(customTheme.cover_collage_count || tplCfg.cover_collage_count || 4) === 6 ? 6 : 4;
+      if (!Array.isArray(customTheme.cover_collage_photos) || customTheme.cover_collage_photos.length === 0) {
+        if (Array.isArray(tplCfg.cover_collage_photos) && tplCfg.cover_collage_photos.length > 0) {
+          customTheme.cover_collage_photos = [...tplCfg.cover_collage_photos];
+        } else {
+          customTheme.cover_collage_photos = [];
+        }
+      }
+      customTheme.card_opacity = customTheme.card_opacity !== undefined
+        ? Number(customTheme.card_opacity)
+        : (tplCfg.card_opacity !== undefined ? Number(tplCfg.card_opacity) : 95);
+
+      const cardOpSlider = document.getElementById('slider-user-card-opacity');
+      const cardOpLabel = document.getElementById('label-user-card-opacity');
+      if (cardOpSlider) cardOpSlider.value = customTheme.card_opacity;
+      if (cardOpLabel) cardOpLabel.textContent = `${customTheme.card_opacity}%`;
+
+      const styleRadio = document.querySelector(`input[name="user_cover_style"][value="${customTheme.cover_style}"]`);
+      if (styleRadio) styleRadio.checked = true;
+      updateUserCoverStyleVisibility();
+      setUserCoverBgModeUI(customTheme.cover_bg_mode);
+      updateUserCollageCountUI(customTheme.cover_collage_count);
+      renderUserCollagePhotos();
 
       const toggleCoverFrameEl = document.getElementById('toggle-cover-show-frame');
       if (toggleCoverFrameEl) toggleCoverFrameEl.checked = customTheme.cover_show_frame;
@@ -2568,6 +2672,29 @@
             const lEl = document.getElementById('label-cover-bg-dim');
             if (sEl) sEl.value = customTheme.cover_bg_dim;
             if (lEl) lEl.textContent = `${customTheme.cover_bg_dim}%`;
+          }
+          if (cfg.cover_style) {
+            customTheme.cover_style = cfg.cover_style;
+            const rEl = document.querySelector(`input[name="user_cover_style"][value="${cfg.cover_style}"]`);
+            if (rEl) rEl.checked = true;
+            updateUserCoverStyleVisibility();
+          }
+          if (cfg.cover_bg_mode) {
+            customTheme.cover_bg_mode = cfg.cover_bg_mode;
+            customTheme.cover_photo_as_bg = (cfg.cover_bg_mode === 'photo');
+            setUserCoverBgModeUI(cfg.cover_bg_mode);
+            updateCoverBgDimControlVisibility();
+          }
+          if (cfg.cover_collage_count) {
+            customTheme.cover_collage_count = Number(cfg.cover_collage_count) === 6 ? 6 : 4;
+            updateUserCollageCountUI(customTheme.cover_collage_count);
+          }
+          if (cfg.card_opacity !== undefined) {
+            customTheme.card_opacity = Number(cfg.card_opacity);
+            const cS = document.getElementById('slider-user-card-opacity');
+            const cL = document.getElementById('label-user-card-opacity');
+            if (cS) cS.value = customTheme.card_opacity;
+            if (cL) cL.textContent = `${customTheme.card_opacity}%`;
           }
           if (cfg.cover_frame_ornament) {
             customTheme.cover_frame_ornament = cfg.cover_frame_ornament;
@@ -3006,6 +3133,128 @@
       const lbl = document.getElementById('label-cover-bg-dim');
       if (lbl) lbl.textContent = `${safeVal}%`;
       broadcastToIframe();
+    }
+
+    function handleUserCardOpacityChange(val) {
+      const num = parseInt(val, 10);
+      const safeVal = isNaN(num) ? 95 : Math.max(10, Math.min(100, num));
+      customTheme.card_opacity = safeVal;
+      const lbl = document.getElementById('label-user-card-opacity');
+      if (lbl) lbl.textContent = `${safeVal}%`;
+      broadcastToIframe();
+    }
+
+    function handleUserCoverStyleChange(style) {
+      customTheme.cover_style = style || 'classic';
+      updateUserCoverStyleVisibility();
+      broadcastToIframe('RESET_AND_UPDATE_PREVIEW');
+    }
+
+    function updateUserCoverStyleVisibility() {
+      const style = customTheme.cover_style || 'classic';
+      const bgSection = document.getElementById('user-cover-bg-section');
+      const collageBox = document.getElementById('user-cover-collage-box');
+      if (bgSection) bgSection.classList.toggle('hidden', style === 'collage_scroll');
+      if (collageBox) collageBox.classList.toggle('hidden', style !== 'collage_scroll');
+    }
+
+    function handleUserCoverBgModeChange(mode) {
+      const cleanMode = mode === 'photo' ? 'photo' : 'lava_lamp';
+      customTheme.cover_bg_mode = cleanMode;
+      customTheme.cover_photo_as_bg = (cleanMode === 'photo');
+      const legacyToggle = document.getElementById('toggle-cover-photo-as-bg');
+      if (legacyToggle) legacyToggle.checked = customTheme.cover_photo_as_bg;
+      setUserCoverBgModeUI(cleanMode);
+      updateCoverBgDimControlVisibility();
+      broadcastToIframe();
+    }
+
+    function setUserCoverBgModeUI(mode) {
+      const btnLava = document.getElementById('btn-user-coverbg-lava');
+      const btnPhoto = document.getElementById('btn-user-coverbg-photo');
+      const activeCls = ['bg-white', 'text-amber-800', 'shadow-2xs', 'font-bold'];
+      const inactiveCls = ['text-slate-600', 'font-semibold'];
+      if (btnLava) {
+        if (mode !== 'photo') { btnLava.classList.add(...activeCls); btnLava.classList.remove(...inactiveCls); }
+        else { btnLava.classList.remove(...activeCls); btnLava.classList.add(...inactiveCls); }
+      }
+      if (btnPhoto) {
+        if (mode === 'photo') { btnPhoto.classList.add(...activeCls); btnPhoto.classList.remove(...inactiveCls); }
+        else { btnPhoto.classList.remove(...activeCls); btnPhoto.classList.add(...inactiveCls); }
+      }
+    }
+
+    function handleUserCollageCountChange(count) {
+      customTheme.cover_collage_count = Number(count) === 6 ? 6 : 4;
+      updateUserCollageCountUI(customTheme.cover_collage_count);
+      broadcastToIframe();
+    }
+
+    function updateUserCollageCountUI(count) {
+      const btn4 = document.getElementById('btn-user-collage-4');
+      const btn6 = document.getElementById('btn-user-collage-6');
+      if (btn4 && btn6) {
+        if (Number(count) === 6) {
+          btn6.className = 'py-2 px-3 rounded-xl border border-amber-400 bg-amber-50 text-amber-900 text-xs font-bold cursor-pointer';
+          btn4.className = 'py-2 px-3 rounded-xl border border-stone-200 bg-stone-50 text-slate-600 text-xs font-semibold cursor-pointer';
+        } else {
+          btn4.className = 'py-2 px-3 rounded-xl border border-amber-400 bg-amber-50 text-amber-900 text-xs font-bold cursor-pointer';
+          btn6.className = 'py-2 px-3 rounded-xl border border-stone-200 bg-stone-50 text-slate-600 text-xs font-semibold cursor-pointer';
+        }
+      }
+    }
+
+    async function handleUserCollageUpload(e) {
+      const files = Array.from(e.target.files || []);
+      if (!files.length) return;
+      if (!Array.isArray(customTheme.cover_collage_photos)) customTheme.cover_collage_photos = [];
+      const remaining = 6 - customTheme.cover_collage_photos.length;
+      if (remaining <= 0) {
+        showToast('Maksimal 6 foto kolase cover.', 'warning');
+        return;
+      }
+      showToast(`Mengunggah ${Math.min(files.length, remaining)} foto kolase cover...`, 'info');
+      for (const file of files.slice(0, remaining)) {
+        try {
+          const res = await uploadWeddingImage(file, 'cover_collage', 900, 0.78);
+          customTheme.cover_collage_photos.push(res.url);
+        } catch (err) {
+          console.error('Upload collage error:', err);
+        }
+      }
+      renderUserCollagePhotos();
+      broadcastToIframe();
+      await persistCustomThemeImmediate();
+      e.target.value = '';
+    }
+
+    async function removeUserCollagePhoto(idx) {
+      if (!Array.isArray(customTheme.cover_collage_photos)) return;
+      customTheme.cover_collage_photos.splice(idx, 1);
+      renderUserCollagePhotos();
+      broadcastToIframe();
+      await persistCustomThemeImmediate();
+    }
+
+    function renderUserCollagePhotos() {
+      const container = document.getElementById('user-collage-grid-preview');
+      const badge = document.getElementById('user-collage-count-badge');
+      const list = Array.isArray(customTheme.cover_collage_photos) ? customTheme.cover_collage_photos : [];
+      if (badge) badge.textContent = `${list.length} / 6`;
+      if (!container) return;
+      if (!list.length) {
+        container.innerHTML = `<div class="col-span-3 p-3 text-center text-[11px] text-slate-400 border border-dashed border-stone-200 rounded-xl">Belum ada foto khusus kolase (otomatis memakai Galeri & Foto Sampul).</div>`;
+        return;
+      }
+      container.innerHTML = list.map((url, idx) => `
+        <div class="relative group aspect-[3/4] rounded-lg overflow-hidden border border-stone-200 bg-stone-100">
+          <img src="${url}" alt="Kolase ${idx + 1}" class="w-full h-full object-cover">
+          <button type="button" onclick="removeUserCollagePhoto(${idx})" class="absolute top-1 right-1 w-5 h-5 rounded-full bg-rose-600 text-white flex items-center justify-center opacity-90 hover:opacity-100 cursor-pointer shadow-xs" title="Hapus">
+            <i data-lucide="x" class="w-3 h-3"></i>
+          </button>
+        </div>
+      `).join('');
+      if (window.lucide) lucide.createIcons();
     }
 
     function handleCoupleIntroChange() {

@@ -289,9 +289,9 @@
             type="button" 
             onclick="switchStudioTab('identity')" 
             id="tab-btn-identity" 
-            class="studio-tab-btn flex-1 min-w-[120px] py-2.5 px-4 min-h-[42px] flex-shrink-0 inline-flex items-center justify-center gap-2 text-sm font-semibold rounded-xl transition-all bg-slate-900 text-white shadow-xs cursor-pointer"
+            class="studio-tab-btn flex-1 min-w-[100px] py-2.5 px-3 min-h-[42px] flex-shrink-0 inline-flex items-center justify-center gap-1.5 text-xs font-semibold rounded-xl transition-all bg-slate-900 text-white shadow-xs cursor-pointer whitespace-nowrap"
           >
-            <i data-lucide="info" class="w-4 h-4"></i>
+            <i data-lucide="info" class="w-3.5 h-3.5"></i>
             <span>A. Identitas</span>
           </button>
           
@@ -299,30 +299,50 @@
             type="button" 
             onclick="switchStudioTab('palette')" 
             id="tab-btn-palette" 
-            class="studio-tab-btn flex-1 min-w-[120px] py-2.5 px-4 min-h-[42px] flex-shrink-0 inline-flex items-center justify-center gap-2 text-sm font-semibold rounded-xl transition-all text-slate-600 hover:text-slate-900 hover:bg-slate-100 cursor-pointer"
+            class="studio-tab-btn flex-1 min-w-[115px] py-2.5 px-3 min-h-[42px] flex-shrink-0 inline-flex items-center justify-center gap-1.5 text-xs font-semibold rounded-xl transition-all text-slate-600 hover:text-slate-900 hover:bg-slate-100 cursor-pointer whitespace-nowrap"
           >
-            <i data-lucide="palette" class="w-4 h-4"></i>
+            <i data-lucide="palette" class="w-3.5 h-3.5"></i>
             <span>B. Warna & Font</span>
+          </button>
+
+          <button 
+            type="button" 
+            onclick="switchStudioTab('cover')" 
+            id="tab-btn-cover" 
+            class="studio-tab-btn flex-1 min-w-[100px] py-2.5 px-3 min-h-[42px] flex-shrink-0 inline-flex items-center justify-center gap-1.5 text-xs font-semibold rounded-xl transition-all text-slate-600 hover:text-slate-900 hover:bg-slate-100 cursor-pointer whitespace-nowrap"
+          >
+            <i data-lucide="book-open" class="w-3.5 h-3.5"></i>
+            <span>C. Cover</span>
           </button>
           
           <button 
             type="button" 
             onclick="switchStudioTab('assets')" 
             id="tab-btn-assets" 
-            class="studio-tab-btn flex-1 min-w-[120px] py-2.5 px-4 min-h-[42px] flex-shrink-0 inline-flex items-center justify-center gap-2 text-sm font-semibold rounded-xl transition-all text-slate-600 hover:text-slate-900 hover:bg-slate-100 cursor-pointer"
+            class="studio-tab-btn flex-1 min-w-[110px] py-2.5 px-3 min-h-[42px] flex-shrink-0 inline-flex items-center justify-center gap-1.5 text-xs font-semibold rounded-xl transition-all text-slate-600 hover:text-slate-900 hover:bg-slate-100 cursor-pointer whitespace-nowrap"
           >
-            <i data-lucide="image" class="w-4 h-4"></i>
-            <span>C. Aset PNG Seksi</span>
+            <i data-lucide="image" class="w-3.5 h-3.5"></i>
+            <span>D. Aset Seksi</span>
           </button>
           
           <button 
             type="button" 
             onclick="switchStudioTab('effects')" 
             id="tab-btn-effects" 
-            class="studio-tab-btn flex-1 min-w-[120px] py-2.5 px-4 min-h-[42px] flex-shrink-0 inline-flex items-center justify-center gap-2 text-sm font-semibold rounded-xl transition-all text-slate-600 hover:text-slate-900 hover:bg-slate-100 cursor-pointer"
+            class="studio-tab-btn flex-1 min-w-[105px] py-2.5 px-3 min-h-[42px] flex-shrink-0 inline-flex items-center justify-center gap-1.5 text-xs font-semibold rounded-xl transition-all text-slate-600 hover:text-slate-900 hover:bg-slate-100 cursor-pointer whitespace-nowrap"
           >
-            <i data-lucide="sparkles" class="w-4 h-4"></i>
-            <span>D. Animasi & Fisika</span>
+            <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
+            <span>E. Animasi</span>
+          </button>
+
+          <button 
+            type="button" 
+            onclick="switchStudioTab('placeholder')" 
+            id="tab-btn-placeholder" 
+            class="studio-tab-btn flex-1 min-w-[130px] py-2.5 px-3 min-h-[42px] flex-shrink-0 inline-flex items-center justify-center gap-1.5 text-xs font-semibold rounded-xl transition-all text-slate-600 hover:text-slate-900 hover:bg-slate-100 cursor-pointer whitespace-nowrap"
+          >
+            <i data-lucide="file-text" class="w-3.5 h-3.5"></i>
+            <span>F. Teks Placeholder</span>
           </button>
         </div>
 
@@ -586,6 +606,34 @@
               </div>
             </div>
 
+            <!-- Card Opacity Slider -->
+            <div class="pt-3 border-t border-slate-100">
+              <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80 space-y-1.5">
+                <div class="flex items-center justify-between text-xs font-bold text-slate-700">
+                  <span class="flex items-center gap-1.5">
+                    <i data-lucide="layers" class="w-3.5 h-3.5 text-amber-600"></i>
+                    <span>Transparansi / Opasitas Kartu Undangan (Card Opacity):</span>
+                  </span>
+                  <span id="label-master-card-opacity" class="text-amber-600 font-mono">95%</span>
+                </div>
+                <input 
+                  type="range" 
+                  id="slider-master-card-opacity" 
+                  min="10" 
+                  max="100" 
+                  step="5" 
+                  value="95" 
+                  oninput="handleMasterCardOpacityChange(this.value)" 
+                  class="w-full accent-amber-600 cursor-pointer"
+                >
+                <div class="flex justify-between text-[10px] text-slate-400 font-mono">
+                  <span>10% (Kaca Transparan)</span>
+                  <span>55% (Semi-Transparan)</span>
+                  <span>100% (Solid Penuh)</span>
+                </div>
+              </div>
+            </div>
+
             <!-- 8 Quick Palette Presets -->
             <div class="pt-2 border-t border-slate-100">
               <span class="text-xs font-bold text-slate-700 block mb-2">Preset Palet Warna Cepat:</span>
@@ -762,7 +810,222 @@
         </div>
 
         <!-- ============================================================== -->
-        <!-- TAB PANEL C: STUDIO ILUSTRASI & ASET PNG PER SEKSI             -->
+        <!-- TAB PANEL C: KUSTOMISASI COVER (JENIS, BACKGROUND, KOLASE, FRAME) -->
+        <!-- ============================================================== -->
+        <div id="panel-cover" class="studio-panel hidden space-y-4">
+          
+          <!-- 1. Pilihan Jenis Cover Default Tema -->
+          <div class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-2xs space-y-3.5">
+            <div class="border-b border-slate-100 pb-2.5">
+              <h3 class="font-serif text-base font-bold text-slate-900 flex items-center gap-2">
+                <i data-lucide="book-open" class="w-4 h-4 text-amber-600"></i>
+                <span>1. Jenis Sampul Depan Bawaan Tema</span>
+              </h3>
+              <p class="text-xs text-slate-400 mt-0.5">Tentukan gaya sampul depan default ketika pengantin memilih template ini.</p>
+            </div>
+
+            <div class="grid grid-cols-1 gap-2.5">
+              <label class="flex items-start gap-3 p-3 rounded-xl border border-slate-200 bg-slate-50/70 hover:border-amber-400 cursor-pointer transition-all">
+                <input type="radio" name="master_cover_style" value="classic" checked onchange="handleMasterCoverStyleChange('classic')" class="mt-1 text-amber-600 accent-amber-600">
+                <div>
+                  <span class="text-xs font-bold text-slate-900 block">A. Cover Klasik (Card Tamu & Tombol Buka Undangan)</span>
+                  <span class="text-[11px] text-slate-500 block mt-0.5">Gaya klasik elegan dengan bingkai foto opsional, kotak nama tamu, dan tombol "Buka Undangan".</span>
+                </div>
+              </label>
+
+              <label class="flex items-start gap-3 p-3 rounded-xl border border-slate-200 bg-slate-50/70 hover:border-amber-400 cursor-pointer transition-all">
+                <input type="radio" name="master_cover_style" value="collage_scroll" onchange="handleMasterCoverStyleChange('collage_scroll')" class="mt-1 text-amber-600 accent-amber-600">
+                <div>
+                  <span class="text-xs font-bold text-slate-900 block">B. Cover Kolase 4/6 Foto (Transisi Blur & Scroll ke Bawah)</span>
+                  <span class="text-[11px] text-slate-500 block mt-0.5">Menampilkan grid 4/6 foto dengan gradasi blur halus menuju solid color untuk teks nama & instruksi "Scroll ke bawah".</span>
+                </div>
+              </label>
+
+              <label class="flex items-start gap-3 p-3 rounded-xl border border-slate-200 bg-slate-50/70 hover:border-amber-400 cursor-pointer transition-all">
+                <input type="radio" name="master_cover_style" value="envelope" onchange="handleMasterCoverStyleChange('envelope')" class="mt-1 text-amber-600 accent-amber-600">
+                <div>
+                  <span class="text-xs font-bold text-slate-900 block">C. Cover Amplop Surat Mewah</span>
+                  <span class="text-[11px] text-slate-500 block mt-0.5">Bentuk surat/amplop dengan segel tombol tengah; saat dibuka panel atas tergeser ke atas dan panel bawah ke bawah.</span>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <!-- 2. Background Layar Cover (Lava Lamp vs Foto Upload + Dim Level) -->
+          <div id="master-cover-bg-section" class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-2xs space-y-3.5">
+            <div class="border-b border-slate-100 pb-2.5">
+              <h3 class="font-serif text-base font-bold text-slate-900 flex items-center gap-2">
+                <i data-lucide="image" class="w-4 h-4 text-amber-600"></i>
+                <span>2. Latar Belakang Layar Cover</span>
+              </h3>
+              <p class="text-xs text-slate-400 mt-0.5">Pilih latar belakang cover default: Animasi Lava Lamp atau Foto Sampel Penuh.</p>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2 p-1 bg-slate-100 rounded-xl">
+              <button type="button" id="btn-master-coverbg-lava" onclick="handleMasterCoverBgModeChange('lava_lamp')" class="py-2 px-3 rounded-lg text-xs font-bold text-center transition-all bg-white text-slate-900 shadow-2xs cursor-pointer">
+                🔮 Animasi Lava Lamp
+              </button>
+              <button type="button" id="btn-master-coverbg-photo" onclick="handleMasterCoverBgModeChange('photo')" class="py-2 px-3 rounded-lg text-xs font-semibold text-center transition-all text-slate-600 hover:text-slate-900 cursor-pointer">
+                🖼️ Foto yang Diupload
+              </button>
+            </div>
+
+            <input type="checkbox" id="master-toggle-cover-photo-as-bg" class="hidden" onchange="handleCoverFrameChange()">
+
+            <!-- Dim Level Slider -->
+            <div id="master-cover-bg-dim-control" class="hidden p-3 rounded-xl bg-amber-50/70 border border-amber-200/70 space-y-1.5">
+              <div class="flex items-center justify-between text-[11px] font-bold text-slate-800">
+                <span>Tingkat Kegelapan (Dim Level) Foto Background Cover:</span>
+                <span id="label-master-cover-bg-dim" class="text-amber-700 font-mono">45%</span>
+              </div>
+              <input 
+                type="range" 
+                id="slider-master-cover-bg-dim" 
+                min="0" 
+                max="85" 
+                step="5" 
+                value="45" 
+                oninput="handleMasterCoverBgDimChange(this.value)" 
+                class="w-full accent-amber-600 cursor-pointer"
+              >
+              <div class="flex justify-between text-[9px] text-slate-500 font-mono">
+                <span>0% (Terang Jelas)</span>
+                <span>45% (Seimbang)</span>
+                <span>85% (Gelap Elegan)</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 2B. Pengaturan Foto Kolase Cover (Jika Cover Style = collage_scroll) -->
+          <div id="master-cover-collage-box" class="hidden bg-white p-5 rounded-2xl border border-slate-200/90 shadow-2xs space-y-3.5">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
+              <div>
+                <h3 class="font-serif text-base font-bold text-slate-900">Foto Kolase Cover Default (4 atau 6 Foto)</h3>
+                <p class="text-[11px] text-slate-400">Unggah 4 atau 6 foto sampel kolase (jika kosong otomatis memakai galeri sampel tema).</p>
+              </div>
+              <span id="master-collage-count-badge" class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-900 font-mono">0 / 6</span>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2">
+              <button type="button" id="btn-master-collage-4" onclick="handleMasterCollageCountChange(4)" class="py-2 px-3 rounded-xl border border-amber-400 bg-amber-50 text-amber-900 text-xs font-bold cursor-pointer">Grid 4 Foto (2×2)</button>
+              <button type="button" id="btn-master-collage-6" onclick="handleMasterCollageCountChange(6)" class="py-2 px-3 rounded-xl border border-slate-200 bg-slate-50 text-slate-600 text-xs font-semibold cursor-pointer">Grid 6 Foto (2×3)</button>
+            </div>
+
+            <div>
+              <input type="file" id="master-collage-file-input" multiple accept="image/*" onchange="handleMasterCollageUpload(event)" class="block w-full text-xs text-slate-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-slate-900 file:text-white hover:file:bg-slate-800 cursor-pointer">
+            </div>
+
+            <div id="master-collage-grid-preview" class="grid grid-cols-3 gap-2"></div>
+          </div>
+
+          <!-- 3. Logo / Ornamen Header Cover -->
+          <div class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-2xs space-y-3">
+            <div class="flex items-start sm:items-center justify-between gap-3">
+              <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-xl border border-dashed border-slate-300 bg-white flex items-center justify-center overflow-hidden shrink-0">
+                  <img id="preview-cover_header_png" src="" alt="Logo Placeholder" class="w-full h-full object-contain hidden">
+                  <i data-lucide="award" id="placeholder-cover_header_png" class="w-5 h-5 text-slate-300"></i>
+                </div>
+                <div>
+                  <span class="text-xs font-bold text-slate-800 block">Logo / Monogram Sampul Depan (Placeholder Default)</span>
+                  <p class="text-[11px] text-slate-400">Tampil di atas nama mempelai pada cover depan tema ini.</p>
+                </div>
+              </div>
+              <div class="flex items-center gap-1.5 shrink-0">
+                <input type="file" id="file-cover_header_png" accept="image/*" class="hidden" onchange="handleAssetUpload(event, 'cover_header_png')">
+                <button type="button" onclick="document.getElementById('file-cover_header_png').click()" class="px-2.5 py-1.5 rounded-lg bg-slate-900 text-white text-xs font-bold cursor-pointer">Unggah</button>
+                <button type="button" id="btn-del-cover_header_png" onclick="removeAssetUrl('cover_header_png')" class="hidden px-2 py-1.5 rounded-lg border border-rose-200 bg-rose-50 text-rose-700 text-xs font-semibold cursor-pointer">Hapus</button>
+              </div>
+            </div>
+            <input type="url" id="asset-url-cover_header_png" oninput="handleAssetUrlInput('cover_header_png', this.value)" placeholder="Tautan URL Logo Placeholder: https://..." class="w-full px-3 py-1.5 rounded-lg border border-slate-200 text-xs font-mono">
+          </div>
+
+          <!-- 4. Foto Sampel Pengantin & Pengaturan Bingkai Cover -->
+          <div class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-2xs space-y-3.5">
+            <div>
+              <h3 class="font-serif text-base font-bold text-slate-900">Foto Sampel & Bingkai Sampul Depan</h3>
+              <p class="text-[11px] text-slate-400">Foto sampel dan gaya bingkai untuk mode Cover Klasik maupun latar photo background.</p>
+            </div>
+
+            <!-- Sampel Foto Pengantin di Bingkai Sampul -->
+            <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
+              <div class="flex items-center justify-between">
+                <div>
+                  <span class="text-xs font-bold text-slate-800 block">Foto Sampel Pengantin (Cover Photo)</span>
+                  <p class="text-[11px] text-slate-400">Langsung tampil di Live Preview & dipakai sebagai foto contoh tema ini.</p>
+                </div>
+                <button type="button" id="btn-del-master-cover-photo" onclick="removeMasterCoverPhoto()" class="hidden text-[11px] font-bold text-rose-600 hover:underline cursor-pointer">Hapus Foto</button>
+              </div>
+              <div class="flex items-center gap-3">
+                <div class="relative w-16 h-20 rounded-xl overflow-hidden bg-white border-2 border-amber-400 shrink-0 flex items-center justify-center shadow-2xs">
+                  <img id="preview-master-cover-photo-img" src="" alt="Sampel Sampul" class="w-full h-full object-cover hidden">
+                  <span id="placeholder-master-cover-photo" class="text-xl text-slate-300 font-serif">🖼️</span>
+                </div>
+                <div class="flex-1 space-y-1">
+                  <input type="file" id="master-cover-photo-file" accept="image/*" class="hidden" onchange="handleMasterCoverPhotoUpload(event)">
+                  <button type="button" onclick="document.getElementById('master-cover-photo-file').click()" class="px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold inline-flex items-center gap-1.5 cursor-pointer">
+                    <i data-lucide="upload" class="w-3.5 h-3.5 text-amber-400"></i>
+                    <span>Pilih & Potong Foto</span>
+                  </button>
+                  <span class="text-[10px] text-slate-400 block" id="label-master-cover-status">Didukung editor potong & zoom WebP</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Toggle Bingkai -->
+            <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 border border-slate-200">
+              <div>
+                <span class="text-xs font-bold text-slate-800 block">Aktifkan Bingkai Foto di Cover (Mode Klasik)</span>
+                <span class="text-[10px] text-slate-500 block">Tampilkan foto sampel pengantin di dalam bingkai sampul depan</span>
+              </div>
+              <label class="relative inline-flex items-center cursor-pointer">
+                <input type="checkbox" id="master-toggle-cover-show-frame" onchange="handleCoverFrameChange()" checked class="sr-only peer">
+                <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-amber-600"></div>
+              </label>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label class="block text-[11px] font-bold text-slate-600 mb-1">Bentuk Bingkai Default:</label>
+                <select id="cover-frame-shape-select" onchange="handleCoverFrameChange()" class="w-full px-3 py-1.5 rounded-lg border border-slate-300 text-xs bg-white text-slate-800">
+                  <option value="grand_arch">Kubah Kubik Mewah (Grand Arch)</option>
+                  <option value="classic_oval">Oval Klasik (Classic Oval)</option>
+                  <option value="circle_royal">Lingkaran Kerajaan (Circle Royal)</option>
+                  <option value="octagon_heritage">Oktagon Warisan (Octagon)</option>
+                  <option value="teardrop_botanical">Tetesan Embun (Teardrop)</option>
+                  <option value="rounded_rect">Persegi Panjang Modern (Editorial)</option>
+                  <option value="polaroid">Polaroid Klasik</option>
+                  <option value="none">Tanpa Bingkai</option>
+                </select>
+              </div>
+
+              <div>
+                <label class="block text-[11px] font-bold text-slate-600 mb-1">Ornamen Bingkai Bawaan:</label>
+                <select id="cover-frame-ornament-select" onchange="handleCoverFrameChange()" class="w-full px-3 py-1.5 rounded-lg border border-slate-300 text-xs bg-white text-slate-800">
+                  <option value="floral_wreath">Karangan Bunga Melingkar (Floral Wreath)</option>
+                  <option value="twin_gold_lines">Garis Ganda Emas Klasik (Twin Gold Lines)</option>
+                  <option value="javanese_carving">Ukiran Mahkota Emas (Javanese Carving)</option>
+                  <option value="minimal_clean">Garis Minimalis Bersih (Minimal Clean)</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="pt-1.5 border-t border-slate-200/60">
+              <div class="flex items-center justify-between mb-1">
+                <span class="text-[11px] font-bold text-slate-600">Atau Unggah PNG Bingkai Kustom:</span>
+                <div class="flex items-center gap-1.5">
+                  <input type="file" id="file-custom_cover_frame_png" accept="image/png,image/webp" class="hidden" onchange="handleAssetUpload(event, 'custom_cover_frame_png')">
+                  <button type="button" onclick="document.getElementById('file-custom_cover_frame_png').click()" class="px-2 py-0.5 rounded bg-slate-900 text-white text-[11px] font-bold cursor-pointer">Unggah PNG</button>
+                  <button type="button" id="btn-del-custom_cover_frame_png" onclick="removeAssetUrl('custom_cover_frame_png')" class="hidden px-2 py-0.5 rounded border border-rose-200 bg-rose-50 text-rose-700 text-[11px] font-semibold cursor-pointer">Hapus</button>
+                </div>
+              </div>
+              <input type="url" id="asset-url-custom_cover_frame_png" oninput="handleAssetUrlInput('custom_cover_frame_png', this.value)" placeholder="Tautan URL PNG Bingkai: https://..." class="w-full px-3 py-1.5 rounded-lg border border-slate-200 text-xs font-mono">
+            </div>
+          </div>
+        </div>
+
+        <!-- ============================================================== -->
+        <!-- TAB PANEL D: STUDIO ILUSTRASI & ASET PNG PER SEKSI             -->
         <!-- ============================================================== -->
         <div id="panel-assets" class="studio-panel hidden space-y-4">
           
@@ -1003,147 +1266,6 @@
               <span>3. Ilustrasi Spesifik per Seksi Acara</span>
             </h3>
 
-            <!-- Slot A: Logo / Header Sampul Depan (Placeholder Default) -->
-            <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80 space-y-2.5">
-              <div class="flex items-start sm:items-center justify-between gap-3">
-                <div class="flex items-center gap-3">
-                  <div class="w-12 h-12 rounded-xl border border-dashed border-slate-300 bg-white flex items-center justify-center overflow-hidden shrink-0">
-                    <img id="preview-cover_header_png" src="" alt="Logo Placeholder" class="w-full h-full object-contain hidden">
-                    <i data-lucide="award" id="placeholder-cover_header_png" class="w-5 h-5 text-slate-300"></i>
-                  </div>
-                  <div>
-                    <span class="text-xs font-bold text-slate-800 block">Logo / Ornamen Sampul Depan (Placeholder Default)</span>
-                    <p class="text-[11px] text-slate-400">Tampil di atas nama mempelai pada cover depan (digunakan sebagai placeholder otomatis jika user belum mengunggah logo sendiri).</p>
-                  </div>
-                </div>
-                <div class="flex items-center gap-1.5 shrink-0">
-                  <input type="file" id="file-cover_header_png" accept="image/*" class="hidden" onchange="handleAssetUpload(event, 'cover_header_png')">
-                  <button type="button" onclick="document.getElementById('file-cover_header_png').click()" class="px-2.5 py-1.5 rounded-lg bg-slate-900 text-white text-xs font-bold cursor-pointer">Unggah</button>
-                  <button type="button" id="btn-del-cover_header_png" onclick="removeAssetUrl('cover_header_png')" class="hidden px-2 py-1.5 rounded-lg border border-rose-200 bg-rose-50 text-rose-700 text-xs font-semibold cursor-pointer">Hapus</button>
-                </div>
-              </div>
-              <input type="url" id="asset-url-cover_header_png" oninput="handleAssetUrlInput('cover_header_png', this.value)" placeholder="Tautan URL Logo Placeholder: https://..." class="w-full px-3 py-1.5 rounded-lg border border-slate-200 text-xs font-mono">
-            </div>
-
-            <!-- Slot B: Bingkai PNG Foto Sampul & Bentuk Bingkai Default -->
-            <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80 space-y-2.5">
-              <div>
-                <span class="text-xs font-bold text-slate-800 block">Bingkai & Ornamen Foto Sampul Depan</span>
-                <p class="text-[11px] text-slate-400">Bentuk bingkai default dan opsi upload PNG bingkai overlay kustom.</p>
-              </div>
-
-              <!-- Sampel Foto Pengantin di Bingkai Sampul -->
-              <div class="p-3.5 rounded-xl bg-white border border-slate-200 space-y-2">
-                <div class="flex items-center justify-between">
-                  <div>
-                    <span class="text-xs font-bold text-slate-800 block">Foto Sampel Pengantin di Dalam Bingkai Sampul</span>
-                    <p class="text-[11px] text-slate-400">Foto prewedding contoh yang tampil di bingkai sampul depan tema ini.</p>
-                  </div>
-                  <button type="button" id="btn-del-master-cover-photo" onclick="removeMasterCoverPhoto()" class="hidden text-[11px] font-bold text-rose-600 hover:underline cursor-pointer">Hapus Foto</button>
-                </div>
-                <div class="flex items-center gap-3">
-                  <div class="relative w-16 h-20 rounded-xl overflow-hidden bg-slate-100 border-2 border-amber-400 shrink-0 flex items-center justify-center shadow-2xs">
-                    <img id="preview-master-cover-photo-img" src="" alt="Sampel Sampul" class="w-full h-full object-cover hidden">
-                    <span id="placeholder-master-cover-photo" class="text-xl text-slate-300 font-serif">🖼️</span>
-                  </div>
-                  <div class="flex-1 space-y-1">
-                    <input type="file" id="master-cover-photo-file" accept="image/*" class="hidden" onchange="handleMasterCoverPhotoUpload(event)">
-                    <button type="button" onclick="document.getElementById('master-cover-photo-file').click()" class="px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold inline-flex items-center gap-1.5 cursor-pointer">
-                      <i data-lucide="upload" class="w-3.5 h-3.5 text-amber-400"></i>
-                      <span>Pilih & Potong Foto</span>
-                    </button>
-                    <span class="text-[10px] text-slate-400 block" id="label-master-cover-status">Didukung editor potong & zoom</span>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Toggle Tampilkan Bingkai & Jadikan Foto sebagai Background Penuh Cover -->
-              <div class="space-y-2 pt-1">
-                <div class="flex items-center justify-between p-2.5 rounded-xl bg-white border border-slate-200">
-                  <div>
-                    <span class="text-xs font-bold text-slate-800 block">Aktifkan Bingkai Foto di Cover (Default)</span>
-                    <span class="text-[10px] text-slate-500 block">Tampilkan foto sampel pengantin di dalam bingkai sampul depan</span>
-                  </div>
-                  <label class="relative inline-flex items-center cursor-pointer">
-                    <input type="checkbox" id="master-toggle-cover-show-frame" onchange="handleCoverFrameChange()" checked class="sr-only peer">
-                    <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-amber-600"></div>
-                  </label>
-                </div>
-
-                <div class="flex items-center justify-between p-2.5 rounded-xl bg-white border border-slate-200">
-                  <div>
-                    <span class="text-xs font-bold text-slate-800 block">Jadikan Foto Sampul sebagai Background Cover</span>
-                    <span class="text-[10px] text-slate-500 block">Tampilkan foto sampel memenuhi seluruh layar latar sampul depan</span>
-                  </div>
-                  <label class="relative inline-flex items-center cursor-pointer">
-                    <input type="checkbox" id="master-toggle-cover-photo-as-bg" onchange="handleCoverFrameChange()" class="sr-only peer">
-                    <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-amber-600"></div>
-                  </label>
-                </div>
-
-                <!-- Pengaturan Dim Level Background Cover Default -->
-                <div id="master-cover-bg-dim-control" class="hidden p-3 rounded-xl bg-amber-50/70 border border-amber-200/70 space-y-1.5">
-                  <div class="flex items-center justify-between text-[11px] font-bold text-slate-800">
-                    <span>Tingkat Kegelapan (Dim Level) Foto Background Cover:</span>
-                    <span id="label-master-cover-bg-dim" class="text-amber-700 font-mono">45%</span>
-                  </div>
-                  <input 
-                    type="range" 
-                    id="slider-master-cover-bg-dim" 
-                    min="0" 
-                    max="85" 
-                    step="5" 
-                    value="45" 
-                    oninput="handleMasterCoverBgDimChange(this.value)" 
-                    class="w-full accent-amber-600 cursor-pointer"
-                  >
-                  <div class="flex justify-between text-[9px] text-slate-500 font-mono">
-                    <span>0% (Terang Jelas)</span>
-                    <span>45% (Seimbang)</span>
-                    <span>85% (Gelap Elegan)</span>
-                  </div>
-                </div>
-              </div>
-
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div>
-                  <label class="block text-[11px] font-bold text-slate-600 mb-1">Bentuk Bingkai Default:</label>
-                  <select id="cover-frame-shape-select" onchange="handleCoverFrameChange()" class="w-full px-3 py-1.5 rounded-lg border border-slate-300 text-xs bg-white text-slate-800">
-                    <option value="grand_arch">Kubah Kubik Mewah (Grand Arch)</option>
-                    <option value="classic_oval">Oval Klasik (Classic Oval)</option>
-                    <option value="circle_royal">Lingkaran Kerajaan (Circle Royal)</option>
-                    <option value="octagon_heritage">Oktagon Warisan (Octagon)</option>
-                    <option value="teardrop_botanical">Tetesan Embun (Teardrop)</option>
-                    <option value="rounded_rect">Persegi Panjang Modern (Editorial)</option>
-                    <option value="polaroid">Polaroid Klasik</option>
-                    <option value="none">Tanpa Bingkai</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label class="block text-[11px] font-bold text-slate-600 mb-1">Ornamen Bingkai Bawaan:</label>
-                  <select id="cover-frame-ornament-select" onchange="handleCoverFrameChange()" class="w-full px-3 py-1.5 rounded-lg border border-slate-300 text-xs bg-white text-slate-800">
-                    <option value="floral_wreath">Karangan Bunga Melingkar (Floral Wreath)</option>
-                    <option value="twin_gold_lines">Garis Ganda Emas Klasik (Twin Gold Lines)</option>
-                    <option value="javanese_carving">Ukiran Mahkota Emas (Javanese Carving)</option>
-                    <option value="minimal_clean">Garis Minimalis Bersih (Minimal Clean)</option>
-                  </select>
-                </div>
-              </div>
-
-              <div class="pt-1.5 border-t border-slate-200/60">
-                <div class="flex items-center justify-between mb-1">
-                  <span class="text-[11px] font-bold text-slate-600">Atau Unggah PNG Bingkai Kustom:</span>
-                  <div class="flex items-center gap-1.5">
-                    <input type="file" id="file-custom_cover_frame_png" accept="image/png,image/webp" class="hidden" onchange="handleAssetUpload(event, 'custom_cover_frame_png')">
-                    <button type="button" onclick="document.getElementById('file-custom_cover_frame_png').click()" class="px-2 py-0.5 rounded bg-slate-900 text-white text-[11px] font-bold cursor-pointer">Unggah PNG</button>
-                    <button type="button" id="btn-del-custom_cover_frame_png" onclick="removeAssetUrl('custom_cover_frame_png')" class="hidden px-2 py-0.5 rounded border border-rose-200 bg-rose-50 text-rose-700 text-[11px] font-semibold cursor-pointer">Hapus</button>
-                  </div>
-                </div>
-                <input type="url" id="asset-url-custom_cover_frame_png" oninput="handleAssetUrlInput('custom_cover_frame_png', this.value)" placeholder="Tautan URL PNG Bingkai: https://..." class="w-full px-3 py-1.5 rounded-lg border border-slate-200 text-xs font-mono">
-              </div>
-            </div>
-
             <!-- Slot C: Pembatas Antar Seksi / Divider -->
             <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80 space-y-2.5">
               <div class="flex items-center justify-between">
@@ -1323,26 +1445,17 @@
             </div>
           </div>
 
-          <!-- Placeholder Default: Pembuka Mempelai & Dresscode Tema -->
+          <!-- Dresscode Default Tema -->
           <div class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-2xs space-y-4">
             <h3 class="font-serif text-base font-bold text-slate-900 flex items-center gap-2 border-b border-slate-100 pb-2.5">
               <i data-lucide="shirt" class="w-4 h-4 text-amber-600"></i>
-              <span>Placeholder Konten: Pembuka Mempelai & Dresscode</span>
+              <span>Panduan Dresscode Bawaan Tema</span>
             </h3>
-
-            <!-- Pembuka Mempelai -->
-            <div class="space-y-2.5 p-3.5 rounded-xl bg-slate-50 border border-slate-200/80">
-              <span class="text-xs font-bold text-slate-800 block">Pembuka Sebelum Identitas Mempelai</span>
-              <div class="grid grid-cols-1 gap-2">
-                <input type="text" id="master-couple-intro-title" oninput="handleMasterCoupleIntroChange()" placeholder="Judul Pembuka (contoh: Bride & Groom)" class="w-full px-3 py-1.5 rounded-lg border border-slate-300 text-xs font-semibold bg-white">
-                <textarea id="master-couple-intro-text" oninput="handleMasterCoupleIntroChange()" rows="2" placeholder="Kalimat pengantar menuju identitas mempelai..." class="w-full px-3 py-1.5 rounded-lg border border-slate-300 text-xs bg-white leading-relaxed"></textarea>
-              </div>
-            </div>
 
             <!-- Dresscode Default Tema -->
             <div class="space-y-2.5 p-3.5 rounded-xl bg-slate-50 border border-slate-200/80">
               <div class="flex items-center justify-between">
-                <span class="text-xs font-bold text-slate-800 block">Panduan Dresscode Bawaan Tema</span>
+                <span class="text-xs font-bold text-slate-800 block">Palet & Keterangan Dresscode Default</span>
                 <span id="master-dresscode-color-count" class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-900 font-mono">0 / 5 Warna</span>
               </div>
               <input type="text" id="master-dresscode-title" oninput="handleMasterDresscodeTextChange()" placeholder="Judul Kartu (Dresscode)" class="w-full px-3 py-1.5 rounded-lg border border-slate-300 text-xs font-semibold bg-white">
@@ -1365,6 +1478,167 @@
                   <!-- Injected via JS -->
                 </div>
               </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- ============================================================== -->
+        <!-- TAB PANEL F: TEKS & DATA PLACEHOLDER LENGKAP UNDANGAN          -->
+        <!-- ============================================================== -->
+        <div id="panel-placeholder" class="studio-panel hidden space-y-4">
+          <div class="p-3.5 rounded-2xl bg-amber-50/70 border border-amber-200/80 flex items-start gap-2.5 text-xs text-amber-900">
+            <i data-lucide="file-text" class="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5"></i>
+            <div>
+              <span class="font-bold">Data & Teks Placeholder Contoh Tema:</span> Seluruh isian di tab ini tampil pada Live Preview Admin serta halaman contoh <em>"Lihat Contoh"</em> dari Katalog Landing Page, sekaligus memperkaya pratinjau desain tema sebelum pengantin mengisi datanya sendiri.
+            </div>
+          </div>
+
+          <!-- 1. Nama Tamu Contoh & Kutipan Ayat -->
+          <div class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-2xs space-y-3.5">
+            <h3 class="font-serif text-base font-bold text-slate-900 flex items-center gap-2 border-b border-slate-100 pb-2.5">
+              <i data-lucide="quote" class="w-4 h-4 text-amber-600"></i>
+              <span>1. Nama Tamu Sampel & Kutipan Ayat / Doa</span>
+            </h3>
+
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">Nama Tamu Undangan Contoh</label>
+              <input type="text" id="ph-sample-guest-name" oninput="handlePlaceholderChange()" placeholder="Bapak Joko Susanto & Partner" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs font-semibold">
+            </div>
+
+            <div class="space-y-2 pt-1 border-t border-slate-100">
+              <div class="flex items-center justify-between">
+                <label class="block text-xs font-bold text-slate-700">Kutipan Ayat Suci / Doa Pernikahan</label>
+                <div class="flex gap-1.5">
+                  <button type="button" onclick="applyMasterQuotePreset('islam')" class="px-2 py-0.5 rounded bg-amber-50 hover:bg-amber-100 text-amber-900 text-[10px] font-bold border border-amber-200 cursor-pointer">Ar-Rum: 21</button>
+                  <button type="button" onclick="applyMasterQuotePreset('christian')" class="px-2 py-0.5 rounded bg-blue-50 hover:bg-blue-100 text-blue-900 text-[10px] font-bold border border-blue-200 cursor-pointer">Kolose 3:14</button>
+                  <button type="button" onclick="applyMasterQuotePreset('universal')" class="px-2 py-0.5 rounded bg-emerald-50 hover:bg-emerald-100 text-emerald-900 text-[10px] font-bold border border-emerald-200 cursor-pointer">Universal</button>
+                </div>
+              </div>
+              <textarea id="ph-quote-text" oninput="handlePlaceholderChange()" rows="3" placeholder="Teks kutipan..." class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs italic font-serif leading-relaxed"></textarea>
+              <input type="text" id="ph-quote-source" oninput="handlePlaceholderChange()" placeholder="QS. Ar-Rum: 21" class="w-full px-3 py-1.5 rounded-xl border border-slate-300 text-xs font-semibold">
+            </div>
+          </div>
+
+          <!-- 2. Pembuka & Identitas Mempelai (CPP & CPW) -->
+          <div class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-2xs space-y-4">
+            <h3 class="font-serif text-base font-bold text-slate-900 flex items-center gap-2 border-b border-slate-100 pb-2.5">
+              <i data-lucide="heart" class="w-4 h-4 text-amber-600"></i>
+              <span>2. Pembuka & Identitas Mempelai (Placeholder)</span>
+            </h3>
+
+            <!-- Pembuka Mempelai -->
+            <div class="space-y-2 p-3.5 rounded-xl bg-slate-50 border border-slate-200/80">
+              <span class="text-xs font-bold text-slate-800 block">Pembuka Sebelum Identitas Mempelai</span>
+              <input type="text" id="master-couple-intro-title" oninput="handleMasterCoupleIntroChange()" placeholder="Bride & Groom" class="w-full px-3 py-1.5 rounded-lg border border-slate-300 text-xs font-semibold bg-white">
+              <textarea id="master-couple-intro-text" oninput="handleMasterCoupleIntroChange()" rows="2" placeholder="Kalimat pengantar menuju identitas mempelai..." class="w-full px-3 py-1.5 rounded-lg border border-slate-300 text-xs bg-white leading-relaxed"></textarea>
+            </div>
+
+            <!-- CPP -->
+            <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80 space-y-2.5">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-blue-900 bg-blue-100 px-2 py-0.5 rounded">CPP — Mempelai Pria</span>
+                <button type="button" id="btn-del-ph-groom-photo" onclick="removePlaceholderPersonPhoto('groom')" class="hidden text-[11px] font-bold text-rose-600 hover:underline cursor-pointer">Reset Foto Default</button>
+              </div>
+              <div class="flex items-center gap-3">
+                <img id="preview-ph-groom-photo" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&auto=format&fit=crop&q=80" alt="Sample CPP" class="w-14 h-14 rounded-full object-cover border-2 border-amber-400 shrink-0">
+                <div>
+                  <input type="file" id="ph-groom-photo-file" accept="image/*" class="hidden" onchange="handlePlaceholderPersonPhotoUpload(event, 'groom')">
+                  <button type="button" onclick="document.getElementById('ph-groom-photo-file').click()" class="px-3 py-1.5 rounded-lg bg-slate-900 text-white text-[11px] font-bold cursor-pointer">Unggah & Potong Foto CPP</button>
+                </div>
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                <input type="text" id="ph-groom-nickname" oninput="handlePlaceholderChange()" placeholder="Panggilan (Yoga)" class="px-3 py-1.5 rounded-lg border border-slate-300 text-xs font-bold bg-white">
+                <input type="text" id="ph-groom-ig" oninput="handlePlaceholderChange()" placeholder="Instagram (yogapratama)" class="px-3 py-1.5 rounded-lg border border-slate-300 text-xs font-mono bg-white">
+              </div>
+              <input type="text" id="ph-groom-fullname" oninput="handlePlaceholderChange()" placeholder="Nama Lengkap & Gelar CPP" class="w-full px-3 py-1.5 rounded-lg border border-slate-300 text-xs bg-white">
+              <input type="text" id="ph-groom-parents" oninput="handlePlaceholderChange()" placeholder="Putra dari Orang Tua..." class="w-full px-3 py-1.5 rounded-lg border border-slate-300 text-xs bg-white">
+            </div>
+
+            <!-- CPW -->
+            <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80 space-y-2.5">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-rose-900 bg-rose-100 px-2 py-0.5 rounded">CPW — Mempelai Wanita</span>
+                <button type="button" id="btn-del-ph-bride-photo" onclick="removePlaceholderPersonPhoto('bride')" class="hidden text-[11px] font-bold text-rose-600 hover:underline cursor-pointer">Reset Foto Default</button>
+              </div>
+              <div class="flex items-center gap-3">
+                <img id="preview-ph-bride-photo" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=600&auto=format&fit=crop&q=80" alt="Sample CPW" class="w-14 h-14 rounded-full object-cover border-2 border-amber-400 shrink-0">
+                <div>
+                  <input type="file" id="ph-bride-photo-file" accept="image/*" class="hidden" onchange="handlePlaceholderPersonPhotoUpload(event, 'bride')">
+                  <button type="button" onclick="document.getElementById('ph-bride-photo-file').click()" class="px-3 py-1.5 rounded-lg bg-slate-900 text-white text-[11px] font-bold cursor-pointer">Unggah & Potong Foto CPW</button>
+                </div>
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                <input type="text" id="ph-bride-nickname" oninput="handlePlaceholderChange()" placeholder="Panggilan (Anin)" class="px-3 py-1.5 rounded-lg border border-slate-300 text-xs font-bold bg-white">
+                <input type="text" id="ph-bride-ig" oninput="handlePlaceholderChange()" placeholder="Instagram (aninditakirana)" class="px-3 py-1.5 rounded-lg border border-slate-300 text-xs font-mono bg-white">
+              </div>
+              <input type="text" id="ph-bride-fullname" oninput="handlePlaceholderChange()" placeholder="Nama Lengkap & Gelar CPW" class="w-full px-3 py-1.5 rounded-lg border border-slate-300 text-xs bg-white">
+              <input type="text" id="ph-bride-parents" oninput="handlePlaceholderChange()" placeholder="Putri dari Orang Tua..." class="w-full px-3 py-1.5 rounded-lg border border-slate-300 text-xs bg-white">
+            </div>
+          </div>
+
+          <!-- 3. Rangkaian Acara Akad & Resepsi Placeholder -->
+          <div class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-2xs space-y-4">
+            <h3 class="font-serif text-base font-bold text-slate-900 flex items-center gap-2 border-b border-slate-100 pb-2.5">
+              <i data-lucide="calendar" class="w-4 h-4 text-amber-600"></i>
+              <span>3. Tanggal, Waktu & Lokasi Acara (Placeholder)</span>
+            </h3>
+
+            <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80 space-y-2">
+              <span class="text-xs font-bold text-slate-800 block">Akad Nikah</span>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                <input type="date" id="ph-akad-date" onchange="handlePlaceholderChange()" class="px-3 py-1.5 rounded-lg border border-slate-300 text-xs bg-white">
+                <input type="text" id="ph-akad-time" oninput="handlePlaceholderChange()" placeholder="08:00 - 10:00 WIB" class="px-3 py-1.5 rounded-lg border border-slate-300 text-xs bg-white">
+              </div>
+              <input type="text" id="ph-akad-venue" oninput="handlePlaceholderChange()" placeholder="Tempat / Masjid Akad" class="w-full px-3 py-1.5 rounded-lg border border-slate-300 text-xs font-semibold bg-white">
+              <textarea id="ph-akad-address" oninput="handlePlaceholderChange()" rows="2" placeholder="Alamat lengkap akad..." class="w-full px-3 py-1.5 rounded-lg border border-slate-300 text-xs bg-white"></textarea>
+              <input type="url" id="ph-akad-maps-url" oninput="handlePlaceholderChange()" placeholder="URL Google Maps Akad" class="w-full px-3 py-1.5 rounded-lg border border-slate-300 text-xs font-mono bg-white">
+            </div>
+
+            <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80 space-y-2">
+              <span class="text-xs font-bold text-slate-800 block">Resepsi Pernikahan</span>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                <input type="date" id="ph-resepsi-date" onchange="handlePlaceholderChange()" class="px-3 py-1.5 rounded-lg border border-slate-300 text-xs bg-white">
+                <input type="text" id="ph-resepsi-time" oninput="handlePlaceholderChange()" placeholder="11:00 - 14:00 WIB" class="px-3 py-1.5 rounded-lg border border-slate-300 text-xs bg-white">
+              </div>
+              <input type="text" id="ph-resepsi-venue" oninput="handlePlaceholderChange()" placeholder="Gedung / Ballroom Resepsi" class="w-full px-3 py-1.5 rounded-lg border border-slate-300 text-xs font-semibold bg-white">
+              <textarea id="ph-resepsi-address" oninput="handlePlaceholderChange()" rows="2" placeholder="Alamat lengkap resepsi..." class="w-full px-3 py-1.5 rounded-lg border border-slate-300 text-xs bg-white"></textarea>
+              <input type="url" id="ph-resepsi-maps-url" oninput="handlePlaceholderChange()" placeholder="URL Google Maps Resepsi" class="w-full px-3 py-1.5 rounded-lg border border-slate-300 text-xs font-mono bg-white">
+            </div>
+          </div>
+
+          <!-- 4. Perjalanan Cinta Placeholder -->
+          <div class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-2xs space-y-3">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+              <h3 class="font-serif text-base font-bold text-slate-900">4. Perjalanan Cinta (Placeholder)</h3>
+              <button type="button" onclick="addPlaceholderStory()" class="px-2.5 py-1 rounded-lg bg-slate-900 text-white text-[11px] font-bold cursor-pointer">+ Tambah Momen</button>
+            </div>
+            <div id="ph-love-story-list" class="space-y-2.5"></div>
+          </div>
+
+          <!-- 5. Galeri Foto Sample Placeholder -->
+          <div class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-2xs space-y-3">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+              <div>
+                <h3 class="font-serif text-base font-bold text-slate-900">5. Galeri Foto Sampel (Maks. 8 Foto)</h3>
+                <p class="text-[11px] text-slate-400">Foto contoh prewedding di galeri undangan & cadangan untuk kolase cover.</p>
+              </div>
+              <span id="ph-gallery-count" class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-900 font-mono">0 / 8</span>
+            </div>
+            <input type="file" id="ph-gallery-file-input" multiple accept="image/*" onchange="handlePlaceholderGalleryUpload(event)" class="block w-full text-xs text-slate-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-slate-900 file:text-white cursor-pointer">
+            <div id="ph-gallery-grid" class="grid grid-cols-4 gap-2"></div>
+          </div>
+
+          <!-- 6. Amplop Digital & Alamat Kado Fisik Placeholder -->
+          <div class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-2xs space-y-3">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+              <h3 class="font-serif text-base font-bold text-slate-900">6. Amplop Digital & Kado (Placeholder)</h3>
+              <button type="button" onclick="addPlaceholderEnvelope()" class="px-2.5 py-1 rounded-lg bg-slate-900 text-white text-[11px] font-bold cursor-pointer">+ Tambah Rekening</button>
+            </div>
+            <div id="ph-envelopes-list" class="space-y-2"></div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">Alamat Kirim Kado Fisik Contoh (Opsional)</label>
+              <textarea id="ph-gift-address" oninput="handlePlaceholderChange()" rows="2" placeholder="Jl. Mawar No. 12, Jakarta Selatan..." class="w-full px-3 py-1.5 rounded-xl border border-slate-300 text-xs"></textarea>
             </div>
           </div>
 
@@ -1821,6 +2095,50 @@
       }
     }
 
+    // Default Data Placeholder untuk Live Preview & Halaman Contoh Katalog
+    function getDefaultPlaceholderData() {
+      return {
+        sample_guest_name: 'Bapak Joko Susanto & Partner',
+        quote_text: 'Dan di antara tanda-tanda kebesaran-Nya ialah Dia menciptakan pasangan-pasangan untukmu dari jenismu sendiri, agar kamu cenderung dan merasa tenteram kepadanya.',
+        quote_source: 'QS. Ar-Rum: 21',
+        groom_nickname: 'Yoga',
+        groom_fullname: 'Raden Yoga Pratama, S.Kom.',
+        groom_parents: 'Putra pertama dari Bpk. Bambang Sutrisno & Ibu Sri Rahayu',
+        groom_ig: 'yogapratama',
+        groom_photo: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&auto=format&fit=crop&q=80',
+        bride_nickname: 'Anin',
+        bride_fullname: 'dr. Anindita Kirana Dewi',
+        bride_parents: 'Putri bungsu dari Bpk. H. Ahmad Fauzi & Ibu Hj. Siti Maryam',
+        bride_ig: 'aninditakirana',
+        bride_photo: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=600&auto=format&fit=crop&q=80',
+        akad_date: '2027-10-24',
+        akad_time: '08:00 - 10:00 WIB',
+        akad_venue: 'Masjid Agung Al-Azhar',
+        akad_address: 'Jl. Sisingamangaraja No. 1, Kebayoran Baru, Jakarta Selatan',
+        akad_maps_url: 'https://maps.google.com',
+        resepsi_date: '2027-10-24',
+        resepsi_time: '11:00 - 14:00 WIB',
+        resepsi_venue: 'Grand Ballroom Hotel Mulia',
+        resepsi_address: 'Jl. Asia Afrika Senayan, Jakarta Pusat',
+        resepsi_maps_url: 'https://maps.google.com',
+        love_story_json: [
+          { year: '2021', title: 'Pertama Bertemu', story: 'Berawal dari pertemuan tidak sengaja di sebuah seminar nasional di Bandung.', photo_url: 'https://images.unsplash.com/photo-1522673607200-164d1b6ce486?w=700&auto=format&fit=crop&q=80' },
+          { year: '2024', title: 'Lamaran Khidmat', story: 'Dengan restu kedua orang tua, kami mengikat janji untuk melangkah bersama ke pelaminan.', photo_url: '' }
+        ],
+        gallery_json: [
+          'https://images.unsplash.com/photo-1519741497674-611481863552?w=600&auto=format&fit=crop&q=80',
+          'https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=600&auto=format&fit=crop&q=80',
+          'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=600&auto=format&fit=crop&q=80',
+          'https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?w=600&auto=format&fit=crop&q=80'
+        ],
+        envelopes_json: [
+          { bank: 'BCA', number: '8730192831', holder: 'Raden Yoga Pratama' },
+          { bank: 'Mandiri', number: '1370019283912', holder: 'Anindita Kirana Dewi' }
+        ],
+        gift_address: ''
+      };
+    }
+
     // =========================================================================
     // 4. STUDIO WORKSPACE CONTROLLER
     // =========================================================================
@@ -1851,12 +2169,14 @@
             font_body: "'Plus Jakarta Sans', system-ui, sans-serif"
           },
           default_audio_url: '/assets/audio/track-1.mp3',
+          card_opacity: 95,
           bg_blur: 0,
           particle_opacity: 0.7,
           default_cover_photo: null,
           divider_preset: 'floral_branch',
           ornaments: {
-            mode: 'master',
+            mode: 'preset',
+            preset: 'auto',
             corner_master_png: null,
             corner_tl_png: null,
             corner_tr_png: null,
@@ -1869,15 +2189,28 @@
             section_divider_png: null,
             card_watermark_png: null
           },
+          cover_style: 'classic',
+          cover_bg_mode: 'lava_lamp',
+          cover_show_frame: true,
+          cover_photo_as_bg: false,
+          cover_bg_dim: 45,
+          cover_collage_count: 4,
+          cover_collage_photos: [],
           cover_frame_shape: 'grand_arch',
           cover_frame_ornament: 'floral_wreath',
+          couple_intro_title: 'Bride & Groom',
+          couple_intro_text: 'Dengan memohon rahmat dan ridho Allah SWT, perkenankanlah kami mengundang Bapak/Ibu/Saudara/i untuk menghadiri pernikahan putra-putri kami:',
+          dresscode: { title: 'Dresscode', note: '', colors: [] },
           frame_shape: 'arch',
           particle_effect: 'leaves',
           particle_physics: 'breeze_right',
           particle_layer: 'behind',
           card_animation: 'fade-up',
           bg_image_url: null,
-          bg_type: 'lava'
+          bg_video_url: null,
+          bg_gif_url: null,
+          bg_type: 'lava',
+          placeholder_data: getDefaultPlaceholderData()
         }
       };
 
@@ -1895,6 +2228,23 @@
       // Deep copy ke templateState
       const defColors = t.default_colors_json || {};
       const defCfg = t.config_json || {};
+      const defPh = getDefaultPlaceholderData();
+      const mergedPh = {
+        ...defPh,
+        ...(defCfg.placeholder_data || {}),
+        love_story_json: Array.isArray(defCfg.placeholder_data?.love_story_json) && defCfg.placeholder_data.love_story_json.length
+          ? JSON.parse(JSON.stringify(defCfg.placeholder_data.love_story_json))
+          : JSON.parse(JSON.stringify(defPh.love_story_json)),
+        gallery_json: Array.isArray(defCfg.placeholder_data?.gallery_json) && defCfg.placeholder_data.gallery_json.length
+          ? [...defCfg.placeholder_data.gallery_json]
+          : [...defPh.gallery_json],
+        envelopes_json: Array.isArray(defCfg.placeholder_data?.envelopes_json) && defCfg.placeholder_data.envelopes_json.length
+          ? JSON.parse(JSON.stringify(defCfg.placeholder_data.envelopes_json))
+          : JSON.parse(JSON.stringify(defPh.envelopes_json))
+      };
+
+      const resolvedBgType = defCfg.bg_type || (defCfg.bg_video_url ? 'video' : (defCfg.bg_gif_url ? 'video' : (defCfg.bg_image_url ? 'image' : 'lava')));
+      const resolvedCoverBgMode = defCfg.cover_bg_mode || (defCfg.cover_photo_as_bg ? 'photo' : 'lava_lamp');
 
       templateState = {
         id: t.id,
@@ -1918,6 +2268,7 @@
             font_body: defCfg.typography?.font_body || "'Plus Jakarta Sans', system-ui, sans-serif"
           },
           default_audio_url: defCfg.default_audio_url || '/assets/audio/track-1.mp3',
+          card_opacity: defCfg.card_opacity !== undefined ? Number(defCfg.card_opacity) : 95,
           bg_blur: defCfg.bg_blur ?? 0,
           particle_opacity: defCfg.particle_opacity ?? 0.7,
           default_cover_photo: defCfg.default_cover_photo || null,
@@ -1937,10 +2288,14 @@
             section_divider_png: defCfg.ornaments?.section_divider_png || null,
             card_watermark_png: defCfg.ornaments?.card_watermark_png || null
           },
+          cover_style: defCfg.cover_style || 'classic',
+          cover_bg_mode: resolvedCoverBgMode,
+          cover_collage_count: Number(defCfg.cover_collage_count || 4) === 6 ? 6 : 4,
+          cover_collage_photos: Array.isArray(defCfg.cover_collage_photos) ? [...defCfg.cover_collage_photos] : [],
           cover_frame_shape: defCfg.cover_frame_shape || 'grand_arch',
           cover_frame_ornament: defCfg.cover_frame_ornament || 'floral_wreath',
           cover_show_frame: defCfg.cover_show_frame !== undefined ? Boolean(defCfg.cover_show_frame) : (defCfg.cover_frame_shape !== 'none'),
-          cover_photo_as_bg: Boolean(defCfg.cover_photo_as_bg),
+          cover_photo_as_bg: resolvedCoverBgMode === 'photo',
           cover_bg_dim: defCfg.cover_bg_dim !== undefined ? Number(defCfg.cover_bg_dim) : 45,
           couple_intro_title: defCfg.couple_intro_title || 'Bride & Groom',
           couple_intro_text: defCfg.couple_intro_text || 'Dengan memohon rahmat dan ridho Allah SWT, perkenankanlah kami mengundang Bapak/Ibu/Saudara/i untuk menghadiri pernikahan putra-putri kami:',
@@ -1951,7 +2306,10 @@
           particle_layer: defCfg.particle_layer || 'behind',
           card_animation: defCfg.card_animation || 'fade-up',
           bg_image_url: defCfg.bg_image_url || null,
-          bg_type: defCfg.bg_type || 'lava'
+          bg_video_url: defCfg.bg_video_url || null,
+          bg_gif_url: defCfg.bg_gif_url || null,
+          bg_type: resolvedBgType,
+          placeholder_data: mergedPh
         }
       };
 
@@ -2059,7 +2417,7 @@
       const audioUrl = templateState.config_json?.default_audio_url || '/assets/audio/track-1.mp3';
       setMasterAudioSelectAndUrl(audioUrl);
 
-      // Panel B: Palet Warna (6 Colors)
+      // Panel B: Palet Warna (6 Colors) & Card Opacity
       const colors = templateState.default_colors_json || {};
       setColorPicker('bg', colors.bg || '#F4F6F3');
       setColorPicker('card', colors.card || '#FFFFFF');
@@ -2067,6 +2425,12 @@
       setColorPicker('text', colors.text || '#2C352E');
       setColorPicker('text_secondary', colors.text_secondary || '#4D5850');
       setColorPicker('text_tertiary', colors.text_tertiary || '#7D8A80');
+
+      const cardOpVal = templateState.config_json?.card_opacity !== undefined ? Number(templateState.config_json.card_opacity) : 95;
+      const cardOpSlider = document.getElementById('slider-master-card-opacity');
+      const cardOpLabel = document.getElementById('label-master-card-opacity');
+      if (cardOpSlider) cardOpSlider.value = cardOpVal;
+      if (cardOpLabel) cardOpLabel.textContent = `${cardOpVal}%`;
 
       // Typography
       const typo = templateState.config_json?.typography || {};
@@ -2098,15 +2462,29 @@
       setAssetPreview('section_divider_png', orn.section_divider_png);
       setAssetPreview('card_watermark_png', orn.card_watermark_png);
 
-      // Cover Frame shape, ornament, display toggles & sample photo
+      // Cover Style, Background Mode, Collage, Frame shape, ornament, display toggles & sample photo
+      const coverStyle = templateState.config_json?.cover_style || 'classic';
+      const coverStyleRadio = document.querySelector(`input[name="master_cover_style"][value="${coverStyle}"]`);
+      if (coverStyleRadio) coverStyleRadio.checked = true;
+      updateMasterCoverStyleVisibility();
+
       const showFrame = templateState.config_json?.cover_show_frame !== undefined
         ? Boolean(templateState.config_json.cover_show_frame)
         : (templateState.config_json?.cover_frame_shape !== 'none');
-      const photoAsBg = Boolean(templateState.config_json?.cover_photo_as_bg);
+      const coverBgMode = templateState.config_json?.cover_bg_mode || (templateState.config_json?.cover_photo_as_bg ? 'photo' : 'lava_lamp');
+      const photoAsBg = (coverBgMode === 'photo');
+      templateState.config_json.cover_bg_mode = coverBgMode;
+      templateState.config_json.cover_photo_as_bg = photoAsBg;
+      setMasterCoverBgModeUI(coverBgMode);
+
       const toggleShowFrame = document.getElementById('master-toggle-cover-show-frame');
       if (toggleShowFrame) toggleShowFrame.checked = showFrame;
       const togglePhotoAsBg = document.getElementById('master-toggle-cover-photo-as-bg');
       if (togglePhotoAsBg) togglePhotoAsBg.checked = photoAsBg;
+
+      const collageCount = Number(templateState.config_json?.cover_collage_count || 4) === 6 ? 6 : 4;
+      updateMasterCollageCountUI(collageCount);
+      renderMasterCollagePhotos();
 
       const bgDimVal = templateState.config_json?.cover_bg_dim !== undefined ? Number(templateState.config_json.cover_bg_dim) : 45;
       const dimSlider = document.getElementById('slider-master-cover-bg-dim');
@@ -2171,6 +2549,9 @@
       if (dcTitleEl) dcTitleEl.value = dc.title || 'Dresscode';
       if (dcNoteEl) dcNoteEl.value = dc.note || '';
       renderMasterDresscodeColors();
+
+      // Panel F: Teks & Data Placeholder Lengkap
+      populatePlaceholderForm();
     }
 
     function setColorPicker(key, hex) {
@@ -2608,24 +2989,29 @@
     // Background Type Handler
     function handleMasterBgTypeChange(type, triggerBroadcast = true) {
       if (!templateState.config_json) templateState.config_json = {};
-      templateState.config_json.bg_type = type;
+      const cleanType = type === 'gif' ? 'video' : (type || 'lava');
+      templateState.config_json.bg_type = cleanType;
 
       const imgBox = document.getElementById('master-bg-image-box');
       const videoBox = document.getElementById('master-bg-video-box');
-      const radio = document.querySelector(`input[name="master_bg_type"][value="${type}"]`);
+      const radio = document.querySelector(`input[name="master_bg_type"][value="${cleanType}"]`);
       if (radio) radio.checked = true;
 
-      if (type === 'image') {
+      if (cleanType === 'image') {
         if (imgBox) imgBox.classList.remove('hidden');
         if (videoBox) videoBox.classList.add('hidden');
-      } else if (type === 'video' || type === 'gif') {
+      } else if (cleanType === 'video') {
         if (imgBox) imgBox.classList.add('hidden');
         if (videoBox) videoBox.classList.remove('hidden');
       } else {
         if (imgBox) imgBox.classList.add('hidden');
         if (videoBox) videoBox.classList.add('hidden');
         templateState.config_json.bg_image_url = null;
+        templateState.config_json.bg_video_url = null;
+        templateState.config_json.bg_gif_url = null;
         setAssetPreview('bg_image_url', null);
+        const vIn = document.getElementById('asset-url-bg_video');
+        if (vIn) vIn.value = '';
       }
 
       if (triggerBroadcast) {
@@ -2680,7 +3066,10 @@
 
         if (!templateState.config_json) templateState.config_json = {};
         templateState.config_json.bg_video_url = videoUrl;
+        templateState.config_json.bg_image_url = null;
+        templateState.config_json.bg_gif_url = null;
         templateState.config_json.bg_type = 'video';
+        setAssetPreview('bg_image_url', null);
 
         const urlInput = document.getElementById('asset-url-bg_video');
         if (urlInput) urlInput.value = videoUrl;
@@ -2702,7 +3091,10 @@
     function handleMasterVideoUrlInput(val) {
       if (!templateState.config_json) templateState.config_json = {};
       templateState.config_json.bg_video_url = val ? val.trim() : null;
+      templateState.config_json.bg_image_url = null;
+      templateState.config_json.bg_gif_url = null;
       templateState.config_json.bg_type = 'video';
+      setAssetPreview('bg_image_url', null);
       const delBtn = document.getElementById('btn-del-bg-video');
       if (delBtn) {
         if (val) delBtn.classList.remove('hidden');
@@ -2848,6 +3240,146 @@
       if (lbl) lbl.textContent = `${safeVal}%`;
       markAsUnsaved();
       scheduleBroadcast();
+    }
+
+    function handleMasterCardOpacityChange(val) {
+      const num = parseInt(val, 10);
+      const safeVal = isNaN(num) ? 95 : Math.max(10, Math.min(100, num));
+      if (!templateState.config_json) templateState.config_json = {};
+      templateState.config_json.card_opacity = safeVal;
+      const lbl = document.getElementById('label-master-card-opacity');
+      if (lbl) lbl.textContent = `${safeVal}%`;
+      markAsUnsaved();
+      scheduleBroadcast();
+    }
+
+    function handleMasterCoverStyleChange(style) {
+      if (!templateState.config_json) templateState.config_json = {};
+      templateState.config_json.cover_style = style || 'classic';
+      updateMasterCoverStyleVisibility();
+      markAsUnsaved();
+      const iframe = document.getElementById('admin-preview-frame');
+      if (iframe && iframe.contentWindow) {
+        sendIframeAction('RESET_COVER');
+      }
+      scheduleBroadcast();
+    }
+
+    function updateMasterCoverStyleVisibility() {
+      const style = templateState.config_json?.cover_style || 'classic';
+      const bgSection = document.getElementById('master-cover-bg-section');
+      const collageBox = document.getElementById('master-cover-collage-box');
+      if (bgSection) bgSection.classList.toggle('hidden', style === 'collage_scroll');
+      if (collageBox) collageBox.classList.toggle('hidden', style !== 'collage_scroll');
+    }
+
+    function handleMasterCoverBgModeChange(mode) {
+      const cleanMode = mode === 'photo' ? 'photo' : 'lava_lamp';
+      if (!templateState.config_json) templateState.config_json = {};
+      templateState.config_json.cover_bg_mode = cleanMode;
+      templateState.config_json.cover_photo_as_bg = (cleanMode === 'photo');
+      const legacyToggle = document.getElementById('master-toggle-cover-photo-as-bg');
+      if (legacyToggle) legacyToggle.checked = templateState.config_json.cover_photo_as_bg;
+      setMasterCoverBgModeUI(cleanMode);
+      const dimCtrl = document.getElementById('master-cover-bg-dim-control');
+      if (dimCtrl) {
+        if (cleanMode === 'photo') dimCtrl.classList.remove('hidden');
+        else dimCtrl.classList.add('hidden');
+      }
+      markAsUnsaved();
+      scheduleBroadcast();
+    }
+
+    function setMasterCoverBgModeUI(mode) {
+      const btnLava = document.getElementById('btn-master-coverbg-lava');
+      const btnPhoto = document.getElementById('btn-master-coverbg-photo');
+      const activeCls = ['bg-white', 'text-slate-900', 'shadow-2xs', 'font-bold'];
+      const inactiveCls = ['text-slate-600', 'font-semibold'];
+      if (btnLava) {
+        if (mode !== 'photo') { btnLava.classList.add(...activeCls); btnLava.classList.remove(...inactiveCls); }
+        else { btnLava.classList.remove(...activeCls); btnLava.classList.add(...inactiveCls); }
+      }
+      if (btnPhoto) {
+        if (mode === 'photo') { btnPhoto.classList.add(...activeCls); btnPhoto.classList.remove(...inactiveCls); }
+        else { btnPhoto.classList.remove(...activeCls); btnPhoto.classList.add(...inactiveCls); }
+      }
+    }
+
+    function handleMasterCollageCountChange(count) {
+      if (!templateState.config_json) templateState.config_json = {};
+      templateState.config_json.cover_collage_count = Number(count) === 6 ? 6 : 4;
+      updateMasterCollageCountUI(templateState.config_json.cover_collage_count);
+      markAsUnsaved();
+      scheduleBroadcast();
+    }
+
+    function updateMasterCollageCountUI(count) {
+      const btn4 = document.getElementById('btn-master-collage-4');
+      const btn6 = document.getElementById('btn-master-collage-6');
+      if (btn4 && btn6) {
+        if (Number(count) === 6) {
+          btn6.className = 'py-2 px-3 rounded-xl border border-amber-400 bg-amber-50 text-amber-900 text-xs font-bold cursor-pointer';
+          btn4.className = 'py-2 px-3 rounded-xl border border-slate-200 bg-slate-50 text-slate-600 text-xs font-semibold cursor-pointer';
+        } else {
+          btn4.className = 'py-2 px-3 rounded-xl border border-amber-400 bg-amber-50 text-amber-900 text-xs font-bold cursor-pointer';
+          btn6.className = 'py-2 px-3 rounded-xl border border-slate-200 bg-slate-50 text-slate-600 text-xs font-semibold cursor-pointer';
+        }
+      }
+    }
+
+    async function handleMasterCollageUpload(e) {
+      const files = Array.from(e.target.files || []);
+      if (!files.length) return;
+      if (!templateState.config_json) templateState.config_json = {};
+      if (!Array.isArray(templateState.config_json.cover_collage_photos)) templateState.config_json.cover_collage_photos = [];
+      const remaining = 6 - templateState.config_json.cover_collage_photos.length;
+      if (remaining <= 0) {
+        showToast('Maksimal 6 foto kolase cover.', 'warning');
+        return;
+      }
+      showToast(`Mengunggah ${Math.min(files.length, remaining)} foto kolase cover...`, 'info');
+      const slug = templateState.slug || 'theme';
+      for (const file of files.slice(0, remaining)) {
+        try {
+          const res = await uploadTemplateAssetDirect(file, slug, 'cover_collage');
+          templateState.config_json.cover_collage_photos.push(res.url);
+        } catch (err) {
+          console.error('Upload collage error:', err);
+        }
+      }
+      renderMasterCollagePhotos();
+      markAsUnsaved();
+      scheduleBroadcast();
+      e.target.value = '';
+    }
+
+    function removeMasterCollagePhoto(idx) {
+      if (!Array.isArray(templateState.config_json?.cover_collage_photos)) return;
+      templateState.config_json.cover_collage_photos.splice(idx, 1);
+      renderMasterCollagePhotos();
+      markAsUnsaved();
+      scheduleBroadcast();
+    }
+
+    function renderMasterCollagePhotos() {
+      const container = document.getElementById('master-collage-grid-preview');
+      const badge = document.getElementById('master-collage-count-badge');
+      const list = Array.isArray(templateState.config_json?.cover_collage_photos) ? templateState.config_json.cover_collage_photos : [];
+      if (badge) badge.textContent = `${list.length} / 6`;
+      if (!container) return;
+      if (!list.length) {
+        container.innerHTML = `<div class="col-span-3 p-3 text-center text-[11px] text-slate-400 border border-dashed border-slate-200 rounded-xl">Belum ada foto khusus kolase (otomatis memakai Galeri & Foto Sampel).</div>`;
+        return;
+      }
+      container.innerHTML = list.map((url, idx) => `
+        <div class="relative group aspect-[3/4] rounded-lg overflow-hidden border border-slate-200 bg-slate-100">
+          <img src="${url}" alt="Kolase ${idx + 1}" class="w-full h-full object-cover">
+          <button type="button" onclick="removeMasterCollagePhoto(${idx})" class="absolute top-1 right-1 w-5 h-5 rounded-full bg-rose-600 text-white flex items-center justify-center opacity-90 hover:opacity-100 cursor-pointer shadow-xs" title="Hapus">
+            <i data-lucide="x" class="w-3 h-3"></i>
+          </button>
+        </div>
+      `).join('');
+      if (window.lucide) lucide.createIcons();
     }
 
     function handleEffectsChange() {
@@ -3027,11 +3559,351 @@
       
       if (key === 'bg_image_url') {
         templateState.config_json.bg_image_url = url;
+        if (url) {
+          templateState.config_json.bg_type = 'image';
+          templateState.config_json.bg_video_url = null;
+          templateState.config_json.bg_gif_url = null;
+          const vInput = document.getElementById('asset-url-bg_video');
+          if (vInput) vInput.value = '';
+          const delVBtn = document.getElementById('btn-del-bg-video');
+          if (delVBtn) delVBtn.classList.add('hidden');
+        }
         return;
       }
 
       if (!templateState.config_json.ornaments) templateState.config_json.ornaments = {};
       templateState.config_json.ornaments[key] = url;
+    }
+
+    // Bridge untuk modul Cropper (openImageCropper) agar foto crop Admin terunggah ke Supabase Storage
+    window.uploadWeddingImage = async function(file, folder = 'sample', maxWidth = 1000, quality = 0.82) {
+      let fileToUpload = file;
+      let infoText = '';
+      if (typeof window.compressImageToWebP === 'function') {
+        try {
+          const compressed = await window.compressImageToWebP(file, maxWidth, quality);
+          if (compressed && compressed.blob) {
+            fileToUpload = new File([compressed.blob], `${folder}_${Date.now()}.webp`, { type: 'image/webp' });
+            const origKb = Math.round((compressed.originalSize || file.size || 0) / 1024);
+            const compKb = Math.round((compressed.compressedSize || compressed.blob.size || 0) / 1024);
+            infoText = `WebP: ${origKb}KB -> ${compKb}KB`;
+          }
+        } catch (e) {
+          console.warn('WebP compression fallback:', e);
+        }
+      }
+      const slug = templateState.slug || 'theme';
+      const res = await uploadTemplateAssetDirect(fileToUpload, slug, folder);
+      return {
+        url: res.url,
+        publicUrl: res.url,
+        infoText
+      };
+    };
+
+    // =========================================================================
+    // TAB F: TEKS & DATA PLACEHOLDER LENGKAP UNDANGAN
+    // =========================================================================
+    function ensurePlaceholderData() {
+      if (!templateState.config_json) templateState.config_json = {};
+      if (!templateState.config_json.placeholder_data) {
+        templateState.config_json.placeholder_data = getDefaultPlaceholderData();
+      }
+      return templateState.config_json.placeholder_data;
+    }
+
+    function populatePlaceholderForm() {
+      const ph = ensurePlaceholderData();
+      const setV = (id, val) => { const el = document.getElementById(id); if (el) el.value = val || ''; };
+
+      setV('ph-sample-guest-name', ph.sample_guest_name);
+      setV('ph-quote-text', ph.quote_text);
+      setV('ph-quote-source', ph.quote_source);
+
+      setV('ph-groom-nickname', ph.groom_nickname);
+      setV('ph-groom-fullname', ph.groom_fullname);
+      setV('ph-groom-parents', ph.groom_parents);
+      setV('ph-groom-ig', ph.groom_ig);
+      const gImg = document.getElementById('preview-ph-groom-photo');
+      if (gImg) gImg.src = ph.groom_photo || getDefaultPlaceholderData().groom_photo;
+      const gDel = document.getElementById('btn-del-ph-groom-photo');
+      if (gDel) gDel.classList.toggle('hidden', !ph.groom_photo || ph.groom_photo === getDefaultPlaceholderData().groom_photo);
+
+      setV('ph-bride-nickname', ph.bride_nickname);
+      setV('ph-bride-fullname', ph.bride_fullname);
+      setV('ph-bride-parents', ph.bride_parents);
+      setV('ph-bride-ig', ph.bride_ig);
+      const bImg = document.getElementById('preview-ph-bride-photo');
+      if (bImg) bImg.src = ph.bride_photo || getDefaultPlaceholderData().bride_photo;
+      const bDel = document.getElementById('btn-del-ph-bride-photo');
+      if (bDel) bDel.classList.toggle('hidden', !ph.bride_photo || ph.bride_photo === getDefaultPlaceholderData().bride_photo);
+
+      setV('ph-akad-date', ph.akad_date);
+      setV('ph-akad-time', ph.akad_time);
+      setV('ph-akad-venue', ph.akad_venue);
+      setV('ph-akad-address', ph.akad_address);
+      setV('ph-akad-maps-url', ph.akad_maps_url);
+
+      setV('ph-resepsi-date', ph.resepsi_date);
+      setV('ph-resepsi-time', ph.resepsi_time);
+      setV('ph-resepsi-venue', ph.resepsi_venue);
+      setV('ph-resepsi-address', ph.resepsi_address);
+      setV('ph-resepsi-maps-url', ph.resepsi_maps_url);
+      setV('ph-gift-address', ph.gift_address);
+
+      renderPlaceholderStories();
+      renderPlaceholderGallery();
+      renderPlaceholderEnvelopes();
+    }
+
+    function handlePlaceholderChange() {
+      const ph = ensurePlaceholderData();
+      const getV = (id) => document.getElementById(id)?.value ?? '';
+
+      ph.sample_guest_name = getV('ph-sample-guest-name').trim() || 'Bapak Joko Susanto & Partner';
+      ph.quote_text = getV('ph-quote-text').trim();
+      ph.quote_source = getV('ph-quote-source').trim();
+
+      ph.groom_nickname = getV('ph-groom-nickname').trim() || 'Yoga';
+      ph.groom_fullname = getV('ph-groom-fullname').trim();
+      ph.groom_parents = getV('ph-groom-parents').trim();
+      ph.groom_ig = getV('ph-groom-ig').trim();
+
+      ph.bride_nickname = getV('ph-bride-nickname').trim() || 'Anin';
+      ph.bride_fullname = getV('ph-bride-fullname').trim();
+      ph.bride_parents = getV('ph-bride-parents').trim();
+      ph.bride_ig = getV('ph-bride-ig').trim();
+
+      ph.akad_date = getV('ph-akad-date');
+      ph.akad_time = getV('ph-akad-time').trim();
+      ph.akad_venue = getV('ph-akad-venue').trim();
+      ph.akad_address = getV('ph-akad-address').trim();
+      ph.akad_maps_url = getV('ph-akad-maps-url').trim();
+
+      ph.resepsi_date = getV('ph-resepsi-date');
+      ph.resepsi_time = getV('ph-resepsi-time').trim();
+      ph.resepsi_venue = getV('ph-resepsi-venue').trim();
+      ph.resepsi_address = getV('ph-resepsi-address').trim();
+      ph.resepsi_maps_url = getV('ph-resepsi-maps-url').trim();
+      ph.gift_address = getV('ph-gift-address').trim();
+
+      markAsUnsaved();
+      scheduleBroadcast();
+    }
+
+    function applyMasterQuotePreset(type) {
+      const textEl = document.getElementById('ph-quote-text');
+      const srcEl = document.getElementById('ph-quote-source');
+      if (!textEl || !srcEl) return;
+      if (type === 'islam') {
+        textEl.value = 'Dan di antara tanda-tanda kebesaran-Nya ialah Dia menciptakan pasangan-pasangan untukmu dari jenismu sendiri, agar kamu cenderung dan merasa tenteram kepadanya.';
+        srcEl.value = 'QS. Ar-Rum: 21';
+      } else if (type === 'christian') {
+        textEl.value = 'Dan di atas semuanya itu: kenakanlah kasih, sebagai pengikat yang mempersatukan dan menyempurnakan.';
+        srcEl.value = 'Kolose 3:14';
+      } else {
+        textEl.value = 'Dua jiwa, satu hati, berpadu melangkah bersama dalam janji suci mengarungi samudra kehidupan dengan penuh cinta dan kesetiaan abadi.';
+        srcEl.value = 'Janji Suci Kehidupan';
+      }
+      handlePlaceholderChange();
+    }
+
+    function handlePlaceholderPersonPhotoUpload(e, role) {
+      const file = e.target.files?.[0];
+      if (!file) return;
+      const ph = ensurePlaceholderData();
+      const field = role === 'groom' ? 'groom_photo' : 'bride_photo';
+
+      const applyUrl = (url) => {
+        ph[field] = url;
+        const img = document.getElementById(`preview-ph-${role}-photo`);
+        if (img) img.src = url;
+        const del = document.getElementById(`btn-del-ph-${role}-photo`);
+        if (del) del.classList.remove('hidden');
+        markAsUnsaved();
+        scheduleBroadcast();
+        showToast(`Foto sampel ${role === 'groom' ? 'Mempelai Pria' : 'Mempelai Wanita'} berhasil diperbarui!`, 'success');
+      };
+
+      if (typeof window.openImageCropper === 'function') {
+        window.openImageCropper({
+          file,
+          targetType: role,
+          aspectRatio: '1:1',
+          title: `Sesuaikan Foto Sampel ${role === 'groom' ? 'Mempelai Pria' : 'Mempelai Wanita'}`,
+          onComplete: (res) => { if (res?.url) applyUrl(res.url); }
+        });
+      } else {
+        uploadTemplateAssetDirect(file, templateState.slug || 'theme', `sample_${role}`).then(res => applyUrl(res.url));
+      }
+      e.target.value = '';
+    }
+
+    function removePlaceholderPersonPhoto(role) {
+      const ph = ensurePlaceholderData();
+      const def = getDefaultPlaceholderData();
+      const field = role === 'groom' ? 'groom_photo' : 'bride_photo';
+      ph[field] = def[field];
+      const img = document.getElementById(`preview-ph-${role}-photo`);
+      if (img) img.src = def[field];
+      const del = document.getElementById(`btn-del-ph-${role}-photo`);
+      if (del) del.classList.add('hidden');
+      markAsUnsaved();
+      scheduleBroadcast();
+    }
+
+    function renderPlaceholderStories() {
+      const ph = ensurePlaceholderData();
+      const list = Array.isArray(ph.love_story_json) ? ph.love_story_json : [];
+      const container = document.getElementById('ph-love-story-list');
+      if (!container) return;
+      if (!list.length) {
+        container.innerHTML = `<p class="text-xs text-slate-400 italic">Belum ada kisah cinta sampel.</p>`;
+        return;
+      }
+      container.innerHTML = list.map((item, idx) => `
+        <div class="p-3 rounded-xl bg-slate-50 border border-slate-200/80 space-y-2">
+          <div class="flex items-center gap-2">
+            <input type="text" value="${escapeHtml(item.year || '')}" oninput="updatePlaceholderStory(${idx}, 'year', this.value)" placeholder="2021" class="w-20 px-2 py-1 rounded border border-slate-300 text-xs font-mono bg-white">
+            <input type="text" value="${escapeHtml(item.title || '')}" oninput="updatePlaceholderStory(${idx}, 'title', this.value)" placeholder="Judul Momen" class="flex-1 px-2 py-1 rounded border border-slate-300 text-xs font-bold bg-white">
+            <button type="button" onclick="removePlaceholderStory(${idx})" class="text-rose-600 hover:bg-rose-50 p-1 rounded cursor-pointer"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
+          </div>
+          <textarea rows="2" oninput="updatePlaceholderStory(${idx}, 'story', this.value)" placeholder="Cerita singkat..." class="w-full px-2 py-1 rounded border border-slate-300 text-xs bg-white">${escapeHtml(item.story || '')}</textarea>
+          <div class="flex items-center gap-2">
+            <input type="file" id="ph-story-photo-${idx}" accept="image/*" class="hidden" onchange="handlePlaceholderStoryPhotoUpload(event, ${idx})">
+            <button type="button" onclick="document.getElementById('ph-story-photo-${idx}').click()" class="px-2 py-1 rounded bg-white border border-slate-300 text-[10px] font-bold cursor-pointer">${item.photo_url ? 'Ganti Foto Momen' : '+ Foto Momen'}</button>
+            ${item.photo_url ? `<button type="button" onclick="updatePlaceholderStory(${idx}, 'photo_url', ''); renderPlaceholderStories();" class="text-[10px] text-rose-600 font-bold cursor-pointer">Hapus Foto</button>` : ''}
+          </div>
+        </div>
+      `).join('');
+      if (window.lucide) lucide.createIcons();
+    }
+
+    function addPlaceholderStory() {
+      const ph = ensurePlaceholderData();
+      if (!Array.isArray(ph.love_story_json)) ph.love_story_json = [];
+      ph.love_story_json.push({ year: '2025', title: 'Momen Baru', story: 'Kisah bahagia kami...', photo_url: '' });
+      renderPlaceholderStories();
+      markAsUnsaved();
+      scheduleBroadcast();
+    }
+
+    function updatePlaceholderStory(idx, field, val) {
+      const ph = ensurePlaceholderData();
+      if (ph.love_story_json?.[idx]) {
+        ph.love_story_json[idx][field] = val;
+        markAsUnsaved();
+        scheduleBroadcast();
+      }
+    }
+
+    function removePlaceholderStory(idx) {
+      const ph = ensurePlaceholderData();
+      ph.love_story_json.splice(idx, 1);
+      renderPlaceholderStories();
+      markAsUnsaved();
+      scheduleBroadcast();
+    }
+
+    async function handlePlaceholderStoryPhotoUpload(e, idx) {
+      const file = e.target.files?.[0];
+      if (!file) return;
+      const res = await uploadTemplateAssetDirect(file, templateState.slug || 'theme', 'sample_story');
+      updatePlaceholderStory(idx, 'photo_url', res.url);
+      renderPlaceholderStories();
+      e.target.value = '';
+    }
+
+    function renderPlaceholderGallery() {
+      const ph = ensurePlaceholderData();
+      const list = Array.isArray(ph.gallery_json) ? ph.gallery_json : [];
+      const badge = document.getElementById('ph-gallery-count');
+      const grid = document.getElementById('ph-gallery-grid');
+      if (badge) badge.textContent = `${list.length} / 8`;
+      if (!grid) return;
+      if (!list.length) {
+        grid.innerHTML = `<div class="col-span-4 text-xs text-slate-400 italic p-3 border border-dashed rounded-xl text-center">Belum ada foto galeri sampel.</div>`;
+        return;
+      }
+      grid.innerHTML = list.map((url, idx) => `
+        <div class="relative aspect-square rounded-lg overflow-hidden border border-slate-200 bg-slate-100">
+          <img src="${url}" alt="Galeri ${idx + 1}" class="w-full h-full object-cover">
+          <button type="button" onclick="removePlaceholderGalleryPhoto(${idx})" class="absolute top-1 right-1 w-5 h-5 rounded-full bg-rose-600 text-white flex items-center justify-center cursor-pointer shadow"><i data-lucide="x" class="w-3 h-3"></i></button>
+        </div>
+      `).join('');
+      if (window.lucide) lucide.createIcons();
+    }
+
+    async function handlePlaceholderGalleryUpload(e) {
+      const files = Array.from(e.target.files || []);
+      if (!files.length) return;
+      const ph = ensurePlaceholderData();
+      if (!Array.isArray(ph.gallery_json)) ph.gallery_json = [];
+      const rem = 8 - ph.gallery_json.length;
+      if (rem <= 0) { showToast('Maksimal 8 foto galeri sampel.', 'warning'); return; }
+      showToast('Mengunggah foto galeri sampel...', 'info');
+      for (const file of files.slice(0, rem)) {
+        const res = await uploadTemplateAssetDirect(file, templateState.slug || 'theme', 'sample_gallery');
+        ph.gallery_json.push(res.url);
+      }
+      renderPlaceholderGallery();
+      markAsUnsaved();
+      scheduleBroadcast();
+      e.target.value = '';
+    }
+
+    function removePlaceholderGalleryPhoto(idx) {
+      const ph = ensurePlaceholderData();
+      ph.gallery_json.splice(idx, 1);
+      renderPlaceholderGallery();
+      markAsUnsaved();
+      scheduleBroadcast();
+    }
+
+    function renderPlaceholderEnvelopes() {
+      const ph = ensurePlaceholderData();
+      const list = Array.isArray(ph.envelopes_json) ? ph.envelopes_json : [];
+      const container = document.getElementById('ph-envelopes-list');
+      if (!container) return;
+      if (!list.length) {
+        container.innerHTML = `<p class="text-xs text-slate-400 italic">Belum ada rekening contoh.</p>`;
+        return;
+      }
+      container.innerHTML = list.map((env, idx) => `
+        <div class="flex flex-col sm:flex-row items-center gap-1.5 p-2 rounded-xl bg-slate-50 border border-slate-200">
+          <input type="text" value="${escapeHtml(env.bank || '')}" oninput="updatePlaceholderEnvelope(${idx}, 'bank', this.value)" placeholder="BCA" class="w-full sm:w-20 px-2 py-1 rounded border border-slate-300 text-xs font-bold bg-white">
+          <input type="text" value="${escapeHtml(env.number || '')}" oninput="updatePlaceholderEnvelope(${idx}, 'number', this.value)" placeholder="No. Rekening" class="w-full sm:flex-1 px-2 py-1 rounded border border-slate-300 text-xs font-mono bg-white">
+          <input type="text" value="${escapeHtml(env.holder || '')}" oninput="updatePlaceholderEnvelope(${idx}, 'holder', this.value)" placeholder="Atas Nama" class="w-full sm:flex-1 px-2 py-1 rounded border border-slate-300 text-xs bg-white">
+          <button type="button" onclick="removePlaceholderEnvelope(${idx})" class="text-rose-600 p-1 rounded cursor-pointer"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
+        </div>
+      `).join('');
+      if (window.lucide) lucide.createIcons();
+    }
+
+    function addPlaceholderEnvelope() {
+      const ph = ensurePlaceholderData();
+      if (!Array.isArray(ph.envelopes_json)) ph.envelopes_json = [];
+      ph.envelopes_json.push({ bank: 'BCA', number: '1234567890', holder: 'Nama Penerima' });
+      renderPlaceholderEnvelopes();
+      markAsUnsaved();
+      scheduleBroadcast();
+    }
+
+    function updatePlaceholderEnvelope(idx, field, val) {
+      const ph = ensurePlaceholderData();
+      if (ph.envelopes_json?.[idx]) {
+        ph.envelopes_json[idx][field] = val;
+        markAsUnsaved();
+        scheduleBroadcast();
+      }
+    }
+
+    function removePlaceholderEnvelope(idx) {
+      const ph = ensurePlaceholderData();
+      ph.envelopes_json.splice(idx, 1);
+      renderPlaceholderEnvelopes();
+      markAsUnsaved();
+      scheduleBroadcast();
     }
 
     function setAssetPreview(key, url) {
@@ -3107,11 +3979,60 @@
     // =========================================================================
     // 7. REAL-TIME IFRAME COMMUNICATION & SYNC (POSTMESSAGE)
     // =========================================================================
+    window.addEventListener('message', (event) => {
+      if (event.data && event.data.type === 'MB_PREVIEW_READY') {
+        const studioEl = document.getElementById('view-studio');
+        if (studioEl && !studioEl.classList.contains('hidden')) {
+          broadcastToLivePreview();
+        }
+      }
+    });
+
     function scheduleBroadcast() {
       if (broadcastDebounceTimer) clearTimeout(broadcastDebounceTimer);
       broadcastDebounceTimer = setTimeout(() => {
         broadcastToLivePreview();
       }, 100);
+    }
+
+    function buildAdminPreviewWeddingObject() {
+      const cfg = templateState.config_json || {};
+      const ph = cfg.placeholder_data || getDefaultPlaceholderData();
+      return {
+        id: 'admin-preview-sim',
+        slug: 'admin-preview',
+        cover_photo: cfg.default_cover_photo || 'https://images.unsplash.com/photo-1519741497674-611481863552?w=800&auto=format&fit=crop&q=80',
+        groom_nickname: ph.groom_nickname || 'Yoga',
+        groom_fullname: ph.groom_fullname || 'Raden Yoga Pratama, S.Kom.',
+        groom_parents: ph.groom_parents || 'Putra pertama dari Bpk. Bambang Sutrisno & Ibu Sri Rahayu',
+        groom_ig: ph.groom_ig || 'yogapratama',
+        groom_photo: ph.groom_photo || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&auto=format&fit=crop&q=80',
+        bride_nickname: ph.bride_nickname || 'Anin',
+        bride_fullname: ph.bride_fullname || 'dr. Anindita Kirana Dewi',
+        bride_parents: ph.bride_parents || 'Putri bungsu dari Bpk. H. Ahmad Fauzi & Ibu Hj. Siti Maryam',
+        bride_ig: ph.bride_ig || 'aninditakirana',
+        bride_photo: ph.bride_photo || 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=600&auto=format&fit=crop&q=80',
+        akad_date: ph.akad_date || '2027-10-24',
+        akad_time: ph.akad_time || '08:00 - 10:00 WIB',
+        akad_venue: ph.akad_venue || 'Masjid Agung Al-Azhar',
+        akad_address: ph.akad_address || 'Jl. Sisingamangaraja No. 1, Kebayoran Baru, Jakarta Selatan',
+        akad_maps_url: ph.akad_maps_url || 'https://maps.google.com',
+        resepsi_date: ph.resepsi_date || '2027-10-24',
+        resepsi_time: ph.resepsi_time || '11:00 - 14:00 WIB',
+        resepsi_venue: ph.resepsi_venue || 'Grand Ballroom Hotel Mulia',
+        resepsi_address: ph.resepsi_address || 'Jl. Asia Afrika Senayan, Jakarta Pusat',
+        resepsi_maps_url: ph.resepsi_maps_url || 'https://maps.google.com',
+        quote_text: ph.quote_text || 'Dan di antara tanda-tanda kebesaran-Nya ialah Dia menciptakan pasangan-pasangan untukmu dari jenismu sendiri, agar kamu cenderung dan merasa tenteram kepadanya.',
+        quote_source: ph.quote_source || 'QS. Ar-Rum: 21',
+        gallery_json: Array.isArray(ph.gallery_json) ? ph.gallery_json : [],
+        love_story_json: Array.isArray(ph.love_story_json) ? ph.love_story_json : [],
+        envelopes_json: Array.isArray(ph.envelopes_json) ? ph.envelopes_json : [],
+        custom_theme_json: {
+          ...templateState.default_colors_json,
+          ...cfg,
+          gift_address: ph.gift_address || ''
+        }
+      };
     }
 
     function broadcastToLivePreview() {
@@ -3129,6 +4050,7 @@
           default_colors_json: templateState.default_colors_json,
           config_json: templateState.config_json
         },
+        wedding: buildAdminPreviewWeddingObject(),
         default_colors_json: templateState.default_colors_json,
         config_json: templateState.config_json,
         custom_theme_json: {
@@ -3160,7 +4082,8 @@
 
     function openLivePreviewNewTab() {
       const tplSlug = templateState.slug || 'minimalist-sage';
-      const url = `/u.html?preview=true&admin_template_preview=true&tpl_slug=${encodeURIComponent(tplSlug)}`;
+      const idQuery = templateState.id ? `&tpl_id=${encodeURIComponent(templateState.id)}` : '';
+      const url = `/u.html?preview=true&admin_template_preview=true${idQuery}&tpl_slug=${encodeURIComponent(tplSlug)}`;
       window.open(url, '_blank');
     }
 
@@ -3196,6 +4119,21 @@
       btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin text-amber-400"></i><span>Menyimpan...</span>`;
       if (window.lucide) window.lucide.createIcons();
 
+      // Bersihkan field background lama agar tidak bentrok dengan format baru
+      const cleanConfig = JSON.parse(JSON.stringify(templateState.config_json || {}));
+      if (cleanConfig.bg_type === 'video' && cleanConfig.bg_video_url) {
+        cleanConfig.bg_image_url = null;
+        cleanConfig.bg_gif_url = null;
+      } else if (cleanConfig.bg_type === 'image' && cleanConfig.bg_image_url) {
+        cleanConfig.bg_video_url = null;
+        cleanConfig.bg_gif_url = null;
+      } else if (cleanConfig.bg_type === 'lava') {
+        cleanConfig.bg_image_url = null;
+        cleanConfig.bg_video_url = null;
+        cleanConfig.bg_gif_url = null;
+      }
+      templateState.config_json = cleanConfig;
+
       const payload = {
         name,
         slug,
@@ -3204,7 +4142,7 @@
         is_active: Boolean(templateState.is_active),
         preview_url: templateState.preview_url || null,
         default_colors_json: templateState.default_colors_json,
-        config_json: templateState.config_json
+        config_json: cleanConfig
       };
 
       try {

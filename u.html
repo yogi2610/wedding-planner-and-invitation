@@ -168,51 +168,40 @@
       opacity: 0.45;
     }
 
-    /* Translucent frosted glass effect on wedding cards for visible background movement */
+    /* Translucent frosted glass effect & crisp less-rounded corners */
     .wedding-card, .translucent-card, .theme-card {
-      background-color: var(--bg-card, #FFFFFF) !important;
+      background-color: var(--bg-card, rgba(255, 255, 255, 0.95)) !important;
       color: var(--text-main, #2C352E) !important;
+      border-radius: 0.625rem !important;
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
     }
 
-    /* 8 Theme Presets Custom Styles */
+    /* 8 Theme Presets Custom Styles (Less-rounded, editorial borders) */
     .theme-minimalist-sage { font-family: 'Plus Jakarta Sans', sans-serif; }
-    .theme-minimalist-sage .wedding-card { border-radius: 1.5rem; border: 1px solid rgba(107, 142, 120, 0.2); }
+    .theme-minimalist-sage .wedding-card { border-radius: 0.625rem !important; border: 1px solid rgba(107, 142, 120, 0.22); }
 
     .theme-cozy-terracotta { font-family: 'Plus Jakarta Sans', sans-serif; }
-    .theme-cozy-terracotta .wedding-card { border-radius: 1.75rem; border: 1px solid rgba(198, 107, 78, 0.25); }
+    .theme-cozy-terracotta .wedding-card { border-radius: 0.625rem !important; border: 1px solid rgba(198, 107, 78, 0.25); }
 
-    .theme-javanese-royal { font-family: 'Cormorant Garamond', Georgia, serif; background-color: #1C1613 !important; color: #F5EBE1 !important; }
-    .theme-javanese-royal .wedding-card { background-color: #2A221E !important; border: 1px solid rgba(212, 175, 55, 0.4) !important; color: #F5EBE1 !important; }
-    .theme-javanese-royal .wedding-card h1, 
-    .theme-javanese-royal .wedding-card h2, 
-    .theme-javanese-royal .wedding-card h3, 
-    .theme-javanese-royal .wedding-card h4, 
-    .theme-javanese-royal .wedding-card span, 
-    .theme-javanese-royal .wedding-card p { color: #F5EBE1 !important; }
-    .theme-javanese-royal .theme-ornament { color: #D4AF37 !important; }
+    .theme-javanese-royal { font-family: 'Cormorant Garamond', Georgia, serif; background-color: var(--bg-main, #1C1613) !important; color: var(--text-main, #F5EBE1) !important; }
+    .theme-javanese-royal .wedding-card { border-radius: 0.625rem !important; border: 1px solid rgba(212, 175, 55, 0.4) !important; }
+    .theme-javanese-royal .theme-ornament { color: var(--accent-color, #D4AF37) !important; }
 
     .theme-romantic-blush { font-family: 'Plus Jakarta Sans', sans-serif; }
-    .theme-romantic-blush .wedding-card { border-radius: 1.5rem; border: 1px solid rgba(217, 119, 155, 0.25); }
+    .theme-romantic-blush .wedding-card { border-radius: 0.625rem !important; border: 1px solid rgba(217, 119, 155, 0.25); }
 
-    .theme-luxury-midnight { font-family: 'Cormorant Garamond', Georgia, serif; background-color: #0F172A !important; color: #F8FAFC !important; }
-    .theme-luxury-midnight .wedding-card { background-color: #1E293B !important; border: 1px solid rgba(234, 179, 8, 0.35) !important; color: #F8FAFC !important; }
-    .theme-luxury-midnight .wedding-card h1, 
-    .theme-luxury-midnight .wedding-card h2, 
-    .theme-luxury-midnight .wedding-card h3, 
-    .theme-luxury-midnight .wedding-card h4, 
-    .theme-luxury-midnight .wedding-card span, 
-    .theme-luxury-midnight .wedding-card p { color: #F8FAFC !important; }
+    .theme-luxury-midnight { font-family: 'Cormorant Garamond', Georgia, serif; background-color: var(--bg-main, #0F172A) !important; color: var(--text-main, #F8FAFC) !important; }
+    .theme-luxury-midnight .wedding-card { border-radius: 0.625rem !important; border: 1px solid rgba(234, 179, 8, 0.35) !important; }
 
     .theme-modern-monochrome { font-family: 'Plus Jakarta Sans', sans-serif; }
-    .theme-modern-monochrome .wedding-card { border-radius: 0.75rem; border: 1px solid #18181B; }
+    .theme-modern-monochrome .wedding-card { border-radius: 0.5rem !important; border: 1px solid #18181B; }
 
     .theme-rustic-woodland { font-family: 'Plus Jakarta Sans', sans-serif; }
-    .theme-rustic-woodland .wedding-card { border-radius: 1.5rem; border: 1px solid rgba(74, 107, 83, 0.25); }
+    .theme-rustic-woodland .wedding-card { border-radius: 0.625rem !important; border: 1px solid rgba(74, 107, 83, 0.25); }
 
     .theme-whimsical-fairy { font-family: 'Plus Jakarta Sans', sans-serif; }
-    .theme-whimsical-fairy .wedding-card { border-radius: 2rem; border: 1px solid rgba(124, 92, 252, 0.3); box-shadow: 0 4px 20px -2px rgba(124, 92, 252, 0.15); }
+    .theme-whimsical-fairy .wedding-card { border-radius: 0.625rem !important; border: 1px solid rgba(124, 92, 252, 0.3); box-shadow: 0 4px 20px -2px rgba(124, 92, 252, 0.12); }
 
     .custom-scrollbar::-webkit-scrollbar {
       width: 4px;
@@ -665,6 +654,37 @@
       z-index: 12;
       transition: transform 1.15s cubic-bezier(0.22, 1, 0.36, 1), opacity 1s ease;
     }
+
+    /* Cover Mode B: Collage Blur-to-Solid */
+    #cover-collage-blur-fade {
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.75) 55%, rgba(0, 0, 0, 1) 100%);
+      mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.75) 55%, rgba(0, 0, 0, 1) 100%);
+    }
+
+    /* Cover Mode C: Envelope Split Transition */
+    #envelope-top-panel,
+    #envelope-bottom-panel,
+    #envelope-center-card {
+      transition: transform 1.25s cubic-bezier(0.22, 1, 0.36, 1), opacity 1.05s cubic-bezier(0.22, 1, 0.36, 1);
+      will-change: transform, opacity;
+    }
+    #cover-screen.is-envelope-opened #envelope-top-panel {
+      transform: translate3d(0, -112%, 0);
+      opacity: 0;
+    }
+    #cover-screen.is-envelope-opened #envelope-bottom-panel {
+      transform: translate3d(0, 112%, 0);
+      opacity: 0;
+    }
+    #cover-screen.is-envelope-opened #envelope-center-card {
+      transform: scale(1.06);
+      opacity: 0;
+    }
+    #cover-screen.is-envelope-mode {
+      background-color: var(--bg-main, #FCFBF9);
+    }
   </style>
 </head>
 <body class="bg-[#141210] text-slate-800 antialiased min-h-screen selection:bg-amber-100 selection:text-amber-900 cover-locked">
@@ -721,16 +741,24 @@
       <div id="viewport-ornament-br" class="viewport-corner-slot"></div>
     </div>
 
-    <!-- 1. FULL-SCREEN COVER OVERLAY (SAMPUL DEPAN) -->
-    <div id="cover-screen" data-id="invitation-cover" class="p-5 sm:p-6 text-center">
+    <!-- 1. FULL-SCREEN COVER OVERLAY (SAMPUL DEPAN - 3 VARIASI STYLE) -->
+    <div id="cover-screen" data-id="invitation-cover" class="text-center">
       
-      <!-- Optional Fullscreen Cover Background Photo Layer -->
+      <!-- Layer 1A: Cover Lava Lamp Background (Aktif saat background cover = lava_lamp) -->
+      <div id="cover-lava-bg" class="absolute inset-0 z-[2] pointer-events-none overflow-hidden" style="background-color: var(--bg-main, #FCFBF9);">
+        <div class="lava-blob blob-1 absolute -top-16 -left-16 w-80 h-80 rounded-full bg-[var(--accent-color,#b48342)]"></div>
+        <div class="lava-blob blob-2 absolute top-1/3 -right-20 w-88 h-88 rounded-full bg-[var(--accent-secondary,#e2b170)]"></div>
+        <div class="lava-blob blob-3 absolute -bottom-20 left-10 w-96 h-96 rounded-full bg-[var(--accent-color,#b48342)]"></div>
+        <div class="lava-blob blob-4 absolute top-2/3 -left-16 w-72 h-72 rounded-full bg-[var(--accent-secondary,#e2b170)]"></div>
+      </div>
+
+      <!-- Layer 1B: Fullscreen Cover Background Photo Layer (Aktif saat background cover = photo) -->
       <div id="cover-bg-photo-wrap" class="absolute inset-0 z-[5] hidden pointer-events-none overflow-hidden">
         <img id="cover-bg-photo-img" src="" alt="Background Sampul" class="w-full h-full object-cover">
         <div id="cover-bg-photo-overlay" class="absolute inset-0 transition-all duration-300" style="background: rgba(0,0,0,0.45);"></div>
       </div>
 
-      <!-- Clipping Wrapper untuk Ornamen Sudut & Tirai Cover (Mencegah jitter tepi kanan/bawah) -->
+      <!-- Layer 2: Clipping Wrapper untuk Ornamen Sudut & Tirai Cover (Mencegah jitter tepi kanan/bawah) -->
       <div id="cover-decor-clip" class="absolute inset-0 overflow-hidden pointer-events-none z-[15]">
         <!-- 4 Corner Slots on Cover -->
         <div id="cover-ornament-tl" class="corner-slot absolute top-0 left-0"></div>
@@ -743,57 +771,162 @@
         <div id="cover-curtain-right" class="cover-curtain absolute inset-y-0 right-0 w-1/2 flex items-center justify-start pl-0.5 opacity-90"></div>
       </div>
 
-      <!-- Top Floral / Modern Motif -->
-      <div class="pt-3 sm:pt-5 space-y-1.5 relative z-20 shrink-0">
-        <div id="cover-header-ornament" class="mx-auto flex items-center justify-center pointer-events-none empty:hidden mb-1"></div>
-        <span class="cover-top-label text-[10px] uppercase tracking-[0.3em] text-[var(--accent-color,#b48342)] font-semibold block">The Wedding Of</span>
-        <h1 class="font-serif text-3xl sm:text-4xl font-bold tracking-tight text-[var(--text-main,#2C352E)] leading-tight" id="cover-couple-name">
-          Mempelai & Mempelai
-        </h1>
-        <p class="text-xs text-[var(--text-secondary)] font-serif italic" id="cover-wedding-date">
-          Menuju Hari Bahagia
-        </p>
-      </div>
+      <!-- =================================================================== -->
+      <!-- COVER VARIANT A: CLASSIC (FRAME + DEAR CARD + TOMBOL BUKA)          -->
+      <!-- =================================================================== -->
+      <div id="cover-layout-classic" class="relative z-20 flex-1 w-full flex flex-col justify-between p-5 sm:p-6 min-h-full">
+        <!-- Top Floral / Modern Motif -->
+        <div class="pt-3 sm:pt-5 space-y-1.5 relative z-20 shrink-0">
+          <div id="cover-header-ornament" class="mx-auto flex items-center justify-center pointer-events-none empty:hidden mb-1"></div>
+          <span class="cover-top-label text-[10px] uppercase tracking-[0.3em] text-[var(--accent-color,#b48342)] font-semibold block">The Wedding Of</span>
+          <h1 class="font-serif text-3xl sm:text-4xl font-bold tracking-tight text-[var(--text-main,#2C352E)] leading-tight" id="cover-couple-name">
+            Mempelai & Mempelai
+          </h1>
+          <p class="text-xs text-[var(--text-secondary)] font-serif italic" id="cover-wedding-date">
+            Menuju Hari Bahagia
+          </p>
+        </div>
 
-      <!-- Grand Cover Photo Frame (Diperbesar agar lebih proporsional di layar HP) -->
-      <div id="cover-photo-container" class="relative my-2 sm:my-3 z-20 flex flex-col items-center justify-center w-full max-w-[270px] sm:max-w-[300px] mx-auto transition-all duration-500 hidden shrink-0">
-        <div id="cover-frame-outer" class="relative flex items-center justify-center">
-          <!-- Frame Ornament Overlay (Custom PNG or Preset Ornament) -->
-          <div id="cover-frame-ornament-el" class="pointer-events-none absolute -inset-4 z-20 flex items-center justify-center"></div>
-          
-          <!-- Photo Frame Element with Shape Class -->
-          <div id="cover-photo-frame" class="w-56 sm:w-64 overflow-hidden shadow-2xl relative bg-stone-900 transition-all duration-300">
-            <img id="cover-photo-img" src="" alt="Foto Sampul" class="w-full h-full object-cover">
+        <!-- Grand Cover Photo Frame -->
+        <div id="cover-photo-container" class="relative my-2 sm:my-3 z-20 flex flex-col items-center justify-center w-full max-w-[270px] sm:max-w-[300px] mx-auto transition-all duration-500 hidden shrink-0">
+          <div id="cover-frame-outer" class="relative flex items-center justify-center">
+            <div id="cover-frame-ornament-el" class="pointer-events-none absolute -inset-4 z-20 flex items-center justify-center"></div>
+            <div id="cover-photo-frame" class="w-56 sm:w-64 overflow-hidden shadow-2xl relative bg-stone-900 transition-all duration-300">
+              <img id="cover-photo-img" src="" alt="Foto Sampul" class="w-full h-full object-cover">
+            </div>
+          </div>
+        </div>
+
+        <!-- Bottom Group: Dear Guest Box + Branding -->
+        <div id="cover-bottom-group" class="w-full space-y-2.5 relative z-20 shrink-0">
+          <div class="wedding-card theme-card w-full p-4 sm:p-5 rounded-[10px] border border-stone-200/80 backdrop-blur-md shadow-xl space-y-2 relative" style="background-color: var(--bg-card); color: var(--text-main);">
+            <span class="text-[11px] text-[var(--text-secondary)] block">Kepada Yth. Bapak/Ibu/Saudara/i:</span>
+            <h3 class="font-serif text-2xl font-bold text-[var(--text-main,#2C352E)] tracking-wide leading-tight" id="cover-guest-name">
+              Tamu Kehormatan
+            </h3>
+            <p class="text-[11px] text-[var(--text-secondary)] leading-relaxed">
+              Tanpa mengurangi rasa hormat, kami mengundang Anda untuk hadir dan memberikan doa restu pada hari pernikahan kami.
+            </p>
+            
+            <button 
+              id="btn-open-invitation"
+              type="button"
+              class="w-full py-3 px-6 rounded-lg gold-gradient-bg text-slate-950 font-bold text-xs tracking-wide shadow-lg hover:opacity-95 transition-all flex items-center justify-center gap-2 cursor-pointer mt-1.5"
+            >
+              <i data-lucide="mail-open" class="w-4 h-4 text-slate-950"></i>
+              <span>Buka Undangan</span>
+            </button>
+          </div>
+
+          <div class="cover-bottom-brand pb-1 text-[10px] text-[var(--text-tertiary)] tracking-wider uppercase font-mono">
+            MenikahBersama Digital Invitation
           </div>
         </div>
       </div>
 
-      <!-- Bottom Group: Dear Guest Box + Branding (Merapat ke bawah saat background photo aktif) -->
-      <div id="cover-bottom-group" class="w-full space-y-2.5 relative z-20 shrink-0">
-        <!-- Dear Guest Box -->
-        <div class="wedding-card theme-card w-full p-4 sm:p-5 rounded-3xl border border-stone-200/80 backdrop-blur-md shadow-xl space-y-2 relative" style="background-color: var(--bg-card); color: var(--text-main);">
-          <span class="text-[11px] text-[var(--text-secondary)] block">Kepada Yth. Bapak/Ibu/Saudara/i:</span>
-          <h3 class="font-serif text-2xl font-bold text-[var(--text-main,#2C352E)] tracking-wide leading-tight" id="cover-guest-name">
-            Tamu Kehormatan
-          </h3>
-          <p class="text-[11px] text-[var(--text-secondary)] leading-relaxed">
-            Tanpa mengurangi rasa hormat, kami mengundang Anda untuk hadir dan memberikan doa restu pada hari pernikahan kami.
-          </p>
-          
+      <!-- =================================================================== -->
+      <!-- COVER VARIANT B: COLLAGE 4/6 FOTO + TRANSISI BLUR + SCROLL KE BAWAH -->
+      <!-- =================================================================== -->
+      <div id="cover-layout-collage" class="hidden relative z-20 flex-1 w-full h-full flex flex-col justify-end overflow-hidden" style="background-color: var(--bg-main, #FCFBF9);">
+        <!-- Photo Grid Section (Top ~70% of Cover) -->
+        <div class="absolute inset-x-0 top-0 h-[72%] overflow-hidden z-[1]">
+          <div id="cover-collage-grid" class="w-full h-full grid grid-cols-2 grid-rows-2 gap-1 p-1">
+            <!-- Collage Photos injected by JS -->
+          </div>
+          <!-- Blur Fade Overlay -->
+          <div id="cover-collage-blur-fade" class="absolute inset-x-0 bottom-0 h-36 pointer-events-none z-[2]"></div>
+          <!-- Solid Gradient Transition into --bg-main -->
+          <div id="cover-collage-solid-fade" class="absolute inset-x-0 bottom-0 h-44 pointer-events-none z-[3]"></div>
+        </div>
+
+        <!-- Bottom Content Over Solid Area -->
+        <div class="relative z-20 px-6 pb-7 pt-12 text-center space-y-2.5 flex flex-col items-center">
+          <div id="cover-collage-header-ornament" class="mx-auto flex items-center justify-center pointer-events-none empty:hidden mb-0.5"></div>
+          <span class="text-[10px] uppercase tracking-[0.32em] text-[var(--accent-color,#b48342)] font-bold block">The Wedding Of</span>
+          <h1 id="cover-collage-couple-name" class="font-serif text-4xl font-bold tracking-tight text-[var(--text-main,#2C352E)] leading-tight">
+            Mempelai & Mempelai
+          </h1>
+          <p id="cover-collage-date" class="text-xs text-[var(--text-secondary)] font-serif italic">Menuju Hari Bahagia</p>
+
+          <div class="wedding-card theme-card w-full max-w-xs px-4 py-3 rounded-[10px] border border-stone-200/70 shadow-sm space-y-0.5 mt-1" style="background-color: var(--bg-card); color: var(--text-main);">
+            <span class="text-[10px] text-[var(--text-tertiary)] uppercase tracking-wider block">Kepada Yth.</span>
+            <p id="cover-collage-guest-name" class="font-serif text-lg font-bold text-[var(--text-main)] leading-snug">Tamu Kehormatan</p>
+          </div>
+
           <button 
-            id="btn-open-invitation"
+            id="btn-collage-scroll-open"
             type="button"
-            class="w-full py-3 px-6 rounded-full gold-gradient-bg text-slate-950 font-bold text-xs tracking-wide shadow-lg hover:opacity-95 transition-all flex items-center justify-center gap-2 cursor-pointer mt-1.5"
+            class="mt-2 pt-1 flex flex-col items-center gap-1 text-[var(--accent-color,#b48342)] animate-bounce cursor-pointer bg-transparent border-0"
           >
-            <i data-lucide="mail-open" class="w-4 h-4 text-slate-950"></i>
-            <span>Buka Undangan</span>
+            <span class="text-[11px] font-bold uppercase tracking-[0.2em]">Scroll ke bawah</span>
+            <i data-lucide="chevrons-down" class="w-4 h-4"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- =================================================================== -->
+      <!-- COVER VARIANT C: AMPLOP SURAT MEWAH (TERBUKA ATAS & BAWAH)          -->
+      <!-- =================================================================== -->
+      <div id="cover-layout-envelope" class="hidden relative z-20 flex-1 w-full h-full overflow-hidden flex items-center justify-center p-5">
+        
+        <!-- Upper Envelope Flap Panel (Slides UP when opened) -->
+        <div id="envelope-top-panel" class="absolute inset-x-0 top-0 h-[56%] z-20 pointer-events-none flex flex-col items-center justify-start">
+          <div class="w-full h-full relative" style="filter: drop-shadow(0 10px 22px rgba(0,0,0,0.22));">
+            <!-- Top Pointed Envelope Flap -->
+            <div class="w-full h-full relative overflow-hidden" style="clip-path: polygon(0 0, 100% 0, 100% 62%, 50% 100%, 0 62%); background-color: var(--bg-card, #FFFFFF); border-bottom: 2px solid var(--accent-color, #b48342);">
+              <div class="absolute inset-0 opacity-10 pointer-events-none" style="background: radial-gradient(circle at 50% 25%, var(--accent-color, #b48342), transparent 70%);"></div>
+              <div class="pt-9 px-6 text-center space-y-1.5">
+                <div id="cover-envelope-header-ornament" class="mx-auto flex items-center justify-center empty:hidden mb-1"></div>
+                <span class="text-[10px] uppercase tracking-[0.32em] text-[var(--accent-color,#b48342)] font-bold block">Wedding Invitation</span>
+                <h1 id="cover-envelope-couple-name" class="font-serif text-3xl sm:text-4xl font-bold text-[var(--text-main)] leading-tight">
+                  Mempelai & Mempelai
+                </h1>
+                <p id="cover-envelope-date" class="text-[11px] font-serif italic text-[var(--text-secondary)]">Menuju Hari Bahagia</p>
+              </div>
+            </div>
+            <!-- Gold Accent Trim V-Line -->
+            <svg class="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 100 100" preserveAspectRatio="none">
+              <polyline points="0,62 50,100 100,62" fill="none" stroke="var(--accent-color, #b48342)" stroke-width="0.8" stroke-opacity="0.7" />
+            </svg>
+          </div>
+        </div>
+
+        <!-- Lower Envelope Pocket Panel (Slides DOWN when opened) -->
+        <div id="envelope-bottom-panel" class="absolute inset-x-0 bottom-0 h-[55%] z-10 pointer-events-auto flex flex-col justify-end">
+          <div class="w-full h-full relative" style="filter: drop-shadow(0 -8px 20px rgba(0,0,0,0.16));">
+            <div class="w-full h-full relative overflow-hidden flex flex-col justify-end pb-7 px-6" style="clip-path: polygon(0 28%, 50% 0, 100% 28%, 100% 100%, 0 100%); background-color: var(--bg-main, #FCFBF9);">
+              <div class="absolute inset-0 opacity-15 pointer-events-none" style="background: linear-gradient(to top, var(--accent-color, #b48342), transparent 65%);"></div>
+              <!-- Guest Label inside bottom envelope pocket -->
+              <div class="relative z-10 max-w-xs mx-auto w-full text-center space-y-1.5 border border-[var(--accent-color,#b48342)]/30 rounded-[8px] px-4 py-3 backdrop-blur-sm" style="background-color: var(--bg-card);">
+                <span class="text-[10px] uppercase tracking-widest text-[var(--text-tertiary)] block">Kepada Yth. Bapak/Ibu/Saudara/i:</span>
+                <p id="cover-envelope-guest-name" class="font-serif text-xl font-bold text-[var(--text-main)] leading-snug">Tamu Kehormatan</p>
+                <span class="text-[10px] text-[var(--text-secondary)] block leading-relaxed">Ketuk segel surat untuk membuka undangan</span>
+              </div>
+              <div class="pt-3 text-[9px] text-[var(--text-tertiary)] tracking-wider uppercase font-mono">
+                MenikahBersama Digital Invitation
+              </div>
+            </div>
+            <!-- Gold Accent Pocket Seam -->
+            <svg class="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 100 100" preserveAspectRatio="none">
+              <polyline points="0,28 50,0 100,28" fill="none" stroke="var(--accent-color, #b48342)" stroke-width="0.7" stroke-opacity="0.55" />
+            </svg>
+          </div>
+        </div>
+
+        <!-- Center Wax Seal / Monogram Trigger Button -->
+        <div id="envelope-center-card" class="relative z-30 flex flex-col items-center justify-center mt-2">
+          <button
+            id="btn-envelope-open"
+            type="button"
+            class="group relative w-24 h-24 rounded-full gold-gradient-bg text-slate-950 shadow-2xl border-4 border-white/80 flex flex-col items-center justify-center gap-0.5 hover:scale-105 active:scale-95 transition-transform cursor-pointer"
+            title="Buka Surat Undangan"
+          >
+            <span class="absolute -inset-2 rounded-full border border-dashed border-[var(--accent-color,#d4af37)]/80 animate-spin-slow pointer-events-none"></span>
+            <i data-lucide="mail-open" class="w-6 h-6 text-slate-950"></i>
+            <span class="text-[9px] font-extrabold uppercase tracking-wider leading-none mt-1">Buka</span>
           </button>
         </div>
 
-        <!-- Bottom Branding -->
-        <div class="cover-bottom-brand pb-1 text-[10px] text-[var(--text-tertiary)] tracking-wider uppercase font-mono">
-          MenikahBersama Digital Invitation
-        </div>
       </div>
     </div>
 
@@ -863,7 +996,7 @@
         </h2>
 
         <!-- Teks Kutipan Suci -->
-        <div class="wedding-card theme-card backdrop-blur-md p-5 rounded-2xl border border-stone-200/70 shadow-2xs space-y-2 mt-4 relative overflow-hidden w-full max-w-sm mx-auto" style="background-color: var(--bg-card); color: var(--text-main);" data-animate="zoom-in">
+        <div class="wedding-card theme-card backdrop-blur-md p-5 rounded-[10px] border border-stone-200/70 shadow-2xs space-y-2 mt-4 relative overflow-hidden w-full max-w-sm mx-auto" style="background-color: var(--bg-card); color: var(--text-main);" data-animate="zoom-in">
           <p class="text-xs text-[var(--text-secondary)] italic font-serif leading-relaxed relative z-10" id="quote-text">
             "Dan di antara tanda-tanda kekuasaan-Nya ialah Dia menciptakan untukmu pasangan hidup dari jenismu sendiri, supaya kamu merasa tenteram di sampingnya."
           </p>
@@ -894,7 +1027,7 @@
         </div>
 
         <!-- Mempelai Pria (Kartu Diperbesar ~75-80% layar) -->
-        <div id="card-groom" class="wedding-card theme-card backdrop-blur-md min-h-[75dvh] flex flex-col items-center justify-center py-10 px-6 sm:px-7 rounded-3xl border border-stone-200/80 shadow-sm space-y-5 relative overflow-hidden" style="background-color: var(--bg-card); color: var(--text-main);" data-animate="fade-up">
+        <div id="card-groom" class="wedding-card theme-card backdrop-blur-md min-h-[75dvh] flex flex-col items-center justify-center py-10 px-6 sm:px-7 rounded-[10px] border border-stone-200/80 shadow-sm space-y-5 relative overflow-hidden" style="background-color: var(--bg-card); color: var(--text-main);" data-animate="fade-up">
           <span class="text-[10px] uppercase tracking-[0.25em] text-[var(--accent-color,#b48342)] font-bold relative z-10">The Groom</span>
           <div class="relative mx-auto my-2 flex items-center justify-center">
             <div id="groom-frame-outer" class="relative flex items-center justify-center">
@@ -921,7 +1054,7 @@
         <div class="font-serif text-3xl font-bold text-[var(--accent-color,#b48342)] float-breathing py-1" data-animate="zoom-in">&</div>
 
         <!-- Mempelai Wanita (Kartu Diperbesar ~75-80% layar) -->
-        <div id="card-bride" class="wedding-card theme-card backdrop-blur-md min-h-[75dvh] flex flex-col items-center justify-center py-10 px-6 sm:px-7 rounded-3xl border border-stone-200/80 shadow-sm space-y-5 relative overflow-hidden" style="background-color: var(--bg-card); color: var(--text-main);" data-animate="fade-up">
+        <div id="card-bride" class="wedding-card theme-card backdrop-blur-md min-h-[75dvh] flex flex-col items-center justify-center py-10 px-6 sm:px-7 rounded-[10px] border border-stone-200/80 shadow-sm space-y-5 relative overflow-hidden" style="background-color: var(--bg-card); color: var(--text-main);" data-animate="fade-up">
           <span class="text-[10px] uppercase tracking-[0.25em] text-[var(--accent-color,#b48342)] font-bold relative z-10">The Bride</span>
           <div class="relative mx-auto my-2 flex items-center justify-center">
             <div id="bride-frame-outer" class="relative flex items-center justify-center">
@@ -950,23 +1083,23 @@
       <div class="section-divider-slot my-2 flex items-center justify-center text-[var(--accent-color,#b48342)]"></div>
 
       <!-- 4. HITUNG MUNDUR REAL-TIME DETIK DEMI DETIK -->
-      <section id="section-countdown" class="wedding-card theme-card backdrop-blur-md p-6 rounded-3xl border border-stone-200/80 shadow-2xs space-y-4 relative overflow-hidden" style="background-color: var(--bg-card); color: var(--text-main);" data-animate="zoom-in">
+      <section id="section-countdown" class="wedding-card theme-card backdrop-blur-md p-6 rounded-[10px] border border-stone-200/80 shadow-2xs space-y-4 relative overflow-hidden" style="background-color: var(--bg-card); color: var(--text-main);" data-animate="zoom-in">
         <span class="text-[10px] uppercase tracking-widest text-[var(--accent-color,#b48342)] font-bold block relative z-10">Menuju Hari Bahagia</span>
         
         <div class="grid grid-cols-4 gap-2 relative z-10">
-          <div class="p-2.5 rounded-2xl border border-stone-200/60 text-center" style="background-color: var(--bg-card); color: var(--text-main);">
+          <div class="p-2.5 rounded-lg border border-stone-200/60 text-center" style="background-color: var(--bg-card); color: var(--text-main);">
             <span class="text-xl font-extrabold text-[var(--accent-color,#b48342)] block font-mono" id="countdown-days">00</span>
             <span class="text-[9px] uppercase tracking-wider text-[var(--text-secondary)] font-semibold mt-0.5 block">Hari</span>
           </div>
-          <div class="p-2.5 rounded-2xl border border-stone-200/60 text-center" style="background-color: var(--bg-card); color: var(--text-main);">
+          <div class="p-2.5 rounded-lg border border-stone-200/60 text-center" style="background-color: var(--bg-card); color: var(--text-main);">
             <span class="text-xl font-extrabold text-[var(--accent-color,#b48342)] block font-mono" id="countdown-hours">00</span>
             <span class="text-[9px] uppercase tracking-wider text-[var(--text-secondary)] font-semibold mt-0.5 block">Jam</span>
           </div>
-          <div class="p-2.5 rounded-2xl border border-stone-200/60 text-center" style="background-color: var(--bg-card); color: var(--text-main);">
+          <div class="p-2.5 rounded-lg border border-stone-200/60 text-center" style="background-color: var(--bg-card); color: var(--text-main);">
             <span class="text-xl font-extrabold text-[var(--accent-color,#b48342)] block font-mono" id="countdown-minutes">00</span>
             <span class="text-[9px] uppercase tracking-wider text-[var(--text-secondary)] font-semibold mt-0.5 block">Menit</span>
           </div>
-          <div class="p-2.5 rounded-2xl border border-stone-200/60 text-center" style="background-color: var(--bg-card); color: var(--text-main);">
+          <div class="p-2.5 rounded-lg border border-stone-200/60 text-center" style="background-color: var(--bg-card); color: var(--text-main);">
             <span class="text-xl font-extrabold text-[var(--accent-color,#b48342)] block font-mono" id="countdown-seconds">00</span>
             <span class="text-[9px] uppercase tracking-wider text-[var(--text-secondary)] font-semibold mt-0.5 block">Detik</span>
           </div>
@@ -994,7 +1127,7 @@
         </div>
 
         <!-- Akad Nikah -->
-        <div id="card-event-akad" class="wedding-card theme-card p-6 rounded-3xl border border-stone-200/80 shadow-2xs text-center flex flex-col items-center justify-center space-y-3 relative overflow-hidden" style="background-color: var(--bg-card); color: var(--text-main);" data-animate="fade-up">
+        <div id="card-event-akad" class="wedding-card theme-card p-6 rounded-[10px] border border-stone-200/80 shadow-2xs text-center flex flex-col items-center justify-center space-y-3 relative overflow-hidden" style="background-color: var(--bg-card); color: var(--text-main);" data-animate="fade-up">
           <div class="inline-flex items-center justify-center gap-2 text-[var(--accent-color,#b48342)] font-bold text-xs uppercase tracking-wider relative z-10">
             <i data-lucide="book-open" class="w-4 h-4"></i>
             <span>Akad Nikah</span>
@@ -1014,7 +1147,7 @@
         </div>
 
         <!-- Resepsi Pernikahan -->
-        <div id="card-event-resepsi" class="wedding-card theme-card p-6 rounded-3xl border border-stone-200/80 shadow-2xs text-center flex flex-col items-center justify-center space-y-3 relative overflow-hidden" style="background-color: var(--bg-card); color: var(--text-main);" data-animate="fade-up">
+        <div id="card-event-resepsi" class="wedding-card theme-card p-6 rounded-[10px] border border-stone-200/80 shadow-2xs text-center flex flex-col items-center justify-center space-y-3 relative overflow-hidden" style="background-color: var(--bg-card); color: var(--text-main);" data-animate="fade-up">
           <div class="inline-flex items-center justify-center gap-2 text-[var(--text-main,#2C352E)] font-bold text-xs uppercase tracking-wider relative z-10">
             <i data-lucide="party-popper" class="w-4 h-4 text-[var(--accent-color,#b48342)]"></i>
             <span>Resepsi Pernikahan</span>
@@ -1038,7 +1171,7 @@
       <div class="section-divider-slot my-2 flex items-center justify-center text-[var(--accent-color,#b48342)]"></div>
 
       <!-- 5B. DRESSCODE (PANDUAN BUSANA) -->
-      <section id="section-dresscode" class="wedding-card theme-card backdrop-blur-md p-6 rounded-3xl border border-stone-200/80 shadow-2xs space-y-4 relative overflow-hidden hidden" style="background-color: var(--bg-card); color: var(--text-main);" data-animate="fade-up">
+      <section id="section-dresscode" class="wedding-card theme-card backdrop-blur-md p-6 rounded-[10px] border border-stone-200/80 shadow-2xs space-y-4 relative overflow-hidden hidden" style="background-color: var(--bg-card); color: var(--text-main);" data-animate="fade-up">
         <div class="w-11 h-11 rounded-full bg-[var(--accent-color,#b48342)]/15 text-[var(--accent-color,#b48342)] flex items-center justify-center mx-auto relative z-10">
           <i data-lucide="shirt" class="w-5 h-5"></i>
         </div>
@@ -1098,7 +1231,7 @@
         <div id="envelopes-cards-container" class="space-y-2.5 text-left">
           <!-- Injected via JavaScript -->
         </div>
-        <div id="physical-gift-container" class="hidden wedding-card theme-card backdrop-blur-md p-4 rounded-2xl border border-stone-200/80 text-left text-xs space-y-1.5 relative overflow-hidden" style="background-color: var(--bg-card); color: var(--text-main);">
+        <div id="physical-gift-container" class="hidden wedding-card theme-card backdrop-blur-md p-4 rounded-[10px] border border-stone-200/80 text-left text-xs space-y-1.5 relative overflow-hidden" style="background-color: var(--bg-card); color: var(--text-main);">
           <span class="font-bold text-[var(--text-main,#2C352E)] flex items-center gap-1.5 text-[11px] relative z-10">
             <i data-lucide="package" class="w-3.5 h-3.5 text-amber-600"></i>
             <span>Alamat Kirim Kado Fisik:</span>
@@ -1110,7 +1243,7 @@
       <div class="section-divider-slot my-2 flex items-center justify-center text-[var(--accent-color,#b48342)]"></div>
 
       <!-- 9. SMART RSVP & FORM KONFIRMASI -->
-      <section id="section-rsvp" class="wedding-card theme-card backdrop-blur-md p-6 rounded-3xl border border-stone-200/80 shadow-2xs text-left space-y-4 relative overflow-hidden" style="background-color: var(--bg-card); color: var(--text-main);" data-animate="zoom-in">
+      <section id="section-rsvp" class="wedding-card theme-card backdrop-blur-md p-6 rounded-[10px] border border-stone-200/80 shadow-2xs text-left space-y-4 relative overflow-hidden" style="background-color: var(--bg-card); color: var(--text-main);" data-animate="zoom-in">
         <div class="text-center relative z-10">
           <h3 class="font-serif text-2xl font-bold text-[var(--text-main,#2C352E)]">Konfirmasi Kehadiran</h3>
           <p class="text-[11px] text-[var(--text-secondary)] mt-1">Mohon konfirmasi kehadiran untuk estimasi katering kami.</p>

@@ -829,12 +829,34 @@ const SECTION_DIVIDERS = {
   'none': ''
 };
 
-// Helper hex to rgba
+// Helper hex to rgb tuple & rgba
+function hexToRgbTuple(hex) {
+  if (!hex) return '252, 251, 249';
+  if (hex.startsWith('rgb')) {
+    const m = hex.match(/\d+/g);
+    if (m && m.length >= 3) return `${m[0]}, ${m[1]}, ${m[2]}`;
+  }
+  let clean = String(hex).replace('#', '').trim();
+  if (clean.length === 3) {
+    clean = clean.split('').map(c => c + c).join('');
+  }
+  if (clean.length === 6) {
+    const num = parseInt(clean, 16);
+    if (!isNaN(num)) {
+      return `${(num >> 16) & 255}, ${(num >> 8) & 255}, ${num & 255}`;
+    }
+  }
+  return '255, 255, 255';
+}
+
 function hexToRgba(hex, alpha = 1) {
   if (!hex) return `rgba(44, 53, 46, ${alpha})`;
-  if (hex.startsWith('rgba')) return hex;
-  if (hex.startsWith('rgb')) {
-    return hex.replace('rgb', 'rgba').replace(')', `, ${alpha})`);
+  if (hex.startsWith('rgba') || hex.startsWith('rgb')) {
+    const m = hex.match(/\d+/g);
+    if (m && m.length >= 3) {
+      return `rgba(${m[0]}, ${m[1]}, ${m[2]}, ${alpha})`;
+    }
+    return hex;
   }
   let clean = hex.replace('#', '').trim();
   if (clean.length === 3) {
@@ -1054,17 +1076,22 @@ class InvitationEngine {
   }
 
   /**
-   * Terapkan Bingkai Foto Pengantin Besar & Background Foto di Sampul Depan (Cover Photo)
+   * Terapkan Sampul Depan (3 Variasi Cover: classic | collage_scroll | envelope),
+   * Background Cover (lava_lamp | photo + Dim Level), dan Bingkai Foto Pengantin
    */
   applyCoverPhotoAndFrame() {
     const coverScreen = document.getElementById('cover-screen') || document.getElementById('invitation-cover');
+    const coverLavaBg = document.getElementById('cover-lava-bg');
     const bgPhotoWrap = document.getElementById('cover-bg-photo-wrap');
     const bgPhotoImg = document.getElementById('cover-bg-photo-img');
     const container = document.getElementById('cover-photo-container');
     const frame = document.getElementById('cover-photo-frame');
     const img = document.getElementById('cover-photo-img');
     const ornamentEl = document.getElementById('cover-frame-ornament-el');
-    if (!container || !frame || !img) return;
+
+    const layoutClassic = document.getElementById('cover-layout-classic');
+    const layoutCollage = document.getElementById('cover-layout-collage');
+    const layoutEnvelope = document.getElementById('cover-layout-envelope');
 
     const tplConfig = this.template?.config_json || {};
     const custom = this.wedding?.custom_theme_json || {};
@@ -1073,16 +1100,35 @@ class InvitationEngine {
     const frameOrnament = custom.cover_frame_ornament || tplConfig.cover_frame_ornament || 'floral_wreath';
     const customFramePng = custom.custom_cover_frame_png || tplConfig.ornaments?.custom_cover_frame_png;
 
+    const coverStyle = custom.cover_style || tplConfig.cover_style || 'classic';
+    const legacyPhotoAsBg = custom.cover_photo_as_bg !== undefined ? Boolean(custom.cover_photo_as_bg) : Boolean(tplConfig.cover_photo_as_bg);
+    const coverBgMode = custom.cover_bg_mode || tplConfig.cover_bg_mode || (legacyPhotoAsBg ? 'photo' : 'lava_lamp');
+
     const rawShowFrame = custom.cover_show_frame !== undefined ? custom.cover_show_frame : tplConfig.cover_show_frame;
     const coverShowFrame = (rawShowFrame !== undefined ? rawShowFrame : (frameShape !== 'none')) && frameShape !== 'none';
-    const coverPhotoAsBg = custom.cover_photo_as_bg !== undefined ? Boolean(custom.cover_photo_as_bg) : Boolean(tplConfig.cover_photo_as_bg);
+    const coverPhotoAsBg = (coverBgMode === 'photo');
     const rawDim = custom.cover_bg_dim !== undefined ? custom.cover_bg_dim : (tplConfig.cover_bg_dim !== undefined ? tplConfig.cover_bg_dim : 45);
     const dimLevel = Math.max(0, Math.min(85, Number(rawDim) || 0));
     const bgOverlayEl = document.getElementById('cover-bg-photo-overlay');
 
-    // 1. Foto Sampul Sebagai Background Penuh Cover + Dim Level (0-85%)
+    // 0. Switch Layout Variant (Classic vs Collage Scroll vs Envelope)
+    if (coverScreen) {
+      coverScreen.classList.remove('is-classic-mode', 'is-collage-mode', 'is-envelope-mode');
+      coverScreen.classList.add(`is-${coverStyle === 'collage_scroll' ? 'collage' : (coverStyle === 'envelope' ? 'envelope' : 'classic')}-mode`);
+    }
+    if (layoutClassic) layoutClassic.classList.toggle('hidden', coverStyle !== 'classic');
+    if (layoutCollage) layoutCollage.classList.toggle('hidden', coverStyle !== 'collage_scroll');
+    if (layoutEnvelope) layoutEnvelope.classList.toggle('hidden', coverStyle !== 'envelope');
+
+    // 1. Background Cover: Lava Lamp vs Foto Sampul Penuh + Dim Level (0-85%)
+    const usePhotoBg = Boolean(coverPhoto && coverPhotoAsBg && coverStyle !== 'collage_scroll');
+    if (coverLavaBg) {
+      const showLava = (coverBgMode === 'lava_lamp' && coverStyle !== 'collage_scroll') || !usePhotoBg;
+      coverLavaBg.classList.toggle('hidden', !showLava || coverStyle === 'collage_scroll');
+    }
+
     if (bgPhotoWrap && bgPhotoImg && coverScreen) {
-      if (coverPhoto && coverPhotoAsBg) {
+      if (usePhotoBg) {
         bgPhotoImg.src = coverPhoto;
         bgPhotoWrap.classList.remove('hidden');
         coverScreen.classList.add('cover-has-bg-photo');
@@ -1100,6 +1146,7 @@ class InvitationEngine {
         bgPhotoImg.onerror = () => {
           bgPhotoWrap.classList.add('hidden');
           coverScreen.classList.remove('cover-has-bg-photo');
+          if (coverLavaBg && coverStyle !== 'collage_scroll') coverLavaBg.classList.remove('hidden');
         };
       } else {
         bgPhotoImg.src = '';
@@ -1108,8 +1155,14 @@ class InvitationEngine {
       }
     }
 
-    // 2. Foto Sampul di Dalam Bingkai Cover (Toggleable & Diperbesar)
-    if (coverPhoto && coverShowFrame) {
+    // 1B. Render Grid Foto Kolase (Jika coverStyle === 'collage_scroll')
+    if (coverStyle === 'collage_scroll') {
+      this.renderCoverCollageLayout();
+    }
+
+    // 2. Foto Sampul di Dalam Bingkai Cover (Khusus Cover Classic)
+    if (!container || !frame || !img) return;
+    if (coverStyle === 'classic' && coverPhoto && coverShowFrame) {
       container.classList.remove('hidden');
       img.src = coverPhoto;
       img.onerror = () => {
@@ -1150,7 +1203,7 @@ class InvitationEngine {
           `;
         } else if (frameOrnament === 'twin_gold_lines') {
           ornamentEl.innerHTML = `
-            <div class="w-full h-full border border-[var(--accent-color,#d4af37)]/50 rounded-2xl pointer-events-none relative scale-105">
+            <div class="w-full h-full border border-[var(--accent-color,#d4af37)]/50 rounded-[10px] pointer-events-none relative scale-105">
               <span class="absolute -top-1 -left-1 w-2.5 h-2.5 rotate-45 bg-[var(--accent-color,#d4af37)] shadow-xs"></span>
               <span class="absolute -top-1 -right-1 w-2.5 h-2.5 rotate-45 bg-[var(--accent-color,#d4af37)] shadow-xs"></span>
               <span class="absolute -bottom-1 -left-1 w-2.5 h-2.5 rotate-45 bg-[var(--accent-color,#d4af37)] shadow-xs"></span>
@@ -1171,12 +1224,68 @@ class InvitationEngine {
         } else {
           // minimal_clean
           ornamentEl.innerHTML = `
-            <div class="w-full h-full border border-white/20 rounded-2xl pointer-events-none shadow-sm"></div>
+            <div class="w-full h-full border border-white/20 rounded-[10px] pointer-events-none shadow-sm"></div>
           `;
         }
       }
     } else {
       container.classList.add('hidden');
+    }
+  }
+
+  /**
+   * Render Grid 4 atau 6 Foto untuk Cover Kolase Scroll + Gradient Transisi Solid
+   */
+  renderCoverCollageLayout() {
+    const grid = document.getElementById('cover-collage-grid');
+    const solidFade = document.getElementById('cover-collage-solid-fade');
+    if (!grid) return;
+
+    const tplConfig = this.template?.config_json || {};
+    const custom = this.wedding?.custom_theme_json || {};
+    const count = Number(custom.cover_collage_count || tplConfig.cover_collage_count || 4) === 6 ? 6 : 4;
+
+    const customPhotos = Array.isArray(custom.cover_collage_photos) ? custom.cover_collage_photos.filter(Boolean) : [];
+    const tplPhotos = Array.isArray(tplConfig.cover_collage_photos) ? tplConfig.cover_collage_photos.filter(Boolean) : [];
+    const galleryPhotos = Array.isArray(this.wedding?.gallery_json) ? this.wedding.gallery_json.filter(Boolean) : [];
+    const singleCandidates = [
+      this.wedding?.cover_photo,
+      custom.cover_photo,
+      tplConfig.default_cover_photo,
+      this.wedding?.groom_photo,
+      this.wedding?.bride_photo
+    ].filter(Boolean);
+    const defaultFallbacks = [
+      'https://images.unsplash.com/photo-1519741497674-611481863552?w=600&auto=format&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=600&auto=format&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=600&auto=format&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?w=600&auto=format&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1522673607200-164d1b6ce486?w=600&auto=format&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1529636798458-92182e662485?w=600&auto=format&fit=crop&q=80'
+    ];
+
+    const pool = [...customPhotos, ...tplPhotos, ...galleryPhotos, ...singleCandidates, ...defaultFallbacks];
+    const photos = [];
+    for (const url of pool) {
+      if (url && !photos.includes(url)) photos.push(url);
+      if (photos.length >= count) break;
+    }
+    while (photos.length < count) {
+      photos.push(defaultFallbacks[photos.length % defaultFallbacks.length]);
+    }
+
+    grid.className = count === 6
+      ? 'w-full h-full grid grid-cols-2 grid-rows-3 gap-1 p-1'
+      : 'w-full h-full grid grid-cols-2 grid-rows-2 gap-1 p-1';
+
+    grid.innerHTML = photos.map((url, idx) => `
+      <div class="relative w-full h-full overflow-hidden rounded-[6px] bg-stone-200">
+        <img src="${url}" alt="Kolase ${idx + 1}" class="w-full h-full object-cover">
+      </div>
+    `).join('');
+
+    if (solidFade) {
+      solidFade.style.background = `linear-gradient(to bottom, rgba(var(--bg-main-rgb, 252, 251, 249), 0) 0%, rgba(var(--bg-main-rgb, 252, 251, 249), 0.45) 38%, rgba(var(--bg-main-rgb, 252, 251, 249), 0.92) 72%, rgba(var(--bg-main-rgb, 252, 251, 249), 1) 100%)`;
     }
   }
 
@@ -1235,17 +1344,18 @@ class InvitationEngine {
       }
     }
 
-    // Cover Header Logo / Ornament (Ilustrasi / Logo di atas The Wedding Of & Nama Mempelai)
-    const coverHeaderEl = document.getElementById('cover-header-ornament');
-    if (coverHeaderEl) {
+    // Cover Header Logo / Ornament (Ilustrasi / Logo di atas The Wedding Of & Nama Mempelai di semua gaya cover)
+    ['cover-header-ornament', 'cover-collage-header-ornament', 'cover-envelope-header-ornament'].forEach(elId => {
+      const hdrEl = document.getElementById(elId);
+      if (!hdrEl) return;
       if (coverHeaderPng) {
-        coverHeaderEl.innerHTML = `<img src="${coverHeaderPng}" alt="Logo Sampul" class="max-h-14 sm:max-h-16 max-w-[160px] w-auto object-contain mx-auto filter drop-shadow float-breathing">`;
-        coverHeaderEl.classList.remove('hidden');
+        hdrEl.innerHTML = `<img src="${coverHeaderPng}" alt="Logo Sampul" class="max-h-12 sm:max-h-14 max-w-[150px] w-auto object-contain mx-auto filter drop-shadow float-breathing">`;
+        hdrEl.classList.remove('hidden');
       } else {
-        coverHeaderEl.innerHTML = '';
-        coverHeaderEl.classList.add('hidden');
+        hdrEl.innerHTML = '';
+        hdrEl.classList.add('hidden');
       }
-    }
+    });
 
     // Gunungan Kembar / Royal Curtains
     const curtainL = document.getElementById('cover-curtain-left');
@@ -1532,6 +1642,12 @@ class InvitationEngine {
     }
 
     if (cover) {
+      cover.classList.remove('is-envelope-opened');
+      cover.style.backgroundColor = '';
+      const lavaBg = document.getElementById('cover-lava-bg');
+      const photoBg = document.getElementById('cover-bg-photo-wrap');
+      if (lavaBg) lavaBg.style.opacity = '1';
+      if (photoBg) photoBg.style.opacity = '1';
       cover.style.removeProperty('display');
       cover.style.removeProperty('pointer-events');
       cover.style.display = 'flex';
@@ -1684,6 +1800,18 @@ class InvitationEngine {
       this.wedding = { ...this.wedding, ...data };
     }
 
+    // Pastikan Admin Live Preview langsung memperbarui foto sampel & placeholder tanpa perlu buka tab baru
+    if (this.wedding?.id === 'admin-preview-sim' || (new URLSearchParams(window.location.search)).get('admin_template_preview') === 'true') {
+      const liveCfg = this.template?.config_json || data.config_json || {};
+      const pd = liveCfg.placeholder_data || {};
+      if (liveCfg.default_cover_photo !== undefined && !data.wedding?.cover_photo) {
+        this.wedding.cover_photo = liveCfg.default_cover_photo || 'https://images.unsplash.com/photo-1519741497674-611481863552?w=800&auto=format&fit=crop&q=80';
+      }
+      if (pd.sample_guest_name) {
+        this.guestName = pd.sample_guest_name;
+      }
+    }
+
     const tplSlug = data.presetSlug || data.template_slug || this.wedding?.template_slug || this.template?.slug || 'minimalist-sage';
     this.template = { ...(this.template || {}), slug: tplSlug };
 
@@ -1767,50 +1895,54 @@ class InvitationEngine {
       }
 
       const tplCfg = this.template?.config_json || {};
+      const pd = tplCfg.placeholder_data || {};
+      const urlToParam = urlParams.get('to') || urlParams.get('dear');
       this.wedding = {
         id: 'admin-preview-sim',
         slug: 'admin-preview',
-        groom_fullname: 'Raden Yoga Pratama, S.Kom.',
-        bride_fullname: 'dr. Anindita Kirana Dewi',
-        groom_nickname: 'Yoga',
-        bride_nickname: 'Anin',
-        groom_parents: 'Putra pertama dari Bpk. Bambang Sutrisno & Ibu Sri Rahayu',
-        bride_parents: 'Putri bungsu dari Bpk. H. Ahmad Fauzi & Ibu Hj. Siti Maryam',
-        groom_ig: 'yogapratama',
-        bride_ig: 'aninditakirana',
-        groom_photo: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&auto=format&fit=crop&q=80',
-        bride_photo: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=600&auto=format&fit=crop&q=80',
+        groom_fullname: pd.groom_fullname || 'Raden Yoga Pratama, S.Kom.',
+        bride_fullname: pd.bride_fullname || 'dr. Anindita Kirana Dewi',
+        groom_nickname: pd.groom_nickname || 'Yoga',
+        bride_nickname: pd.bride_nickname || 'Anin',
+        groom_parents: pd.groom_parents || 'Putra pertama dari Bpk. Bambang Sutrisno & Ibu Sri Rahayu',
+        bride_parents: pd.bride_parents || 'Putri bungsu dari Bpk. H. Ahmad Fauzi & Ibu Hj. Siti Maryam',
+        groom_ig: pd.groom_ig || 'yogapratama',
+        bride_ig: pd.bride_ig || 'aninditakirana',
+        groom_photo: pd.groom_photo || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&auto=format&fit=crop&q=80',
+        bride_photo: pd.bride_photo || 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=600&auto=format&fit=crop&q=80',
         cover_photo: tplCfg.default_cover_photo || 'https://images.unsplash.com/photo-1519741497674-611481863552?w=800&auto=format&fit=crop&q=80',
-        akad_date: '2027-10-24',
-        akad_time: '08:00 - 10:00 WIB',
-        akad_venue: 'Masjid Agung Al-Azhar',
-        akad_address: 'Jl. Sisingamangaraja No. 1, Kebayoran Baru, Jakarta Selatan',
-        akad_maps_url: 'https://maps.google.com',
-        resepsi_date: '2027-10-24',
-        resepsi_time: '11:00 - 14:00 WIB',
-        resepsi_venue: 'Grand Ballroom Hotel Mulia',
-        resepsi_address: 'Jl. Asia Afrika Senayan, Jakarta Pusat',
-        resepsi_maps_url: 'https://maps.google.com',
-        quote_text: 'Dan di antara tanda-tanda kebesaran-Nya ialah Dia menciptakan pasangan-pasangan untukmu dari jenismu sendiri, agar kamu cenderung dan merasa tenteram kepadanya.',
-        quote_source: 'QS. Ar-Rum: 21',
-        gallery_json: [
+        akad_date: pd.akad_date || '2027-10-24',
+        akad_time: pd.akad_time || '08:00 - 10:00 WIB',
+        akad_venue: pd.akad_venue || 'Masjid Agung Al-Azhar',
+        akad_address: pd.akad_address || 'Jl. Sisingamangaraja No. 1, Kebayoran Baru, Jakarta Selatan',
+        akad_maps_url: pd.akad_maps_url || 'https://maps.google.com',
+        resepsi_date: pd.resepsi_date || '2027-10-24',
+        resepsi_time: pd.resepsi_time || '11:00 - 14:00 WIB',
+        resepsi_venue: pd.resepsi_venue || 'Grand Ballroom Hotel Mulia',
+        resepsi_address: pd.resepsi_address || 'Jl. Asia Afrika Senayan, Jakarta Pusat',
+        resepsi_maps_url: pd.resepsi_maps_url || 'https://maps.google.com',
+        quote_text: pd.quote_text || 'Dan di antara tanda-tanda kebesaran-Nya ialah Dia menciptakan pasangan-pasangan untukmu dari jenismu sendiri, agar kamu cenderung dan merasa tenteram kepadanya.',
+        quote_source: pd.quote_source || 'QS. Ar-Rum: 21',
+        gallery_json: Array.isArray(pd.gallery_json) && pd.gallery_json.length ? pd.gallery_json : [
           'https://images.unsplash.com/photo-1519741497674-611481863552?w=600&auto=format&fit=crop&q=80',
           'https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=600&auto=format&fit=crop&q=80',
           'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=600&auto=format&fit=crop&q=80',
           'https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?w=600&auto=format&fit=crop&q=80'
         ],
-        love_story_json: [
+        love_story_json: Array.isArray(pd.love_story_json) && pd.love_story_json.length ? pd.love_story_json : [
           { year: '2021', title: 'Pertama Bertemu', story: 'Berawal dari pertemuan tidak sengaja di sebuah seminar nasional di Bandung.', photo_url: 'https://images.unsplash.com/photo-1522673607200-164d1b6ce486?w=700&auto=format&fit=crop&q=80' },
           { year: '2024', title: 'Lamaran Khidmat', story: 'Dengan restu kedua orang tua, kami mengikat janji untuk melangkah bersama ke pelaminan.' }
         ],
-        envelopes_json: [
+        envelopes_json: Array.isArray(pd.envelopes_json) && pd.envelopes_json.length ? pd.envelopes_json : [
           { bank: 'BCA', number: '8730192831', holder: 'Raden Yoga Pratama' },
           { bank: 'Mandiri', number: '1370019283912', holder: 'Anindita Kirana Dewi' }
         ],
-        custom_theme_json: {},
+        custom_theme_json: pd.gift_address ? { gift_address: pd.gift_address } : {},
         is_published: true
       };
-      this.guestName = 'Bapak Joko Susanto & Partner';
+      if (!urlToParam) {
+        this.guestName = pd.sample_guest_name || 'Bapak Joko Susanto & Partner';
+      }
       return true;
     }
 
@@ -1887,6 +2019,9 @@ class InvitationEngine {
     // Warna 100% dikunci mengikuti palet template Admin
     const bg = tplColors.bg || custom.bg || '#FCFBF9';
     const card = tplColors.card || custom.card || '#FFFFFF';
+    const rawCardOpacity = custom.card_opacity !== undefined ? custom.card_opacity : (tplConfig.card_opacity !== undefined ? tplConfig.card_opacity : 95);
+    const cardOpacityPct = Math.max(10, Math.min(100, Number(rawCardOpacity) || 95));
+    const cardRgba = hexToRgba(card, +(cardOpacityPct / 100).toFixed(2));
     const textMain = tplColors.text || custom.text || '#2C352E';
     const textSecondary = tplColors.text_secondary || custom.text_secondary || hexToRgba(textMain, 0.85);
     const textTertiary = tplColors.text_tertiary || custom.text_tertiary || hexToRgba(textMain, 0.65);
@@ -1895,7 +2030,8 @@ class InvitationEngine {
 
     const root = document.documentElement;
     root.style.setProperty('--bg-main', bg);
-    root.style.setProperty('--bg-card', card);
+    root.style.setProperty('--bg-main-rgb', hexToRgbTuple(bg));
+    root.style.setProperty('--bg-card', cardRgba);
     root.style.setProperty('--text-main', textMain);
     root.style.setProperty('--text-secondary', textSecondary);
     root.style.setProperty('--text-tertiary', textTertiary);
@@ -2033,42 +2169,100 @@ class InvitationEngine {
   }
 
   /**
-   * 1. Layar Sampul Depan (Cover Screen)
+   * 1. Layar Sampul Depan (Cover Screen - 3 Gaya: Classic, Collage Scroll, Envelope)
    */
   renderCoverSection() {
     const groom = this.wedding.groom_nickname || 'Pria';
     const bride = this.wedding.bride_nickname || 'Wanita';
     const couple = `${groom} & ${bride}`;
+    const cDate = this.wedding.akad_date || this.wedding.resepsi_date || this.weddingUser?.wedding_date;
+    const formattedDate = cDate ? formatDateIndo(cDate) : 'Menuju Hari Bahagia';
 
     document.title = `Undangan Pernikahan ${couple} — MenikahBersama | Wedding Planner & Undangan Digital`;
 
-    const coverCouple = document.getElementById('cover-couple-name');
-    const coverGuest = document.getElementById('cover-guest-name');
-    const coverDate = document.getElementById('cover-wedding-date');
+    // Sync teks ke Classic, Collage Scroll, & Envelope
+    ['cover-couple-name', 'cover-collage-couple-name', 'cover-envelope-couple-name'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.textContent = couple;
+    });
+    ['cover-guest-name', 'cover-collage-guest-name', 'cover-envelope-guest-name'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.textContent = this.guestName;
+    });
+    ['cover-wedding-date', 'cover-collage-date', 'cover-envelope-date'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.textContent = formattedDate;
+    });
 
-    if (coverCouple) coverCouple.textContent = couple;
-    if (coverGuest) coverGuest.textContent = this.guestName;
-    if (coverDate) {
-      const cDate = this.wedding.akad_date || this.wedding.resepsi_date || this.weddingUser?.wedding_date;
-      coverDate.textContent = cDate ? formatDateIndo(cDate) : 'Menuju Hari Bahagia';
-    }
-
-    // Tombol Buka Undangan
+    // Tombol Buka Undangan (Classic, Collage click fallback, & Envelope Wax Seal)
     const openBtn = document.getElementById('btn-open-invitation');
-    if (openBtn) {
-      openBtn.onclick = () => this.openInvitation();
-    }
+    if (openBtn) openBtn.onclick = () => this.openInvitation();
+
+    const collageBtn = document.getElementById('btn-collage-scroll-open');
+    if (collageBtn) collageBtn.onclick = () => this.openInvitation();
+
+    const envelopeBtn = document.getElementById('btn-envelope-open');
+    if (envelopeBtn) envelopeBtn.onclick = () => this.openInvitation();
+
+    // Gesture Scroll ke Bawah / Swipe Up untuk Cover Mode Collage Scroll
+    this.initCollageScrollGesture();
+  }
+
+  initCollageScrollGesture() {
+    if (this.collageGestureBound) return;
+    const cover = document.getElementById('cover-screen') || document.getElementById('invitation-cover');
+    if (!cover) return;
+    this.collageGestureBound = true;
+
+    let touchStartY = 0;
+    let touchActive = false;
+
+    cover.addEventListener('wheel', (e) => {
+      if (this.isCoverOpened) return;
+      const custom = this.wedding?.custom_theme_json || {};
+      const tplConfig = this.template?.config_json || {};
+      const coverStyle = custom.cover_style || tplConfig.cover_style || 'classic';
+      if (coverStyle === 'collage_scroll' && e.deltaY > 12) {
+        e.preventDefault();
+        this.openInvitation();
+      }
+    }, { passive: false });
+
+    cover.addEventListener('touchstart', (e) => {
+      if (this.isCoverOpened || !e.touches?.length) return;
+      touchStartY = e.touches[0].clientY;
+      touchActive = true;
+    }, { passive: true });
+
+    cover.addEventListener('touchmove', (e) => {
+      if (this.isCoverOpened || !touchActive || !e.touches?.length) return;
+      const custom = this.wedding?.custom_theme_json || {};
+      const tplConfig = this.template?.config_json || {};
+      const coverStyle = custom.cover_style || tplConfig.cover_style || 'classic';
+      if (coverStyle !== 'collage_scroll') return;
+
+      const deltaY = touchStartY - e.touches[0].clientY;
+      if (deltaY > 26) {
+        touchActive = false;
+        this.openInvitation();
+      }
+    }, { passive: true });
   }
 
   /**
    * 2. Buka Sampul, Tirai Membuka & Putar Musik
    */
   openInvitation() {
+    if (this.isCoverOpened) return;
     this.isCoverOpened = true;
     const cover = document.getElementById('cover-screen') || document.getElementById('invitation-cover');
     const curtainLeft = document.getElementById('cover-curtain-left');
     const curtainRight = document.getElementById('cover-curtain-right');
     const dock = document.getElementById('bottom-dock');
+
+    const custom = this.wedding?.custom_theme_json || {};
+    const tplConfig = this.template?.config_json || {};
+    const coverStyle = custom.cover_style || tplConfig.cover_style || 'classic';
 
     // 1. Scroll window ke posisi 0 paling atas seketika
     window.scrollTo(0, 0);
@@ -2110,11 +2304,21 @@ class InvitationEngine {
       curtainRight.style.opacity = '0';
     }
 
-    // 4. Angkat Sampul Depan ke Atas dengan Halus (1250ms smooth transition)
+    // 4. Transisi Membuka Sampul Sesuai Gaya Cover (Amplop tergeser atas+bawah vs Classic/Collage slide ke atas)
     if (cover) {
-      cover.style.transform = 'translate3d(0, -100%, 0)';
-      cover.style.opacity = '0';
       cover.style.pointerEvents = 'none';
+      if (coverStyle === 'envelope') {
+        cover.classList.add('is-envelope-opened');
+        cover.style.backgroundColor = 'transparent';
+        const lavaBg = document.getElementById('cover-lava-bg');
+        const photoBg = document.getElementById('cover-bg-photo-wrap');
+        if (lavaBg) { lavaBg.style.transition = 'opacity 0.9s ease'; lavaBg.style.opacity = '0'; }
+        if (photoBg) { photoBg.style.transition = 'opacity 0.9s ease'; photoBg.style.opacity = '0'; }
+      } else {
+        cover.style.transform = 'translate3d(0, -100%, 0)';
+        cover.style.opacity = '0';
+      }
+
       setTimeout(() => {
         if (this.isCoverOpened) {
           cover.style.setProperty('display', 'none', 'important');
@@ -2616,7 +2820,7 @@ class InvitationEngine {
       <div class="relative">
         <!-- Titik Node Timeline Kiri -->
         <span class="story-timeline-dot absolute -left-[22px] sm:-left-[24px] top-5 w-3.5 h-3.5 rounded-full border-2 border-white bg-stone-300 shadow-sm transition-all duration-300 z-10"></span>
-        <div class="wedding-card theme-card backdrop-blur-md p-4 rounded-2xl border border-stone-200/80 shadow-2xs space-y-2 relative" style="background-color: var(--bg-card); color: var(--text-main);" data-animate="fade-up">
+        <div class="wedding-card theme-card backdrop-blur-md p-4 rounded-[10px] border border-stone-200/80 shadow-2xs space-y-2 relative" style="background-color: var(--bg-card); color: var(--text-main);" data-animate="fade-up">
           ${s.photo_url ? `
             <div class="rounded-xl overflow-hidden aspect-[16/10] bg-stone-100 cursor-pointer border border-stone-200/50" onclick="window.invitationEngine.openLightbox('${s.photo_url}')">
               <img src="${s.photo_url}" alt="${escapeHtml(s.title || 'Momen')}" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500">
@@ -2694,7 +2898,7 @@ class InvitationEngine {
     container.innerHTML = photos.map((url, idx) => `
       <div 
         onclick="window.invitationEngine.openLightbox('${url}')" 
-        class="rounded-2xl overflow-hidden aspect-square border border-stone-200/80 shadow-2xs group relative bg-stone-100 cursor-pointer"
+        class="rounded-[10px] overflow-hidden aspect-square border border-stone-200/80 shadow-2xs group relative bg-stone-100 cursor-pointer"
       >
         <img src="${url}" alt="Foto Prewedding ${idx + 1}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
         <div class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
@@ -2760,7 +2964,7 @@ class InvitationEngine {
 
     if (hasEnvelopes) {
       container.innerHTML = envelopes.map(env => `
-        <div class="wedding-card theme-card backdrop-blur-md p-4 rounded-2xl border border-stone-200/80 shadow-2xs flex items-center justify-between gap-3 relative overflow-hidden text-left" style="background-color: var(--bg-card); color: var(--text-main);" data-animate="fade-up">
+        <div class="wedding-card theme-card backdrop-blur-md p-4 rounded-[10px] border border-stone-200/80 shadow-2xs flex items-center justify-between gap-3 relative overflow-hidden text-left" style="background-color: var(--bg-card); color: var(--text-main);" data-animate="fade-up">
           <div class="flex-1 min-w-0 text-left space-y-1 relative z-10">
             <span class="inline-block text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded text-white text-left" style="background-color: var(--accent-color, #b48342);">
               ${escapeHtml(env.bank || 'Bank')}
@@ -2959,7 +3163,7 @@ class InvitationEngine {
       if (error || !wishes || !wishes.length) {
         if (countLabel) countLabel.textContent = 'Jadilah yang pertama memberikan doa restu!';
         container.innerHTML = `
-          <div class="wedding-card theme-card p-6 rounded-2xl border border-stone-200/80 text-center text-xs text-[var(--text-secondary)]" style="background-color: var(--bg-card); color: var(--text-secondary);">
+          <div class="wedding-card theme-card p-6 rounded-[10px] border border-stone-200/80 text-center text-xs text-[var(--text-secondary)]" style="background-color: var(--bg-card); color: var(--text-secondary);">
             Belum ada ucapan doa. Tuliskan ucapan dan doa restu terbaik Anda di formulir atas.
           </div>
         `;
@@ -2999,7 +3203,7 @@ class InvitationEngine {
           : `<span class="text-[9px] px-2.5 py-0.5 rounded-full font-bold bg-stone-500/20 text-[var(--text-secondary)] border border-stone-400/30">Berhalangan</span>`);
 
     return `
-      <div class="wedding-card theme-card backdrop-blur-md p-4 rounded-2xl border border-stone-200/90 shadow-2xs space-y-2 animate-in fade-in duration-300" style="background-color: var(--bg-card); color: var(--text-main);">
+      <div class="wedding-card theme-card backdrop-blur-md p-4 rounded-[10px] border border-stone-200/90 shadow-2xs space-y-2 animate-in fade-in duration-300" style="background-color: var(--bg-card); color: var(--text-main);">
         <div class="flex items-center justify-between gap-2">
           <div class="flex items-center gap-2">
             <div class="w-7 h-7 rounded-full text-white font-bold text-[10px] flex items-center justify-center font-serif" style="background-color: var(--accent-color, #b48342);">
