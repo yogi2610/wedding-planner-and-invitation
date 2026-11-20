@@ -502,7 +502,7 @@
     ctx.rect(0, 0, cw, ch);
 
     // Lubang cropBox (counter-clockwise)
-    if (state.aspectRatio === '1:1' && (state.shapeGuide === 'circle' || state.targetType !== 'cover')) {
+    if (state.aspectRatio === '1:1' && state.shapeGuide === 'circle') {
       // Lingkaran untuk foto profil
       const radius = cropBox.width / 2;
       ctx.arc(cropBox.x + radius, cropBox.y + radius, radius, 0, Math.PI * 2, true);
@@ -528,7 +528,7 @@
     ctx.lineWidth = 2;
     ctx.setLineDash([6, 3]);
 
-    if (state.aspectRatio === '1:1' && (state.shapeGuide === 'circle' || state.targetType !== 'cover')) {
+    if (state.aspectRatio === '1:1' && state.shapeGuide === 'circle') {
       const radius = cropBox.width / 2;
       ctx.beginPath();
       ctx.arc(cropBox.x + radius, cropBox.y + radius, radius, 0, Math.PI * 2);
@@ -830,7 +830,7 @@
     state.targetType = options.targetType || 'cover';
     state.aspectRatio = options.aspectRatio || (state.targetType === 'cover' ? '3:4' : (state.targetType === 'gallery' ? '4:5' : '1:1'));
     state.onComplete = options.onComplete || null;
-    state.shapeGuide = state.targetType === 'cover' ? 'arch' : 'circle';
+    state.shapeGuide = options.shapeGuide || (state.targetType === 'cover' ? 'arch' : (state.targetType === 'logo' ? 'rect' : 'circle'));
 
     // Set judul modal
     const titleEl = document.getElementById('mb-cropper-title');
@@ -839,6 +839,8 @@
         titleEl.textContent = options.title;
       } else if (state.targetType === 'cover') {
         titleEl.textContent = 'Sesuaikan Foto Sampul Depan';
+      } else if (state.targetType === 'logo') {
+        titleEl.textContent = 'Sesuaikan & Potong Logo Monogram';
       } else if (state.targetType === 'groom') {
         titleEl.textContent = 'Sesuaikan Foto Mempelai Pria (CPP)';
       } else if (state.targetType === 'bride') {

@@ -161,9 +161,9 @@
       </div>
 
       <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs">
-        <span class="text-xs font-bold uppercase tracking-wider text-slate-500 block">Template Premium</span>
-        <span class="text-3xl font-extrabold text-amber-700 mt-1 block" id="metric-premium-templates">0</span>
-        <span class="text-[11px] text-amber-600 mt-1 block">Edisi eksklusif berlisensi</span>
+        <span class="text-xs font-bold uppercase tracking-wider text-slate-500 block">Template Nonaktif</span>
+        <span class="text-3xl font-extrabold text-amber-700 mt-1 block" id="metric-inactive-templates">0</span>
+        <span class="text-[11px] text-amber-600 mt-1 block">Disembunyikan dari katalog</span>
       </div>
     </div>
 
@@ -196,7 +196,6 @@
           <option value="all">Semua Status</option>
           <option value="active">Hanya Aktif</option>
           <option value="inactive">Hanya Nonaktif</option>
-          <option value="premium">Hanya Premium</option>
         </select>
       </div>
     </div>
@@ -231,7 +230,6 @@
         <div>
           <div class="flex items-center gap-2">
             <h2 class="font-serif text-lg font-bold text-slate-900" id="studio-template-title">Edit Template</h2>
-            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold" id="studio-badge-premium">Free</span>
             <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-slate-100 text-slate-600" id="studio-badge-category">Minimalist</span>
           </div>
           <span class="font-mono text-[11px] text-slate-400 block" id="studio-template-slug-display">/templates/slug</span>
@@ -405,12 +403,8 @@
               </div>
 
               <div>
-                <label class="block text-xs font-bold text-slate-700 mb-1">Status & Lisensi</label>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Status Katalog</label>
                 <div class="flex items-center gap-4 pt-2">
-                  <label class="flex items-center gap-2 cursor-pointer text-xs font-semibold text-slate-700">
-                    <input type="checkbox" id="tpl-is-premium" onchange="handleTemplateMetaChange()" class="w-4 h-4 rounded text-amber-600 focus:ring-amber-500">
-                    <span>👑 Tema Premium</span>
-                  </label>
                   <label class="flex items-center gap-2 cursor-pointer text-xs font-semibold text-slate-700">
                     <input type="checkbox" id="tpl-is-active" checked onchange="handleTemplateMetaChange()" class="w-4 h-4 rounded text-emerald-600 focus:ring-emerald-500">
                     <span>Aktif (Tampil di Katalog)</span>
@@ -836,8 +830,8 @@
               <label class="flex items-start gap-3 p-3 rounded-xl border border-slate-200 bg-slate-50/70 hover:border-amber-400 cursor-pointer transition-all">
                 <input type="radio" name="master_cover_style" value="collage_scroll" onchange="handleMasterCoverStyleChange('collage_scroll')" class="mt-1 text-amber-600 accent-amber-600">
                 <div>
-                  <span class="text-xs font-bold text-slate-900 block">B. Cover Kolase 4/6 Foto (Transisi Blur & Scroll ke Bawah)</span>
-                  <span class="text-[11px] text-slate-500 block mt-0.5">Menampilkan grid 4/6 foto dengan gradasi blur halus menuju solid color untuk teks nama & instruksi "Scroll ke bawah".</span>
+                  <span class="text-xs font-bold text-slate-900 block">B. Cover Foto Transisi Blur (Scroll ke Bawah)</span>
+                  <span class="text-[11px] text-slate-500 block mt-0.5">Menampilkan 1 foto sampel dengan transisi blur halus menuju solid color tempat teks mempelai & tamu (tanpa card) + petunjuk "Scroll ke bawah".</span>
                 </div>
               </label>
 
@@ -851,31 +845,52 @@
             </div>
           </div>
 
-          <!-- 2. Background Layar Cover (Lava Lamp vs Foto Upload + Dim Level) -->
+          <!-- 2. Background Layar Cover (Default Tema vs Lava Lamp vs Foto Upload + Dim Level) -->
           <div id="master-cover-bg-section" class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-2xs space-y-3.5">
             <div class="border-b border-slate-100 pb-2.5">
               <h3 class="font-serif text-base font-bold text-slate-900 flex items-center gap-2">
                 <i data-lucide="image" class="w-4 h-4 text-amber-600"></i>
                 <span>2. Latar Belakang Layar Cover</span>
               </h3>
-              <p class="text-xs text-slate-400 mt-0.5">Pilih latar belakang cover default: Animasi Lava Lamp atau Foto Sampel Penuh.</p>
+              <p class="text-xs text-slate-400 mt-0.5">Pilih latar belakang cover bawaan: Default Tema (disesuaikan tema), Animasi Lava Lamp, atau Foto Sampel Penuh.</p>
             </div>
 
-            <div class="grid grid-cols-2 gap-2 p-1 bg-slate-100 rounded-xl">
-              <button type="button" id="btn-master-coverbg-lava" onclick="handleMasterCoverBgModeChange('lava_lamp')" class="py-2 px-3 rounded-lg text-xs font-bold text-center transition-all bg-white text-slate-900 shadow-2xs cursor-pointer">
-                🔮 Animasi Lava Lamp
+            <div class="grid grid-cols-3 gap-1.5 p-1 bg-slate-100 rounded-xl">
+              <button type="button" id="btn-master-coverbg-default" onclick="handleMasterCoverBgModeChange('theme_default')" class="py-2 px-2 rounded-lg text-[11px] font-semibold text-center transition-all text-slate-600 hover:text-slate-900 cursor-pointer">
+                🏛️ Default Tema
               </button>
-              <button type="button" id="btn-master-coverbg-photo" onclick="handleMasterCoverBgModeChange('photo')" class="py-2 px-3 rounded-lg text-xs font-semibold text-center transition-all text-slate-600 hover:text-slate-900 cursor-pointer">
-                🖼️ Foto yang Diupload
+              <button type="button" id="btn-master-coverbg-lava" onclick="handleMasterCoverBgModeChange('lava_lamp')" class="py-2 px-2 rounded-lg text-[11px] font-bold text-center transition-all bg-white text-slate-900 shadow-2xs cursor-pointer">
+                🔮 Lava Lamp
+              </button>
+              <button type="button" id="btn-master-coverbg-photo" onclick="handleMasterCoverBgModeChange('photo')" class="py-2 px-2 rounded-lg text-[11px] font-semibold text-center transition-all text-slate-600 hover:text-slate-900 cursor-pointer">
+                🖼️ Foto Sampel
               </button>
             </div>
 
             <input type="checkbox" id="master-toggle-cover-photo-as-bg" class="hidden" onchange="handleCoverFrameChange()">
 
+            <!-- Aset Background Default Cover Khusus Tema (Opsional, Jika Kosong Ikut Tab D) -->
+            <div id="master-cover-default-bg-box" class="hidden p-3.5 rounded-xl bg-slate-50 border border-slate-200/80 space-y-3">
+              <div>
+                <span class="text-xs font-bold text-slate-800 block">Aset Background Default Cover (Menyesuaikan Tema)</span>
+                <p class="text-[11px] text-slate-500">Unggah gambar atau video MP4/WebM khusus untuk opsi <em>Default Tema</em> pada cover. Jika dikosongkan, otomatis mengikuti Background Tema di Tab D.</p>
+              </div>
+              <div class="space-y-2">
+                <div class="flex flex-wrap items-center gap-2">
+                  <input type="file" id="file-cover_default_bg_image" accept="image/*" class="hidden" onchange="handleMasterCoverDefaultBgAssetUpload(event, 'image')">
+                  <button type="button" onclick="document.getElementById('file-cover_default_bg_image').click()" class="px-3 py-1.5 rounded-lg bg-slate-900 text-white text-[11px] font-bold cursor-pointer">Unggah Gambar Cover</button>
+                  <input type="file" id="file-cover_default_bg_video" accept="video/mp4,video/webm,.mp4,.webm" class="hidden" onchange="handleMasterCoverDefaultBgAssetUpload(event, 'video')">
+                  <button type="button" onclick="document.getElementById('file-cover_default_bg_video').click()" class="px-3 py-1.5 rounded-lg bg-amber-600 text-white text-[11px] font-bold cursor-pointer">Unggah Video MP4/WebM</button>
+                  <button type="button" id="btn-del-cover-default-bg" onclick="removeMasterCoverDefaultBg()" class="hidden px-2.5 py-1.5 rounded-lg border border-rose-200 bg-rose-50 text-rose-700 text-[11px] font-semibold cursor-pointer">Reset ke Tab D</button>
+                </div>
+                <input type="url" id="input-cover-default-bg-url" oninput="handleMasterCoverDefaultBgUrlInput(this.value)" placeholder="URL Gambar/Video Background Default Cover (opsional)..." class="w-full px-3 py-1.5 rounded-lg border border-slate-200 text-xs font-mono bg-white">
+              </div>
+            </div>
+
             <!-- Dim Level Slider -->
             <div id="master-cover-bg-dim-control" class="hidden p-3 rounded-xl bg-amber-50/70 border border-amber-200/70 space-y-1.5">
               <div class="flex items-center justify-between text-[11px] font-bold text-slate-800">
-                <span>Tingkat Kegelapan (Dim Level) Foto Background Cover:</span>
+                <span>Tingkat Kegelapan (Dim Level) Latar Cover:</span>
                 <span id="label-master-cover-bg-dim" class="text-amber-700 font-mono">45%</span>
               </div>
               <input 
@@ -896,26 +911,22 @@
             </div>
           </div>
 
-          <!-- 2B. Pengaturan Foto Kolase Cover (Jika Cover Style = collage_scroll) -->
-          <div id="master-cover-collage-box" class="hidden bg-white p-5 rounded-2xl border border-slate-200/90 shadow-2xs space-y-3.5">
-            <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
-              <div>
-                <h3 class="font-serif text-base font-bold text-slate-900">Foto Kolase Cover Default (4 atau 6 Foto)</h3>
-                <p class="text-[11px] text-slate-400">Unggah 4 atau 6 foto sampel kolase (jika kosong otomatis memakai galeri sampel tema).</p>
-              </div>
-              <span id="master-collage-count-badge" class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-900 font-mono">0 / 6</span>
-            </div>
+          <!-- 2B. Info Mode Foto Transisi Blur -->
+          <div id="master-cover-collage-box" class="hidden bg-amber-50/70 p-4 rounded-2xl border border-amber-200/80 text-xs text-amber-900 space-y-1">
+            <span class="font-bold block">✨ Cover Foto Transisi Blur Aktif</span>
+            <p class="text-[11px] leading-relaxed">Mode ini menggunakan <strong>1 Foto Sampel Pengantin (Cover Photo)</strong> di bawah dengan transisi blur ke warna solid background tema (tanpa card nama tamu).</p>
+          </div>
 
-            <div class="grid grid-cols-2 gap-2">
-              <button type="button" id="btn-master-collage-4" onclick="handleMasterCollageCountChange(4)" class="py-2 px-3 rounded-xl border border-amber-400 bg-amber-50 text-amber-900 text-xs font-bold cursor-pointer">Grid 4 Foto (2×2)</button>
-              <button type="button" id="btn-master-collage-6" onclick="handleMasterCollageCountChange(6)" class="py-2 px-3 rounded-xl border border-slate-200 bg-slate-50 text-slate-600 text-xs font-semibold cursor-pointer">Grid 6 Foto (2×3)</button>
-            </div>
-
+          <!-- 2C. Opsi Animasi Partikel di Layar Cover -->
+          <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/90 shadow-2xs flex items-center justify-between gap-3">
             <div>
-              <input type="file" id="master-collage-file-input" multiple accept="image/*" onchange="handleMasterCollageUpload(event)" class="block w-full text-xs text-slate-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-slate-900 file:text-white hover:file:bg-slate-800 cursor-pointer">
+              <span class="text-xs font-bold text-slate-800 block">Animasi Partikel di Layar Cover (Default)</span>
+              <span class="text-[11px] text-slate-500 block">Tampilkan animasi partikel melayang sejak tamu berada di layar sampul depan</span>
             </div>
-
-            <div id="master-collage-grid-preview" class="grid grid-cols-3 gap-2"></div>
+            <label class="relative inline-flex items-center cursor-pointer shrink-0">
+              <input type="checkbox" id="master-toggle-cover-particles" onchange="handleMasterCoverParticlesToggle(this.checked)" checked class="sr-only peer">
+              <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-amber-600"></div>
+            </label>
           </div>
 
           <!-- 3. Logo / Ornamen Header Cover -->
@@ -928,16 +939,28 @@
                 </div>
                 <div>
                   <span class="text-xs font-bold text-slate-800 block">Logo / Monogram Sampul Depan (Placeholder Default)</span>
-                  <p class="text-[11px] text-slate-400">Tampil di atas nama mempelai pada cover depan tema ini.</p>
+                  <p class="text-[11px] text-slate-400">Didukung fitur crop dan pilihan bentuk bingkai monogram.</p>
                 </div>
               </div>
-              <div class="flex items-center gap-1.5 shrink-0">
-                <input type="file" id="file-cover_header_png" accept="image/*" class="hidden" onchange="handleAssetUpload(event, 'cover_header_png')">
-                <button type="button" onclick="document.getElementById('file-cover_header_png').click()" class="px-2.5 py-1.5 rounded-lg bg-slate-900 text-white text-xs font-bold cursor-pointer">Unggah</button>
+              <div class="flex flex-wrap items-center gap-1.5 shrink-0">
+                <input type="file" id="file-cover_header_png" accept="image/*" class="hidden" onchange="handleMasterCoverLogoUpload(event)">
+                <button type="button" onclick="document.getElementById('file-cover_header_png').click()" class="px-2.5 py-1.5 rounded-lg bg-slate-900 text-white text-xs font-bold cursor-pointer">Pilih & Crop</button>
+                <button type="button" id="btn-recrop-cover_header_png" onclick="openReCropMasterCoverLogo()" class="hidden px-2 py-1.5 rounded-lg bg-amber-50 border border-amber-200 text-amber-800 text-xs font-bold cursor-pointer">✂️ Crop</button>
                 <button type="button" id="btn-del-cover_header_png" onclick="removeAssetUrl('cover_header_png')" class="hidden px-2 py-1.5 rounded-lg border border-rose-200 bg-rose-50 text-rose-700 text-xs font-semibold cursor-pointer">Hapus</button>
               </div>
             </div>
             <input type="url" id="asset-url-cover_header_png" oninput="handleAssetUrlInput('cover_header_png', this.value)" placeholder="Tautan URL Logo Placeholder: https://..." class="w-full px-3 py-1.5 rounded-lg border border-slate-200 text-xs font-mono">
+            <div class="pt-1 border-t border-slate-100">
+              <label class="block text-[11px] font-bold text-slate-700 mb-1">Bentuk Logo Monogram Bawaan:</label>
+              <select id="select-master-cover-logo-shape" onchange="handleMasterCoverLogoShapeChange(this.value)" class="w-full px-3 py-1.5 rounded-lg border border-slate-300 text-xs bg-white text-slate-800 font-semibold">
+                <option value="original">🖼️ Bentuk Asli (PNG Transparan / Bebas)</option>
+                <option value="circle">⭕ Lingkaran Monogram (Circle)</option>
+                <option value="rounded_square">⬜ Kotak Sudut Halus (Rounded Square)</option>
+                <option value="arch">🏛️ Kubah Klasik (Arch Monogram)</option>
+                <option value="octagon">🛑 Segi Delapan (Octagon Seal)</option>
+                <option value="diamond">💎 Belah Ketupat (Diamond Crest)</option>
+              </select>
+            </div>
           </div>
 
           <!-- 4. Foto Sampel Pengantin & Pengaturan Bingkai Cover -->
@@ -1830,9 +1853,12 @@
     }
 
     function renderMetrics() {
-      document.getElementById('metric-total-templates').textContent = templates.length;
-      document.getElementById('metric-active-templates').textContent = templates.filter(t => t.is_active).length;
-      document.getElementById('metric-premium-templates').textContent = templates.filter(t => t.is_premium).length;
+      const totalEl = document.getElementById('metric-total-templates');
+      const activeEl = document.getElementById('metric-active-templates');
+      const inactiveEl = document.getElementById('metric-inactive-templates');
+      if (totalEl) totalEl.textContent = templates.length;
+      if (activeEl) activeEl.textContent = templates.filter(t => t.is_active).length;
+      if (inactiveEl) inactiveEl.textContent = templates.filter(t => !t.is_active).length;
     }
 
     // =========================================================================
@@ -1857,7 +1883,6 @@
         let matchStatus = true;
         if (statusFilter === 'active') matchStatus = Boolean(t.is_active);
         else if (statusFilter === 'inactive') matchStatus = !t.is_active;
-        else if (statusFilter === 'premium') matchStatus = Boolean(t.is_premium);
 
         return matchSearch && matchCat && matchStatus;
       });
@@ -1900,9 +1925,6 @@
 
               <!-- Top Badges -->
               <div class="absolute top-3 left-3 flex items-center gap-1.5">
-                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold shadow-xs ${t.is_premium ? 'bg-amber-400 text-slate-950' : 'bg-emerald-500 text-white'}">
-                  ${t.is_premium ? '👑 Premium' : 'Free'}
-                </span>
                 <span class="px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-white/90 backdrop-blur-xs text-slate-800 shadow-xs">
                   ${escapeHtml(t.category || 'Minimalist')}
                 </span>
@@ -2191,10 +2213,14 @@
           },
           cover_style: 'classic',
           cover_bg_mode: 'lava_lamp',
+          cover_default_bg_image_url: null,
+          cover_default_bg_video_url: null,
           cover_show_frame: true,
           cover_photo_as_bg: false,
           cover_bg_dim: 45,
-          cover_collage_count: 4,
+          cover_particles_enabled: true,
+          cover_logo_shape: 'original',
+          cover_collage_count: 1,
           cover_collage_photos: [],
           cover_frame_shape: 'grand_arch',
           cover_frame_ornament: 'floral_wreath',
@@ -2290,7 +2316,11 @@
           },
           cover_style: defCfg.cover_style || 'classic',
           cover_bg_mode: resolvedCoverBgMode,
-          cover_collage_count: Number(defCfg.cover_collage_count || 4) === 6 ? 6 : 4,
+          cover_default_bg_image_url: defCfg.cover_default_bg_image_url || null,
+          cover_default_bg_video_url: defCfg.cover_default_bg_video_url || null,
+          cover_particles_enabled: defCfg.cover_particles_enabled !== undefined ? Boolean(defCfg.cover_particles_enabled) : true,
+          cover_logo_shape: defCfg.cover_logo_shape || 'original',
+          cover_collage_count: 1,
           cover_collage_photos: Array.isArray(defCfg.cover_collage_photos) ? [...defCfg.cover_collage_photos] : [],
           cover_frame_shape: defCfg.cover_frame_shape || 'grand_arch',
           cover_frame_ornament: defCfg.cover_frame_ornament || 'floral_wreath',
@@ -2397,17 +2427,20 @@
       document.getElementById('studio-template-slug-display').textContent = `/templates/${templateState.slug || 'theme-slug'}`;
       
       const badgePrem = document.getElementById('studio-badge-premium');
-      badgePrem.textContent = templateState.is_premium ? '👑 Premium' : 'Free';
-      badgePrem.className = `px-2 py-0.5 rounded-full text-[10px] font-bold ${templateState.is_premium ? 'bg-amber-100 text-amber-900 border border-amber-300' : 'bg-emerald-100 text-emerald-800'}`;
+      if (badgePrem) {
+        badgePrem.textContent = templateState.is_premium ? '👑 Premium' : 'Free';
+        badgePrem.className = `px-2 py-0.5 rounded-full text-[10px] font-bold ${templateState.is_premium ? 'bg-amber-100 text-amber-900 border border-amber-300' : 'bg-emerald-100 text-emerald-800'}`;
+      }
 
       const badgeCat = document.getElementById('studio-badge-category');
-      badgeCat.textContent = templateState.category || 'Minimalist';
+      if (badgeCat) badgeCat.textContent = templateState.category || 'Minimalist';
 
       // Panel A: Identitas
       document.getElementById('tpl-name').value = templateState.name || '';
       document.getElementById('tpl-slug').value = templateState.slug || '';
       document.getElementById('tpl-category').value = templateState.category || 'Minimalist';
-      document.getElementById('tpl-is-premium').checked = Boolean(templateState.is_premium);
+      const elIsPrem = document.getElementById('tpl-is-premium');
+      if (elIsPrem) elIsPrem.checked = Boolean(templateState.is_premium);
       document.getElementById('tpl-is-active').checked = Boolean(templateState.is_active);
 
       // Thumbnail
@@ -2471,20 +2504,35 @@
       const showFrame = templateState.config_json?.cover_show_frame !== undefined
         ? Boolean(templateState.config_json.cover_show_frame)
         : (templateState.config_json?.cover_frame_shape !== 'none');
-      const coverBgMode = templateState.config_json?.cover_bg_mode || (templateState.config_json?.cover_photo_as_bg ? 'photo' : 'lava_lamp');
+      let coverBgMode = templateState.config_json?.cover_bg_mode || (templateState.config_json?.cover_photo_as_bg ? 'photo' : 'lava_lamp');
+      if (!['theme_default', 'lava_lamp', 'photo'].includes(coverBgMode)) coverBgMode = 'lava_lamp';
       const photoAsBg = (coverBgMode === 'photo');
       templateState.config_json.cover_bg_mode = coverBgMode;
       templateState.config_json.cover_photo_as_bg = photoAsBg;
       setMasterCoverBgModeUI(coverBgMode);
+
+      const defaultCoverMediaUrl = templateState.config_json?.cover_default_bg_video_url || templateState.config_json?.cover_default_bg_image_url || '';
+      const defBgInput = document.getElementById('input-cover-default-bg-url');
+      if (defBgInput) defBgInput.value = defaultCoverMediaUrl;
+      const defBgDel = document.getElementById('btn-del-cover-default-bg');
+      if (defBgDel) defBgDel.classList.toggle('hidden', !defaultCoverMediaUrl);
+      const defBgBox = document.getElementById('master-cover-default-bg-box');
+      if (defBgBox) defBgBox.classList.toggle('hidden', coverBgMode !== 'theme_default');
 
       const toggleShowFrame = document.getElementById('master-toggle-cover-show-frame');
       if (toggleShowFrame) toggleShowFrame.checked = showFrame;
       const togglePhotoAsBg = document.getElementById('master-toggle-cover-photo-as-bg');
       if (togglePhotoAsBg) togglePhotoAsBg.checked = photoAsBg;
 
-      const collageCount = Number(templateState.config_json?.cover_collage_count || 4) === 6 ? 6 : 4;
-      updateMasterCollageCountUI(collageCount);
-      renderMasterCollagePhotos();
+      const toggleCoverParticles = document.getElementById('master-toggle-cover-particles');
+      if (toggleCoverParticles) {
+        toggleCoverParticles.checked = templateState.config_json?.cover_particles_enabled !== undefined
+          ? Boolean(templateState.config_json.cover_particles_enabled)
+          : true;
+      }
+
+      const selLogoShape = document.getElementById('select-master-cover-logo-shape');
+      if (selLogoShape) selLogoShape.value = templateState.config_json?.cover_logo_shape || 'original';
 
       const bgDimVal = templateState.config_json?.cover_bg_dim !== undefined ? Number(templateState.config_json.cover_bg_dim) : 45;
       const dimSlider = document.getElementById('slider-master-cover-bg-dim');
@@ -2583,7 +2631,8 @@
       templateState.name = document.getElementById('tpl-name').value.trim();
       templateState.slug = document.getElementById('tpl-slug').value.trim();
       templateState.category = document.getElementById('tpl-category').value;
-      templateState.is_premium = document.getElementById('tpl-is-premium').checked;
+      const elIsPrem = document.getElementById('tpl-is-premium');
+      if (elIsPrem) templateState.is_premium = elIsPrem.checked;
       templateState.is_active = document.getElementById('tpl-is-active').checked;
 
       document.getElementById('studio-template-title').textContent = templateState.name || 'Template Baru';
@@ -2591,8 +2640,10 @@
       document.getElementById('studio-badge-category').textContent = templateState.category;
       
       const badgePrem = document.getElementById('studio-badge-premium');
-      badgePrem.textContent = templateState.is_premium ? '👑 Premium' : 'Free';
-      badgePrem.className = `px-2 py-0.5 rounded-full text-[10px] font-bold ${templateState.is_premium ? 'bg-amber-100 text-amber-900 border border-amber-300' : 'bg-emerald-100 text-emerald-800'}`;
+      if (badgePrem) {
+        badgePrem.textContent = templateState.is_premium ? '👑 Premium' : 'Free';
+        badgePrem.className = `px-2 py-0.5 rounded-full text-[10px] font-bold ${templateState.is_premium ? 'bg-amber-100 text-amber-900 border border-amber-300' : 'bg-emerald-100 text-emerald-800'}`;
+      }
 
       markAsUnsaved();
       scheduleBroadcast();
@@ -3274,7 +3325,8 @@
     }
 
     function handleMasterCoverBgModeChange(mode) {
-      const cleanMode = mode === 'photo' ? 'photo' : 'lava_lamp';
+      const allowed = ['theme_default', 'lava_lamp', 'photo'];
+      const cleanMode = allowed.includes(mode) ? mode : 'lava_lamp';
       if (!templateState.config_json) templateState.config_json = {};
       templateState.config_json.cover_bg_mode = cleanMode;
       templateState.config_json.cover_photo_as_bg = (cleanMode === 'photo');
@@ -3286,100 +3338,172 @@
         if (cleanMode === 'photo') dimCtrl.classList.remove('hidden');
         else dimCtrl.classList.add('hidden');
       }
+      const defBgBox = document.getElementById('master-cover-default-bg-box');
+      if (defBgBox) defBgBox.classList.toggle('hidden', cleanMode !== 'theme_default');
       markAsUnsaved();
       scheduleBroadcast();
     }
 
     function setMasterCoverBgModeUI(mode) {
+      const btnDefault = document.getElementById('btn-master-coverbg-default');
       const btnLava = document.getElementById('btn-master-coverbg-lava');
       const btnPhoto = document.getElementById('btn-master-coverbg-photo');
       const activeCls = ['bg-white', 'text-slate-900', 'shadow-2xs', 'font-bold'];
       const inactiveCls = ['text-slate-600', 'font-semibold'];
-      if (btnLava) {
-        if (mode !== 'photo') { btnLava.classList.add(...activeCls); btnLava.classList.remove(...inactiveCls); }
-        else { btnLava.classList.remove(...activeCls); btnLava.classList.add(...inactiveCls); }
-      }
-      if (btnPhoto) {
-        if (mode === 'photo') { btnPhoto.classList.add(...activeCls); btnPhoto.classList.remove(...inactiveCls); }
-        else { btnPhoto.classList.remove(...activeCls); btnPhoto.classList.add(...inactiveCls); }
+      const map = {
+        theme_default: btnDefault,
+        lava_lamp: btnLava,
+        photo: btnPhoto
+      };
+      Object.entries(map).forEach(([key, btn]) => {
+        if (!btn) return;
+        if (key === mode) {
+          btn.classList.add(...activeCls);
+          btn.classList.remove(...inactiveCls);
+        } else {
+          btn.classList.remove(...activeCls);
+          btn.classList.add(...inactiveCls);
+        }
+      });
+    }
+
+    async function handleMasterCoverDefaultBgAssetUpload(e, mediaType) {
+      const file = e.target.files?.[0];
+      if (!file) return;
+      try {
+        showToast(mediaType === 'video' ? 'Mengunggah video latar cover...' : 'Mengunggah gambar latar cover...', 'info');
+        const slug = templateState.slug || 'theme';
+        const res = await uploadTemplateAssetDirect(file, slug, mediaType === 'video' ? 'cover_default_video' : 'cover_default_bg');
+        if (!templateState.config_json) templateState.config_json = {};
+        if (mediaType === 'video') {
+          templateState.config_json.cover_default_bg_video_url = res.url;
+          templateState.config_json.cover_default_bg_image_url = null;
+        } else {
+          templateState.config_json.cover_default_bg_image_url = res.url;
+          templateState.config_json.cover_default_bg_video_url = null;
+        }
+        const urlInput = document.getElementById('input-cover-default-bg-url');
+        if (urlInput) urlInput.value = res.url;
+        const delBtn = document.getElementById('btn-del-cover-default-bg');
+        if (delBtn) delBtn.classList.remove('hidden');
+        markAsUnsaved();
+        scheduleBroadcast();
+        showToast('Background default cover berhasil diunggah!', 'success');
+      } catch (err) {
+        console.error('Upload cover default bg error:', err);
+        showToast('Gagal mengunggah background default cover.', 'error');
+      } finally {
+        e.target.value = '';
       }
     }
 
-    function handleMasterCollageCountChange(count) {
+    function handleMasterCoverDefaultBgUrlInput(val) {
+      const cleanVal = (val || '').trim() || null;
       if (!templateState.config_json) templateState.config_json = {};
-      templateState.config_json.cover_collage_count = Number(count) === 6 ? 6 : 4;
-      updateMasterCollageCountUI(templateState.config_json.cover_collage_count);
+      if (!cleanVal) {
+        templateState.config_json.cover_default_bg_image_url = null;
+        templateState.config_json.cover_default_bg_video_url = null;
+      } else if (/\.(mp4|webm)(\?|#|$)/i.test(cleanVal)) {
+        templateState.config_json.cover_default_bg_video_url = cleanVal;
+        templateState.config_json.cover_default_bg_image_url = null;
+      } else {
+        templateState.config_json.cover_default_bg_image_url = cleanVal;
+        templateState.config_json.cover_default_bg_video_url = null;
+      }
+      const delBtn = document.getElementById('btn-del-cover-default-bg');
+      if (delBtn) delBtn.classList.toggle('hidden', !cleanVal);
       markAsUnsaved();
       scheduleBroadcast();
     }
 
-    function updateMasterCollageCountUI(count) {
-      const btn4 = document.getElementById('btn-master-collage-4');
-      const btn6 = document.getElementById('btn-master-collage-6');
-      if (btn4 && btn6) {
-        if (Number(count) === 6) {
-          btn6.className = 'py-2 px-3 rounded-xl border border-amber-400 bg-amber-50 text-amber-900 text-xs font-bold cursor-pointer';
-          btn4.className = 'py-2 px-3 rounded-xl border border-slate-200 bg-slate-50 text-slate-600 text-xs font-semibold cursor-pointer';
-        } else {
-          btn4.className = 'py-2 px-3 rounded-xl border border-amber-400 bg-amber-50 text-amber-900 text-xs font-bold cursor-pointer';
-          btn6.className = 'py-2 px-3 rounded-xl border border-slate-200 bg-slate-50 text-slate-600 text-xs font-semibold cursor-pointer';
-        }
-      }
+    function removeMasterCoverDefaultBg() {
+      if (!templateState.config_json) templateState.config_json = {};
+      templateState.config_json.cover_default_bg_image_url = null;
+      templateState.config_json.cover_default_bg_video_url = null;
+      const urlInput = document.getElementById('input-cover-default-bg-url');
+      if (urlInput) urlInput.value = '';
+      const delBtn = document.getElementById('btn-del-cover-default-bg');
+      if (delBtn) delBtn.classList.add('hidden');
+      markAsUnsaved();
+      scheduleBroadcast();
+      showToast('Background default cover direset ke tema utama.', 'info');
     }
 
-    async function handleMasterCollageUpload(e) {
-      const files = Array.from(e.target.files || []);
-      if (!files.length) return;
+    function handleMasterCoverParticlesToggle(checked) {
       if (!templateState.config_json) templateState.config_json = {};
-      if (!Array.isArray(templateState.config_json.cover_collage_photos)) templateState.config_json.cover_collage_photos = [];
-      const remaining = 6 - templateState.config_json.cover_collage_photos.length;
-      if (remaining <= 0) {
-        showToast('Maksimal 6 foto kolase cover.', 'warning');
+      templateState.config_json.cover_particles_enabled = Boolean(checked);
+      markAsUnsaved();
+      scheduleBroadcast();
+    }
+
+    function handleMasterCoverLogoUpload(e) {
+      const file = e.target.files?.[0];
+      if (!file) return;
+      const currentShape = templateState.config_json?.cover_logo_shape || 'original';
+      if (typeof window.openImageCropper !== 'function') {
+        handleAssetUpload(e, 'cover_header_png');
         return;
       }
-      showToast(`Mengunggah ${Math.min(files.length, remaining)} foto kolase cover...`, 'info');
-      const slug = templateState.slug || 'theme';
-      for (const file of files.slice(0, remaining)) {
-        try {
-          const res = await uploadTemplateAssetDirect(file, slug, 'cover_collage');
-          templateState.config_json.cover_collage_photos.push(res.url);
-        } catch (err) {
-          console.error('Upload collage error:', err);
+      openImageCropper({
+        file,
+        targetType: 'logo',
+        aspectRatio: '1:1',
+        shapeGuide: currentShape === 'circle' ? 'circle' : 'rect',
+        onComplete: async (croppedFile) => {
+          try {
+            showToast('Mengunggah logo monogram hasil crop...', 'info');
+            const slug = templateState.slug || 'theme';
+            const res = await uploadTemplateAssetDirect(croppedFile, slug, 'cover_header_png');
+            if (!templateState.config_json) templateState.config_json = {};
+            if (!templateState.config_json.ornaments) templateState.config_json.ornaments = {};
+            templateState.config_json.ornaments.cover_header_png = res.url;
+            setAssetPreview('cover_header_png', res.url);
+            markAsUnsaved();
+            scheduleBroadcast();
+            showToast('Logo monogram berhasil dipotong & disimpan!', 'success');
+          } catch (err) {
+            console.error('Upload logo crop error:', err);
+            showToast('Gagal mengunggah logo monogram.', 'error');
+          }
         }
-      }
-      renderMasterCollagePhotos();
-      markAsUnsaved();
-      scheduleBroadcast();
+      });
       e.target.value = '';
     }
 
-    function removeMasterCollagePhoto(idx) {
-      if (!Array.isArray(templateState.config_json?.cover_collage_photos)) return;
-      templateState.config_json.cover_collage_photos.splice(idx, 1);
-      renderMasterCollagePhotos();
-      markAsUnsaved();
-      scheduleBroadcast();
+    function openReCropMasterCoverLogo() {
+      const currentUrl = templateState.config_json?.ornaments?.cover_header_png;
+      if (!currentUrl || typeof window.openImageCropper !== 'function') return;
+      const currentShape = templateState.config_json?.cover_logo_shape || 'original';
+      openImageCropper({
+        file: currentUrl,
+        targetType: 'logo',
+        aspectRatio: '1:1',
+        shapeGuide: currentShape === 'circle' ? 'circle' : 'rect',
+        onComplete: async (croppedFile) => {
+          try {
+            showToast('Menyimpan potongan baru logo monogram...', 'info');
+            const slug = templateState.slug || 'theme';
+            const res = await uploadTemplateAssetDirect(croppedFile, slug, 'cover_header_png');
+            if (!templateState.config_json) templateState.config_json = {};
+            if (!templateState.config_json.ornaments) templateState.config_json.ornaments = {};
+            templateState.config_json.ornaments.cover_header_png = res.url;
+            setAssetPreview('cover_header_png', res.url);
+            markAsUnsaved();
+            scheduleBroadcast();
+            showToast('Logo monogram berhasil diperbarui!', 'success');
+          } catch (err) {
+            console.error('Re-crop logo error:', err);
+            showToast('Gagal memproses ulang logo monogram.', 'error');
+          }
+        }
+      });
     }
 
-    function renderMasterCollagePhotos() {
-      const container = document.getElementById('master-collage-grid-preview');
-      const badge = document.getElementById('master-collage-count-badge');
-      const list = Array.isArray(templateState.config_json?.cover_collage_photos) ? templateState.config_json.cover_collage_photos : [];
-      if (badge) badge.textContent = `${list.length} / 6`;
-      if (!container) return;
-      if (!list.length) {
-        container.innerHTML = `<div class="col-span-3 p-3 text-center text-[11px] text-slate-400 border border-dashed border-slate-200 rounded-xl">Belum ada foto khusus kolase (otomatis memakai Galeri & Foto Sampel).</div>`;
-        return;
-      }
-      container.innerHTML = list.map((url, idx) => `
-        <div class="relative group aspect-[3/4] rounded-lg overflow-hidden border border-slate-200 bg-slate-100">
-          <img src="${url}" alt="Kolase ${idx + 1}" class="w-full h-full object-cover">
-          <button type="button" onclick="removeMasterCollagePhoto(${idx})" class="absolute top-1 right-1 w-5 h-5 rounded-full bg-rose-600 text-white flex items-center justify-center opacity-90 hover:opacity-100 cursor-pointer shadow-xs" title="Hapus">
-            <i data-lucide="x" class="w-3 h-3"></i>
-          </button>
-        </div>
-      `).join('');
-      if (window.lucide) lucide.createIcons();
+    function handleMasterCoverLogoShapeChange(shape) {
+      if (!templateState.config_json) templateState.config_json = {};
+      templateState.config_json.cover_logo_shape = shape || 'original';
+      markAsUnsaved();
+      scheduleBroadcast();
     }
 
     function handleEffectsChange() {
@@ -3909,6 +4033,7 @@
     function setAssetPreview(key, url) {
       const input = document.getElementById(`asset-url-${key}`);
       const delBtn = document.getElementById(`btn-del-${key}`);
+      const recropBtn = document.getElementById(`btn-recrop-${key}`);
       const previewImg = document.getElementById(`preview-${key}`);
       const placeholder = document.getElementById(`placeholder-${key}`);
 
@@ -3916,6 +4041,10 @@
       if (delBtn) {
         if (url) delBtn.classList.remove('hidden');
         else delBtn.classList.add('hidden');
+      }
+      if (recropBtn) {
+        if (url) recropBtn.classList.remove('hidden');
+        else recropBtn.classList.add('hidden');
       }
       if (previewImg) {
         if (url) {
@@ -3937,8 +4066,11 @@
       const timestamp = Date.now();
       let ext = 'webp';
       if (file.type === 'image/png') ext = 'png';
+      else if (file.type === 'video/mp4') ext = 'mp4';
+      else if (file.type === 'video/webm') ext = 'webm';
       else if (file.type && (file.type.startsWith('audio/') || file.type.includes('mpeg') || file.type.includes('mp3'))) ext = 'mp3';
       else if (file.type && (file.type.includes('jpeg') || file.type.includes('jpg'))) ext = 'jpg';
+      else if (file.name && /\.(mp4|webm)$/i.test(file.name)) ext = file.name.split('.').pop().toLowerCase();
       const fileName = `templates/${cleanSlug}/${assetType}_${timestamp}.${ext}`;
 
       if (!client || !client.storage) {

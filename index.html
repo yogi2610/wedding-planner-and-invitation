@@ -913,11 +913,8 @@
                 </div>
               `}
 
-              <!-- Badges Overlay -->
-              <div class="absolute top-3 left-3 right-3 flex items-center justify-between gap-2 pointer-events-none">
-                <span class="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider shadow-xs backdrop-blur-md ${t.is_premium ? 'bg-amber-500/95 text-slate-950' : 'bg-emerald-600/90 text-white'}">
-                  ${t.is_premium ? '👑 Premium' : 'Gratis'}
-                </span>
+              <!-- Category Badge Overlay -->
+              <div class="absolute top-3 right-3 flex items-center justify-end pointer-events-none">
                 <span class="px-2.5 py-1 rounded-full text-[10px] font-semibold capitalize bg-white/90 text-slate-700 backdrop-blur-md shadow-xs">
                   ${escapeHtmlSafe(t.category || 'Tema')}
                 </span>

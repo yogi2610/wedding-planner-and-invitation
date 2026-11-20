@@ -520,8 +520,8 @@
               <label class="flex items-start gap-3 p-3 rounded-xl border border-stone-200 bg-stone-50/70 hover:border-amber-400 cursor-pointer transition-all">
                 <input type="radio" name="user_cover_style" value="collage_scroll" onchange="handleUserCoverStyleChange('collage_scroll')" class="mt-1 text-amber-600 accent-amber-600">
                 <div>
-                  <span class="text-xs font-bold text-slate-900 block">2. Kolase 4/6 Foto (Transisi Blur & Scroll ke Bawah)</span>
-                  <span class="text-[11px] text-slate-500 leading-snug block mt-0.5">Grid 4 atau 6 foto dengan transisi blur lembut ke solid color tempat nama tamu, lalu terbuka halus saat di-scroll ke bawah.</span>
+                  <span class="text-xs font-bold text-slate-900 block">2. Cover Foto Transisi Blur (Scroll ke Bawah)</span>
+                  <span class="text-[11px] text-slate-500 leading-snug block mt-0.5">Menampilkan 1 foto utama sampul dengan transisi blur lembut ke solid color untuk teks mempelai & tamu, lalu terbuka halus saat di-scroll ke bawah.</span>
                 </div>
               </label>
 
@@ -535,19 +535,22 @@
             </div>
           </div>
 
-          <!-- 2. Background Cover (Lava Lamp vs Foto Upload + Dim Level) -->
+          <!-- 2. Background Cover (Default Tema vs Lava Lamp vs Foto Upload + Dim Level) -->
           <div id="user-cover-bg-section" class="bg-white p-5 rounded-2xl border border-stone-200/90 shadow-2xs space-y-3.5">
             <div class="border-b border-stone-100 pb-2">
               <label class="block text-xs font-bold text-slate-800">Background Layar Cover</label>
-              <p class="text-[11px] text-slate-500 mt-0.5">Pilih latar belakang cover menggunakan animasi cahaya Lava Lamp atau foto sampul full-screen.</p>
+              <p class="text-[11px] text-slate-500 mt-0.5">Pilih latar belakang cover: Default bawaan tema, Animasi Lava Lamp, atau Foto Sampul Anda.</p>
             </div>
 
-            <div class="grid grid-cols-2 gap-2 p-1 bg-stone-100 rounded-xl">
-              <button type="button" id="btn-user-coverbg-lava" onclick="handleUserCoverBgModeChange('lava_lamp')" class="py-2 px-3 rounded-lg text-xs font-bold text-center transition-all bg-white text-amber-800 shadow-2xs cursor-pointer">
-                🔮 Animasi Lava Lamp
+            <div class="grid grid-cols-3 gap-1.5 p-1 bg-stone-100 rounded-xl">
+              <button type="button" id="btn-user-coverbg-default" onclick="handleUserCoverBgModeChange('theme_default')" class="py-2 px-2 rounded-lg text-[11px] font-semibold text-center transition-all text-slate-600 hover:text-slate-900 cursor-pointer">
+                🏛️ Default Tema
               </button>
-              <button type="button" id="btn-user-coverbg-photo" onclick="handleUserCoverBgModeChange('photo')" class="py-2 px-3 rounded-lg text-xs font-semibold text-center transition-all text-slate-600 hover:text-slate-900 cursor-pointer">
-                🖼️ Foto yang Diupload
+              <button type="button" id="btn-user-coverbg-lava" onclick="handleUserCoverBgModeChange('lava_lamp')" class="py-2 px-2 rounded-lg text-[11px] font-bold text-center transition-all bg-white text-amber-800 shadow-2xs cursor-pointer">
+                🔮 Lava Lamp
+              </button>
+              <button type="button" id="btn-user-coverbg-photo" onclick="handleUserCoverBgModeChange('photo')" class="py-2 px-2 rounded-lg text-[11px] font-semibold text-center transition-all text-slate-600 hover:text-slate-900 cursor-pointer">
+                🖼️ Foto Sendiri
               </button>
             </div>
 
@@ -581,28 +584,22 @@
             </div>
           </div>
 
-          <!-- 2B. Pengaturan Khusus Cover Kolase 4/6 Foto -->
-          <div id="user-cover-collage-box" class="hidden bg-white p-5 rounded-2xl border border-stone-200/90 shadow-2xs space-y-3.5">
-            <div class="flex items-center justify-between border-b border-stone-100 pb-2">
-              <div>
-                <h4 class="font-bold text-xs text-slate-900">Foto Kolase Cover (4 atau 6 Foto)</h4>
-                <p class="text-[11px] text-slate-400">Jika belum diisi, otomatis mengambil foto dari Galeri & Foto Sampul Anda.</p>
-              </div>
-              <span id="user-collage-count-badge" class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-900 font-mono">0 / 6</span>
-            </div>
+          <!-- 2B. Info Mode Foto Transisi Blur -->
+          <div id="user-cover-collage-box" class="hidden bg-amber-50/70 p-4 rounded-2xl border border-amber-200/80 text-xs text-amber-900 space-y-1">
+            <span class="font-bold block">✨ Cover Foto Transisi Blur Aktif</span>
+            <p class="text-[11px] leading-relaxed">Tampilan sampul ini menggunakan <strong>1 Foto Utama Sampul Depan</strong> yang Anda unggah di bawah dengan efek transisi blur halus ke warna latar tema.</p>
+          </div>
 
-            <div class="grid grid-cols-2 gap-2">
-              <button type="button" id="btn-user-collage-4" onclick="handleUserCollageCountChange(4)" class="py-2 px-3 rounded-xl border border-amber-400 bg-amber-50 text-amber-900 text-xs font-bold cursor-pointer">Grid 4 Foto (2×2)</button>
-              <button type="button" id="btn-user-collage-6" onclick="handleUserCollageCountChange(6)" class="py-2 px-3 rounded-xl border border-stone-200 bg-stone-50 text-slate-600 text-xs font-semibold cursor-pointer">Grid 6 Foto (2×3)</button>
-            </div>
-
+          <!-- 2C. Opsi Animasi Partikel di Layar Cover -->
+          <div class="bg-white p-4 sm:p-5 rounded-2xl border border-stone-200/90 shadow-2xs flex items-center justify-between gap-3">
             <div>
-              <input type="file" id="user-collage-file-input" multiple accept="image/*" onchange="handleUserCollageUpload(event)" class="block w-full text-xs text-slate-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-amber-50 file:text-amber-800 hover:file:bg-amber-100 cursor-pointer">
+              <span class="text-xs font-bold text-slate-800 block">Animasi Partikel di Layar Cover</span>
+              <span class="text-[11px] text-slate-500 block">Tampilkan kelopak bunga / daun / kilau emas melayang saat tamu masih di cover</span>
             </div>
-
-            <div id="user-collage-grid-preview" class="grid grid-cols-3 gap-2">
-              <!-- Injected via JS -->
-            </div>
+            <label class="relative inline-flex items-center cursor-pointer shrink-0">
+              <input type="checkbox" id="toggle-user-cover-particles" onchange="handleUserCoverParticlesToggle(this.checked)" checked class="sr-only peer">
+              <div class="w-9 h-5 bg-stone-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-stone-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-amber-600"></div>
+            </label>
           </div>
 
           <!-- 3. Logo / Monogram Sampul Depan -->
@@ -617,7 +614,7 @@
                 <span>Tampilkan</span>
               </label>
             </div>
-            <p class="text-[11px] text-slate-500">Tampil tepat di atas tulisan "The Wedding Of" & Nama Mempelai saat sampul dibuka. Jika belum unggah, otomatis memakai placeholder bawaan tema.</p>
+            <p class="text-[11px] text-slate-500">Tampil tepat di atas tulisan "The Wedding Of" & Nama Mempelai. Didukung fitur crop & pilihan bentuk bingkai monogram.</p>
 
             <div class="flex items-center gap-3.5">
               <div class="relative w-16 h-16 rounded-2xl overflow-hidden bg-stone-50 border-2 border-dashed border-amber-300 shrink-0 flex items-center justify-center p-1.5">
@@ -630,7 +627,10 @@
                 <div class="flex flex-wrap items-center gap-2">
                   <button type="button" onclick="triggerCoverLogoUpload()" class="px-3.5 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 font-bold text-xs inline-flex items-center gap-1.5 transition-colors cursor-pointer">
                     <i data-lucide="upload" class="w-3.5 h-3.5"></i>
-                    <span>Pilih Logo PNG/JPG</span>
+                    <span>Pilih & Crop Logo</span>
+                  </button>
+                  <button type="button" id="btn-recrop-cover-logo" onclick="openReCropCoverLogo()" class="hidden px-2.5 py-1.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-slate-700 text-[11px] font-bold border border-stone-300 transition-colors cursor-pointer">
+                    ✂️ Sesuaikan / Crop
                   </button>
                   <button type="button" id="btn-remove-cover-logo" onclick="removeCoverLogo()" class="hidden px-2.5 py-1.5 rounded-xl text-rose-600 hover:bg-rose-50 text-[11px] font-bold border border-rose-200 transition-colors cursor-pointer">
                     Reset ke Placeholder
@@ -638,6 +638,18 @@
                 </div>
                 <span id="badge-cover-logo-status" class="text-[10px] text-slate-400 block">Menggunakan placeholder default tema (jika tersedia)</span>
               </div>
+            </div>
+
+            <div class="pt-2 border-t border-stone-100">
+              <label for="select-user-cover-logo-shape" class="block text-[11px] font-bold text-slate-700 mb-1">Bentuk Logo Monogram (Default Bawaan):</label>
+              <select id="select-user-cover-logo-shape" onchange="handleUserCoverLogoShapeChange(this.value)" class="w-full px-3 py-2 rounded-xl border border-stone-300 text-xs font-semibold bg-white text-slate-800 cursor-pointer">
+                <option value="original">🖼️ Bentuk Asli (PNG Transparan / Bebas)</option>
+                <option value="circle">⭕ Lingkaran Monogram (Circle)</option>
+                <option value="rounded_square">⬜ Kotak Sudut Halus (Rounded Square)</option>
+                <option value="arch">🏛️ Kubah Klasik (Arch Monogram)</option>
+                <option value="octagon">🛑 Segi Delapan (Octagon Seal)</option>
+                <option value="diamond">💎 Belah Ketupat (Diamond Crest)</option>
+              </select>
             </div>
           </div>
 
@@ -1914,7 +1926,9 @@
       bg_image_url: null,
       custom_ornament_url: null,
       cover_logo_url: null,
+      cover_logo_shape: 'original',
       hide_cover_logo: false,
+      cover_particles_enabled: true,
       cover_frame_shape: 'grand_arch',
       cover_frame_ornament: 'floral_wreath',
       cover_style: 'classic',
@@ -2216,14 +2230,10 @@
       customTheme.cover_style = customTheme.cover_style || tplCfg.cover_style || 'classic';
       customTheme.cover_bg_mode = customTheme.cover_bg_mode || tplCfg.cover_bg_mode || (customTheme.cover_photo_as_bg ? 'photo' : 'lava_lamp');
       customTheme.cover_photo_as_bg = (customTheme.cover_bg_mode === 'photo');
-      customTheme.cover_collage_count = Number(customTheme.cover_collage_count || tplCfg.cover_collage_count || 4) === 6 ? 6 : 4;
-      if (!Array.isArray(customTheme.cover_collage_photos) || customTheme.cover_collage_photos.length === 0) {
-        if (Array.isArray(tplCfg.cover_collage_photos) && tplCfg.cover_collage_photos.length > 0) {
-          customTheme.cover_collage_photos = [...tplCfg.cover_collage_photos];
-        } else {
-          customTheme.cover_collage_photos = [];
-        }
-      }
+      customTheme.cover_particles_enabled = customTheme.cover_particles_enabled !== undefined
+        ? Boolean(customTheme.cover_particles_enabled)
+        : (tplCfg.cover_particles_enabled !== undefined ? Boolean(tplCfg.cover_particles_enabled) : true);
+      customTheme.cover_logo_shape = customTheme.cover_logo_shape || tplCfg.cover_logo_shape || 'original';
       customTheme.card_opacity = customTheme.card_opacity !== undefined
         ? Number(customTheme.card_opacity)
         : (tplCfg.card_opacity !== undefined ? Number(tplCfg.card_opacity) : 95);
@@ -2237,8 +2247,11 @@
       if (styleRadio) styleRadio.checked = true;
       updateUserCoverStyleVisibility();
       setUserCoverBgModeUI(customTheme.cover_bg_mode);
-      updateUserCollageCountUI(customTheme.cover_collage_count);
-      renderUserCollagePhotos();
+
+      const coverPartToggle = document.getElementById('toggle-user-cover-particles');
+      if (coverPartToggle) coverPartToggle.checked = customTheme.cover_particles_enabled;
+      const logoShapeEl = document.getElementById('select-user-cover-logo-shape');
+      if (logoShapeEl) logoShapeEl.value = customTheme.cover_logo_shape;
 
       const toggleCoverFrameEl = document.getElementById('toggle-cover-show-frame');
       if (toggleCoverFrameEl) toggleCoverFrameEl.checked = customTheme.cover_show_frame;
@@ -2596,10 +2609,9 @@
             ` : ''}
 
             <div class="flex items-center gap-2 mb-1.5">
-              <span class="text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full ${t.is_premium ? 'bg-amber-100 text-amber-900 border border-amber-300' : 'bg-emerald-100 text-emerald-800'}">
-                ${t.is_premium ? '👑 Premium' : 'Free'}
+              <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-stone-100 text-slate-600 capitalize">
+                ${escapeHtml(t.category || 'Tema')}
               </span>
-              <span class="text-[11px] text-slate-400 capitalize">${t.category || 'Theme'}</span>
             </div>
 
             <h4 class="font-serif text-sm font-bold text-slate-900 mb-2.5">${escapeHtml(t.name)}</h4>
@@ -2685,9 +2697,15 @@
             setUserCoverBgModeUI(cfg.cover_bg_mode);
             updateCoverBgDimControlVisibility();
           }
-          if (cfg.cover_collage_count) {
-            customTheme.cover_collage_count = Number(cfg.cover_collage_count) === 6 ? 6 : 4;
-            updateUserCollageCountUI(customTheme.cover_collage_count);
+          if (cfg.cover_particles_enabled !== undefined) {
+            customTheme.cover_particles_enabled = Boolean(cfg.cover_particles_enabled);
+            const pTgl = document.getElementById('toggle-user-cover-particles');
+            if (pTgl) pTgl.checked = customTheme.cover_particles_enabled;
+          }
+          if (cfg.cover_logo_shape) {
+            customTheme.cover_logo_shape = cfg.cover_logo_shape;
+            const lSel = document.getElementById('select-user-cover-logo-shape');
+            if (lSel) lSel.value = cfg.cover_logo_shape;
           }
           if (cfg.card_opacity !== undefined) {
             customTheme.card_opacity = Number(cfg.card_opacity);
@@ -2993,23 +3011,75 @@
     async function handleCoverLogoUpload(event) {
       const file = event.target.files?.[0];
       if (!file) return;
-      try {
-        showToast('Mengunggah logo sampul...', 'info');
-        const url = await uploadRawUserAsset(file, 'cover_logo');
+
+      const saveLogoUrl = async (url) => {
         customTheme.cover_logo_url = url;
         customTheme.hide_cover_logo = false;
         const toggleEl = document.getElementById('toggle-show-cover-logo');
         if (toggleEl) toggleEl.checked = true;
-
         setCoverLogoPreview(url);
         broadcastToIframe();
         await persistCustomThemeImmediate();
-        showToast('✓ Logo sampul tersimpan & tampil di atas nama mempelai!', 'success');
-      } catch (err) {
-        showToast('Gagal mengunggah logo: ' + err.message, 'error');
-      } finally {
-        event.target.value = '';
+        showToast('✓ Logo monogram tersimpan & tampil di cover!', 'success');
+      };
+
+      if (typeof window.openImageCropper === 'function') {
+        window.openImageCropper({
+          file,
+          targetType: 'logo',
+          aspectRatio: '1:1',
+          shapeGuide: 'rect',
+          title: 'Sesuaikan & Potong Logo Monogram',
+          onComplete: async (res) => {
+            if (res?.url) await saveLogoUrl(res.url);
+          }
+        });
+      } else {
+        try {
+          showToast('Mengunggah logo sampul...', 'info');
+          const url = await uploadRawUserAsset(file, 'cover_logo');
+          await saveLogoUrl(url);
+        } catch (err) {
+          showToast('Gagal mengunggah logo: ' + err.message, 'error');
+        }
       }
+      event.target.value = '';
+    }
+
+    function openReCropCoverLogo() {
+      const currentUrl = customTheme.cover_logo_url;
+      if (!currentUrl) {
+        showToast('Pilih & unggah file logo terlebih dahulu.', 'warning');
+        return;
+      }
+      if (typeof window.openImageCropper === 'function') {
+        window.openImageCropper({
+          source: currentUrl,
+          imageUrl: currentUrl,
+          targetType: 'logo',
+          aspectRatio: '1:1',
+          shapeGuide: 'rect',
+          title: 'Sesuaikan & Potong Logo Monogram',
+          onComplete: async (res) => {
+            if (!res?.url) return;
+            customTheme.cover_logo_url = res.url;
+            setCoverLogoPreview(res.url);
+            broadcastToIframe();
+            await persistCustomThemeImmediate();
+            showToast('✓ Hasil crop logo monogram berhasil disimpan!', 'success');
+          }
+        });
+      }
+    }
+
+    function handleUserCoverLogoShapeChange(shape) {
+      customTheme.cover_logo_shape = shape || 'original';
+      broadcastToIframe();
+    }
+
+    function handleUserCoverParticlesToggle(checked) {
+      customTheme.cover_particles_enabled = Boolean(checked);
+      broadcastToIframe();
     }
 
     function handleCoverLogoVisibilityChange(checked) {
@@ -3029,6 +3099,7 @@
       const img = document.getElementById('preview-img-cover-logo');
       const placeholder = document.getElementById('placeholder-cover-logo');
       const delBtn = document.getElementById('btn-remove-cover-logo');
+      const cropBtn = document.getElementById('btn-recrop-cover-logo');
       const statusBadge = document.getElementById('badge-cover-logo-status');
 
       const activeTpl = templatesList.find(t => t.id === selectedTemplateId);
@@ -3045,10 +3116,8 @@
         if (placeholder) placeholder.classList.remove('hidden');
       }
 
-      if (delBtn) {
-        if (url) delBtn.classList.remove('hidden');
-        else delBtn.classList.add('hidden');
-      }
+      if (delBtn) delBtn.classList.toggle('hidden', !url);
+      if (cropBtn) cropBtn.classList.toggle('hidden', !url);
 
       if (statusBadge) {
         if (url) {
@@ -3119,7 +3188,8 @@
     function updateCoverBgDimControlVisibility() {
       const box = document.getElementById('cover-bg-dim-control');
       if (!box) return;
-      if (customTheme.cover_photo_as_bg) {
+      const mode = customTheme.cover_bg_mode || (customTheme.cover_photo_as_bg ? 'photo' : 'lava_lamp');
+      if (mode === 'photo' || mode === 'theme_default') {
         box.classList.remove('hidden');
       } else {
         box.classList.add('hidden');
@@ -3159,7 +3229,7 @@
     }
 
     function handleUserCoverBgModeChange(mode) {
-      const cleanMode = mode === 'photo' ? 'photo' : 'lava_lamp';
+      const cleanMode = (mode === 'photo' || mode === 'theme_default') ? mode : 'lava_lamp';
       customTheme.cover_bg_mode = cleanMode;
       customTheme.cover_photo_as_bg = (cleanMode === 'photo');
       const legacyToggle = document.getElementById('toggle-cover-photo-as-bg');
@@ -3170,18 +3240,18 @@
     }
 
     function setUserCoverBgModeUI(mode) {
+      const btnDef = document.getElementById('btn-user-coverbg-default');
       const btnLava = document.getElementById('btn-user-coverbg-lava');
       const btnPhoto = document.getElementById('btn-user-coverbg-photo');
       const activeCls = ['bg-white', 'text-amber-800', 'shadow-2xs', 'font-bold'];
       const inactiveCls = ['text-slate-600', 'font-semibold'];
-      if (btnLava) {
-        if (mode !== 'photo') { btnLava.classList.add(...activeCls); btnLava.classList.remove(...inactiveCls); }
-        else { btnLava.classList.remove(...activeCls); btnLava.classList.add(...inactiveCls); }
-      }
-      if (btnPhoto) {
-        if (mode === 'photo') { btnPhoto.classList.add(...activeCls); btnPhoto.classList.remove(...inactiveCls); }
-        else { btnPhoto.classList.remove(...activeCls); btnPhoto.classList.add(...inactiveCls); }
-      }
+      const map = { theme_default: btnDef, lava_lamp: btnLava, photo: btnPhoto };
+      const target = map[mode] ? mode : 'lava_lamp';
+      Object.entries(map).forEach(([k, btn]) => {
+        if (!btn) return;
+        if (k === target) { btn.classList.add(...activeCls); btn.classList.remove(...inactiveCls); }
+        else { btn.classList.remove(...activeCls); btn.classList.add(...inactiveCls); }
+      });
     }
 
     function handleUserCollageCountChange(count) {

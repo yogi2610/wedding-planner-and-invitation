@@ -916,6 +916,7 @@ class InvitationEngine {
       this.applyCoverPhotoAndFrame();
       this.renderThemeOrnaments();
       this.initParticleEffect();
+      this.updateCoverParticleVisibility();
 
       this.renderCoverSection();
       this.renderCoupleSection();
@@ -1077,11 +1078,15 @@ class InvitationEngine {
 
   /**
    * Terapkan Sampul Depan (3 Variasi Cover: classic | collage_scroll | envelope),
-   * Background Cover (lava_lamp | photo + Dim Level), dan Bingkai Foto Pengantin
+   * Background Cover (theme_default | lava_lamp | photo + Dim Level), dan Bingkai Foto Pengantin
    */
   applyCoverPhotoAndFrame() {
     const coverScreen = document.getElementById('cover-screen') || document.getElementById('invitation-cover');
     const coverLavaBg = document.getElementById('cover-lava-bg');
+    const themeBgWrap = document.getElementById('cover-theme-bg-wrap');
+    const themeBgVideo = document.getElementById('cover-theme-bg-video');
+    const themeBgImg = document.getElementById('cover-theme-bg-img');
+    const themeBgOverlay = document.getElementById('cover-theme-bg-overlay');
     const bgPhotoWrap = document.getElementById('cover-bg-photo-wrap');
     const bgPhotoImg = document.getElementById('cover-bg-photo-img');
     const container = document.getElementById('cover-photo-container');
@@ -1111,7 +1116,7 @@ class InvitationEngine {
     const dimLevel = Math.max(0, Math.min(85, Number(rawDim) || 0));
     const bgOverlayEl = document.getElementById('cover-bg-photo-overlay');
 
-    // 0. Switch Layout Variant (Classic vs Collage Scroll vs Envelope)
+    // 0. Switch Layout Variant (Classic vs Single Blur-Scroll vs Envelope)
     if (coverScreen) {
       coverScreen.classList.remove('is-classic-mode', 'is-collage-mode', 'is-envelope-mode');
       coverScreen.classList.add(`is-${coverStyle === 'collage_scroll' ? 'collage' : (coverStyle === 'envelope' ? 'envelope' : 'classic')}-mode`);
@@ -1120,11 +1125,47 @@ class InvitationEngine {
     if (layoutCollage) layoutCollage.classList.toggle('hidden', coverStyle !== 'collage_scroll');
     if (layoutEnvelope) layoutEnvelope.classList.toggle('hidden', coverStyle !== 'envelope');
 
-    // 1. Background Cover: Lava Lamp vs Foto Sampul Penuh + Dim Level (0-85%)
+    // 1. Background Cover: theme_default | lava_lamp | photo
     const usePhotoBg = Boolean(coverPhoto && coverPhotoAsBg && coverStyle !== 'collage_scroll');
+
+    // Cek apakah background default tema (Admin) memakai video/gambar custom cover atau mewarisi background tema
+    const themeCoverVideo = tplConfig.cover_default_bg_video_url || (tplConfig.bg_type === 'video' ? tplConfig.bg_video_url : null);
+    const themeCoverImage = tplConfig.cover_default_bg_image_url || (tplConfig.bg_type === 'image' ? tplConfig.bg_image_url : null);
+    const hasThemeBgMedia = Boolean(themeCoverVideo || themeCoverImage);
+    const useThemeDefaultBg = Boolean(coverBgMode === 'theme_default' && coverStyle !== 'collage_scroll' && hasThemeBgMedia);
+
+    if (themeBgWrap) {
+      if (useThemeDefaultBg) {
+        themeBgWrap.classList.remove('hidden');
+        const bgBlur = Number(tplConfig.bg_blur ?? 0);
+        if (themeCoverVideo && themeBgVideo) {
+          if (themeBgVideo.src !== themeCoverVideo) {
+            themeBgVideo.src = themeCoverVideo;
+            themeBgVideo.load();
+          }
+          themeBgVideo.style.filter = bgBlur > 0 ? `blur(${bgBlur}px)` : 'none';
+          themeBgVideo.classList.remove('hidden');
+          themeBgVideo.play?.().catch(() => {});
+          if (themeBgImg) themeBgImg.classList.add('hidden');
+        } else if (themeCoverImage && themeBgImg) {
+          if (themeBgVideo) { themeBgVideo.pause?.(); themeBgVideo.src = ''; themeBgVideo.classList.add('hidden'); }
+          themeBgImg.style.backgroundImage = `url('${themeCoverImage}')`;
+          themeBgImg.style.filter = bgBlur > 0 ? `blur(${bgBlur}px)` : 'none';
+          themeBgImg.classList.remove('hidden');
+        }
+        if (themeBgOverlay) {
+          themeBgOverlay.style.background = `rgba(0, 0, 0, ${(Math.max(0, Math.min(85, dimLevel)) / 100).toFixed(2)})`;
+        }
+      } else {
+        themeBgWrap.classList.add('hidden');
+        if (themeBgVideo) { themeBgVideo.pause?.(); themeBgVideo.src = ''; themeBgVideo.classList.add('hidden'); }
+        if (themeBgImg) { themeBgImg.style.backgroundImage = ''; themeBgImg.classList.add('hidden'); }
+      }
+    }
+
     if (coverLavaBg) {
-      const showLava = (coverBgMode === 'lava_lamp' && coverStyle !== 'collage_scroll') || !usePhotoBg;
-      coverLavaBg.classList.toggle('hidden', !showLava || coverStyle === 'collage_scroll');
+      const showLava = (coverStyle !== 'collage_scroll') && !usePhotoBg && !useThemeDefaultBg;
+      coverLavaBg.classList.toggle('hidden', !showLava);
     }
 
     if (bgPhotoWrap && bgPhotoImg && coverScreen) {
@@ -1155,12 +1196,15 @@ class InvitationEngine {
       }
     }
 
-    // 1B. Render Grid Foto Kolase (Jika coverStyle === 'collage_scroll')
+    // 1B. Render 1 Foto Transisi Blur -> Solid (Jika coverStyle === 'collage_scroll')
     if (coverStyle === 'collage_scroll') {
       this.renderCoverCollageLayout();
     }
 
-    // 2. Foto Sampul di Dalam Bingkai Cover (Khusus Cover Classic)
+    // 1C. Sinkronkan visibilitas partikel di layar Cover
+    this.updateCoverParticleVisibility();
+
+    // 2. Foto Sampul di Dalam Bingkai Cover (Khusus Cover Classic - Ukuran Adaptif Fleksibel)
     if (!container || !frame || !img) return;
     if (coverStyle === 'classic' && coverPhoto && coverShowFrame) {
       container.classList.remove('hidden');
@@ -1175,15 +1219,8 @@ class InvitationEngine {
         .filter(c => !c.startsWith('cover-frame-'))
         .join(' ');
       frame.classList.add(`cover-frame-${frameShape}`);
-
-      // Atur dimensi frame lebih besar sesuai rasio bentuk
-      if (frameShape === 'circle_royal' || frameShape === 'octagon_heritage') {
-        frame.style.width = '14.5rem';
-        frame.style.height = '14.5rem';
-      } else {
-        frame.style.width = '';
-        frame.style.height = '';
-      }
+      frame.style.width = '';
+      frame.style.height = '';
 
       // Render Ornamen Hiasan Bingkai Sampul Luar (tanpa menutupi wajah pengantin)
       if (ornamentEl) {
@@ -1234,55 +1271,52 @@ class InvitationEngine {
   }
 
   /**
-   * Render Grid 4 atau 6 Foto untuk Cover Kolase Scroll + Gradient Transisi Solid
+   * Sinkronkan Lapisan & Visibilitas Kanvas Partikel Saat Berada di Cover vs Isi Undangan
+   */
+  updateCoverParticleVisibility() {
+    const canvas = document.getElementById('particle-canvas');
+    if (!canvas) return;
+    const tplConfig = this.template?.config_json || {};
+    const custom = this.wedding?.custom_theme_json || {};
+    const showOnCover = custom.cover_particles_enabled !== undefined
+      ? Boolean(custom.cover_particles_enabled)
+      : (tplConfig.cover_particles_enabled !== undefined ? Boolean(tplConfig.cover_particles_enabled) : true);
+
+    if (!this.isCoverOpened) {
+      if (showOnCover) {
+        canvas.style.zIndex = '65';
+        canvas.style.opacity = '1';
+      } else {
+        canvas.style.zIndex = '';
+        canvas.style.opacity = '0';
+      }
+    } else {
+      canvas.style.zIndex = '';
+      canvas.style.opacity = '1';
+    }
+  }
+
+  /**
+   * Render 1 Foto Sampul Tunggal dengan Transisi Blur ke Warna Solid untuk Cover Scroll ke Bawah
    */
   renderCoverCollageLayout() {
-    const grid = document.getElementById('cover-collage-grid');
+    const singleImg = document.getElementById('cover-blur-single-img');
     const solidFade = document.getElementById('cover-collage-solid-fade');
-    if (!grid) return;
 
     const tplConfig = this.template?.config_json || {};
     const custom = this.wedding?.custom_theme_json || {};
-    const count = Number(custom.cover_collage_count || tplConfig.cover_collage_count || 4) === 6 ? 6 : 4;
-
-    const customPhotos = Array.isArray(custom.cover_collage_photos) ? custom.cover_collage_photos.filter(Boolean) : [];
-    const tplPhotos = Array.isArray(tplConfig.cover_collage_photos) ? tplConfig.cover_collage_photos.filter(Boolean) : [];
     const galleryPhotos = Array.isArray(this.wedding?.gallery_json) ? this.wedding.gallery_json.filter(Boolean) : [];
-    const singleCandidates = [
-      this.wedding?.cover_photo,
-      custom.cover_photo,
-      tplConfig.default_cover_photo,
-      this.wedding?.groom_photo,
-      this.wedding?.bride_photo
-    ].filter(Boolean);
-    const defaultFallbacks = [
-      'https://images.unsplash.com/photo-1519741497674-611481863552?w=600&auto=format&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=600&auto=format&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=600&auto=format&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?w=600&auto=format&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1522673607200-164d1b6ce486?w=600&auto=format&fit=crop&q=80',
-      'https://images.unsplash.com/photo-1529636798458-92182e662485?w=600&auto=format&fit=crop&q=80'
-    ];
+    const singlePhoto =
+      this.wedding?.cover_photo ||
+      custom.cover_photo ||
+      tplConfig.default_cover_photo ||
+      tplConfig.cover_default_bg_image_url ||
+      galleryPhotos[0] ||
+      'https://images.unsplash.com/photo-1519741497674-611481863552?w=900&auto=format&fit=crop&q=80';
 
-    const pool = [...customPhotos, ...tplPhotos, ...galleryPhotos, ...singleCandidates, ...defaultFallbacks];
-    const photos = [];
-    for (const url of pool) {
-      if (url && !photos.includes(url)) photos.push(url);
-      if (photos.length >= count) break;
+    if (singleImg) {
+      singleImg.src = singlePhoto;
     }
-    while (photos.length < count) {
-      photos.push(defaultFallbacks[photos.length % defaultFallbacks.length]);
-    }
-
-    grid.className = count === 6
-      ? 'w-full h-full grid grid-cols-2 grid-rows-3 gap-1 p-1'
-      : 'w-full h-full grid grid-cols-2 grid-rows-2 gap-1 p-1';
-
-    grid.innerHTML = photos.map((url, idx) => `
-      <div class="relative w-full h-full overflow-hidden rounded-[6px] bg-stone-200">
-        <img src="${url}" alt="Kolase ${idx + 1}" class="w-full h-full object-cover">
-      </div>
-    `).join('');
 
     if (solidFade) {
       solidFade.style.background = `linear-gradient(to bottom, rgba(var(--bg-main-rgb, 252, 251, 249), 0) 0%, rgba(var(--bg-main-rgb, 252, 251, 249), 0.45) 38%, rgba(var(--bg-main-rgb, 252, 251, 249), 0.92) 72%, rgba(var(--bg-main-rgb, 252, 251, 249), 1) 100%)`;
@@ -1344,12 +1378,17 @@ class InvitationEngine {
       }
     }
 
-    // Cover Header Logo / Ornament (Ilustrasi / Logo di atas The Wedding Of & Nama Mempelai di semua gaya cover)
+    // Cover Header Logo / Ornament (Ilustrasi / Logo Monogram dengan pilihan bentuk bawaan)
+    const logoShape = custom.cover_logo_shape || tplConfig.cover_logo_shape || 'original';
     ['cover-header-ornament', 'cover-collage-header-ornament', 'cover-envelope-header-ornament'].forEach(elId => {
       const hdrEl = document.getElementById(elId);
       if (!hdrEl) return;
       if (coverHeaderPng) {
-        hdrEl.innerHTML = `<img src="${coverHeaderPng}" alt="Logo Sampul" class="max-h-12 sm:max-h-14 max-w-[150px] w-auto object-contain mx-auto filter drop-shadow float-breathing">`;
+        hdrEl.innerHTML = `
+          <div class="cover-logo-wrap cover-logo-shape-${logoShape} mx-auto float-breathing">
+            <img src="${coverHeaderPng}" alt="Logo Sampul" class="filter drop-shadow">
+          </div>
+        `;
         hdrEl.classList.remove('hidden');
       } else {
         hdrEl.innerHTML = '';
@@ -1645,8 +1684,10 @@ class InvitationEngine {
       cover.classList.remove('is-envelope-opened');
       cover.style.backgroundColor = '';
       const lavaBg = document.getElementById('cover-lava-bg');
+      const themeBg = document.getElementById('cover-theme-bg-wrap');
       const photoBg = document.getElementById('cover-bg-photo-wrap');
       if (lavaBg) lavaBg.style.opacity = '1';
+      if (themeBg) themeBg.style.opacity = '1';
       if (photoBg) photoBg.style.opacity = '1';
       cover.style.removeProperty('display');
       cover.style.removeProperty('pointer-events');
@@ -1657,6 +1698,7 @@ class InvitationEngine {
         cover.style.opacity = '1';
       }, 30);
     }
+    this.updateCoverParticleVisibility();
 
     if (curtainLeft) {
       curtainLeft.style.transform = 'translateX(0) scale(1)';
@@ -2304,15 +2346,17 @@ class InvitationEngine {
       curtainRight.style.opacity = '0';
     }
 
-    // 4. Transisi Membuka Sampul Sesuai Gaya Cover (Amplop tergeser atas+bawah vs Classic/Collage slide ke atas)
+    // 4. Transisi Membuka Sampul Sesuai Gaya Cover (Amplop tergeser atas+bawah vs Classic/Blur-Scroll slide ke atas)
     if (cover) {
       cover.style.pointerEvents = 'none';
       if (coverStyle === 'envelope') {
         cover.classList.add('is-envelope-opened');
         cover.style.backgroundColor = 'transparent';
         const lavaBg = document.getElementById('cover-lava-bg');
+        const themeBg = document.getElementById('cover-theme-bg-wrap');
         const photoBg = document.getElementById('cover-bg-photo-wrap');
         if (lavaBg) { lavaBg.style.transition = 'opacity 0.9s ease'; lavaBg.style.opacity = '0'; }
+        if (themeBg) { themeBg.style.transition = 'opacity 0.9s ease'; themeBg.style.opacity = '0'; }
         if (photoBg) { photoBg.style.transition = 'opacity 0.9s ease'; photoBg.style.opacity = '0'; }
       } else {
         cover.style.transform = 'translate3d(0, -100%, 0)';
@@ -2326,6 +2370,7 @@ class InvitationEngine {
         }
       }, 1300);
     }
+    this.updateCoverParticleVisibility();
 
     // Tampilkan Floating Bottom Dock Navigasi
     if (dock) {
