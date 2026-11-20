@@ -200,8 +200,8 @@
       </div>
     </div>
 
-    <!-- Templates Grid Cards -->
-    <div id="templates-grid-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <!-- Templates Grid Cards (Portrait Showcase) -->
+    <div id="templates-grid-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
       <!-- Injected via JavaScript -->
     </div>
 
@@ -1747,6 +1747,7 @@
   <script src="/assets/js/config.js"></script>
   <script src="/assets/js/webp-compressor.js"></script>
   <script src="/assets/js/image-cropper.js"></script>
+  <script src="/assets/js/cover-thumbnail.js"></script>
 
   <script>
     // State Aplikasi Admin Master Template Studio
@@ -1907,31 +1908,32 @@
         const headingFont = cfg.typography?.font_heading ? cfg.typography.font_heading.split(',')[0].replace(/'/g, '') : 'Cormorant Garamond';
         const particle = cfg.particle_effect || 'leaves';
         const hasCustomOrnaments = Boolean(cfg.ornaments?.corner_master_png || cfg.ornaments?.corner_tl_png);
+        const coverThumbHtml = typeof window.renderStaticCoverThumbnail === 'function'
+          ? window.renderStaticCoverThumbnail(t)
+          : `<div class="w-full h-full flex flex-col items-center justify-center p-4 text-center" style="background-color: ${colors.bg}; color: ${colors.text};"><span class="font-serif text-xl font-bold tracking-tight mb-1" style="color: ${colors.accent};">${escapeHtml(t.name)}</span></div>`;
 
         return `
           <div class="bg-white rounded-3xl border border-slate-200/90 shadow-xs hover:shadow-md transition-all overflow-hidden flex flex-col group">
             
-            <!-- Card Thumbnail Banner -->
-            <div class="relative h-44 bg-slate-900 overflow-hidden flex items-center justify-center">
-              ${t.preview_url ? `
-                <img src="${t.preview_url}" alt="${escapeHtml(t.name)}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
-              ` : `
-                <div class="w-full h-full flex flex-col items-center justify-center p-4 text-center" style="background-color: ${colors.bg}; color: ${colors.text};">
-                  <span class="font-serif text-xl font-bold tracking-tight mb-1" style="color: ${colors.accent};">${escapeHtml(t.name)}</span>
-                  <span class="text-[10px] font-mono opacity-60">/templates/${escapeHtml(t.slug)}</span>
-                </div>
-              `}
+            <!-- Card Thumbnail Portrait Otomatis dari Cover Template (Statis) -->
+            <div class="relative aspect-[5/8] w-full bg-slate-900 overflow-hidden border-b border-slate-100">
+              <div class="w-full h-full group-hover:scale-[1.03] transition-transform duration-500">
+                ${coverThumbHtml}
+              </div>
+
+              <!-- Subtle top/bottom gradient scrim untuk keterbacaan kontrol -->
+              <div class="absolute inset-x-0 top-0 h-14 bg-gradient-to-b from-black/25 to-transparent pointer-events-none z-20"></div>
+              <div class="absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-black/35 to-transparent pointer-events-none z-20"></div>
 
               <!-- Top Badges -->
-              <div class="absolute top-3 left-3 flex items-center gap-1.5">
-                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-white/90 backdrop-blur-xs text-slate-800 shadow-xs">
+              <div class="absolute top-3 left-3 z-30 flex items-center gap-1.5">
+                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-white/95 backdrop-blur-xs text-slate-800 shadow-xs">
                   ${escapeHtml(t.category || 'Minimalist')}
                 </span>
               </div>
 
               <!-- Top Right Active Switch -->
-              <div class="absolute top-3 right-3 bg-white/90 backdrop-blur-xs px-2 py-1 rounded-full shadow-xs flex items-center gap-1.5">
+              <div class="absolute top-3 right-3 z-30 bg-white/95 backdrop-blur-xs px-2 py-1 rounded-full shadow-xs flex items-center gap-1.5">
                 <label class="relative inline-flex items-center cursor-pointer">
                   <input type="checkbox" ${t.is_active ? 'checked' : ''} onchange="toggleTemplateActive(${t.id}, this.checked)" class="sr-only peer">
                   <div class="w-7 h-4 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:bg-emerald-600"></div>
@@ -1939,14 +1941,14 @@
               </div>
 
               <!-- Bottom Palette Dots on Banner -->
-              <div class="absolute bottom-3 left-3 flex items-center gap-1.5">
-                <div class="w-4 h-4 rounded-full border border-white/80 shadow-xs" style="background-color: ${colors.bg}" title="Background: ${colors.bg}"></div>
-                <div class="w-4 h-4 rounded-full border border-white/80 shadow-xs" style="background-color: ${colors.card}" title="Card: ${colors.card}"></div>
-                <div class="w-4 h-4 rounded-full border border-white/80 shadow-xs" style="background-color: ${colors.text}" title="Text: ${colors.text}"></div>
-                <div class="w-4 h-4 rounded-full border border-white/80 shadow-xs" style="background-color: ${colors.accent}" title="Aksen: ${colors.accent}"></div>
+              <div class="absolute bottom-3 left-3 z-30 flex items-center gap-1.5">
+                <div class="w-4 h-4 rounded-full border border-white/90 shadow-xs" style="background-color: ${colors.bg}" title="Background: ${colors.bg}"></div>
+                <div class="w-4 h-4 rounded-full border border-white/90 shadow-xs" style="background-color: ${colors.card}" title="Card: ${colors.card}"></div>
+                <div class="w-4 h-4 rounded-full border border-white/90 shadow-xs" style="background-color: ${colors.text}" title="Text: ${colors.text}"></div>
+                <div class="w-4 h-4 rounded-full border border-white/90 shadow-xs" style="background-color: ${colors.accent}" title="Aksen: ${colors.accent}"></div>
               </div>
 
-              <div class="absolute bottom-3 right-3 font-mono text-[10px] text-white/80 bg-black/40 px-2 py-0.5 rounded-full">
+              <div class="absolute bottom-3 right-3 z-30 font-mono text-[10px] text-white/90 bg-black/45 px-2 py-0.5 rounded-full">
                 #${t.id}
               </div>
             </div>
@@ -2011,6 +2013,7 @@
         `;
       }).join('');
 
+      if (typeof window.fitCoverThumbnails === 'function') window.fitCoverThumbnails(container);
       lucide.createIcons();
     }
 
@@ -4316,6 +4319,7 @@
         isUnsaved = false;
         updateUnsavedIndicator();
         renderMetrics();
+        renderTemplatesGrid();
         broadcastToLivePreview();
 
       } catch (err) {

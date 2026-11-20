@@ -350,7 +350,7 @@
       </div>
 
       <!-- Templates Catalog Grid -->
-      <div id="catalog-templates-grid" class="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div id="catalog-templates-grid" class="mt-10 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
         <!-- Skeleton Loader -->
         <div class="col-span-full py-12 text-center text-slate-400 text-sm flex flex-col items-center gap-2">
           <i data-lucide="loader-2" class="w-6 h-6 animate-spin text-amber-600"></i>
@@ -762,6 +762,7 @@
 
   <!-- Scripts -->
   <script src="/assets/js/config.js"></script>
+  <script src="/assets/js/cover-thumbnail.js"></script>
   <script>
     lucide.createIcons();
 
@@ -883,38 +884,20 @@
       grid.innerHTML = filtered.map(t => {
         const c = t.default_colors_json || { bg: '#FCFBF9', card: '#FFFFFF', text: '#2C352E', accent: '#B48342' };
         const previewHref = `/u?preview=true&admin_template_preview=true&tpl_id=${encodeURIComponent(t.id)}&tpl_slug=${encodeURIComponent(t.slug || 'minimalist-sage')}`;
-        const coverThumb = t.preview_url || t.config_json?.default_cover_photo || null;
+        const coverThumbHtml = typeof window.renderStaticCoverThumbnail === 'function'
+          ? window.renderStaticCoverThumbnail(t)
+          : `<div class="w-full h-full flex items-center justify-center p-4" style="background-color:${escapeHtmlSafe(c.bg)}"><span class="font-serif text-lg font-bold" style="color:${escapeHtmlSafe(c.text)}">${escapeHtmlSafe(t.name)}</span></div>`;
 
         return `
           <div class="bg-white rounded-3xl border border-stone-200/90 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col group">
-            <!-- Thumbnail / Visual Mockup -->
-            <div class="relative aspect-[4/5] w-full overflow-hidden border-b border-stone-100" style="background-color: ${escapeHtmlSafe(c.bg)};">
-              ${t.preview_url ? `
-                <img src="${escapeHtmlSafe(t.preview_url)}" alt="${escapeHtmlSafe(t.name)}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-              ` : `
-                <div class="w-full h-full p-5 flex flex-col items-center justify-between text-center relative">
-                  <div class="pt-2 space-y-1">
-                    <span class="text-[8px] uppercase tracking-[0.25em] font-bold block" style="color: ${escapeHtmlSafe(c.accent)};">The Wedding Of</span>
-                    <span class="font-serif text-xl font-bold block leading-tight" style="color: ${escapeHtmlSafe(c.text)};">Yoga & Anin</span>
-                  </div>
-                  ${coverThumb ? `
-                    <div class="w-24 h-32 rounded-t-full rounded-b-xl overflow-hidden shadow-md border-2" style="border-color: ${escapeHtmlSafe(c.accent)};">
-                      <img src="${escapeHtmlSafe(coverThumb)}" alt="${escapeHtmlSafe(t.name)}" class="w-full h-full object-cover">
-                    </div>
-                  ` : `
-                    <div class="w-24 h-32 rounded-t-full rounded-b-xl flex items-center justify-center shadow-inner border-2" style="background-color: ${escapeHtmlSafe(c.card)}; border-color: ${escapeHtmlSafe(c.accent)};">
-                      <i data-lucide="gem" class="w-7 h-7 opacity-60" style="color: ${escapeHtmlSafe(c.accent)};"></i>
-                    </div>
-                  `}
-                  <div class="w-full p-2.5 rounded-2xl shadow-sm border border-black/5" style="background-color: ${escapeHtmlSafe(c.card)}; color: ${escapeHtmlSafe(c.text)};">
-                    <span class="text-[9px] opacity-70 block">Kepada Yth.</span>
-                    <span class="font-serif text-xs font-bold block">Bapak/Ibu Tamu</span>
-                  </div>
-                </div>
-              `}
+            <!-- Thumbnail Portrait Otomatis dari Pengaturan Cover (Statis) -->
+            <div class="relative aspect-[5/8] w-full overflow-hidden border-b border-stone-100" style="background-color: ${escapeHtmlSafe(c.bg)};">
+              <div class="w-full h-full group-hover:scale-[1.03] transition-transform duration-500">
+                ${coverThumbHtml}
+              </div>
 
               <!-- Category Badge Overlay -->
-              <div class="absolute top-3 right-3 flex items-center justify-end pointer-events-none">
+              <div class="absolute top-2.5 right-2.5 z-30 flex items-center justify-end pointer-events-none">
                 <span class="px-2.5 py-1 rounded-full text-[10px] font-semibold capitalize bg-white/90 text-slate-700 backdrop-blur-md shadow-xs">
                   ${escapeHtmlSafe(t.category || 'Tema')}
                 </span>
@@ -922,9 +905,9 @@
             </div>
 
             <!-- Info & Action -->
-            <div class="p-4 sm:p-5 flex-1 flex flex-col justify-between space-y-4">
+            <div class="p-3.5 sm:p-5 flex-1 flex flex-col justify-between space-y-3 sm:space-y-4">
               <div>
-                <h3 class="font-serif text-lg sm:text-xl font-bold text-slate-900 leading-snug">${escapeHtmlSafe(t.name)}</h3>
+                <h3 class="font-serif text-base sm:text-xl font-bold text-slate-900 leading-snug">${escapeHtmlSafe(t.name)}</h3>
                 <div class="flex items-center gap-1.5 mt-2">
                   <span class="text-[10px] text-slate-400 font-medium mr-1">Palet:</span>
                   <span class="w-3.5 h-3.5 rounded-full border border-stone-300 shadow-2xs" style="background-color: ${escapeHtmlSafe(c.bg)}"></span>
@@ -938,7 +921,7 @@
                 href="${previewHref}" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                class="w-full py-2.5 px-4 rounded-xl bg-slate-900 hover:bg-amber-600 text-white font-bold text-xs transition-colors flex items-center justify-center gap-2 shadow-xs"
+                class="w-full py-2.5 px-3 sm:px-4 rounded-xl bg-slate-900 hover:bg-amber-600 text-white font-bold text-xs transition-colors flex items-center justify-center gap-1.5 sm:gap-2 shadow-xs"
               >
                 <i data-lucide="external-link" class="w-3.5 h-3.5 text-amber-400"></i>
                 <span>Lihat Contoh</span>
@@ -948,6 +931,7 @@
         `;
       }).join('');
 
+      if (typeof window.fitCoverThumbnails === 'function') window.fitCoverThumbnails(grid);
       if (window.lucide) window.lucide.createIcons();
     }
 
